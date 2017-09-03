@@ -27,10 +27,8 @@ import os.path
 
 import click
 import feed2exec
-from feed2exec.feeds import FeedStorage, FeedCacheStorage
+from feed2exec.feeds import FeedStorage, fetch_feeds
 import feed2exec.feeds as feedsmod
-import feedparser
-import requests
 import sqlite3
 
 # not sure why logging._levelNames are not exposed...
@@ -90,35 +88,9 @@ def rm(name):
 
 
 @click.command(help='fetch and process all feeds')
-def fetch():
-    st = FeedStorage()
-    for feed in st:
-        logging.debug('found feed in DB: %s', feed)
-        cache = FeedCacheStorage(feed=feed['feed'])
-        data = _parse(feed['url'])
-        for entry in data['entries']:
-            if entry['id'] in cache:
-                logging.info('new entry %s <%s>', entry['id'], entry['link'])
-                cache.add(entry['id'])
-            else:
-                logging.debug('entry %s already seen', entry['id'])
-
-
-def _parse(url):
-    logging.debug('fetching URL %s', url)
-    body = ''
-    if url.startswith('file://'):
-        with open(url[len('file://'):], 'r') as f:
-            body = f.read()
-    else:
-        r = requests.get(url)
-        logging.debug('got response %s', r)
-        body = r.text
-    logging.debug('found body %s', body)
-    data = feedparser.parse(body)
-    logging.debug('parsed structure %s',
-                  json.dumps(data, indent=2, sort_keys=True))
-    return data
+@click.option('--pattern', help='only fetch feeds matchin name or URL')
+def fetch(pattern):
+    fetch_feeds(pattern)
 
 
 feed2exec.add_command(add)

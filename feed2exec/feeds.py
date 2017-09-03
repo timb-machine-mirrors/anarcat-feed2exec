@@ -23,11 +23,15 @@ from __future__ import print_function
 
 import collections
 import errno
+import json
+import logging
 import os
 import os.path
 
 
 import feed2exec
+import feedparser
+import requests
 import sqlite3
 
 
@@ -56,6 +60,37 @@ def make_dirs_helper(path):
         return False
 
 
+def fetch_feeds(pattern):
+    st = FeedStorage(pattern=pattern)
+    for feed in st:
+        logging.debug('found feed in DB: %s', feed)
+        cache = FeedCacheStorage(feed=feed['feed'])
+        data = _parse(feed['url'])
+        for entry in data['entries']:
+            if entry['id'] in cache:
+                logging.info('new entry %s <%s>', entry['id'], entry['link'])
+                cache.add(entry['id'])
+            else:
+                logging.debug('entry %s already seen', entry['id'])
+
+
+def _parse(url):
+    logging.debug('fetching URL %s', url)
+    body = ''
+    if url.startswith('file://'):
+        with open(url[len('file://'):], 'r') as f:
+            body = f.read()
+    else:
+        r = requests.get(url)
+        logging.debug('got response %s', r)
+        body = r.text
+    logging.debug('found body %s', body)
+    data = feedparser.parse(body)
+    logging.debug('parsed structure %s',
+                  json.dumps(data, indent=2, sort_keys=True))
+    return data
+
+
 class DbStorage(object):
     pass
 
@@ -79,6 +114,13 @@ class FeedStorage(SqliteStorage):
              PRIMARY KEY (name))'''
     record = collections.namedtuple('record', 'name url plugin args')
 
+    def __init__(self, path=None, pattern=None):
+        if pattern is None:
+            self.pattern = '%'
+        else:
+            self.pattern = '%' + pattern + '%'
+        super(FeedStorage, self).__init__(path)
+
     def add(self, name, url, plugin=None, args=None):
         cur = self.conn.cursor()
         cur.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
@@ -98,7 +140,8 @@ class FeedStorage(SqliteStorage):
     def __iter__(self):
         self.cur = self.conn.cursor()
         self.cur.row_factory = sqlite3.Row
-        return self.cur.execute("SELECT * from feeds")
+        return self.cur.execute("SELECT * from feeds WHERE name LIKE ? OR url LIKE ?",
+                                (self.pattern, self.pattern))
 
 
 class FeedCacheStorage(SqliteStorage):
