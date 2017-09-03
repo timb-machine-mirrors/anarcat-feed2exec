@@ -41,8 +41,3 @@ def test_basics(test_db):
                                        'ls'])
     assert result.exit_code == 0
     assert result.output == ""
-
-
-@pytest.mark.xfail
-def test_fetch():
-    assert False

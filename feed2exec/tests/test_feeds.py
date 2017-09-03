@@ -1,13 +1,35 @@
 #!/usr/bin/python3
 # coding: utf-8
 
+# Copyright (C) 2016 Antoine Beaupré <anarcat@debian.org>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-from feed2exec.feeds import FeedStorage, FeedCacheStorage
+import logging
+import os.path
+import pkg_resources
+
+from feed2exec import __prog__
+from feed2exec.feeds import FeedStorage, FeedCacheStorage, fetch_feeds
+import feed2exec.feeds as feedsmod
 import pytest
 import sqlite3
 
+logging.basicConfig(format='%(message)s', level='DEBUG')
 
 test_data = {'url': 'file:///dev/null',
              'name': 'test',
@@ -17,6 +39,25 @@ test_data2 = {'url': 'http://example.com/',
               'name': 'test2',
               'plugin': None,
               'args': None}
+
+
+def find_test_file(name):
+    try:
+        pkg = pkg_resources.Requirement.parse(__prog__)
+        path = os.path.join(__prog__, 'tests', 'files', name)
+        return pkg_resources.resource_filename(pkg, path)
+    except pkg_resources.DistributionNotFound:
+        return os.path.join(os.path.dirname(__file__), 'files', name)
+
+
+test_nasa = {'url': 'file://%s' % find_test_file('nasa-breaking-news.xhtml'),
+             'name': 'nasa-breaking-news',
+             'plugin': None,
+             'args': None}
+test_sample = {'url': 'file://%s' % find_test_file('sample.xml'),
+               'name': 'sample',
+               'plugin': None,
+               'args': None}
 
 
 @pytest.fixture(scope='session')
@@ -56,3 +97,18 @@ def test_cache(test_db):
     st.add('guid')
     assert 'guid' in st
 
+
+def test_fetch(test_db):
+    st = FeedStorage(path=str(test_db))
+    st.add(**test_sample)
+
+    def dummy():
+        return str(test_db)
+
+    feedsmod.default_db = dummy
+    fetch_feeds()
+    cache = FeedCacheStorage(feed=test_sample['name'])
+    guids = set()
+    for entry in cache:
+        guids.add(entry['guid'])
+    assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in guids
