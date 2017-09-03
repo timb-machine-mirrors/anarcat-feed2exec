@@ -11,11 +11,11 @@ import pytest
 @pytest.fixture(scope='session')
 def test_db(tmpdir_factory):
     tmpdir = tmpdir_factory.mktemp('feed2exec')
-    return str(tmpdir.join('feed2exec.db'))
+    return tmpdir.join('feed2exec.db')
 
 
 def test_add(test_db):
-    st = FeedStorage(path=test_db)
+    st = FeedStorage(path=str(test_db))
     assert 'test' not in st, 'this is supposed to be empty'
     st.add('test', 'file:///dev/null', '')
     assert 'test' in st, 'contains works'
@@ -26,7 +26,7 @@ def test_add(test_db):
 
 
 def test_cache(test_db):
-    st = FeedCacheStorage(path=test_db, feed='test')
+    st = FeedCacheStorage(path=str(test_db), feed='test')
     assert 'guid' not in st
     st.add('guid')
     assert 'guid' in st
