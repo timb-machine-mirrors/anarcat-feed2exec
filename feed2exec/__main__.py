@@ -102,12 +102,6 @@ def fetch():
                 cache.add(entry['id'])
             else:
                 logging.debug('entry %s already seen', entry['id'])
-    
-
-@click.command(help='parse a single URL')
-@click.argument('url')
-def parse(url):
-    _parse(url)
 
 
 def _parse(url):
@@ -127,7 +121,6 @@ def _parse(url):
     return data
 
 
-feed2exec.add_command(parse)
 feed2exec.add_command(add)
 feed2exec.add_command(ls)
 feed2exec.add_command(rm)
