@@ -70,10 +70,10 @@ def fetch_feeds(pattern=None):
         data = _parse(feed['url'])
         for entry in data['entries']:
             if entry['id'] in cache:
+                logging.info('entry %s already seen', entry['id'])
+            else:
                 logging.info('new entry %s <%s>', entry['id'], entry['link'])
                 cache.add(entry['id'])
-            else:
-                logging.debug('entry %s already seen', entry['id'])
 
 
 def safe_serial(obj):
