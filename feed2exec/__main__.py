@@ -79,7 +79,7 @@ def ls():
     st = FeedStorage()
     for feed in st:
         if feed is not None:
-            print(dict(feed))
+            print(json.dumps(dict(feed), indent=2, sort_keys=True))
 
 
 @click.command(help='remove a feed from the configuration')

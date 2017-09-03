@@ -5,12 +5,12 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
-import os.path
+import json
 
 
 from click.testing import CliRunner
 from feed2exec.__main__ import feed2exec
-from feed2exec.tests.test_feeds import test_db
+from feed2exec.tests.test_feeds import test_db, test_data
 import pytest
 
 
@@ -23,13 +23,17 @@ def test_usage():
 def test_basics(test_db):
     runner = CliRunner()
     result = runner.invoke(feed2exec, ['--database', str(test_db),
-                                       'add', 'test', 'file:///dev/null'])
+                                       'add',
+                                       test_data['name'],
+                                       test_data['url']])
     assert test_db.check()
     assert result.exit_code == 0
     result = runner.invoke(feed2exec, ['--database', str(test_db),
                                        'ls'])
     assert result.exit_code == 0
-    assert result.output == """{'url': u'file:///dev/null', 'name': u'test', 'plugin': None}\n"""
+    assert result.output.strip() == json.dumps(test_data,
+                                               indent=2,
+                                               sort_keys=True)
     result = runner.invoke(feed2exec, ['--database', str(test_db),
                                        'rm', 'test'])
     assert result.exit_code == 0
