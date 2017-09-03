@@ -75,14 +75,14 @@ class SqliteStorage(DbStorage):
 
 class FeedStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
-             feeds (name text, url text, plugin text,
+             feeds (name text, url text, plugin text, args text,
              PRIMARY KEY (name))'''
-    record = collections.namedtuple('record', 'name url plugin')
+    record = collections.namedtuple('record', 'name url plugin args')
 
-    def add(self, name, url, plugin=''):
+    def add(self, name, url, plugin=None, args=None):
         cur = self.conn.cursor()
-        cur.execute("INSERT INTO feeds VALUES (?, ?, ?)",
-                    (name, url, plugin))
+        cur.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
+                    (name, url, plugin, args))
         self.conn.commit()  # XXX
 
     def remove(self, name):
