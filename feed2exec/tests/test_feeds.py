@@ -96,6 +96,8 @@ def test_cache(test_db):
     assert 'guid' not in st
     st.add('guid')
     assert 'guid' in st
+    st.remove('guid')
+    assert 'guid' not in st
 
 
 def test_fetch(test_db):

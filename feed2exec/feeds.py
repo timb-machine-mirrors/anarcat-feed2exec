@@ -180,6 +180,12 @@ class FeedCacheStorage(SqliteStorage):
                     (self.feed, guid))
         self.conn.commit()  # XXX
 
+    def remove(self, guid):
+        assert self.feed is not None
+        cur = self.conn.cursor()
+        cur.execute("DELETE FROM feedcache WHERE guid = ?", (guid,))
+        self.conn.commit()  # XXX
+
     def __contains__(self, guid):
         cur = self.conn.cursor()
         cur.execute("SELECT * FROM feedcache WHERE name=? AND guid=?",
