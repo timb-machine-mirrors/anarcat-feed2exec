@@ -4,8 +4,6 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-import logging
-
 from feed2exec.feeds import FeedStorage, FeedCacheStorage
 import pytest
 
@@ -22,7 +20,7 @@ def test_add(test_db):
     st.add('test', 'file:///dev/null', '')
     assert 'test' in st, 'contains works'
     for r in st:
-        assert r['feed'] == 'test', 'iterator works'
+        assert r['name'] == 'test', 'iterator works'
     st.remove('test')
     assert 'test' not in st, 'remove works'
 
