@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import division, absolute_import
-from __future__ import print_function, unicode_literals
+from __future__ import print_function
 
 import collections
 import errno
@@ -29,14 +29,10 @@ import os.path
 
 
 import click
+import feed2exec
 import feedparser
 import requests
 import sqlite3
-
-__desc__ = '''This command will take a configured set of feeds and
-fire specific commands or plugins for every new item found in the feed.'''
-__version__ = '0.0'
-__prog__ = 'feed2exec'
 
 # not sure why logging._levelNames are not exposed...
 levels = ['CRITICAL',
@@ -50,7 +46,7 @@ def default_config_dir():
     home_config = os.environ.get('XDG_CONFIG_HOME',
                                  os.path.join(os.environ.get('HOME'),
                                               '.config'))
-    return os.path.join(home_config, __prog__)
+    return os.path.join(home_config, feed2exec.__prog__)
 
 
 def default_db():
@@ -119,8 +115,8 @@ class SqliteStorage(DbStorage):
         self.conn.commit()  # XXX
 
 
-@click.group()
-@click.version_option(version=__version__)
+@click.group(help=feed2exec.__description__)
+@click.version_option(version=feed2exec.__version__)
 @click.option('--loglevel', 'loglevel',
               help='show only warning messages',
               type=click.Choice(levels),
