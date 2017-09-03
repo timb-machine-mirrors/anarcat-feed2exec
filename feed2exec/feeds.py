@@ -94,7 +94,7 @@ def _parse(url):
     if url.startswith('file://'):
         filename = url[len('file://'):]
         logging.debug('opening local file %s', filename)
-        with open(filename, 'r') as f:
+        with open(filename, 'rb') as f:
             body = f.read().decode('utf-8')
     else:
         body = requests.get(url).text
