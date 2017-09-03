@@ -62,11 +62,12 @@ def make_dirs_helper(path):
         return False
 
 
-def fetch_feeds(pattern=None):
-    st = FeedStorage(pattern=pattern)
+def fetch_feeds(pattern=None, database=None):
+    logging.debug('looking for feeds %s in database %s', pattern, database)
+    st = FeedStorage(pattern=pattern, path=database)
     for feed in st:
-        logging.debug('found feed in DB: %s', dict(feed))
-        cache = FeedCacheStorage(feed=feed['name'])
+        logging.info('found feed in DB: %s', dict(feed))
+        cache = FeedCacheStorage(feed=feed['name'], path=database)
         data = _parse(feed['url'])
         for entry in data['entries']:
             if entry['id'] in cache:
@@ -118,6 +119,7 @@ class SqliteStorage(DbStorage):
         if path is None:
             path = default_db()
         make_dirs_helper(os.path.dirname(path))
+        logging.debug('connecting to database at %s', path)
         self.conn = sqlite3.connect(path)
         self.conn.execute(self.sql)
         self.conn.commit()
