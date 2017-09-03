@@ -20,19 +20,15 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-import collections
-import errno
 import json
 import logging
-import os
-import os.path
 
 
 import click
 import feed2exec
+from feed2exec.feeds import FeedStorage, FeedCacheStorage
 import feedparser
 import requests
-import sqlite3
 
 # not sure why logging._levelNames are not exposed...
 levels = ['CRITICAL',
@@ -40,79 +36,6 @@ levels = ['CRITICAL',
           'WARNING',
           'INFO',
           'DEBUG']
-
-
-def default_config_dir():
-    home_config = os.environ.get('XDG_CONFIG_HOME',
-                                 os.path.join(os.environ.get('HOME'),
-                                              '.config'))
-    return os.path.join(home_config, feed2exec.__prog__)
-
-
-def default_db():
-    return os.path.join(default_config_dir(), 'feed2exec.sqlite')
-
-
-def make_dirs_helper(path):
-    """Create the directory if it does not exist
-
-    Return True if the directory was created, false if it was already
-    present, throw an OSError exception if it cannot be created"""
-    try:
-        os.makedirs(path)
-        return True
-    except OSError as ex:
-        if ex.errno != errno.EEXIST or not os.path.isdir(path):
-            raise
-        return False
-
-
-class DbStorage(object):
-    pass
-
-
-class SqliteStorage(DbStorage):
-    feedcache_sql = '''CREATE TABLE IF NOT EXISTS
-                       feedcache (feed text, guid text,
-                       PRIMARY KEY (feed, guid))'''
-    feeds_sql = '''CREATE TABLE IF NOT EXISTS
-                   feeds (feed text, url text, plugin text,
-                   PRIMARY KEY (feed))'''
-    feeds_record = collections.namedtuple('feeds_record', 'feed url plugin')
-    
-    def __init__(self, path):
-        make_dirs_helper(os.path.dirname(path))
-        self.conn = sqlite3.connect(path)
-        self.conn.execute(self.feedcache_sql)
-        self.conn.execute(self.feeds_sql)
-        self.conn.commit()
-
-    def add_item(self, feed, item):
-        cur = self.conn.cursor()
-        cur.execute("INSERT INTO feedcache VALUES (?, ?)", (feed, item))
-        self.conn.commit()  # XXX
-
-    def contains_item(self, feed, item):
-        cur = self.conn.cursor()
-        cur.execute("SELECT * FROM feedcache WHERE feed=? AND guid=?",
-                    (feed, item))
-        return cur.fetchone() is not None
-
-    def add_feed(self, feed, url, plugin):
-        cur = self.conn.cursor()
-        cur.execute("INSERT INTO feeds VALUES (?, ?, ?)", (feed, url, plugin))
-        self.conn.commit()  # XXX
-
-    def ls_feed(self):
-        cur = self.conn.cursor()
-        cur.execute("SELECT * FROM feeds")
-        cur.row_factory = sqlite3.Row
-        yield cur.fetchone()
-
-    def rm_feed(self, feed):
-        cur = self.conn.cursor()
-        cur.execute("DELETE FROM feeds WHERE feed=?", (feed, ))
-        self.conn.commit()  # XXX
 
 
 @click.group(help=feed2exec.__description__)
@@ -143,15 +66,14 @@ def main(ctx, loglevel, syslog, dryrun, progress):
 @click.argument('url')
 @click.option('--plugin', help="plugin to call when new items are found")
 def add(name, url, plugin):
-    st = SqliteStorage(path=default_db())
-    st.add_feed(name, url, plugin)
+    st = FeedStorage()
+    st.add(name, url, plugin)
 
 
 @click.command(help='list configured feeds')
 def ls():
-    st = SqliteStorage(path=default_db())
-    it = st.ls_feed()
-    for feed in it:
+    st = FeedStorage()
+    for feed in st:
         if feed is not None:
             print(dict(feed))
 
@@ -159,20 +81,21 @@ def ls():
 @click.command(help='remove a feed from the configuration')
 @click.argument('name')
 def rm(name):
-    st = SqliteStorage(path=default_db())
-    st.rm_feed(name)
+    st = FeedStorage()
+    st.rm(name)
 
 
 @click.command(help='fetch and process all feeds')
 def fetch():
-    st = SqliteStorage(path=default_db())
-    for feed in st.ls_feed():
+    st = FeedStorage()
+    for feed in st:
         logging.debug('found feed in DB: %s', feed)
+        cache = FeedCacheStorage(feed=feed['feed'])
         data = _parse(feed['url'])
         for entry in data['entries']:
-            if st.contains_item(feed['feed'], entry['id']):
+            if entry['id'] in cache:
                 logging.info('new entry %s <%s>', entry['id'], entry['link'])
-                st.add_item(feed['feed'], entry['id'])
+                cache.add(entry['id'])
             else:
                 logging.debug('entry %s already seen', entry['id'])
     
