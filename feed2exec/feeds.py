@@ -62,11 +62,11 @@ def make_dirs_helper(path):
         return False
 
 
-def fetch_feeds(pattern):
+def fetch_feeds(pattern=None):
     st = FeedStorage(pattern=pattern)
     for feed in st:
-        logging.debug('found feed in DB: %s', feed)
-        cache = FeedCacheStorage(feed=feed['feed'])
+        logging.debug('found feed in DB: %s', dict(feed))
+        cache = FeedCacheStorage(feed=feed['name'])
         data = _parse(feed['url'])
         for entry in data['entries']:
             if entry['id'] in cache:
@@ -166,8 +166,12 @@ class FeedCacheStorage(SqliteStorage):
              PRIMARY KEY (name, guid))'''
     record = collections.namedtuple('record', 'name guid')
 
-    def __init__(self, feed, path=None):
+    def __init__(self, feed, path=None, guid=None):
         self.feed = feed
+        if guid is None:
+            self.guid = '%'
+        else:
+            self.guid = '%' + guid + '%'
         super(FeedCacheStorage, self).__init__(path)
 
     def add(self, guid):
@@ -181,3 +185,9 @@ class FeedCacheStorage(SqliteStorage):
         cur.execute("SELECT * FROM feedcache WHERE name=? AND guid=?",
                     (self.feed, guid))
         return cur.fetchone() is not None
+
+    def __iter__(self):
+        self.cur = self.conn.cursor()
+        self.cur.row_factory = sqlite3.Row
+        return self.cur.execute("SELECT * from feedcache WHERE guid LIKE ?",
+                                (self.guid, ))
