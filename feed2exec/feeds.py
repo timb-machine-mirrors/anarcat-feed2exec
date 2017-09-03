@@ -165,7 +165,7 @@ class FeedCacheStorage(SqliteStorage):
              PRIMARY KEY (name, guid))'''
     record = collections.namedtuple('record', 'name guid')
 
-    def __init__(self, feed, path=None, guid=None):
+    def __init__(self, feed=None, path=None, guid=None):
         self.feed = feed
         if guid is None:
             self.guid = '%'
@@ -174,6 +174,7 @@ class FeedCacheStorage(SqliteStorage):
         super(FeedCacheStorage, self).__init__(path)
 
     def add(self, guid):
+        assert self.feed is not None
         cur = self.conn.cursor()
         cur.execute("INSERT INTO feedcache VALUES (?, ?)",
                     (self.feed, guid))
@@ -186,13 +187,21 @@ class FeedCacheStorage(SqliteStorage):
         self.conn.commit()  # XXX
 
     def __contains__(self, guid):
+        if self.feed is None:
+            pattern = '%'
+        else:
+            pattern = self.feed
         cur = self.conn.cursor()
         cur.execute("SELECT * FROM feedcache WHERE name=? AND guid=?",
-                    (self.feed, guid))
+                    (pattern, guid))
         return cur.fetchone() is not None
 
     def __iter__(self):
+        if self.feed is None:
+            pattern = '%'
+        else:
+            pattern = self.feed
         self.cur = self.conn.cursor()
         self.cur.row_factory = sqlite3.Row
-        return self.cur.execute("SELECT * from feedcache WHERE guid LIKE ?",
-                                (self.guid, ))
+        return self.cur.execute("SELECT * from feedcache WHERE name LIKE ? AND guid LIKE ?",
+                                (pattern, self.guid))
