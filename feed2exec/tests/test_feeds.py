@@ -96,6 +96,8 @@ def test_cache(test_db):
     assert 'guid' not in st
     st.add('guid')
     assert 'guid' in st
+    tmp = FeedCacheStorage(path=str(test_db))
+    assert 'guid' in tmp
     st.remove('guid')
     assert 'guid' not in st
 

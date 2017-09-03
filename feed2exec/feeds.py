@@ -121,6 +121,10 @@ class SqliteStorage(DbStorage):
         make_dirs_helper(os.path.dirname(path))
         logging.debug('connecting to database at %s', path)
         self.conn = sqlite3.connect(path)
+        try:
+            self.conn.set_trace_callback(logging.debug)
+        except AttributeError:
+            logging.debug('no logging support in sqlite')
         self.conn.execute(self.sql)
         self.conn.commit()
 
@@ -194,7 +198,7 @@ class FeedCacheStorage(SqliteStorage):
         else:
             pattern = self.feed
         cur = self.conn.cursor()
-        cur.execute("SELECT * FROM feedcache WHERE name=? AND guid=?",
+        cur.execute("SELECT * FROM feedcache WHERE name LIKE ? AND guid=?",
                     (pattern, guid))
         return cur.fetchone() is not None
 
