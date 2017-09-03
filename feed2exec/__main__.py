@@ -49,7 +49,7 @@ levels = ['CRITICAL',
 @click.option('-d', '--debug', 'loglevel', help='even more verbose',
               flag_value='DEBUG')
 @click.pass_context
-def main(ctx, loglevel):
+def feed2exec(ctx, loglevel):
     logging.basicConfig(format='%(message)s', level=loglevel)
 
 
@@ -115,11 +115,11 @@ def _parse(url):
     return data
 
 
-main.add_command(parse)
-main.add_command(add)
-main.add_command(ls)
-main.add_command(rm)
-main.add_command(fetch)
+feed2exec.add_command(parse)
+feed2exec.add_command(add)
+feed2exec.add_command(ls)
+feed2exec.add_command(rm)
+feed2exec.add_command(fetch)
 
 
 if __name__ == '__main__':
@@ -132,4 +132,4 @@ if __name__ == '__main__':
 
     cargo-culted from debmans
     '''
-    main(obj={})
+    feed2exec(obj={})
