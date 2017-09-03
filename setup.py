@@ -27,10 +27,10 @@ import os.path
 import re
 
 
-from . import feedplugs
+from . import feed2exec
 
 
-mod = feedplugs
+mod = feed2exec
 
 
 def read(*names, **kwargs):

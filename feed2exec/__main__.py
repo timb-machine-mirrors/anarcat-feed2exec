@@ -36,7 +36,7 @@ import sqlite3
 __desc__ = '''This command will take a configured set of feeds and
 fire specific commands or plugins for every new item found in the feed.'''
 __version__ = '0.0'
-__prog__ = 'feed-exec'
+__prog__ = 'feed2exec'
 
 # not sure why logging._levelNames are not exposed...
 levels = ['CRITICAL',
@@ -54,7 +54,7 @@ def default_config_dir():
 
 
 def default_db():
-    return os.path.join(default_config_dir(), 'feed-exec.sqlite')
+    return os.path.join(default_config_dir(), 'feed2exec.sqlite')
 
 
 def make_dirs_helper(path):
