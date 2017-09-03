@@ -98,10 +98,9 @@ def _parse(url):
     else:
         body = requests.get(url).text
     data = feedparser.parse(body)
-    logging.debug(data)
     if len(data) > 0:
         logging.debug('parsed structure %s',
-                      json.dumps(data['feed'], indent=2, sort_keys=True, default=safe_serial))
+                      json.dumps(data, indent=2, sort_keys=True, default=safe_serial))
     else:
         logging.info('body of URL %s is empty', url)
     return data
