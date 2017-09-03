@@ -22,13 +22,16 @@ from __future__ import print_function
 
 import json
 import logging
+import os.path
 
 
 import click
 import feed2exec
 from feed2exec.feeds import FeedStorage, FeedCacheStorage
+import feed2exec.feeds as feedsmod
 import feedparser
 import requests
+import sqlite3
 
 # not sure why logging._levelNames are not exposed...
 levels = ['CRITICAL',
@@ -48,8 +51,14 @@ levels = ['CRITICAL',
               flag_value='INFO')
 @click.option('-d', '--debug', 'loglevel', help='even more verbose',
               flag_value='DEBUG')
+@click.option('--database', default=feed2exec.feeds.default_db(),
+              help='use given database instead of default %(default)s')
 @click.pass_context
-def feed2exec(ctx, loglevel):
+def feed2exec(ctx, loglevel, database):
+    if database != feedsmod.default_db():
+        def dummy():
+            return os.path.realpath(database)
+        feedsmod.default_db = dummy
     logging.basicConfig(format='%(message)s', level=loglevel)
 
 
@@ -59,7 +68,10 @@ def feed2exec(ctx, loglevel):
 @click.option('--plugin', help="plugin to call when new items are found")
 def add(name, url, plugin):
     st = FeedStorage()
-    st.add(name, url, plugin)
+    try:
+        st.add(name, url, plugin)
+    except sqlite3.IntegrityError:
+        logging.error('feed %s already exists', name)
 
 
 @click.command(help='list configured feeds')
@@ -74,7 +86,7 @@ def ls():
 @click.argument('name')
 def rm(name):
     st = FeedStorage()
-    st.rm(name)
+    st.remove(name)
 
 
 @click.command(help='fetch and process all feeds')
