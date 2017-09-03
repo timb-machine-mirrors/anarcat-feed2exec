@@ -108,9 +108,7 @@ def test_fetch(test_db):
         return str(test_db)
 
     feedsmod.default_db = dummy
-    fetch_feeds()
-    cache = FeedCacheStorage(feed=test_sample['name'])
-    guids = set()
-    for entry in cache:
-        guids.add(entry['guid'])
-    assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in guids
+    fetch_feeds(database=str(test_db))
+    logging.info('looking through cache')
+    cache = FeedCacheStorage(path=str(test_db), feed=test_sample['name'])
+    assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
