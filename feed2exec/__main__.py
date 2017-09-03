@@ -48,16 +48,8 @@ levels = ['CRITICAL',
               flag_value='INFO')
 @click.option('-d', '--debug', 'loglevel', help='even more verbose',
               flag_value='DEBUG')
-# would love to have a default here when no option is specified
-# unfortunately, default= still asks for an argument
-@click.option('-s', '--syslog', type=click.Choice(levels),
-              help='send logs to syslog')
-@click.option('-n', '--dryrun', is_flag=True,
-              help='do not write anything')
-@click.option('--progress', is_flag=True,
-              help='show progress bars')
 @click.pass_context
-def main(ctx, loglevel, syslog, dryrun, progress):
+def main(ctx, loglevel):
     logging.basicConfig(format='%(message)s', level=loglevel)
 
 
