@@ -21,6 +21,8 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
+import datetime
+import time
 import collections
 import errno
 import json
@@ -74,20 +76,34 @@ def fetch_feeds(pattern):
                 logging.debug('entry %s already seen', entry['id'])
 
 
+def safe_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, (datetime.datetime, datetime.date, datetime.time)):
+        return obj.isoformat()
+    elif isinstance(obj, time.struct_time):
+        return time.strftime('%c')
+    else:
+        return str(obj)
+
+
 def _parse(url):
     logging.debug('fetching URL %s', url)
     body = ''
     if url.startswith('file://'):
-        with open(url[len('file://'):], 'r') as f:
-            body = f.read()
+        filename = url[len('file://'):]
+        logging.debug('opening local file %s', filename)
+        with open(filename, 'r') as f:
+            body = f.read().decode('utf-8')
     else:
-        r = requests.get(url)
-        logging.debug('got response %s', r)
-        body = r.text
-    logging.debug('found body %s', body)
+        body = requests.get(url).text
     data = feedparser.parse(body)
-    logging.debug('parsed structure %s',
-                  json.dumps(data, indent=2, sort_keys=True))
+    logging.debug(data)
+    if len(data) > 0:
+        logging.debug('parsed structure %s',
+                      json.dumps(data['feed'], indent=2, sort_keys=True, default=safe_serial))
+    else:
+        logging.info('body of URL %s is empty', url)
     return data
 
 
