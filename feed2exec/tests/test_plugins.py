@@ -28,6 +28,12 @@ def test_maildir(tmpdir):
                               'devnull@example.com', 'nobody@example.com')
 
 
+def test_echo(capfd):
+    plugin_output({'plugin': 'feed2exec.plugins.echo', 'args': 'foobar'}, {})
+    out, err = capfd.readouterr()
+    assert out == "arguments received: ('foobar',), kwargs: {}\n"
+
+
 def test_error():
     # shouldn't raise
     plugin_output({'plugin': 'feed2exec.plugins.error', 'args': ''}, {})
