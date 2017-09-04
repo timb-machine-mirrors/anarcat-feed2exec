@@ -47,6 +47,7 @@ def test_maildir(tmpdir, test_db):
         assert message.read() == '''From: maildir test
 To: anarcat@curie.anarc.at
 Subject: Example entry
+Date: Sun, 06 Sep 2009 21:20:00 -0000
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"

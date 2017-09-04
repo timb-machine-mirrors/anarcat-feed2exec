@@ -14,6 +14,7 @@ hostile feeds.
 
 import datetime
 import getpass
+import email
 import logging
 import mailbox
 import os.path
@@ -38,6 +39,7 @@ class Output(object):
         msg['From'] = feed['name']
         msg['To'] = to_addr or "%s@%s" % (getpass.getuser(), socket.getfqdn())
         msg['Subject'] = entry['title']
+        msg['Date'] = email.utils.formatdate(msg.get_date())
         body = u'''{link}
 
 {summary}'''.format(**entry)
