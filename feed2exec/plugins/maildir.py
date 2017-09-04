@@ -1,3 +1,26 @@
+"""Maildir plugin
+==============
+
+The maildir plugin will save a feed item into a Maildir folder.
+
+The configuration is a little clunky, but it should be safe against
+hostile feeds.
+
+It can be configured as such::
+
+    feed2exec add test http://test.example.com/rss.xml --plugin feed2exec.plugins.maildir --args "/home/anarcat/Maildir/ %(name)s %(description)s%(link)s %(title)s %(published_parsed)s foo@example.com me@example.com"
+
+Notice how the arguments are split on spaces. The expected arguments are:
+
+:param str prefix: trusted prefix path
+:param str folder: untrusted folder path, will be sanitized
+:param str body: the whole body of the message
+:param datetime published_date
+:param str subject:
+:param str from:
+:param str to:
+"""
+
 import mailbox
 import os.path
 
@@ -7,16 +30,6 @@ from feed2exec.feeds import make_dirs_helper
 class Output(object):
     def __init__(self, prefix, folder, body, subject,
                  date, from_addr, to_addr):
-        """output the item into the given maildir folder
-
-        :param str prefix: trusted prefix path
-        :param str folder: untrusted folder path, will be sanitized
-        :param str body: the whole body of the message
-        :param datetime published_date
-        :param str subject:
-        :param str from:
-        :param str to:
-        """
         msg = mailbox.MaildirMessage()
         try:
             msg.set_date(date.timestamp())  # py3
