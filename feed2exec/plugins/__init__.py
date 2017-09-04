@@ -58,9 +58,13 @@ def plugin_output(feed, item):
                  should be careful to sanitize the input
                  appropriately.
 
+    The feed and items are also passed to the plugin as keyword
+    arguments.
+
     :param dict feed: the feed metadata
     :param dict item: the updated item
     :return object: the loaded plugin
+
     """
 
     params = dict(feed).copy()
