@@ -39,7 +39,8 @@ levels = ['CRITICAL',
           'DEBUG']
 
 
-@click.group(help=feed2exec.__description__)
+@click.group(help=feed2exec.__description__,
+             context_settings=dict(help_option_names=['-h', '--help']))
 @click.version_option(version=feed2exec.__version__)
 @click.option('--loglevel', 'loglevel',
               help='show only warning messages',
