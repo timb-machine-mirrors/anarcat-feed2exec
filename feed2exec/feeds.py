@@ -25,12 +25,10 @@ import datetime
 import time
 import collections
 import errno
-import importlib
 import json
 import logging
 import os
 import os.path
-import shlex
 
 
 import feed2exec
@@ -106,7 +104,8 @@ def _parse(url):
     data = feedparser.parse(body)
     if len(data) > 0:
         logging.debug('parsed structure %s',
-                      json.dumps(data, indent=2, sort_keys=True, default=safe_serial))
+                      json.dumps(data, indent=2, sort_keys=True,
+                                 default=safe_serial))
     else:
         logging.info('body of URL %s is empty', url)
     return data
@@ -166,7 +165,8 @@ class FeedStorage(SqliteStorage):
     def __iter__(self):
         self.cur = self.conn.cursor()
         self.cur.row_factory = sqlite3.Row
-        return self.cur.execute("SELECT * from feeds WHERE name LIKE ? OR url LIKE ?",
+        return self.cur.execute("""SELECT * from feeds WHERE name
+                                   LIKE ? OR url LIKE ?""",
                                 (self.pattern, self.pattern))
 
 
@@ -214,5 +214,6 @@ class FeedCacheStorage(SqliteStorage):
             pattern = self.feed
         self.cur = self.conn.cursor()
         self.cur.row_factory = sqlite3.Row
-        return self.cur.execute("SELECT * from feedcache WHERE name LIKE ? AND guid LIKE ?",
+        return self.cur.execute("""SELECT * from feedcache
+                                   WHERE name LIKE ? AND guid LIKE ?""",
                                 (pattern, self.guid))
