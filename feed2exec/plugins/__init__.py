@@ -67,4 +67,8 @@ def plugin_output(feed, item):
     plugin = feed['plugin']
     logging.info('running plugin %s with arguments %s', plugin, args)
     plugin = importlib.import_module(plugin)
-    return plugin.Output(*args)
+    try:
+        return plugin.Output(*args)
+    except Exception as e:
+        logging.warning("plugin generated exception: %s, ignoring", e)
+        return None
