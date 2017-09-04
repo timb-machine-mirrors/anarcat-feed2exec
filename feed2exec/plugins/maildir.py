@@ -53,3 +53,5 @@ class Output(object):
         maildir = mailbox.Maildir(path, create=True)
         self.key = maildir.add(msg)
         maildir.flush()
+        logging.info('saved entry %s to %s',
+                     entry['guid'], os.path.join(path, self.key))
