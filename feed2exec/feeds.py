@@ -69,7 +69,7 @@ def fetch_feeds(pattern=None, database=None):
     for feed in st:
         logging.info('found feed in DB: %s', dict(feed))
         cache = FeedCacheStorage(feed=feed['name'], path=database)
-        data = _parse(feed['url'])
+        data = parse(feed['url'])
         for entry in data['entries']:
             if entry['id'] in cache:
                 logging.info('entry %s already seen', entry['id'])
@@ -91,7 +91,7 @@ def safe_serial(obj):
         return str(obj)
 
 
-def _parse(url):
+def parse(url):
     logging.debug('fetching URL %s', url)
     body = ''
     if url.startswith('file://'):
