@@ -37,3 +37,10 @@ def test_echo(capfd):
 def test_error():
     # shouldn't raise
     plugin_output({'plugin': 'feed2exec.plugins.error', 'args': ''}, {})
+
+
+def test_exec(capfd):
+    e = plugin_output({'plugin': 'feed2exec.plugins.exec', 'args': 'seq 1'}, {})
+    out, err = capfd.readouterr()
+    assert out == "1\n"
+    assert e.returncode == 0
