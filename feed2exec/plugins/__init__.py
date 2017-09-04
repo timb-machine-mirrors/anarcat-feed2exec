@@ -79,5 +79,5 @@ def plugin_output(feed, item):
     try:
         return plugin.Output(*args, feed=feed, entry=item)
     except Exception as e:
-        logging.warning("plugin generated exception: %s, ignoring", e)
+        logging.exception("plugin generated exception: %s, ignoring", e)
         return None
