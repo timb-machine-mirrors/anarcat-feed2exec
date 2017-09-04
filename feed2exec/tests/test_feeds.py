@@ -51,10 +51,6 @@ def find_test_file(name):
         return os.path.join(os.path.dirname(__file__), 'files', name)
 
 
-test_nasa = {'url': 'file://%s' % find_test_file('nasa-breaking-news.xhtml'),
-             'name': 'nasa-breaking-news',
-             'plugin': None,
-             'args': None}
 test_sample = {'url': 'file://%s' % find_test_file('sample.xml'),
                'name': 'sample',
                'plugin': 'feed2exec.plugins.echo',
