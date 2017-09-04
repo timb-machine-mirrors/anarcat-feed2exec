@@ -25,13 +25,16 @@ import datetime
 import time
 import collections
 import errno
+import importlib
 import json
 import logging
 import os
 import os.path
+import shlex
 
 
 import feed2exec
+from feed2exec.plugins import plugin_output
 import feedparser
 import requests
 import sqlite3
@@ -74,6 +77,8 @@ def fetch_feeds(pattern=None, database=None):
                 logging.info('entry %s already seen', entry['id'])
             else:
                 logging.info('new entry %s <%s>', entry['id'], entry['link'])
+                if feed['plugin'] is not None:
+                    plugin_output(feed, entry)
                 cache.add(entry['id'])
 
 

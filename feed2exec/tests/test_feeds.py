@@ -25,6 +25,7 @@ import pkg_resources
 
 from feed2exec import __prog__
 from feed2exec.feeds import FeedStorage, FeedCacheStorage, fetch_feeds
+import feed2exec.plugins.test
 import feed2exec.feeds as feedsmod
 import pytest
 import sqlite3
@@ -56,8 +57,8 @@ test_nasa = {'url': 'file://%s' % find_test_file('nasa-breaking-news.xhtml'),
              'args': None}
 test_sample = {'url': 'file://%s' % find_test_file('sample.xml'),
                'name': 'sample',
-               'plugin': None,
-               'args': None}
+               'plugin': 'feed2exec.plugins.test',
+               'args': '1 2 3 4'}
 
 
 @pytest.fixture(scope='session')
@@ -114,3 +115,4 @@ def test_fetch(test_db):
     logging.info('looking through cache')
     cache = FeedCacheStorage(path=str(test_db), feed=test_sample['name'])
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
+    assert feed2exec.plugins.test.Output.called == ('1', '2', '3', '4')
