@@ -70,10 +70,12 @@ def main(ctx, loglevel, database):
 @click.argument('name')
 @click.argument('url')
 @click.option('--plugin', help="plugin to call when new items are found")
-def add(name, url, plugin):
+@click.option('--args',
+              help="arguments to the plugin, with parameter substitution")
+def add(name, url, plugin, args):
     st = FeedStorage()
     try:
-        st.add(name, url, plugin)
+        st.add(name, url, plugin, args)
     except sqlite3.IntegrityError:
         logging.error('feed %s already exists', name)
 
