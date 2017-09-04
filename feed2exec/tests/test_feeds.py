@@ -103,10 +103,6 @@ def test_fetch(test_db):
     st = FeedStorage(path=str(test_db))
     st.add(**test_sample)
 
-    def dummy():
-        return str(test_db)
-
-    feedsmod.default_db = dummy
     fetch_feeds(database=str(test_db))
     logging.info('looking through cache')
     cache = FeedCacheStorage(path=str(test_db), feed=test_sample['name'])
