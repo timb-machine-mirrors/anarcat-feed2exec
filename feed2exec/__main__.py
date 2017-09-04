@@ -20,6 +20,7 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
+from datetime import datetime
 import json
 import logging
 import os.path
@@ -29,6 +30,10 @@ import click
 import feed2exec
 from feed2exec.feeds import FeedStorage, fetch_feeds
 import feed2exec.feeds as feedsmod
+try:
+    from lxml import etree
+except ImportError:
+    import xml.etree.ElementTree as etree
 import sqlite3
 
 # not sure why logging._levelNames are not exposed...
@@ -94,10 +99,49 @@ def fetch(pattern):
     fetch_feeds(pattern)
 
 
+@click.command(name='import', help='import feed list from OPML file')
+@click.argument('path', type=click.File('r'))
+def import_(path):
+    tree = etree.parse(path)
+    st = FeedStorage()
+    for child in tree.getiterator():
+        if child.tag == 'outline':
+            logging.debug(child.attrib)
+            try:
+                st.add(child.attrib['title'], child.attrib['xmlUrl'])
+            except sqlite3.IntegrityError:
+                logging.error('feed %s already exists', child.attrib['title'])
+
+
+@click.command(help='export feeds to an OPML file')
+@click.argument('path', type=click.File('wb'))
+def export(path):
+    xml_tmpl = u'''<opml version="1.0">
+  <head>
+    <title>{title}</title>
+    <dateModified>{date}</dateModified>
+  </head>
+  <body>
+{body}</body>
+</opml>'''
+    outline_tmpl = u'<outline title="{name}" type="rss" xmlUrl="{url}" />'
+    st = FeedStorage()
+    body = u''
+    for feed in st:
+        if feed is not None:
+            body += outline_tmpl.format(**feed) + "\n"
+    output = xml_tmpl.format(title=u'feed2exec RSS feeds',
+                             date=datetime.now(),
+                             body=body)
+    path.write(output.encode('utf-8'))
+
+
 main.add_command(add)
 main.add_command(ls)
 main.add_command(rm)
 main.add_command(fetch)
+main.add_command(import_)
+main.add_command(export)
 
 
 if __name__ == '__main__':
