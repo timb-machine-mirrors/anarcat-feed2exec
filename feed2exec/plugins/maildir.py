@@ -38,7 +38,7 @@ class Output(object):
         msg['From'] = feed['name']
         msg['To'] = to_addr or "%s@%s" % (getpass.getuser(), socket.getfqdn())
         msg['Subject'] = entry['title']
-        body = '''{link}
+        body = u'''{link}
 
 {summary}'''.format(**entry)
         msg.add_header('Content-Transfer-Encoding', 'quoted-printable')
