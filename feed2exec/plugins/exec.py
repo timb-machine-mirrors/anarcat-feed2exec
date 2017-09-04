@@ -11,5 +11,5 @@ import subprocess
 
 
 class Output(object):
-    def __init__(self, command, *args):
+    def __init__(self, command, *args, **kwargs):
         self.returncode = subprocess.check_call([command] + list(args))
