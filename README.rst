@@ -15,7 +15,13 @@ Usage
 Quick start
 -----------
 
-TBD.
+The user interface is still a bit rough, but this should get you
+started::
+
+    feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --plugin feed2exec.plugins.maildir --args "/home/anarcat/Maildir/"
+    feed2exec fetch
+
+See the complete :doc:`usage` page for more information.
 
 Community guidelines
 --------------------
