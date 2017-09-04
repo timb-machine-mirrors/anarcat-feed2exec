@@ -53,7 +53,7 @@ levels = ['CRITICAL',
 @click.option('--database', default=feed2exec.feeds.default_db(),
               help='use given database instead of default %(default)s')
 @click.pass_context
-def feed2exec(ctx, loglevel, database):
+def main(ctx, loglevel, database):
     if database != feedsmod.default_db():
         def dummy():
             return os.path.realpath(database)
@@ -94,10 +94,10 @@ def fetch(pattern):
     fetch_feeds(pattern)
 
 
-feed2exec.add_command(add)
-feed2exec.add_command(ls)
-feed2exec.add_command(rm)
-feed2exec.add_command(fetch)
+main.add_command(add)
+main.add_command(ls)
+main.add_command(rm)
+main.add_command(fetch)
 
 
 if __name__ == '__main__':
@@ -110,4 +110,4 @@ if __name__ == '__main__':
 
     cargo-culted from debmans
     '''
-    feed2exec(obj={})
+    main(prog_name=feed2exec.__prog__)
