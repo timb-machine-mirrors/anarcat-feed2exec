@@ -63,10 +63,12 @@ def plugin_output(feed, item):
     :return object: the loaded plugin
     """
 
+    params = dict(feed).copy()
+    params.update(item)
     if feed['args'] is None:
         args = []
     else:
-        args = [x % item for x in shlex.split(feed['args'])]
+        args = [x % params for x in shlex.split(feed['args'])]
     plugin = feed['plugin']
     logging.info('running plugin %s with arguments %s', plugin, args)
     plugin = importlib.import_module(plugin)
