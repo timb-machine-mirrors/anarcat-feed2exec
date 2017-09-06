@@ -67,6 +67,9 @@ setup(name=mod.__prog__,
                       ],
       install_requires=[
           "click",
+          "feedparser",
+          "requests",
+          "sqlite3",
       ],
       extras_require={
           "dev": [
