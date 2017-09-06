@@ -58,6 +58,10 @@ test_sample = {'url': 'file://%s' % find_test_file('sample.xml'),
                'name': 'sample',
                'plugin': 'feed2exec.plugins.echo',
                'args': '1 2 3 4'}
+test_udd = {'url': 'file://%s' % find_test_file('udd.rss'),
+            'name': 'udd',
+            'plugin': None,
+            'args': None}
 
 
 @pytest.fixture(scope='session')
@@ -113,4 +117,5 @@ def test_fetch(test_db):
     assert feed2exec.plugins.echo.output.called == ('1', '2', '3', '4')
 
     st.add(**test_nasa)
+    st.add(**test_udd)
     fetch_feeds(database=str(test_db))

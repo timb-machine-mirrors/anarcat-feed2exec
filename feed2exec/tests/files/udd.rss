@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+  xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+  <channel>
+    <title>Debian Maintainer Dashboard</title>
+    <link>https://udd.debian.org/</link>
+    <description>Debian Maintainer Dashboard feed</description>
+    <pubDate>Wed, 06 Sep 2017 00:00:00 +0000</pubDate>
+    <item>
+      <title>smokeping: RC bug needs fixing: #826056: smokeping: please Build-Depend on rename</title>
+      <link>https://bugs.debian.org/826056</link>
+      <pubDate>Wed, 30 Aug 2017 10:12:07 +0000</pubDate>
+      <dc:date>2017-08-30T10:12:07+00:00</dc:date>
+    </item>
+    <item>
+      <title>kedpm: Open security issue: CVE-2017-8296 for jessie (medium** urgency)</title>
+      <link>https://security-tracker.debian.org/tracker/CVE-2017-8296</link>
+      <pubDate>Wed, 06 Sep 2017 00:00:00 +0000</pubDate>
+      <dc:date>2017-09-06T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>charybdis: Open security issue: CVE-2015-5290 for wheezy (not yet assigned urgency)</title>
+      <link>https://security-tracker.debian.org/tracker/CVE-2015-5290</link>
+      <pubDate>Wed, 06 Sep 2017 00:00:00 +0000</pubDate>
+      <dc:date>2017-09-06T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>magic-wormhole: New version available: 0.10.2</title>
+      <link></link>
+      <pubDate>Wed, 06 Sep 2017 00:00:00 +0000</pubDate>
+      <dc:date>2017-09-06T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>horst: Testing auto-removal: on 2017-10-11 (bug: )</title>
+      <link></link>
+      <pubDate>Wed, 06 Sep 2017 00:00:00 +0000</pubDate>
+      <dc:date>2017-09-06T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>smokeping: Testing auto-removal: on 2017-09-14 (bug: #826056)</title>
+      <link></link>
+      <pubDate>Wed, 06 Sep 2017 00:00:00 +0000</pubDate>
+      <dc:date>2017-09-06T00:00:00+00:00</dc:date>
+    </item>
+    <dc:date>2017-09-06T00:00:00+00:00</dc:date>
+  </channel>
+</rss>

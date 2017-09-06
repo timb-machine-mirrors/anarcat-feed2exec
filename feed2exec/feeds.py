@@ -71,15 +71,18 @@ def fetch_feeds(pattern=None, database=None):
         cache = FeedCacheStorage(feed=feed['name'], path=database)
         data = parse(feed['url'])
         for entry in data['entries']:
-            if entry['id'] in cache:
-                logging.info('entry %s already seen', entry['id'])
+            # workaround feedparser bug:
+            # https://github.com/kurtmckee/feedparser/issues/112
+            guid = entry.get('id', entry.get('title'))
+            if guid in cache:
+                logging.info('entry %s already seen', guid)
             else:
-                logging.info('new entry %s <%s>', entry['id'], entry['link'])
+                logging.info('new entry %s <%s>', guid, entry['link'])
                 if feed['plugin'] is not None:
                     if plugin_output(feed, entry) is not None:
-                        cache.add(entry['id'])
+                        cache.add(guid)
                 else:
-                    cache.add(entry['id'])
+                    cache.add(guid)
 
 
 def safe_serial(obj):
