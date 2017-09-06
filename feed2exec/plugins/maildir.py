@@ -24,7 +24,7 @@ import time
 from feed2exec.feeds import make_dirs_helper
 
 
-class Output(object):
+class output(object):
     def __init__(self, prefix, to_addr=None, feed=None, entry=None):
         msg = mailbox.MaildirMessage()
         t = entry['published_parsed']

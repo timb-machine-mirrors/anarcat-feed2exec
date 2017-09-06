@@ -21,7 +21,7 @@ def test_maildir(tmpdir, test_db):
              'link': 'http://example.com/',
              'published_parsed': datetime.datetime.now()}
 
-    f = maildir_plugin.Output(str(tmpdir.join('Mail')),
+    f = maildir_plugin.output(str(tmpdir.join('Mail')),
                               to_addr='nobody@example.com',
                               feed=feed, entry=entry)
     message = tmpdir.join('Mail', 'INBOX', 'new', f.key)
@@ -32,7 +32,7 @@ def test_maildir(tmpdir, test_db):
     # subject header hijack protection
     entry['title'] = 'subject\nX-Header-Hijack: true'
     with pytest.raises(email.errors.HeaderParseError):
-        maildir_plugin.Output(str(tmpdir.join('Mail')),
+        maildir_plugin.output(str(tmpdir.join('Mail')),
                               to_addr='nobody@example.com',
                               feed=feed, entry=entry)
     sample = {'name': 'maildir test',
@@ -72,4 +72,4 @@ def test_exec(capfd):
     e = plugin_output({'plugin': 'feed2exec.plugins.exec', 'args': 'seq 1'}, {})
     out, err = capfd.readouterr()
     assert out == "1\n"
-    assert e.returncode == 0
+    assert e == 0

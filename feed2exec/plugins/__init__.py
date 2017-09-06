@@ -35,10 +35,14 @@ import shlex
 def plugin_output(feed, item):
     """load and run the given plugin with the given arguments
 
-    an "output plugin" is a simple Python module with an "Output"
-    class defined which will process arguments and should output them
-    somewhere. the plugin is called when a new item is found, unless
-    cache is flushed or ignored.
+    an "output plugin" is a simple Python module with an ``output``
+    callable defined which will process arguments and
+    should output them somewhere, for example by email or through
+    another command. the plugin is called when a new item is found,
+    unless cache is flushed or ignored.
+
+    The "callable" can be a class, in which case only the constructor
+    is called or a function.
 
     The following keywords are usually replaced in the arguments:
 
@@ -77,7 +81,7 @@ def plugin_output(feed, item):
     logging.info('running plugin %s with arguments %s', plugin, args)
     plugin = importlib.import_module(plugin)
     try:
-        return plugin.Output(*args, feed=feed, entry=item)
+        return plugin.output(*args, feed=feed, entry=item)
     except Exception as e:
         logging.exception("plugin generated exception: %s, ignoring", e)
         return None

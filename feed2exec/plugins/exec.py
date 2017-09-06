@@ -10,6 +10,5 @@ whatever you feed it without any sort of sanitization.
 import subprocess
 
 
-class Output(object):
-    def __init__(self, command, *args, **kwargs):
-        self.returncode = subprocess.check_call([command] + list(args))
+def output(command, *args, **kwargs):
+    return subprocess.check_call([command] + list(args))

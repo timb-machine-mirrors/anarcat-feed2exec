@@ -7,6 +7,5 @@ not be used elsewhere.
 """
 
 
-class Output(object):
-    def __init__(self, *args, **kwargs):
-        raise Exception("you should be handling this")
+def output(*args, **kwargs):
+    raise Exception("you should be handling this")
