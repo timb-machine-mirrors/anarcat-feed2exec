@@ -24,7 +24,7 @@ import os.path
 import pkg_resources
 
 from feed2exec import __prog__
-from feed2exec.feeds import FeedStorage, FeedCacheStorage, fetch_feeds
+from feed2exec.feeds import SqliteStorage, FeedStorage, FeedCacheStorage, fetch_feeds
 import feed2exec.plugins.echo
 import pytest
 import sqlite3
@@ -67,11 +67,14 @@ test_udd = {'url': 'file://%s' % find_test_file('udd.rss'),
 @pytest.fixture(scope='session')
 def test_db(tmpdir_factory):
     tmpdir = tmpdir_factory.mktemp('feed2exec')
-    return tmpdir.join('feed2exec.db')
+    path = tmpdir.join('feed2exec.db')
+    SqliteStorage.path = str(path)
+    logging.info('using storage path %s', path)
+    return path
 
 
 def test_add(test_db):
-    st = FeedStorage(path=str(test_db))
+    st = FeedStorage()
     assert test_data['name'] not in st, 'this is supposed to be empty'
     st.add(**test_data)
     assert test_data['name'] in st, 'contains works'
@@ -84,38 +87,38 @@ def test_add(test_db):
 
 
 def test_pattern(test_db):
-    st = FeedStorage(path=str(test_db))
+    st = FeedStorage()
     st.add(**test_data)
     assert test_data['name'] in st, 'previous test should have ran'
     st.add(**test_data2)
     assert test_data2['name'] in st, 'second add works'
-    feeds = list(FeedStorage(path=str(test_db), pattern='test2'))
+    feeds = list(FeedStorage(pattern='test2'))
     assert len(feeds) == 1, 'find only one entry'
-    feeds = list(FeedStorage(path=str(test_db), pattern='test'))
+    feeds = list(FeedStorage(pattern='test'))
     assert len(feeds) == 2, 'find two entries'
 
 
 def test_cache(test_db):
-    st = FeedCacheStorage(path=str(test_db), feed=test_data['name'])
+    st = FeedCacheStorage(feed=test_data['name'])
     assert 'guid' not in st
     st.add('guid')
     assert 'guid' in st
-    tmp = FeedCacheStorage(path=str(test_db))
+    tmp = FeedCacheStorage()
     assert 'guid' in tmp
     st.remove('guid')
     assert 'guid' not in st
 
 
 def test_fetch(test_db):
-    st = FeedStorage(path=str(test_db))
+    st = FeedStorage()
     st.add(**test_sample)
 
-    fetch_feeds(database=str(test_db))
+    fetch_feeds()
     logging.info('looking through cache')
-    cache = FeedCacheStorage(path=str(test_db), feed=test_sample['name'])
+    cache = FeedCacheStorage(feed=test_sample['name'])
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
     assert feed2exec.plugins.echo.output.called == ('1', '2', '3', '4')
 
     st.add(**test_nasa)
     st.add(**test_udd)
-    fetch_feeds(database=str(test_db))
+    fetch_feeds()

@@ -99,9 +99,9 @@ def parse(body, feed):
     return data
 
 
-def fetch_feeds(pattern=None, database=None):
-    logging.debug('looking for feeds %s in database %s', pattern, database)
-    st = FeedStorage(pattern=pattern, path=database)
+def fetch_feeds(pattern=None):
+    logging.debug('looking for feeds %s', pattern)
+    st = FeedStorage(pattern=pattern)
     for feed in st:
         logging.info('found feed in DB: %s', dict(feed))
         body = fetch(feed['url'])
@@ -123,21 +123,27 @@ class SqliteStorage(object):
     sql = None
     record = None
     conn = None
+    path = None
+    cache = {}
 
-    def __init__(self, path=None):
-        if path is None:
-            path = default_db()
-        make_dirs_helper(os.path.dirname(path))
-        if SqliteStorage.conn is None:
-            logging.debug('connecting to database at %s', path)
-            SqliteStorage.conn = sqlite3.connect(path)
+    def __init__(self):
+        if self.path is None:
+            logging.warning("storing feeds only in memory")
+            self.path = ":memory:"
+        else:
+            make_dirs_helper(os.path.dirname(self.path))
+        if self.path not in SqliteStorage.cache:
+            logging.warning('connecting to database at %s', self.path)
+            conn = sqlite3.connect(self.path)
             try:
-                SqliteStorage.conn.set_trace_callback(logging.debug)
+                conn.set_trace_callback(logging.debug)
             except AttributeError:
                 logging.debug('no logging support in sqlite')
+            SqliteStorage.cache[self.path] = conn
+        self.conn = SqliteStorage.cache[self.path]
         if self.sql is not None:
-            SqliteStorage.conn.execute(self.sql)
-            SqliteStorage.conn.commit()
+            self.conn.execute(self.sql)
+            self.conn.commit()
 
 
 class FeedStorage(SqliteStorage):
@@ -146,14 +152,15 @@ class FeedStorage(SqliteStorage):
              PRIMARY KEY (name))'''
     record = collections.namedtuple('record', 'name url plugin args')
 
-    def __init__(self, path=None, pattern=None):
+    def __init__(self, pattern=None):
         if pattern is None:
             self.pattern = '%'
         else:
             self.pattern = '%' + pattern + '%'
-        super(FeedStorage, self).__init__(path)
+        super(FeedStorage, self).__init__()
 
     def add(self, name, url, plugin=None, args=None):
+        logging.warning('adding feed %s %s to path %s', name, self.conn, self.path)
         self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
                           (name, url, plugin, args))
         self.conn.commit()  # XXX
@@ -180,13 +187,13 @@ class FeedCacheStorage(SqliteStorage):
              PRIMARY KEY (name, guid))'''
     record = collections.namedtuple('record', 'name guid')
 
-    def __init__(self, feed=None, path=None, guid=None):
+    def __init__(self, feed=None, guid=None):
         self.feed = feed
         if guid is None:
             self.guid = '%'
         else:
             self.guid = '%' + guid + '%'
-        super(FeedCacheStorage, self).__init__(path)
+        super(FeedCacheStorage, self).__init__()
 
     def add(self, guid):
         assert self.feed is not None

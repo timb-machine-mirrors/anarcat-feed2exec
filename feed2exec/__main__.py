@@ -23,7 +23,6 @@ from __future__ import print_function
 from datetime import datetime
 import json
 import logging
-import os.path
 
 
 import click
@@ -59,10 +58,7 @@ levels = ['CRITICAL',
               help='use given database instead of default %(default)s')
 @click.pass_context
 def main(ctx, loglevel, database):
-    if database != feedsmod.default_db():
-        def dummy():
-            return os.path.realpath(database)
-        feedsmod.default_db = dummy
+    feedsmod.SqliteStorage.path = database
     logging.basicConfig(format='%(message)s', level=loglevel)
 
 
@@ -76,8 +72,8 @@ def add(name, url, plugin, args):
     st = FeedStorage()
     try:
         st.add(name, url, plugin, args)
-    except sqlite3.IntegrityError:
-        logging.error('feed %s already exists', name)
+    except sqlite3.IntegrityError as e:
+        logging.error('feed %s already exists: %s', name, e)
 
 
 @click.command(help='list configured feeds')

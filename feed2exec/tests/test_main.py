@@ -18,9 +18,11 @@ def test_usage():
     result = runner.invoke(main, ['--help'])
     assert result.exit_code == 0
 
+import logging
 
 def test_basics(test_db):
     runner = CliRunner()
+    logging.warning('using storage path %s', test_db)
     result = runner.invoke(main, ['--database', str(test_db),
                                   'add',
                                   test_data['name'],
