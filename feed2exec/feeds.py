@@ -117,21 +117,24 @@ def parse(url):
 
 
 class SqliteStorage(object):
-    sql = ''
+    sql = None
     record = None
+    conn = None
 
     def __init__(self, path=None):
         if path is None:
             path = default_db()
         make_dirs_helper(os.path.dirname(path))
-        logging.debug('connecting to database at %s', path)
-        self.conn = sqlite3.connect(path)
-        try:
-            self.conn.set_trace_callback(logging.debug)
-        except AttributeError:
-            logging.debug('no logging support in sqlite')
-        self.conn.execute(self.sql)
-        self.conn.commit()
+        if SqliteStorage.conn is None:
+            logging.debug('connecting to database at %s', path)
+            SqliteStorage.conn = sqlite3.connect(path)
+            try:
+                SqliteStorage.conn.set_trace_callback(logging.debug)
+            except AttributeError:
+                logging.debug('no logging support in sqlite')
+        if self.sql is not None:
+            SqliteStorage.conn.execute(self.sql)
+            SqliteStorage.conn.commit()
 
 
 class FeedStorage(SqliteStorage):
@@ -148,27 +151,24 @@ class FeedStorage(SqliteStorage):
         super(FeedStorage, self).__init__(path)
 
     def add(self, name, url, plugin=None, args=None):
-        cur = self.conn.cursor()
-        cur.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
-                    (name, url, plugin, args))
+        self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
+                          (name, url, plugin, args))
         self.conn.commit()  # XXX
 
     def remove(self, name):
-        cur = self.conn.cursor()
-        cur.execute("DELETE FROM feeds WHERE name=?", (name, ))
+        self.conn.execute("DELETE FROM feeds WHERE name=?", (name, ))
         self.conn.commit()  # XXX
 
     def __contains__(self, name):
-        cur = self.conn.cursor()
-        cur.execute("SELECT * FROM feeds WHERE name=?", (name,))
+        cur = self.conn.execute("SELECT * FROM feeds WHERE name=?", (name,))
         return cur.fetchone() is not None
 
     def __iter__(self):
-        self.cur = self.conn.cursor()
-        self.cur.row_factory = sqlite3.Row
-        return self.cur.execute("""SELECT * from feeds WHERE name
-                                   LIKE ? OR url LIKE ?""",
-                                (self.pattern, self.pattern))
+        cur = self.conn.cursor()
+        cur.row_factory = sqlite3.Row
+        return cur.execute("""SELECT * from feeds WHERE name
+                              LIKE ? OR url LIKE ?""",
+                           (self.pattern, self.pattern))
 
 
 class FeedCacheStorage(SqliteStorage):
@@ -187,25 +187,23 @@ class FeedCacheStorage(SqliteStorage):
 
     def add(self, guid):
         assert self.feed is not None
-        cur = self.conn.cursor()
-        cur.execute("INSERT INTO feedcache VALUES (?, ?)",
-                    (self.feed, guid))
-        self.conn.commit()  # XXX
+        self.conn.execute("INSERT INTO feedcache VALUES (?, ?)",
+                          (self.feed, guid))
+        self.conn.commit()
 
     def remove(self, guid):
         assert self.feed is not None
-        cur = self.conn.cursor()
-        cur.execute("DELETE FROM feedcache WHERE guid = ?", (guid,))
-        self.conn.commit()  # XXX
+        self.conn.execute("DELETE FROM feedcache WHERE guid = ?", (guid,))
+        self.conn.commit()
 
     def __contains__(self, guid):
         if self.feed is None:
             pattern = '%'
         else:
             pattern = self.feed
-        cur = self.conn.cursor()
-        cur.execute("SELECT * FROM feedcache WHERE name LIKE ? AND guid=?",
-                    (pattern, guid))
+        cur = self.conn.execute("""SELECT * FROM feedcache
+                                WHERE name LIKE ? AND guid=?""",
+                                (pattern, guid))
         return cur.fetchone() is not None
 
     def __iter__(self):
@@ -213,8 +211,8 @@ class FeedCacheStorage(SqliteStorage):
             pattern = '%'
         else:
             pattern = self.feed
-        self.cur = self.conn.cursor()
-        self.cur.row_factory = sqlite3.Row
-        return self.cur.execute("""SELECT * from feedcache
-                                   WHERE name LIKE ? AND guid LIKE ?""",
-                                (pattern, self.guid))
+        cur = self.conn.cursor()
+        cur.row_factory = sqlite3.Row
+        return cur.execute("""SELECT * from feedcache
+                              WHERE name LIKE ? AND guid LIKE ?""",
+                           (pattern, self.guid))
