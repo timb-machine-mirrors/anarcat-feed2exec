@@ -111,11 +111,7 @@ def parse(url):
     return data
 
 
-class DbStorage(object):
-    pass
-
-
-class SqliteStorage(DbStorage):
+class SqliteStorage(object):
     sql = ''
     record = None
 
