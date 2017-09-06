@@ -27,6 +27,7 @@ import collections
 import errno
 import json
 import logging
+import multiprocessing
 import os
 import os.path
 
@@ -101,10 +102,16 @@ def parse(body, feed):
 def fetch_feeds(pattern=None, database=None):
     logging.debug('looking for feeds %s in database %s', pattern, database)
     st = FeedStorage(pattern=pattern, path=database)
+    threads = []
     for feed in st:
         logging.info('found feed in DB: %s', dict(feed))
         body = fetch(feed['url'])
-        parse(body, feed)
+        thread = multiprocessing.Process(target=parse, args=(body, feed))
+        thread.start()
+        threads.append(thread)
+    logging.info('waiting for %d threads to complete', len(threads))
+    for thread in threads:
+        thread.join()
 
 
 def safe_serial(obj):
