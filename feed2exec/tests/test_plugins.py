@@ -4,7 +4,7 @@ import logging
 
 import pytest
 
-from feed2exec.feeds import parse
+from feed2exec.feeds import parse, fetch
 from feed2exec.plugins import plugin_output
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import test_sample, test_db
@@ -39,7 +39,8 @@ def test_maildir(tmpdir, test_db):
               'url': test_sample['url'],
               'plugin': 'feed2exec.plugins.maildir',
               'args': str(tmpdir.join('Mail'))}
-    data = parse(sample['url'])
+    body = fetch(sample['url'])
+    data = parse(body, sample)
     for entry in data['entries']:
         f = plugin_output(sample, entry)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)

@@ -63,26 +63,49 @@ def make_dirs_helper(path):
         return False
 
 
+def fetch(url):
+    body = ''
+    if url.startswith('file://'):
+        filename = url[len('file://'):]
+        logging.info('opening local file %s', filename)
+        with open(filename, 'rb') as f:
+            body = f.read().decode('utf-8')
+    else:
+        logging.info('fetching URL %s', url)
+        body = requests.get(url).text
+    return body
+
+
+def parse(body, feed):
+    logging.info('parsing feed %s (%d bytes)', feed['url'], len(body))
+    data = feedparser.parse(body)
+    logging.debug('parsed structure %s',
+                  json.dumps(data, indent=2, sort_keys=True,
+                             default=safe_serial))
+    cache = FeedCacheStorage(feed=feed['name'])
+    for entry in data['entries']:
+        # workaround feedparser bug:
+        # https://github.com/kurtmckee/feedparser/issues/112
+        guid = entry.get('id', entry.get('title'))
+        if guid in cache:
+            logging.info('entry %s already seen', guid)
+        else:
+            logging.info('new entry %s <%s>', guid, entry['link'])
+            if feed['plugin'] is not None:
+                if plugin_output(feed, entry) is not None:
+                    cache.add(guid)
+            else:
+                cache.add(guid)
+    return data
+
+
 def fetch_feeds(pattern=None, database=None):
     logging.debug('looking for feeds %s in database %s', pattern, database)
     st = FeedStorage(pattern=pattern, path=database)
     for feed in st:
         logging.info('found feed in DB: %s', dict(feed))
-        cache = FeedCacheStorage(feed=feed['name'], path=database)
-        data = parse(feed['url'])
-        for entry in data['entries']:
-            # workaround feedparser bug:
-            # https://github.com/kurtmckee/feedparser/issues/112
-            guid = entry.get('id', entry.get('title'))
-            if guid in cache:
-                logging.info('entry %s already seen', guid)
-            else:
-                logging.info('new entry %s <%s>', guid, entry['link'])
-                if feed['plugin'] is not None:
-                    if plugin_output(feed, entry) is not None:
-                        cache.add(guid)
-                else:
-                    cache.add(guid)
+        body = fetch(feed['url'])
+        parse(body, feed)
 
 
 def safe_serial(obj):
@@ -94,26 +117,6 @@ def safe_serial(obj):
         return time.strftime('%c')
     else:
         return str(obj)
-
-
-def parse(url):
-    logging.debug('fetching URL %s', url)
-    body = ''
-    if url.startswith('file://'):
-        filename = url[len('file://'):]
-        logging.debug('opening local file %s', filename)
-        with open(filename, 'rb') as f:
-            body = f.read().decode('utf-8')
-    else:
-        body = requests.get(url).text
-    data = feedparser.parse(body)
-    if len(data) > 0:
-        logging.debug('parsed structure %s',
-                      json.dumps(data, indent=2, sort_keys=True,
-                                 default=safe_serial))
-    else:
-        logging.info('body of URL %s is empty', url)
-    return data
 
 
 class SqliteStorage(object):
