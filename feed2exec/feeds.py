@@ -102,16 +102,11 @@ def parse(body, feed):
 def fetch_feeds(pattern=None, database=None):
     logging.debug('looking for feeds %s in database %s', pattern, database)
     st = FeedStorage(pattern=pattern, path=database)
-    threads = []
+    pool = multiprocessing.Pool()
     for feed in st:
         logging.info('found feed in DB: %s', dict(feed))
         body = fetch(feed['url'])
-        thread = multiprocessing.Process(target=parse, args=(body, feed))
-        thread.start()
-        threads.append(thread)
-    logging.info('waiting for %d threads to complete', len(threads))
-    for thread in threads:
-        thread.join()
+        pool.apply_async(parse, (body, dict(feed)))
 
 
 def safe_serial(obj):
