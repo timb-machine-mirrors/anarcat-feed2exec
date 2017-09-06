@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?> <rss version="2.0" xml:base="http://www.nasa.gov/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:media="http://search.yahoo.com/mrss/"> <channel> <title>NASA Breaking News</title>
+ <description>A RSS news feed containing the latest NASA news articles and press releases.</description>
+ <link>http://www.nasa.gov/</link>
+ <atom:link rel="self" href="http://www.nasa.gov/rss/dyn/breaking_news.rss" />
+ <language>en-us</language>
+ <managingEditor>jim.wilson@nasa.gov</managingEditor>
+ <webMaster>brian.dunbar@nasa.gov</webMaster>
+ <docs>http://blogs.harvard.edu/tech/rss</docs>
+ <item> <title>President Trump Welcomes Home Record-breaking NASA Astronaut Peggy Whitson</title>
+ <link>http://www.nasa.gov/press-release/president-trump-welcomes-home-record-breaking-nasa-astronaut-peggy-whitson</link>
+ <description>NASA astronauts Peggy Whitson and Jack Fischer received a special welcome as they were flying home to Houston Sunday evening. President Donald Trump spoke by phone with Whitson and Fischer on a NASA plane following Whitson’s record-breaking mission to the International Space Station.</description>
+ <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/whitson-potus_call.jpg?itok=fI3zZJzA" length="5552641" type="image/jpeg" />
+ <guid isPermaLink="false">http://www.nasa.gov/press-release/president-trump-welcomes-home-record-breaking-nasa-astronaut-peggy-whitson</guid>
+ <pubDate>Mon, 04 Sep 2017 16:11 EDT</pubDate>
+ <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+ <dc:identifier>408887</dc:identifier>
+</item>
+ <item> <title>Three International Space Station Crewmates Safely Return to Earth</title>
+ <link>http://www.nasa.gov/press-release/three-international-space-station-crewmates-safely-return-to-earth</link>
+ <description>NASA astronaut Peggy Whitson, who set multiple U.S. space records during her mission aboard the International Space Station, along with crewmates Jack Fischer of NASA and Commander Fyodor Yurchikhin of Roscosmos, safely landed on Earth at 9:21 p.m. EDT Saturday (7:21 a.m. Kazakhstan time, Sunday, Sept. 3), southeast of the remote town of Dzhezkazga</description>
+ <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/exp_52_prepare_to_depart.jpg?itok=joNrHK1V" length="1494368" type="image/jpeg" />
+ <guid isPermaLink="false">http://www.nasa.gov/press-release/three-international-space-station-crewmates-safely-return-to-earth</guid>
+ <pubDate>Sat, 02 Sep 2017 22:00 EDT</pubDate>
+ <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+ <dc:identifier>408845</dc:identifier>
+</item>
+ <item> <title>NASA Statement on Nomination for Agency Administrator</title>
+ <link>http://www.nasa.gov/press-release/nasa-statement-on-nomination-for-agency-administrator</link>
+ <description>The following is a statement from acting NASA Administrator Robert Lightfoot on Friday’s announcement of the intended nomination by President Donald Trump of U.S. Rep. Jim Bridenstine to serve as the 13th NASA administrator:</description>
+ <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/meatball-1041.jpg?itok=V3gJbuUL" length="73324" type="image/jpeg" />
+ <guid isPermaLink="false">http://www.nasa.gov/press-release/nasa-statement-on-nomination-for-agency-administrator</guid>
+ <pubDate>Fri, 01 Sep 2017 21:07 EDT</pubDate>
+ <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+ <dc:identifier>408813</dc:identifier>
+</item>
+ <item> <title>NASA Television to Air Return of Three International Space Station Crew Members</title>
+ <link>http://www.nasa.gov/press-release/nasa-television-to-air-return-of-three-international-space-station-crew-members</link>
+ <description>Record-breaking NASA astronaut Peggy Whitson and her Expedition 52 crewmates are scheduled to depart the International Space Station and return to Earth Saturday, Sept. 2. NASA Television and the agency’s website will provide complete coverage of their departure and landing.</description>
+ <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/exp52-jpg.jpg?itok=i1xzhQxn" length="2242429" type="image/jpeg" />
+ <guid isPermaLink="false">http://www.nasa.gov/press-release/nasa-television-to-air-return-of-three-international-space-station-crew-members</guid>
+ <pubDate>Thu, 31 Aug 2017 15:46 EDT</pubDate>
+ <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+ <dc:identifier>408714</dc:identifier>
+</item>
+ <item> <title>NASA and Iconic Museum Honor Voyager Spacecraft 40th Anniversary</title>
+ <link>http://www.nasa.gov/press-release/nasa-and-iconic-museum-honor-voyager-spacecraft-40th-anniversary</link>
+ <description>NASA and the Smithsonian National Air and Space Museum will celebrate 40 years of the Voyager 1 and 2 spacecraft -- humanity&#039;s farthest and longest-lived mission -- with a public event at 12:30 p.m. EDT, Tuesday, Sept. 5.</description>
+ <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/voyager_still_0.jpg?itok=OFpdAsd-" length="56879" type="image/jpeg" />
+ <guid isPermaLink="false">http://www.nasa.gov/press-release/nasa-and-iconic-museum-honor-voyager-spacecraft-40th-anniversary</guid>
+ <pubDate>Wed, 30 Aug 2017 10:42 EDT</pubDate>
+ <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+ <dc:identifier>408606</dc:identifier>
+</item>
+ <item> <title>NASA’s Johnson Space Center Closes Through Labor Day for Tropical Storm Harvey</title>
+ <link>http://www.nasa.gov/press-release/nasa-s-johnson-space-center-closes-through-labor-day-for-tropical-storm-harvey</link>
+ <description>NASA’s Johnson Space Center in Houston will remain closed to all but mission essential personnel through Labor Day due to the effects of now-Tropical Storm Harvey.</description>
+ <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/aerial_view_of_the_johnson_space_center_-_gpn-2000-001112.jpg?itok=AmJsLPbw" length="12042720" type="image/jpeg" />
+ <guid isPermaLink="false">http://www.nasa.gov/press-release/nasa-s-johnson-space-center-closes-through-labor-day-for-tropical-storm-harvey</guid>
+ <pubDate>Tue, 29 Aug 2017 21:05 EDT</pubDate>
+ <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+ <dc:identifier>408584</dc:identifier>
+</item>
+ <item> <title>NASA Cancels Planned Media Availabilities with Astronauts</title>
+ <link>http://www.nasa.gov/press-release/nasa-cancels-planned-media-availabilities-with-astronauts</link>
+ <description>Due to the ongoing effects of Tropical Storm Harvey in Houston, NASA has canceled an in-flight question and answer session with astronaut Peggy Whitson aboard the International Space Station.</description>
+ <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/harvey-iss-tuesday_0.jpg?itok=TaN9NMXf" length="420397" type="image/jpeg" />
+ <guid isPermaLink="false">http://www.nasa.gov/press-release/nasa-cancels-planned-media-availabilities-with-astronauts</guid>
+ <pubDate>Tue, 29 Aug 2017 18:06 EDT</pubDate>
+ <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+ <dc:identifier>408577</dc:identifier>
+</item>
+ <item> <title>NASA Awards $400,000 to Top Teams at Second Phase of 3D-Printing Competition</title>
+ <link>http://www.nasa.gov/press-release/nasa-awards-400000-to-top-teams-at-second-phase-of-3d-printing-competition</link>
+ <description>NASA is making progress and awarding prizes in its competition to build a 3-D printed habitat for deep space exploration.</description>
+ <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/branch_tech_team.jpg?itok=Fm_rkeny" length="1510820" type="image/jpeg" />
+ <guid isPermaLink="false">http://www.nasa.gov/press-release/nasa-awards-400000-to-top-teams-at-second-phase-of-3d-printing-competition</guid>
+ <pubDate>Mon, 28 Aug 2017 16:28 EDT</pubDate>
+ <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+ <dc:identifier>408525</dc:identifier>
+</item>
+ <item> <title>NASA Awards Contract for Center Protective Services for Glenn Research Center</title>
+ <link>http://www.nasa.gov/press-release/nasa-awards-contract-for-center-protective-services-for-glenn-research-center</link>
+ <description>NASA has awarded a contract to Golden Svcs, LLC in Kingston, Tennessee, to provide protective services at the agency’s Ohio facilities, NASA’s Glenn Research Center’s Lewis Field in Cleveland and Plum Brook Station in Sandusky.</description>
+ <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/nasa-logo-web-rgb_0.gif?itok=7sf6TJeq" length="58003" type="image/gif" />
+ <guid isPermaLink="false">http://www.nasa.gov/press-release/nasa-awards-contract-for-center-protective-services-for-glenn-research-center</guid>
+ <pubDate>Fri, 25 Aug 2017 15:32 EDT</pubDate>
+ <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+ <dc:identifier>408350</dc:identifier>
+</item>
+ <item> <title>NASA Announces Cassini End-of-Mission Media Activities</title>
+ <link>http://www.nasa.gov/press-release/nasa-announces-cassini-end-of-mission-media-activities</link>
+ <description>On Sept. 15, NASA&#039;s Cassini spacecraft will complete its remarkable story of exploration with an intentional plunge into Saturn&#039;s atmosphere, ending its mission after nearly 20 years in space.</description>
+ <enclosure url="http://www.nasa.gov/sites/default/files/styles/1x1_cardfeed/public/thumbnails/image/cassinifinal.jpg?itok=_PqoQUxm" length="2599678" type="image/jpeg" />
+ <guid isPermaLink="false">http://www.nasa.gov/press-release/nasa-announces-cassini-end-of-mission-media-activities</guid>
+ <pubDate>Thu, 24 Aug 2017 15:52 EDT</pubDate>
+ <source url="http://www.nasa.gov/rss/dyn/breaking_news.rss">NASA Breaking News</source>
+ <dc:identifier>408295</dc:identifier>
+</item>
+</channel>
+</rss>

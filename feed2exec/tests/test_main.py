@@ -10,7 +10,7 @@ import json
 
 from click.testing import CliRunner
 from feed2exec.__main__ import main
-from feed2exec.tests.test_feeds import test_db, test_data
+from feed2exec.tests.test_feeds import test_db, test_data, test_nasa
 
 
 def test_usage():
@@ -40,3 +40,13 @@ def test_basics(test_db):
                                   'ls'])
     assert result.exit_code == 0
     assert result.output == ""
+
+    result = runner.invoke(main, ['--database', str(test_db),
+                                  'add',
+                                  test_nasa['name'],
+                                  test_nasa['url']])
+    assert test_db.check()
+    assert result.exit_code == 0
+
+    result = runner.invoke(main, ['--database', str(test_db),
+                                  'fetch'])

@@ -50,6 +50,10 @@ def find_test_file(name):
         return os.path.join(os.path.dirname(__file__), 'files', name)
 
 
+test_nasa = {'url': 'file://%s' % find_test_file('breaking_news.rss'),
+             'name': 'nasa-breaking-news',
+             'plugin': None,
+             'args': None}
 test_sample = {'url': 'file://%s' % find_test_file('sample.xml'),
                'name': 'sample',
                'plugin': 'feed2exec.plugins.echo',
@@ -107,3 +111,6 @@ def test_fetch(test_db):
     cache = FeedCacheStorage(path=str(test_db), feed=test_sample['name'])
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
     assert feed2exec.plugins.echo.output.called == ('1', '2', '3', '4')
+
+    st.add(**test_nasa)
+    fetch_feeds(database=str(test_db))
