@@ -21,6 +21,9 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
+import aiohttp
+import asyncio
+import concurrent.futures
 import datetime
 import time
 import collections
@@ -63,13 +66,53 @@ def make_dirs_helper(path):
         return False
 
 
+async def fetch(session, url):
+    if url.startswith('file://'):
+        filename = url[len('file://'):]
+        logging.info('opening local file %s', filename)
+        with open(filename, 'rb') as f:
+            return await f.read().decode('utf-8')
+    else:
+        async with session.get(url) as response:
+            logging.info("fetching url %s" % url)
+            return await response.text()
+
+
+async def parse(session, feed):
+    url = feed['url']
+    try:
+        body = await fetch(session, url)
+    except concurrent.futures._base.TimeoutError:
+        logging.exception("oops, hit timeout fetching %s" % url)
+        return None, feed
+    except aiohttp.errors.ServerDisconnectedError as e:
+        logging.exception("server disconnected: %s" % e)
+        return None, feed
+    except aiohttp.ClientResponseError as e:
+        logging.exception("got an error from server: %s" % e)
+        return None, feed
+    logging.debug("info body of %s" % url)
+    data = feedparser.parse(body)
+    logging.debug("done parsing body of %s" % url)
+    return data, feed
+
+
 def fetch_feeds(pattern=None, database=None):
+    loop = asyncio.get_event_loop()
     logging.debug('looking for feeds %s in database %s', pattern, database)
     st = FeedStorage(pattern=pattern, path=database)
-    for feed in st:
-        logging.info('found feed in DB: %s', dict(feed))
-        cache = FeedCacheStorage(feed=feed['name'], path=database)
-        data = parse(feed['url'])
+    with aiohttp.ClientSession(loop=loop) as session:
+        tasks = []
+        for feed in st:
+            logging.info('found feed in DB: %s', dict(feed))
+            cache = FeedCacheStorage(feed=feed['name'], path=database)
+            task = asyncio.ensure_future(parse(session, feed))
+            tasks.append(task)
+        entries = loop.run_until_complete(asyncio.gather(*tasks))
+
+    for data, feed in entries:
+        if data is None:
+            continue
         for entry in data['entries']:
             # workaround feedparser bug:
             # https://github.com/kurtmckee/feedparser/issues/112
@@ -94,26 +137,6 @@ def safe_serial(obj):
         return time.strftime('%c')
     else:
         return str(obj)
-
-
-def parse(url):
-    logging.debug('fetching URL %s', url)
-    body = ''
-    if url.startswith('file://'):
-        filename = url[len('file://'):]
-        logging.debug('opening local file %s', filename)
-        with open(filename, 'rb') as f:
-            body = f.read().decode('utf-8')
-    else:
-        body = requests.get(url).text
-    data = feedparser.parse(body)
-    if len(data) > 0:
-        logging.debug('parsed structure %s',
-                      json.dumps(data, indent=2, sort_keys=True,
-                                 default=safe_serial))
-    else:
-        logging.info('body of URL %s is empty', url)
-    return data
 
 
 class SqliteStorage(object):
