@@ -23,6 +23,7 @@ from __future__ import print_function
 from datetime import datetime
 import json
 import logging
+import os.path
 
 
 import click
@@ -54,11 +55,12 @@ levels = ['CRITICAL',
               flag_value='INFO')
 @click.option('-d', '--debug', 'loglevel', help='even more verbose',
               flag_value='DEBUG')
-@click.option('--database', default=feed2exec.feeds.default_db(),
-              help='use given database instead of default %(default)s')
+@click.option('--config', default=feed2exec.feeds.default_config_dir(),
+              help='use given directory instead of default')
 @click.pass_context
-def main(ctx, loglevel, database):
-    feedsmod.SqliteStorage.path = database
+def main(ctx, loglevel, config):
+    feedsmod.SqliteStorage.path = os.path.join(config, 'feed2exec.db')
+    feedsmod.ConfFeedStorage.path = os.path.join(config, 'feed2exec.ini')
     logging.basicConfig(format='%(message)s', level=loglevel)
 
 
@@ -81,7 +83,7 @@ def ls():
     st = FeedStorage()
     for feed in st:
         if feed is not None:
-            print(json.dumps(dict(feed), indent=2, sort_keys=True))
+            print(json.dumps(feed, indent=2, sort_keys=True))
 
 
 @click.command(help='remove a feed from the configuration')
@@ -109,7 +111,7 @@ def import_(path):
                 logging.info('importing element %s <%s>',
                              child.attrib['title'], child.attrib['xmlUrl'])
                 st.add(child.attrib['title'], child.attrib['xmlUrl'])
-            except sqlite3.IntegrityError:
+            except AttributeError:
                 logging.error('feed %s already exists, skipped',
                               child.attrib['title'])
 

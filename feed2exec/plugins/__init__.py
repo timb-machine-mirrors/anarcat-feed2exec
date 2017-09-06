@@ -73,7 +73,7 @@ def plugin_output(feed, item):
 
     params = dict(feed).copy()
     params.update(item)
-    if feed['args'] is None:
+    if feed.get('args', None) is None:
         args = []
     else:
         args = [x % params for x in shlex.split(feed['args'])]

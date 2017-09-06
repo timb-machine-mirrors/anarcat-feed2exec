@@ -21,9 +21,10 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
+import configparser
 import datetime
 import time
-import collections
+from collections import OrderedDict, namedtuple
 import errno
 import json
 import logging
@@ -43,10 +44,6 @@ def default_config_dir():
                                  os.path.join(os.environ.get('HOME'),
                                               '.config'))
     return os.path.join(home_config, feed2exec.__prog__)
-
-
-def default_db():
-    return os.path.join(default_config_dir(), 'feed2exec.sqlite')
 
 
 def make_dirs_helper(path):
@@ -91,7 +88,7 @@ def parse(body, feed):
             logging.info('entry %s already seen', guid)
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
-            if feed['plugin'] is not None:
+            if feed.get('plugin', None) is not None:
                 if plugin_output(feed, entry) is not None:
                     cache.add(guid)
             else:
@@ -146,11 +143,50 @@ class SqliteStorage(object):
             self.conn.commit()
 
 
-class FeedStorage(SqliteStorage):
+class ConfFeedStorage(configparser.RawConfigParser):
+    path = os.path.join(default_config_dir(), 'feed2exec.ini')
+
+    def __init__(self, pattern=None):
+        self.pattern = pattern
+        super(ConfFeedStorage,
+              self).__init__(dict_type=OrderedDict)
+        self.read(self.path)
+
+    def add(self, name, url, plugin=None, args=None):
+        if self.has_section(name):
+            raise AttributeError('key %s already exists' % name)
+        d = OrderedDict()
+        d['url'] = url
+        if plugin:
+            d['plugin'] = plugin
+        if args:
+            d['args'] = args
+        self[name] = d
+        self.commit()
+
+    def remove(self, name):
+        self.remove_section(name)
+        self.commit()
+        
+    def commit(self):
+        logging.info('writing to config file %s', self.path)
+        make_dirs_helper(os.path.dirname(self.path))
+        with open(self.path, 'w') as configfile:
+            self.write(configfile)
+
+    def __iter__(self):
+        for name in self.sections():
+            if self.pattern is None or self.pattern in name:
+                d = dict(self[name])
+                d.update({'name': name})
+                yield d
+
+
+class SqliteFeedStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
              feeds (name text, url text, plugin text, args text,
              PRIMARY KEY (name))'''
-    record = collections.namedtuple('record', 'name url plugin args')
+    record = namedtuple('record', 'name url plugin args')
 
     def __init__(self, pattern=None):
         if pattern is None:
@@ -160,10 +196,13 @@ class FeedStorage(SqliteStorage):
         super(FeedStorage, self).__init__()
 
     def add(self, name, url, plugin=None, args=None):
-        logging.warning('adding feed %s %s to path %s', name, self.conn, self.path)
-        self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
-                          (name, url, plugin, args))
-        self.conn.commit()  # XXX
+        try:
+            self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
+                              (name, url, plugin, args))
+            self.conn.commit()  # XXX
+        except sqlite3.IntegrityError as e:
+            if 'UNIQUE' in str(e):
+                raise AttributeError('key %s already exists', name)
 
     def remove(self, name):
         self.conn.execute("DELETE FROM feeds WHERE name=?", (name, ))
@@ -181,11 +220,15 @@ class FeedStorage(SqliteStorage):
                            (self.pattern, self.pattern))
 
 
+FeedStorage = ConfFeedStorage
+# FeedStorage = SqliteFeedStorage
+
+
 class FeedCacheStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
              feedcache (name text, guid text,
              PRIMARY KEY (name, guid))'''
-    record = collections.namedtuple('record', 'name guid')
+    record = namedtuple('record', 'name guid')
 
     def __init__(self, feed=None, guid=None):
         self.feed = feed
