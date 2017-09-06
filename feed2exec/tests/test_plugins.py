@@ -45,8 +45,8 @@ def test_maildir(tmpdir, test_db):
         f = plugin_output(sample, entry)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
         assert message.check()
-        assert message.read() == '''From: maildir test
-To: anarcat@curie.anarc.at
+        assert message.read() == '''To: anarcat@curie.anarc.at
+From: maildir test <anarcat@curie.anarc.at>
 Subject: Example entry
 Date: Sun, 06 Sep 2009 21:20:00 -0000
 Content-Transfer-Encoding: quoted-printable
