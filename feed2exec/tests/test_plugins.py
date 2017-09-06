@@ -61,7 +61,7 @@ Here is some text containing an interesting description.'''
 def test_echo(capfd):
     plugin_output({'plugin': 'feed2exec.plugins.echo', 'args': 'foobar'}, {})
     out, err = capfd.readouterr()
-    assert out == """arguments received: ('foobar',), kwargs: {"entry": {}, "feed": {"args": "foobar", "plugin": "feed2exec.plugins.echo"}}\n"""
+    assert out == """arguments received: ('foobar',)\n"""
 
 
 def test_error():
