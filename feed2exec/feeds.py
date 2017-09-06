@@ -76,8 +76,10 @@ def fetch_feeds(pattern=None, database=None):
             else:
                 logging.info('new entry %s <%s>', entry['id'], entry['link'])
                 if feed['plugin'] is not None:
-                    plugin_output(feed, entry)
-                cache.add(entry['id'])
+                    if plugin_output(feed, entry) is not None:
+                        cache.add(entry['id'])
+                else:
+                    cache.add(entry['id'])
 
 
 def safe_serial(obj):
