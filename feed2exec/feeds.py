@@ -35,6 +35,7 @@ import feed2exec
 from feed2exec.plugins import plugin_output
 import feedparser
 import requests
+from multiprocessing.dummy import Pool as ThreadPool
 import sqlite3
 
 
@@ -65,11 +66,20 @@ def make_dirs_helper(path):
 
 def fetch_feeds(pattern=None, database=None):
     logging.debug('looking for feeds %s in database %s', pattern, database)
+
     st = FeedStorage(pattern=pattern, path=database)
-    for feed in st:
-        logging.info('found feed in DB: %s', dict(feed))
+
+    def fetch_feed(feed):
+        body = fetch(feed['url'])
+        return feed, body
+
+    pool = ThreadPool(4)
+    results = pool.map(fetch_feed, list(st))
+
+    for feed, body in results:
+        logging.info('feed %s fetched, parsing', dict(feed))
+        data = parse(body, feed['url'])
         cache = FeedCacheStorage(feed=feed['name'], path=database)
-        data = parse(feed['url'])
         for entry in data['entries']:
             # workaround feedparser bug:
             # https://github.com/kurtmckee/feedparser/issues/112
@@ -96,7 +106,7 @@ def safe_serial(obj):
         return str(obj)
 
 
-def parse(url):
+def fetch(url):
     logging.debug('fetching URL %s', url)
     body = ''
     if url.startswith('file://'):
@@ -104,15 +114,20 @@ def parse(url):
         logging.debug('opening local file %s', filename)
         with open(filename, 'rb') as f:
             body = f.read().decode('utf-8')
+        data = parse(body, url)
     else:
-        body = requests.get(url).text
+        data = requests.get(url)
+    return data
+
+
+def parse(body, url):
+    if len(body) <= 0:
+        logging.warning('empty body fetched from %s, skipping', url)
+        return None
     data = feedparser.parse(body)
-    if len(data) > 0:
-        logging.debug('parsed structure %s',
-                      json.dumps(data, indent=2, sort_keys=True,
-                                 default=safe_serial))
-    else:
-        logging.info('body of URL %s is empty', url)
+    logging.debug('parsed structure %s',
+                  json.dumps(data, indent=2, sort_keys=True,
+                             default=safe_serial))
     return data
 
 
