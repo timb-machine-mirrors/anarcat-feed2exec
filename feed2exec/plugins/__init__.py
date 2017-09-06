@@ -27,6 +27,7 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
+from collections import defaultdict
 import importlib
 import logging
 import shlex
@@ -71,7 +72,8 @@ def plugin_output(feed, item):
 
     """
 
-    params = dict(feed).copy()
+    params = defaultdict(str)
+    params.update(feed)
     params.update(item)
     if feed.get('args', None) is None:
         args = []
