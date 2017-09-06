@@ -11,7 +11,6 @@ import json
 from click.testing import CliRunner
 from feed2exec.__main__ import main
 from feed2exec.tests.test_feeds import test_db, test_data
-import pytest
 
 
 def test_usage():

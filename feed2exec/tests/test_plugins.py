@@ -4,7 +4,7 @@ import logging
 
 import pytest
 
-from feed2exec.feeds import FeedStorage, fetch_feeds, parse
+from feed2exec.feeds import parse
 from feed2exec.plugins import plugin_output
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import test_sample, test_db

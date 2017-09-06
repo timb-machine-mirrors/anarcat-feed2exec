@@ -26,7 +26,6 @@ import pkg_resources
 from feed2exec import __prog__
 from feed2exec.feeds import FeedStorage, FeedCacheStorage, fetch_feeds
 import feed2exec.plugins.echo
-import feed2exec.feeds as feedsmod
 import pytest
 import sqlite3
 
