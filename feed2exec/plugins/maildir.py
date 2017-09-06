@@ -25,7 +25,8 @@ from feed2exec.feeds import make_dirs_helper
 
 
 class output(object):
-    def __init__(self, prefix, to_addr=None, feed=None, entry=None):
+    def __init__(self, prefix, *args,
+                 to_addr=None, feed=None, entry=None, lock=None, **kwargs):
         msg = mailbox.MaildirMessage()
         t = entry['published_parsed']
         if isinstance(t, (datetime.datetime, datetime.date, datetime.time)):
@@ -51,10 +52,11 @@ class output(object):
         folder = os.path.basename(os.path.abspath(feed['name']))
         path = os.path.join(prefix, folder)
         logging.debug('established folder path %s', path)
-        # XXX: LOCKING!
+        lock.acquire()
         maildir = mailbox.Maildir(path, create=True)
         self.key = maildir.add(msg)
         maildir.flush()
+        lock.release()
         guid = entry.get('guid', entry.get('link', '???'))
         logging.info('saved entry %s to %s',
                      guid, os.path.join(path, self.key))

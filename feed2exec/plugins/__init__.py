@@ -32,7 +32,7 @@ import logging
 import shlex
 
 
-def plugin_output(feed, item):
+def plugin_output(feed, item, lock=None):
     """load and run the given plugin with the given arguments
 
     an "output plugin" is a simple Python module with an ``output``
@@ -42,7 +42,14 @@ def plugin_output(feed, item):
     unless cache is flushed or ignored.
 
     The "callable" can be a class, in which case only the constructor
-    is called or a function.
+    is called or a function. The ``*args`` and ``**kwargs`` parameter
+    SHOULD be used in the function definition for
+    forward-compatibility (ie. to make sure new parameters added do
+    not cause a regression).
+
+    Plugins should also expect to be called in parallel and should use
+    the provided ``lock`` (a multiprocessor.Lock object) to acquire
+    and release locks around contentious resources.
 
     The following keywords are usually replaced in the arguments:
 
@@ -81,7 +88,7 @@ def plugin_output(feed, item):
     logging.info('running plugin %s with arguments %s', plugin, args)
     plugin = importlib.import_module(plugin)
     try:
-        return plugin.output(*args, feed=feed, entry=item)
+        return plugin.output(*args, feed=feed, entry=item, lock=lock)
     except Exception as e:
         logging.exception("plugin generated exception: %s, ignoring", e)
         return None

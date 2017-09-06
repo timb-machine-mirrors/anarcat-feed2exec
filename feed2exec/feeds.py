@@ -77,7 +77,7 @@ def fetch(url):
     return body
 
 
-def parse(body, feed):
+def parse(body, feed, lock):
     logging.info('parsing feed %s (%d bytes)', feed['url'], len(body))
     data = feedparser.parse(body)
     logging.debug('parsed structure %s',
@@ -93,7 +93,7 @@ def parse(body, feed):
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
             if feed['plugin'] is not None:
-                if plugin_output(feed, entry) is not None:
+                if plugin_output(feed, entry, lock) is not None:
                     cache.add(guid)
             else:
                 cache.add(guid)
@@ -103,10 +103,13 @@ def fetch_feeds(pattern=None):
     logging.debug('looking for feeds %s', pattern)
     st = FeedStorage(pattern=pattern)
     pool = multiprocessing.Pool()
+    lock = multiprocessing.Lock()
     for feed in st:
         logging.info('found feed in DB: %s', dict(feed))
         body = fetch(feed['url'])
-        pool.apply_async(parse, (body, dict(feed)))
+        pool.apply_async(parse, (body, dict(feed), lock))
+    pool.close()
+    pool.join()
 
 
 def safe_serial(obj):
