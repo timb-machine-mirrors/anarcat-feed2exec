@@ -110,9 +110,12 @@ def import_(path):
         if child.tag == 'outline':
             logging.debug(child.attrib)
             try:
+                logging.info('importing element %s <%s>',
+                             child.attrib['title'], child.attrib['xmlUrl'])
                 st.add(child.attrib['title'], child.attrib['xmlUrl'])
             except sqlite3.IntegrityError:
-                logging.error('feed %s already exists', child.attrib['title'])
+                logging.error('feed %s already exists, skipped',
+                              child.attrib['title'])
 
 
 @click.command(help='export feeds to an OPML file')
