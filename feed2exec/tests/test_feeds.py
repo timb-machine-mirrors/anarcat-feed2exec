@@ -114,7 +114,6 @@ def test_fetch(test_db):
     logging.info('looking through cache')
     cache = FeedCacheStorage(path=str(test_db), feed=test_sample['name'])
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
-    assert feed2exec.plugins.echo.output.called == ('1', '2', '3', '4')
 
     st.add(**test_nasa)
     st.add(**test_udd)

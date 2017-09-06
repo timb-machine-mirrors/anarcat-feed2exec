@@ -99,9 +99,9 @@ def parse(body, feed):
                 cache.add(guid)
 
 
-def fetch_feeds(pattern=None, database=None):
-    logging.debug('looking for feeds %s in database %s', pattern, database)
-    st = FeedStorage(pattern=pattern, path=database)
+def fetch_feeds(pattern=None):
+    logging.debug('looking for feeds %s', pattern)
+    st = FeedStorage(pattern=pattern)
     pool = multiprocessing.Pool()
     for feed in st:
         logging.info('found feed in DB: %s', dict(feed))
