@@ -77,7 +77,7 @@ def fetch(url):
     return body
 
 
-def parse(body, feed, lock):
+def parse(body, feed):
     logging.info('parsing feed %s (%d bytes)', feed['url'], len(body))
     data = feedparser.parse(body)
     logging.debug('parsed structure %s',
@@ -99,15 +99,31 @@ def parse(body, feed, lock):
                 cache.add(guid)
 
 
+def _init_lock(l):
+    """setup a global lock across pool threads
+
+    this is necessary because Lock objects are not serializable so we
+    can't pass them as arguments. An alternative pattern is to have a
+    `Manager` process and use IPC for locking.
+
+    cargo-culted from this `stackoverflow answer
+    <https://stackoverflow.com/a/25558333/1174784>`_
+
+    """
+    global lock
+    lock = l
+
+
 def fetch_feeds(pattern=None):
     logging.debug('looking for feeds %s', pattern)
     st = FeedStorage(pattern=pattern)
-    pool = multiprocessing.Pool()
-    lock = multiprocessing.Lock()
+    l = multiprocessing.Lock()
+    pool = multiprocessing.Pool(initializer=_init_lock, initargs=(l,))
     for feed in st:
         logging.info('found feed in DB: %s', dict(feed))
         body = fetch(feed['url'])
-        pool.apply_async(parse, (body, dict(feed), lock))
+        # if this fails silently, try to remove the `_async` bit to see errors
+        pool.apply_async(parse, (body, dict(feed)))
     pool.close()
     pool.join()
 
