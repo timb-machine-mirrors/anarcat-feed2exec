@@ -175,7 +175,7 @@ class SqliteStorage(object):
             self.conn.commit()
 
 
-class ConfFeedStorage(configparser.RawConfigParser):
+class ConfFeedStorage(configparser.RawConfigParser, object):
     path = os.path.join(default_config_dir(), 'feed2exec.ini')
 
     def __init__(self, pattern=None):
