@@ -75,10 +75,10 @@ def plugin_output(feed, item):
     params = defaultdict(str)
     params.update(feed)
     params.update(item)
-    if feed.get('args', None) is None:
-        args = []
-    else:
+    if feed.get('args'):
         args = [x % params for x in shlex.split(feed['args'])]
+    else:
+        args = []
     plugin = feed['plugin']
     logging.info('running plugin %s with arguments %s', plugin, args)
     plugin = importlib.import_module(plugin)

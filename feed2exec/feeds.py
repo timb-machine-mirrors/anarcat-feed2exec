@@ -88,7 +88,7 @@ def parse(body, feed):
             logging.info('entry %s already seen', guid)
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
-            if feed.get('plugin', None):
+            if feed.get('plugin'):
                 if plugin_output(feed, entry):
                     cache.add(guid)
             else:
