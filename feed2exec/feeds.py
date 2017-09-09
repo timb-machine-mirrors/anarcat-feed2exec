@@ -180,7 +180,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
               self).__init__(dict_type=OrderedDict)
         self.read(self.path)
 
-    def add(self, name, url, output=None, output_args=None):
+    def add(self, name, url, output=None, output_args=None, filter=None):
         if self.has_section(name):
             raise AttributeError('key %s already exists' % name)
         d = OrderedDict()
@@ -189,6 +189,8 @@ class ConfFeedStorage(configparser.RawConfigParser):
             d['output'] = output
         if output_args is not None:
             d['output_args'] = output_args
+        if filter is not None:
+            d['filter'] = filter
         self[name] = d
         self.commit()
 
@@ -212,7 +214,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
 
 class SqliteFeedStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
-             feeds (name text, url text, output text, output_args text,
+             feeds (name text, url text, output text, output_args text, filter text,
              PRIMARY KEY (name))'''
     record = namedtuple('record', 'name url output output_args')
 
@@ -223,10 +225,10 @@ class SqliteFeedStorage(SqliteStorage):
             self.pattern = '%' + pattern + '%'
         super(FeedStorage, self).__init__()
 
-    def add(self, name, url, output=None, output_args=None):
+    def add(self, name, url, output=None, output_args=None, filter=None):
         try:
-            self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
-                              (name, url, output, output_args))
+            self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?, ?)",
+                              (name, url, output, output_args, filter))
             self.conn.commit()  # XXX
         except sqlite3.IntegrityError as e:
             if 'UNIQUE' in str(e):
