@@ -42,6 +42,20 @@ def read(*names, **kwargs):
     ).read()
 
 
+requires = [
+    "click",
+    "feedparser",
+    "html2text",
+    "requests",
+]
+
+try:
+    import configparser  # noqa
+except ImportError:
+    # py2: we need a more recent configparser
+    requires.append("configparser")
+
+
 setup(name=mod.__prog__,
       author="Antoine Beaupré",
       author_email="anarcat@debian.org",
@@ -67,12 +81,7 @@ setup(name=mod.__prog__,
                       'pytest-runner',
                       'sphinx',
                       ],
-      install_requires=[
-          "click",
-          "feedparser",
-          "html2text",
-          "requests",
-      ],
+      install_requires=requires,
       extras_require={
           "dev": [
               "pytest",

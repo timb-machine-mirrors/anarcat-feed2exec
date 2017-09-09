@@ -24,7 +24,7 @@ from __future__ import print_function
 try:
     import configparser
 except ImportError:
-    # py2
+    # py2: should never happen as we depend on the newer one in setup.py
     import ConfigParser as configparser
 import datetime
 import time
@@ -174,7 +174,7 @@ class SqliteStorage(object):
             self.conn.commit()
 
 
-class ConfFeedStorage(configparser.RawConfigParser, object):
+class ConfFeedStorage(configparser.RawConfigParser):
     path = os.path.join(default_config_dir(), 'feed2exec.ini')
 
     def __init__(self, pattern=None):
