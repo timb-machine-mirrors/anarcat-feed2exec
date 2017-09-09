@@ -2,7 +2,8 @@
 image: debian:latest
 
 before_script:
-  - sudo apt-get install python python3 tox
+  - apt-get update -qq
+  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python python3 tox
   - python -V                                   # Print out python version for debugging
 
 test:
