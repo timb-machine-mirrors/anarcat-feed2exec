@@ -9,10 +9,10 @@ import pytest
 from feed2exec.feeds import parse, fetch
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
-from feed2exec.tests.test_feeds import test_sample, test_db
+from feed2exec.tests.test_feeds import test_sample, test_db  # noqa
 
 
-def test_maildir(tmpdir, test_db):
+def test_maildir(tmpdir, test_db):  # noqa
 
     feed = {'name': 'INBOX'}
     entry = {'summary': 'body',
@@ -61,7 +61,8 @@ Here is some text containing an interesting description.
 
 
 def test_echo(capfd):
-    plugins.output(feed={'output': 'feed2exec.plugins.echo', 'output_args': 'foobar'},
+    plugins.output(feed={'output': 'feed2exec.plugins.echo',
+                         'output_args': 'foobar'},
                    item={})
     out, err = capfd.readouterr()
     assert out == """arguments received: ('foobar',)\n"""
@@ -69,7 +70,8 @@ def test_echo(capfd):
 
 def test_error():
     # shouldn't raise
-    plugins.output(feed={'output': 'feed2exec.plugins.error', 'output_args': ''},
+    plugins.output(feed={'output': 'feed2exec.plugins.error',
+                         'output_args': ''},
                    item={})
 
 

@@ -92,7 +92,8 @@ def output(feed, item):
 
 
 def filter(feed, item):
-    """common code with output() should be factored out, but output() takes arguments..."""
+    """common code with output() should be factored out, but output()
+    takes arguments..."""
     plugin = feed.get('filter')
     if plugin:
         params = defaultdict(str)

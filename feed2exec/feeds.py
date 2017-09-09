@@ -30,7 +30,6 @@ import datetime
 import time
 from collections import OrderedDict, namedtuple
 import errno
-import json
 import logging
 import os
 import os.path
@@ -108,9 +107,9 @@ def parse(body, feed):
     """
     logging.info('parsing feed %s (%d bytes)', feed['url'], len(body))
     data = feedparser.parse(body)
-    #logging.debug('parsed structure %s',
-    #              json.dumps(data, indent=2, sort_keys=True,
-    #                         default=safe_serial))
+    # logging.debug('parsed structure %s',
+    #               json.dumps(data, indent=2, sort_keys=True,
+    #                          default=safe_serial))
     cache = FeedCacheStorage(feed=feed['name'])
     for entry in data['entries']:
         plugins.filter(feed, entry)
@@ -201,7 +200,7 @@ class ConfFeedStorage(configparser.RawConfigParser, object):
     def remove(self, name):
         self.remove_section(name)
         self.commit()
-        
+
     def commit(self):
         logging.info('saving feed configuration in %s', self.path)
         make_dirs_helper(os.path.dirname(self.path))
@@ -218,7 +217,9 @@ class ConfFeedStorage(configparser.RawConfigParser, object):
 
 class SqliteFeedStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
-             feeds (name text, url text, output text, output_args text, filter text,
+             feeds (name text, url text,
+             output text, output_args text,
+             filter text,
              PRIMARY KEY (name))'''
     record = namedtuple('record', 'name url output output_args')
 
