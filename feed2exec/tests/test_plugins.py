@@ -59,18 +59,22 @@ Here is some text containing an interesting description.'''
 
 
 def test_echo(capfd):
-    plugin_output({'plugin': 'feed2exec.plugins.echo', 'args': 'foobar'}, {})
+    plugin_output(feed={'plugin': 'feed2exec.plugins.echo', 'args': 'foobar'},
+                  item={})
     out, err = capfd.readouterr()
     assert out == """arguments received: ('foobar',)\n"""
 
 
 def test_error():
     # shouldn't raise
-    plugin_output({'plugin': 'feed2exec.plugins.error', 'args': ''}, {})
+    plugin_output(feed={'plugin': 'feed2exec.plugins.error', 'args': ''},
+                  item={})
 
 
 def test_exec(capfd):
-    e = plugin_output({'plugin': 'feed2exec.plugins.exec', 'args': 'seq 1'}, {})
+    e = plugin_output(feed={'plugin': 'feed2exec.plugins.exec',
+                            'args': 'seq 1'},
+                      item={})
     out, err = capfd.readouterr()
     assert out == "1\n"
     assert e == 0
