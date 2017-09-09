@@ -70,6 +70,7 @@ setup(name=mod.__prog__,
       install_requires=[
           "click",
           "feedparser",
+          "html2text",
           "requests",
           "sqlite3",
       ],
