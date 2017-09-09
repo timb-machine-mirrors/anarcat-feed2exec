@@ -1,2 +1,6 @@
 *.pyc
 .cache
+.eggs/
+.tox/
+*.egg-info/
+_version.py
