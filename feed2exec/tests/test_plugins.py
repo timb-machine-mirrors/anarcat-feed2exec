@@ -1,3 +1,6 @@
+from __future__ import division, absolute_import
+from __future__ import print_function
+
 import datetime
 import email
 
@@ -51,7 +54,9 @@ Content-Type: text/plain; charset="utf-8"
 
 http://www.example.com/blog/post/1
 
-Here is some text containing an interesting description.'''
+Here is some text containing an interesting description.
+
+'''
 
 
 def test_echo(capfd):

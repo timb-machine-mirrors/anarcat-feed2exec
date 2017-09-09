@@ -12,6 +12,10 @@ hostile feeds.
 :param dict item: the updated item
 """
 
+from __future__ import division, absolute_import
+from __future__ import print_function
+
+
 from collections import defaultdict
 import datetime
 import getpass
