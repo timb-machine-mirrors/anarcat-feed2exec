@@ -82,7 +82,7 @@ def add(name, url, plugin, args):
 def ls():
     st = FeedStorage()
     for feed in st:
-        if feed is not None:
+        if feed:
             print(json.dumps(feed, indent=2, sort_keys=True))
 
 
@@ -131,7 +131,7 @@ def export(path):
     st = FeedStorage()
     body = u''
     for feed in st:
-        if feed is not None:
+        if feed:
             body += outline_tmpl.format(**feed) + "\n"
     output = xml_tmpl.format(title=u'feed2exec RSS feeds',
                              date=datetime.now(),

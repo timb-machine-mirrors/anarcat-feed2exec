@@ -88,8 +88,8 @@ def parse(body, feed):
             logging.info('entry %s already seen', guid)
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
-            if feed.get('plugin', None) is not None:
-                if plugin_output(feed, entry) is not None:
+            if feed.get('plugin', None):
+                if plugin_output(feed, entry):
                     cache.add(guid)
             else:
                 cache.add(guid)
@@ -138,7 +138,7 @@ class SqliteStorage(object):
                 logging.debug('no logging support in sqlite')
             SqliteStorage.cache[self.path] = conn
         self.conn = SqliteStorage.cache[self.path]
-        if self.sql is not None:
+        if self.sql:
             self.conn.execute(self.sql)
             self.conn.commit()
 
@@ -239,13 +239,13 @@ class FeedCacheStorage(SqliteStorage):
         super(FeedCacheStorage, self).__init__()
 
     def add(self, guid):
-        assert self.feed is not None
+        assert self.feed
         self.conn.execute("INSERT INTO feedcache VALUES (?, ?)",
                           (self.feed, guid))
         self.conn.commit()
 
     def remove(self, guid):
-        assert self.feed is not None
+        assert self.feed
         self.conn.execute("DELETE FROM feedcache WHERE guid = ?", (guid,))
         self.conn.commit()
 
