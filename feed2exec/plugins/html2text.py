@@ -13,5 +13,5 @@ from __future__ import print_function
 import html2text
 
 
-def filter(feed=None, entry=None):
+def filter(feed=None, entry=None, *args, **kwargs):
     entry['summary'] = html2text.html2text(entry.get('summary', ''))
