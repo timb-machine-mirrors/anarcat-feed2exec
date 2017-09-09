@@ -1,6 +1,10 @@
 # This file is a template, and might need editing before it works on your project.
 image: debian:latest
 
+variables:
+  LC_ALL: "C.UTF-8"
+  LANG: "C.UTF-8"
+
 before_script:
   - apt-get update -qq
   - env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python python3 tox git
