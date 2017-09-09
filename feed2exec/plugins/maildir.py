@@ -6,7 +6,7 @@ The maildir plugin will save a feed item into a Maildir folder.
 The configuration is a little clunky, but it should be safe against
 hostile feeds.
 
-:param str prefix: trusted prefix path
+:param str prefix: trusted prefix path, with ~ expansion
 :param str to_addr: the email to use as "to" (defaults to USER@localdomain)
 :param dict feed: the feed
 :param dict item: the updated item
@@ -27,6 +27,7 @@ from feed2exec.feeds import make_dirs_helper
 
 class output(object):
     def __init__(self, prefix, to_addr=None, feed=None, entry=None):
+        prefix = os.path.expanduser(prefix)
         msg = mailbox.MaildirMessage()
         t = entry['published_parsed']
         if isinstance(t, (datetime.datetime, datetime.date, datetime.time)):
