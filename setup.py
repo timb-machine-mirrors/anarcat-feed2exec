@@ -25,9 +25,11 @@ import io
 import os
 import os.path
 import re
+import sys
 
+sys.path.insert(0, os.path.dirname(__file__))
 
-from . import feed2exec
+import feed2exec
 
 
 mod = feed2exec
