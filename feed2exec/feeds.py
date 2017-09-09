@@ -85,7 +85,7 @@ def fetch(url):
     return body
 
 
-def parse(body, feed):
+def parse(body, feed, lock=None):
     """parse the body of the feed
 
     this calls the filter and output plugins and updates the cache
@@ -102,6 +102,9 @@ def parse(body, feed):
     :return dict: the parsed data
 
     """
+    global LOCK
+    if lock is None:
+        lock = LOCK
     logging.info('parsing feed %s (%d bytes)', feed['url'], len(body))
     data = feedparser.parse(body)
     #logging.debug('parsed structure %s',
@@ -109,7 +112,7 @@ def parse(body, feed):
     #                         default=safe_serial))
     cache = FeedCacheStorage(feed=feed['name'])
     for entry in data['entries']:
-        plugins.filter(feed, entry, lock=LOCK)
+        plugins.filter(feed, entry, lock=lock)
         # workaround feedparser bug:
         # https://github.com/kurtmckee/feedparser/issues/112
         guid = entry.get('id', entry.get('title'))
@@ -117,7 +120,7 @@ def parse(body, feed):
             logging.debug('entry %s already seen', guid)
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
-            if plugins.output(feed, entry, lock=LOCK):
+            if plugins.output(feed, entry, lock=lock):
                 cache.add(guid)
             else:
                 cache.add(guid)

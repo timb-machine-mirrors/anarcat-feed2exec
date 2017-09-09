@@ -1,5 +1,10 @@
 import datetime
 import email
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
+
 
 import pytest
 
@@ -10,6 +15,8 @@ from feed2exec.tests.test_feeds import test_sample, test_db
 
 
 def test_maildir(tmpdir, test_db):
+    global LOCK
+    LOCK = mock.MagicMock()
 
     feed = {'name': 'INBOX'}
     entry = {'summary': 'body',
@@ -19,7 +26,7 @@ def test_maildir(tmpdir, test_db):
 
     f = maildir_plugin.output(str(tmpdir.join('Mail')),
                               to_addr='nobody@example.com',
-                              feed=feed, entry=entry)
+                              feed=feed, entry=entry, lock=LOCK)
     message = tmpdir.join('Mail', 'INBOX', 'new', f.key)
     assert message.check()
     raw = message.read()
@@ -30,15 +37,15 @@ def test_maildir(tmpdir, test_db):
     with pytest.raises(email.errors.HeaderParseError):
         maildir_plugin.output(str(tmpdir.join('Mail')),
                               to_addr='nobody@example.com',
-                              feed=feed, entry=entry)
+                              feed=feed, entry=entry, lock=LOCK)
     sample = {'name': 'maildir test',
               'url': test_sample['url'],
               'output': 'feed2exec.plugins.maildir',
               'output_args': str(tmpdir.join('Mail'))}
     body = fetch(sample['url'])
-    data = parse(body, sample)
+    data = parse(body, sample, lock=LOCK)
     for entry in data['entries']:
-        f = plugins.output(sample, entry)
+        f = plugins.output(sample, entry, lock=LOCK)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
         assert message.check()
         assert message.read() == '''To: anarcat@curie.anarc.at
@@ -51,7 +58,9 @@ Content-Type: text/plain; charset="utf-8"
 
 http://www.example.com/blog/post/1
 
-Here is some text containing an interesting description.'''
+Here is some text containing an interesting description.
+
+'''
 
 
 def test_echo(capfd):
