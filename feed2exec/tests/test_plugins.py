@@ -36,16 +36,17 @@ def test_maildir(tmpdir, test_db):
                               feed=feed, entry=entry)
     sample = {'name': 'maildir test',
               'url': test_sample['url'],
+              'email': 'from@example.com',
               'output': 'feed2exec.plugins.maildir',
-              'output_args': str(tmpdir.join('Mail'))}
+              'output_args': str(tmpdir.join('Mail')) + ' to@example.com'}
     body = fetch(sample['url'])
     data = parse(body, sample)
     for entry in data['entries']:
         f = plugins.output(sample, entry)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
         assert message.check()
-        assert message.read() == '''To: anarcat@curie.anarc.at
-From: maildir test <anarcat@curie.anarc.at>
+        assert message.read() == '''To: to@example.com
+From: test author <from@example.com>
 Subject: Example entry
 Date: Sun, 06 Sep 2009 21:20:00 -0000
 Content-Transfer-Encoding: quoted-printable
