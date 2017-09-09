@@ -1,4 +1,0 @@
-click
-feedparser
-html2text
-requests

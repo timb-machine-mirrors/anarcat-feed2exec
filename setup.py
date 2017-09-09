@@ -24,7 +24,6 @@ except ImportError:
 import io
 import os
 import os.path
-from pip.req import parse_requirements
 import re
 import sys
 
@@ -41,12 +40,6 @@ def read(*names, **kwargs):
         os.path.join(os.path.dirname(__file__), *names),
         encoding=kwargs.get('encoding', 'utf8')
     ).read()
-
-
-def find_requirements(path):
-    path = os.path.join(os.path.dirname(__file__), path)
-    reqs = parse_requirements(path, session='hack')
-    return [str(r.req) for r in reqs]
 
 
 setup(name=mod.__prog__,
@@ -74,9 +67,18 @@ setup(name=mod.__prog__,
                       'pytest-runner',
                       'sphinx',
                       ],
-      install_requires=find_requirements('requirements.txt'),
+      install_requires=[
+          "click",
+          "feedparser",
+          "html2text",
+          "requests",
+      ],
       extras_require={
-          "dev": find_requirements('requirements-dev.txt'),
+          "dev": [
+              "pytest",
+              "tox",
+              "pyflakes",
+          ],
       },
       tests_require=['pytest'],
       classifiers=[
