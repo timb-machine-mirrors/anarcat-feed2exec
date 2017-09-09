@@ -24,10 +24,10 @@ import os.path
 import pkg_resources
 
 from feed2exec import __prog__
-from feed2exec.feeds import FeedStorage, FeedCacheStorage, fetch_feeds
+from feed2exec.feeds import (SqliteStorage, FeedStorage,
+                             FeedCacheStorage, fetch_feeds, ConfFeedStorage)
 import feed2exec.plugins.echo
 import pytest
-import sqlite3
 
 logging.basicConfig(format='%(message)s', level='DEBUG')
 
@@ -65,17 +65,31 @@ test_udd = {'url': 'file://%s' % find_test_file('udd.rss'),
 
 
 @pytest.fixture(scope='session')
+def conf_dir(tmpdir_factory):
+    return tmpdir_factory.mktemp('feed2exec')
+
+
+@pytest.fixture(scope='session')
 def test_db(tmpdir_factory):
-    tmpdir = tmpdir_factory.mktemp('feed2exec')
-    return tmpdir.join('feed2exec.db')
+    path = tmpdir_factory.mktemp('feed2exec').join('feed2exec.db')
+    SqliteStorage.path = str(path)
+    logging.info('using storage path %s', path)
+    return path
 
 
-def test_add(test_db):
-    st = FeedStorage(path=str(test_db))
+@pytest.fixture(scope='session')
+def conf_path(tmpdir_factory):
+    path = tmpdir_factory.mktemp('feed2exec').join('feed2exex.ini')
+    ConfFeedStorage.path = str(path)
+    return path
+
+
+def test_add(test_db, conf_path):
+    st = FeedStorage()
     assert test_data['name'] not in st, 'this is supposed to be empty'
     st.add(**test_data)
     assert test_data['name'] in st, 'contains works'
-    with pytest.raises(sqlite3.IntegrityError):
+    with pytest.raises(AttributeError):
         st.add(**test_data)
     for r in st:
         assert r['name'] == test_data['name'], 'iterator works'
@@ -83,38 +97,56 @@ def test_add(test_db):
     assert test_data['name'] not in st, 'remove works'
 
 
-def test_pattern(test_db):
-    st = FeedStorage(path=str(test_db))
+def test_pattern(test_db, conf_path):
+    st = FeedStorage()
     st.add(**test_data)
     assert test_data['name'] in st, 'previous test should have ran'
     st.add(**test_data2)
     assert test_data2['name'] in st, 'second add works'
-    feeds = list(FeedStorage(path=str(test_db), pattern='test2'))
+    feeds = list(FeedStorage(pattern='test2'))
     assert len(feeds) == 1, 'find only one entry'
-    feeds = list(FeedStorage(path=str(test_db), pattern='test'))
+    feeds = list(FeedStorage(pattern='test'))
     assert len(feeds) == 2, 'find two entries'
 
 
 def test_cache(test_db):
-    st = FeedCacheStorage(path=str(test_db), feed=test_data['name'])
+    st = FeedCacheStorage(feed=test_data['name'])
     assert 'guid' not in st
     st.add('guid')
     assert 'guid' in st
-    tmp = FeedCacheStorage(path=str(test_db))
+    tmp = FeedCacheStorage()
     assert 'guid' in tmp
     st.remove('guid')
     assert 'guid' not in st
 
 
-def test_fetch(test_db):
-    st = FeedStorage(path=str(test_db))
+def test_fetch(test_db, conf_path):
+    st = FeedStorage()
     st.add(**test_sample)
 
-    fetch_feeds(database=str(test_db))
+    fetch_feeds()
     logging.info('looking through cache')
-    cache = FeedCacheStorage(path=str(test_db), feed=test_sample['name'])
+    cache = FeedCacheStorage(feed=test_sample['name'])
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
 
     st.add(**test_nasa)
     st.add(**test_udd)
-    fetch_feeds(database=str(test_db))
+    fetch_feeds()
+
+
+def test_config(conf_path):
+    conf_path.remove()
+    conf = ConfFeedStorage()
+    conf.add(**test_sample)
+    assert conf_path.check()
+    assert conf_path.read() == '''[sample]
+url = file:///home/anarcat/src/feed2exec/feed2exec/tests/files/sample.xml
+plugin = feed2exec.plugins.echo
+args = 1 2 3 4
+
+'''
+    assert 'sample' in conf
+    for feed in conf:
+        assert type(feed) is dict
+    conf.remove('sample')
+    assert conf_path.read() == ''

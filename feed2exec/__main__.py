@@ -55,14 +55,12 @@ levels = ['CRITICAL',
               flag_value='INFO')
 @click.option('-d', '--debug', 'loglevel', help='even more verbose',
               flag_value='DEBUG')
-@click.option('--database', default=feed2exec.feeds.default_db(),
-              help='use given database instead of default %(default)s')
+@click.option('--config', default=feed2exec.feeds.default_config_dir(),
+              help='use given directory instead of default')
 @click.pass_context
-def main(ctx, loglevel, database):
-    if database != feedsmod.default_db():
-        def dummy():
-            return os.path.realpath(database)
-        feedsmod.default_db = dummy
+def main(ctx, loglevel, config):
+    feedsmod.SqliteStorage.path = os.path.join(config, 'feed2exec.db')
+    feedsmod.ConfFeedStorage.path = os.path.join(config, 'feed2exec.ini')
     logging.basicConfig(format='%(message)s', level=loglevel)
 
 
@@ -76,16 +74,16 @@ def add(name, url, plugin, args):
     st = FeedStorage()
     try:
         st.add(name, url, plugin, args)
-    except sqlite3.IntegrityError:
-        logging.error('feed %s already exists', name)
+    except sqlite3.IntegrityError as e:
+        logging.error('feed %s already exists: %s', name, e)
 
 
 @click.command(help='list configured feeds')
 def ls():
     st = FeedStorage()
     for feed in st:
-        if feed is not None:
-            print(json.dumps(dict(feed), indent=2, sort_keys=True))
+        if feed:
+            print(json.dumps(feed, indent=2, sort_keys=True))
 
 
 @click.command(help='remove a feed from the configuration')
@@ -113,7 +111,7 @@ def import_(path):
                 logging.info('importing element %s <%s>',
                              child.attrib['title'], child.attrib['xmlUrl'])
                 st.add(child.attrib['title'], child.attrib['xmlUrl'])
-            except sqlite3.IntegrityError:
+            except AttributeError:
                 logging.error('feed %s already exists, skipped',
                               child.attrib['title'])
 
@@ -133,7 +131,7 @@ def export(path):
     st = FeedStorage()
     body = u''
     for feed in st:
-        if feed is not None:
+        if feed:
             body += outline_tmpl.format(**feed) + "\n"
     output = xml_tmpl.format(title=u'feed2exec RSS feeds',
                              date=datetime.now(),

@@ -27,6 +27,7 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
+from collections import defaultdict
 import importlib
 import logging
 import shlex
@@ -78,12 +79,13 @@ def plugin_output(feed, item, lock=None):
 
     """
 
-    params = dict(feed).copy()
+    params = defaultdict(str)
+    params.update(feed)
     params.update(item)
-    if feed['args'] is None:
-        args = []
-    else:
+    if feed.get('args'):
         args = [x % params for x in shlex.split(feed['args'])]
+    else:
+        args = []
     plugin = feed['plugin']
     logging.info('running plugin %s with arguments %s', plugin, args)
     plugin = importlib.import_module(plugin)

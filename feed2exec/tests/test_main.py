@@ -10,7 +10,7 @@ import json
 
 from click.testing import CliRunner
 from feed2exec.__main__ import main
-from feed2exec.tests.test_feeds import test_db, test_data, test_nasa
+from feed2exec.tests.test_feeds import ConfFeedStorage, test_data, test_nasa
 
 
 def test_usage():
@@ -19,34 +19,39 @@ def test_usage():
     assert result.exit_code == 0
 
 
-def test_basics(test_db):
+def test_basics(tmpdir_factory):
+    conf_dir = tmpdir_factory.mktemp('main')
+    conf_path = conf_dir.join('feed2exec.ini')
+    ConfFeedStorage.path = str(conf_path)
     runner = CliRunner()
-    result = runner.invoke(main, ['--database', str(test_db),
+    result = runner.invoke(main, ['--config', str(conf_dir),
                                   'add',
                                   test_data['name'],
                                   test_data['url']])
-    assert test_db.check()
+    assert conf_dir.join('feed2exec.ini').check()
     assert result.exit_code == 0
-    result = runner.invoke(main, ['--database', str(test_db),
+    result = runner.invoke(main, ['--config', str(conf_dir),
                                   'ls'])
     assert result.exit_code == 0
+    del test_data['args']
+    del test_data['plugin']
     assert result.output.strip() == json.dumps(test_data,
                                                indent=2,
                                                sort_keys=True)
-    result = runner.invoke(main, ['--database', str(test_db),
+    result = runner.invoke(main, ['--config', str(conf_dir),
                                   'rm', 'test'])
     assert result.exit_code == 0
-    result = runner.invoke(main, ['--database', str(test_db),
+    result = runner.invoke(main, ['--config', str(conf_dir),
                                   'ls'])
     assert result.exit_code == 0
     assert result.output == ""
 
-    result = runner.invoke(main, ['--database', str(test_db),
+    result = runner.invoke(main, ['--config', str(conf_dir),
                                   'add',
                                   test_nasa['name'],
                                   test_nasa['url']])
-    assert test_db.check()
+    assert conf_dir.join('feed2exec.ini').check()
     assert result.exit_code == 0
 
-    result = runner.invoke(main, ['--database', str(test_db),
+    result = runner.invoke(main, ['--config', str(conf_dir),
                                   'fetch'])

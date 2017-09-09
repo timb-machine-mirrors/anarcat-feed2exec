@@ -4,7 +4,7 @@ import logging
 
 import pytest
 
-from feed2exec.feeds import parse
+from feed2exec.feeds import parse, fetch
 from feed2exec.plugins import plugin_output
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import test_sample, test_db
@@ -39,13 +39,14 @@ def test_maildir(tmpdir, test_db):
               'url': test_sample['url'],
               'plugin': 'feed2exec.plugins.maildir',
               'args': str(tmpdir.join('Mail'))}
-    data = parse(sample['url'])
+    body = fetch(sample['url'])
+    data = parse(body, sample)
     for entry in data['entries']:
         f = plugin_output(sample, entry)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
         assert message.check()
-        assert message.read() == '''From: maildir test
-To: anarcat@curie.anarc.at
+        assert message.read() == '''To: anarcat@curie.anarc.at
+From: maildir test <anarcat@curie.anarc.at>
 Subject: Example entry
 Date: Sun, 06 Sep 2009 21:20:00 -0000
 Content-Transfer-Encoding: quoted-printable
@@ -58,19 +59,23 @@ Here is some text containing an interesting description.'''
 
 
 def test_echo(capfd):
-    e = plugin_output({'plugin': 'feed2exec.plugins.echo', 'args': 'foobar'}, {})
+    e = plugin_output(feed={'plugin': 'feed2exec.plugins.echo',
+                            'args': 'foobar'},
+                      item={})
     assert e.called
-    out, err = capfd.readouterr()
-    assert out == """arguments received: ('foobar',), kwargs: {"entry": {}, "feed": {"args": "foobar", "plugin": "feed2exec.plugins.echo"}}\n"""
+    assert capfd.out == """arguments received: ('foobar',)\n"""
 
 
 def test_error():
     # shouldn't raise
-    plugin_output({'plugin': 'feed2exec.plugins.error', 'args': ''}, {})
+    plugin_output(feed={'plugin': 'feed2exec.plugins.error', 'args': ''},
+                  item={})
 
 
 def test_exec(capfd):
-    e = plugin_output({'plugin': 'feed2exec.plugins.exec', 'args': 'seq 1'}, {})
+    e = plugin_output(feed={'plugin': 'feed2exec.plugins.exec',
+                            'args': 'seq 1'},
+                      item={})
     out, err = capfd.readouterr()
     assert out == "1\n"
     assert e == 0

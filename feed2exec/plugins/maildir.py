@@ -12,6 +12,7 @@ hostile feeds.
 :param dict item: the updated item
 """
 
+from collections import defaultdict
 import datetime
 import getpass
 import email
@@ -37,8 +38,14 @@ class output(object):
                 msg.set_date(int(t.strftime('%s')))
         elif isinstance(t, time.struct_time):
             msg.set_date(time.mktime(t))
-        msg['From'] = feed['name']
         msg['To'] = to_addr or "%s@%s" % (getpass.getuser(), socket.getfqdn())
+        params = {'name': feed['name'],
+                  'email': msg['To']}
+        if 'author_detail' in entry:
+            params.update(entry['author_detail'])
+        elif 'author_detail' in feed:
+            params.update(feed['author_detail'])
+        msg['From'] = '{name} <{email}>'.format(**params)
         msg['Subject'] = entry['title']
         msg['Date'] = email.utils.formatdate(msg.get_date())
         body = u'''{link}

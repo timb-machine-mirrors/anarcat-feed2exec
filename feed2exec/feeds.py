@@ -21,9 +21,10 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
+import configparser
 import datetime
 import time
-import collections
+from collections import OrderedDict, namedtuple
 import errno
 import json
 import logging
@@ -44,10 +45,6 @@ def default_config_dir():
                                  os.path.join(os.environ.get('HOME'),
                                               '.config'))
     return os.path.join(home_config, feed2exec.__prog__)
-
-
-def default_db():
-    return os.path.join(default_config_dir(), 'feed2exec.sqlite')
 
 
 def make_dirs_helper(path):
@@ -92,11 +89,12 @@ def parse(body, feed):
             logging.info('entry %s already seen', guid)
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
-            if feed['plugin'] is not None:
-                if plugin_output(feed=feed, item=entry, lock=LOCK) is not None:
+            if feed.get('plugin'):
+                if plugin_output(feed=feed, item=entry, lock=LOCK):
                     cache.add(guid)
             else:
                 cache.add(guid)
+    return data
 
 
 def _init_lock(l):
@@ -143,40 +141,89 @@ class SqliteStorage(object):
     sql = None
     record = None
     conn = None
+    path = None
+    cache = {}
 
-    def __init__(self, path=None):
-        if path is None:
-            path = default_db()
-        make_dirs_helper(os.path.dirname(path))
-        if SqliteStorage.conn is None:
-            logging.debug('connecting to database at %s', path)
-            SqliteStorage.conn = sqlite3.connect(path)
+    def __init__(self):
+        if self.path is None:
+            logging.warning("storing feeds only in memory")
+            self.path = ":memory:"
+        else:
+            make_dirs_helper(os.path.dirname(self.path))
+        if self.path not in SqliteStorage.cache:
+            logging.warning('connecting to database at %s', self.path)
+            conn = sqlite3.connect(self.path)
             try:
-                SqliteStorage.conn.set_trace_callback(logging.debug)
+                conn.set_trace_callback(logging.debug)
             except AttributeError:
                 logging.debug('no logging support in sqlite')
-        if self.sql is not None:
-            SqliteStorage.conn.execute(self.sql)
-            SqliteStorage.conn.commit()
+            SqliteStorage.cache[self.path] = conn
+        self.conn = SqliteStorage.cache[self.path]
+        if self.sql:
+            self.conn.execute(self.sql)
+            self.conn.commit()
 
 
-class FeedStorage(SqliteStorage):
+class ConfFeedStorage(configparser.RawConfigParser):
+    path = os.path.join(default_config_dir(), 'feed2exec.ini')
+
+    def __init__(self, pattern=None):
+        self.pattern = pattern
+        super(ConfFeedStorage,
+              self).__init__(dict_type=OrderedDict)
+        self.read(self.path)
+
+    def add(self, name, url, plugin=None, args=None):
+        if self.has_section(name):
+            raise AttributeError('key %s already exists' % name)
+        d = OrderedDict()
+        d['url'] = url
+        if plugin:
+            d['plugin'] = plugin
+        if args:
+            d['args'] = args
+        self[name] = d
+        self.commit()
+
+    def remove(self, name):
+        self.remove_section(name)
+        self.commit()
+        
+    def commit(self):
+        logging.info('writing to config file %s', self.path)
+        make_dirs_helper(os.path.dirname(self.path))
+        with open(self.path, 'w') as configfile:
+            self.write(configfile)
+
+    def __iter__(self):
+        for name in self.sections():
+            if self.pattern is None or self.pattern in name:
+                d = dict(self[name])
+                d.update({'name': name})
+                yield d
+
+
+class SqliteFeedStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
              feeds (name text, url text, plugin text, args text,
              PRIMARY KEY (name))'''
-    record = collections.namedtuple('record', 'name url plugin args')
+    record = namedtuple('record', 'name url plugin args')
 
-    def __init__(self, path=None, pattern=None):
+    def __init__(self, pattern=None):
         if pattern is None:
             self.pattern = '%'
         else:
             self.pattern = '%' + pattern + '%'
-        super(FeedStorage, self).__init__(path)
+        super(FeedStorage, self).__init__()
 
     def add(self, name, url, plugin=None, args=None):
-        self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
-                          (name, url, plugin, args))
-        self.conn.commit()  # XXX
+        try:
+            self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
+                              (name, url, plugin, args))
+            self.conn.commit()  # XXX
+        except sqlite3.IntegrityError as e:
+            if 'UNIQUE' in str(e):
+                raise AttributeError('key %s already exists', name)
 
     def remove(self, name):
         self.conn.execute("DELETE FROM feeds WHERE name=?", (name, ))
@@ -194,28 +241,32 @@ class FeedStorage(SqliteStorage):
                            (self.pattern, self.pattern))
 
 
+FeedStorage = ConfFeedStorage
+# FeedStorage = SqliteFeedStorage
+
+
 class FeedCacheStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
              feedcache (name text, guid text,
              PRIMARY KEY (name, guid))'''
-    record = collections.namedtuple('record', 'name guid')
+    record = namedtuple('record', 'name guid')
 
-    def __init__(self, feed=None, path=None, guid=None):
+    def __init__(self, feed=None, guid=None):
         self.feed = feed
         if guid is None:
             self.guid = '%'
         else:
             self.guid = '%' + guid + '%'
-        super(FeedCacheStorage, self).__init__(path)
+        super(FeedCacheStorage, self).__init__()
 
     def add(self, guid):
-        assert self.feed is not None
+        assert self.feed
         self.conn.execute("INSERT INTO feedcache VALUES (?, ?)",
                           (self.feed, guid))
         self.conn.commit()
 
     def remove(self, guid):
-        assert self.feed is not None
+        assert self.feed
         self.conn.execute("DELETE FROM feedcache WHERE guid = ?", (guid,))
         self.conn.commit()
 

@@ -8,6 +8,7 @@ effect for the test suite to determine if the plugin was called.
 
 
 import json
+import logging
 
 
 from feed2exec.feeds import safe_serial
@@ -17,7 +18,8 @@ class output(object):
     called = None
 
     def __init__(self, *args, **kwargs):
-        print("arguments received: %s, kwargs: %s"
-              % (args, json.dumps(kwargs, sort_keys=True,
-                                  default=safe_serial)))
+        print("arguments received: %s" % str(args))
+        logging.debug("kwargs: %s"
+                      % (json.dumps(kwargs, sort_keys=True,
+                                    default=safe_serial)))
         output.called = args

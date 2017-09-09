@@ -19,7 +19,7 @@ Options
   --loglevel       show only warning messages
   -v, --verbose    be more verbose
   -d, --debug      even more verbose
-  --database TEXT  use given database
+  --config TEXT    configuration directory
   -h, --help       Show this message and exit.
 
 Examples
@@ -32,8 +32,41 @@ Saving feed items to a Maildir folder::
 
 Show feed contents::
 
-  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --plugin feed2exec.plugins.echo
+  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --plugin feed2exec.plugins.echo --args "%(title)s %(link)s"
   feed2exec fetch
+
+Files
+-----
+
+Any files used by feed2exec is stored in the config directory, in
+``~/.config/feed2exec/`` or ``$XDG_CONFIG_HOME/feed2exec``. It can
+also be specified with the ``--config`` commandline parameter. The
+main configuration file is in called ``feed2exec.ini``. The above
+configuration will yield the following config::
+
+  [NASA breaking news]
+  url = https://www.nasa.gov/rss/dyn/breaking_news.rss
+  plugin = feed2exec.plugins.echo
+  args = %(title)s %(link)s
+
+Naturally, those settings can be changed directly in the config
+file. Note that there is a ``[DEFAULT]`` section that can be used to
+apply settings to all feeds. For example, this will make all feeds
+store new items in a maildir subfolder::
+
+  [DEFAULT]
+  plugin = feed2exec.plugins.maildir
+  args = /home/anarcat/Maildir/
+
+This way individual feeds do not need to be indivudually configured.
+
+The feeds cache is stored in a ``feed2exec.sqlite`` file. It is a
+normal SQLite database and can be inspected using the normal sqlite
+tools. It is used to keep track of which feed items have been
+processed. To clear the cache, you can simply remove the file, which
+will make the program process all feeds items from scratch again. In
+this case, you may want to use the ``null`` plugin to avoid doing any
+sort of processing to catchup with the feeds.
 
 See also
 --------
