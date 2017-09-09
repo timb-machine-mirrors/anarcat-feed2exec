@@ -72,7 +72,6 @@ setup(name=mod.__prog__,
           "feedparser",
           "html2text",
           "requests",
-          "sqlite3",
       ],
       extras_require={
           "dev": [
