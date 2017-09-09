@@ -61,6 +61,18 @@ def make_dirs_helper(path):
 
 
 def fetch(url):
+    """fetch the given URL
+
+    exceptions should be handled by the caller
+
+    :todo: this should be moved to a plugin so it can be overridden,
+    but so far I haven't found a use case for this.
+
+    :param str url: the URL to fetch
+
+    :return bytes: the body of the URL
+
+    """
     body = ''
     if url.startswith('file://'):
         filename = url[len('file://'):]
@@ -74,6 +86,22 @@ def fetch(url):
 
 
 def parse(body, feed):
+    """parse the body of the feed
+
+    this calls the filter and output plugins and updates the cache
+    with the found items.
+
+    :todo: this could be moved to a plugin, but then we'd need to take
+    out the cache checking logic, which would remove most of the code
+    here...
+
+    :param bytes body: the body of the feed, as returned by :func:fetch
+
+    :param dict feed: a feed object used to pass to plugins and debugging
+
+    :return dict: the parsed data
+
+    """
     logging.info('parsing feed %s (%d bytes)', feed['url'], len(body))
     data = feedparser.parse(body)
     logging.debug('parsed structure %s',
