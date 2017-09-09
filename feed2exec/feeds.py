@@ -21,7 +21,11 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
-import configparser
+try:
+    import configparser
+except ImportError:
+    # py2
+    import ConfigParser as configparser
 import datetime
 import time
 from collections import OrderedDict, namedtuple
