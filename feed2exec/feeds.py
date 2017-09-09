@@ -158,7 +158,7 @@ class SqliteStorage(object):
         else:
             make_dirs_helper(os.path.dirname(self.path))
         if self.path not in SqliteStorage.cache:
-            logging.warning('connecting to database at %s', self.path)
+            logging.info('connecting to database at %s', self.path)
             conn = sqlite3.connect(self.path)
             try:
                 conn.set_trace_callback(logging.debug)
