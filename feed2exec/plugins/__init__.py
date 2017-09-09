@@ -73,8 +73,8 @@ def output(feed, item):
     """
 
     params = defaultdict(str)
-    params.update(feed)
-    params.update(item)
+    params.update(dict(feed))
+    params.update(dict(item))
     if feed.get('output_args'):
         args = [x % params for x in shlex.split(feed['output_args'])]
     else:
