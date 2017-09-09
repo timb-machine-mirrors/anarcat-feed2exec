@@ -18,10 +18,23 @@ Quick start
 The user interface is still a bit rough, but this should get you
 started::
 
-    feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --plugin feed2exec.plugins.maildir --args "/home/anarcat/Maildir/"
+    feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --output feed2exec.plugins.maildir --args "~/Maildir/" --filter feed2exec.plugins.html2text
     feed2exec fetch
 
-See the complete :doc:`usage` page for more information.
+An equivalent configuration file which may be more descriptive in
+``~/.config/feed2exec/feed2exec.ini``::
+
+  [DEFAULT]
+  output = feed2exec.plugins.maildir
+  output_args = '~/Maildir'
+  filter = feed2exec.plugins.html2text
+
+  [NASA breaking news]
+  url = https://www.nasa.gov/rss/dyn/breaking_news.rss
+
+Using a standard OPML file, you can also import multiple feeds using
+the `feed2exec import` command. See the complete :doc:`usage` page for
+more information.
 
 Community guidelines
 --------------------

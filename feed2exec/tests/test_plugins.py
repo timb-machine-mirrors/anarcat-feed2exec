@@ -1,16 +1,12 @@
 import datetime
 import email
-import logging
 
 import pytest
 
 from feed2exec.feeds import parse, fetch
-from feed2exec.plugins import plugin_output
+import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import test_sample, test_db
-
-
-logging.basicConfig(format='%(message)s', level='DEBUG')
 
 
 def test_maildir(tmpdir, test_db):
@@ -37,12 +33,12 @@ def test_maildir(tmpdir, test_db):
                               feed=feed, entry=entry)
     sample = {'name': 'maildir test',
               'url': test_sample['url'],
-              'plugin': 'feed2exec.plugins.maildir',
-              'args': str(tmpdir.join('Mail'))}
+              'output': 'feed2exec.plugins.maildir',
+              'output_args': str(tmpdir.join('Mail'))}
     body = fetch(sample['url'])
     data = parse(body, sample)
     for entry in data['entries']:
-        f = plugin_output(sample, entry)
+        f = plugins.output(sample, entry)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
         assert message.check()
         assert message.read() == '''To: anarcat@curie.anarc.at
@@ -59,23 +55,36 @@ Here is some text containing an interesting description.'''
 
 
 def test_echo(capfd):
-    e = plugin_output(feed={'plugin': 'feed2exec.plugins.echo',
-                            'args': 'foobar'},
-                      item={})
+    e = plugins.output(feed={'output': 'feed2exec.plugins.echo', 'output_args': 'foobar'},
+                   item={})
     assert e.called
-    assert capfd.out == """arguments received: ('foobar',)\n"""
+    out, err = capfd.readouterr()
+    assert out == """arguments received: ('foobar',)\n"""
 
 
 def test_error():
     # shouldn't raise
-    plugin_output(feed={'plugin': 'feed2exec.plugins.error', 'args': ''},
-                  item={})
+    plugins.output(feed={'output': 'feed2exec.plugins.error', 'output_args': ''},
+                   item={})
 
 
 def test_exec(capfd):
-    e = plugin_output(feed={'plugin': 'feed2exec.plugins.exec',
-                            'args': 'seq 1'},
-                      item={})
+    e = plugins.output(feed={'output': 'feed2exec.plugins.exec',
+                             'output_args': 'seq 1'},
+                       item={})
     out, err = capfd.readouterr()
     assert out == "1\n"
     assert e == 0
+
+
+def test_filter():
+    item = {'title': 'test'}
+    copy = item.copy()
+    p = plugins.filter(feed={'filter': 'feed2exec.plugins.echo'}, item=item)
+    assert item == copy
+    assert p
+    assert p.called is not None
+    item = {'title': 'test'}
+    plugins.filter(feed={'filter': 'feed2exec.plugins.null'}, item=item)
+    assert item != copy
+    assert p.called is not None

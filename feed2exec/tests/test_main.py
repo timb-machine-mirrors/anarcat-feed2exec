@@ -33,8 +33,8 @@ def test_basics(tmpdir_factory):
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'ls'])
     assert result.exit_code == 0
-    del test_data['args']
-    del test_data['plugin']
+    del test_data['output_args']
+    del test_data['output']
     assert result.output.strip() == json.dumps(test_data,
                                                indent=2,
                                                sort_keys=True)

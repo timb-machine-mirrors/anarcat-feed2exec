@@ -26,7 +26,6 @@ import datetime
 import time
 from collections import OrderedDict, namedtuple
 import errno
-import json
 import logging
 import multiprocessing
 import os
@@ -34,7 +33,7 @@ import os.path
 
 
 import feed2exec
-from feed2exec.plugins import plugin_output
+import feed2exec.plugins as plugins
 import feedparser
 import requests
 import sqlite3
@@ -62,6 +61,18 @@ def make_dirs_helper(path):
 
 
 def fetch(url):
+    """fetch the given URL
+
+    exceptions should be handled by the caller
+
+    :todo: this should be moved to a plugin so it can be overridden,
+    but so far I haven't found a use case for this.
+
+    :param str url: the URL to fetch
+
+    :return bytes: the body of the URL
+
+    """
     body = ''
     if url.startswith('file://'):
         filename = url[len('file://'):]
@@ -75,23 +86,39 @@ def fetch(url):
 
 
 def parse(body, feed):
+    """parse the body of the feed
+
+    this calls the filter and output plugins and updates the cache
+    with the found items.
+
+    :todo: this could be moved to a plugin, but then we'd need to take
+    out the cache checking logic, which would remove most of the code
+    here...
+
+    :param bytes body: the body of the feed, as returned by :func:fetch
+
+    :param dict feed: a feed object used to pass to plugins and debugging
+
+    :return dict: the parsed data
+
+    """
     logging.info('parsing feed %s (%d bytes)', feed['url'], len(body))
     data = feedparser.parse(body)
-    logging.debug('parsed structure %s',
-                  json.dumps(data, indent=2, sort_keys=True,
-                             default=safe_serial))
+    #logging.debug('parsed structure %s',
+    #              json.dumps(data, indent=2, sort_keys=True,
+    #                         default=safe_serial))
     cache = FeedCacheStorage(feed=feed['name'])
     for entry in data['entries']:
+        plugins.filter(feed, entry, lock=LOCK)
         # workaround feedparser bug:
         # https://github.com/kurtmckee/feedparser/issues/112
         guid = entry.get('id', entry.get('title'))
         if guid in cache:
-            logging.info('entry %s already seen', guid)
+            logging.debug('entry %s already seen', guid)
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
-            if feed.get('plugin'):
-                if plugin_output(feed=feed, item=entry, lock=LOCK):
-                    cache.add(guid)
+            if plugins.output(feed, entry, lock=LOCK):
+                cache.add(guid)
             else:
                 cache.add(guid)
     return data
@@ -118,7 +145,7 @@ def fetch_feeds(pattern=None):
     l = multiprocessing.Lock()
     pool = multiprocessing.Pool(initializer=_init_lock, initargs=(l,))
     for feed in st:
-        logging.info('found feed in DB: %s', dict(feed))
+        logging.debug('found feed in DB: %s', dict(feed))
         body = fetch(feed['url'])
         # if this fails silently, try to remove the `_async` bit to see errors
         pool.apply_async(parse, (body, dict(feed)))
@@ -151,7 +178,7 @@ class SqliteStorage(object):
         else:
             make_dirs_helper(os.path.dirname(self.path))
         if self.path not in SqliteStorage.cache:
-            logging.warning('connecting to database at %s', self.path)
+            logging.info('connecting to database at %s', self.path)
             conn = sqlite3.connect(self.path)
             try:
                 conn.set_trace_callback(logging.debug)
@@ -173,15 +200,17 @@ class ConfFeedStorage(configparser.RawConfigParser):
               self).__init__(dict_type=OrderedDict)
         self.read(self.path)
 
-    def add(self, name, url, plugin=None, args=None):
+    def add(self, name, url, output=None, output_args=None, filter=None):
         if self.has_section(name):
             raise AttributeError('key %s already exists' % name)
         d = OrderedDict()
         d['url'] = url
-        if plugin:
-            d['plugin'] = plugin
-        if args:
-            d['args'] = args
+        if output is not None:
+            d['output'] = output
+        if output_args is not None:
+            d['output_args'] = output_args
+        if filter is not None:
+            d['filter'] = filter
         self[name] = d
         self.commit()
 
@@ -190,7 +219,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
         self.commit()
         
     def commit(self):
-        logging.info('writing to config file %s', self.path)
+        logging.info('saving feed configuration in %s', self.path)
         make_dirs_helper(os.path.dirname(self.path))
         with open(self.path, 'w') as configfile:
             self.write(configfile)
@@ -205,9 +234,9 @@ class ConfFeedStorage(configparser.RawConfigParser):
 
 class SqliteFeedStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
-             feeds (name text, url text, plugin text, args text,
+             feeds (name text, url text, output text, output_args text, filter text,
              PRIMARY KEY (name))'''
-    record = namedtuple('record', 'name url plugin args')
+    record = namedtuple('record', 'name url output output_args')
 
     def __init__(self, pattern=None):
         if pattern is None:
@@ -216,10 +245,10 @@ class SqliteFeedStorage(SqliteStorage):
             self.pattern = '%' + pattern + '%'
         super(FeedStorage, self).__init__()
 
-    def add(self, name, url, plugin=None, args=None):
+    def add(self, name, url, output=None, output_args=None, filter=None):
         try:
-            self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
-                              (name, url, plugin, args))
+            self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?, ?)",
+                              (name, url, output, output_args, filter))
             self.conn.commit()  # XXX
         except sqlite3.IntegrityError as e:
             if 'UNIQUE' in str(e):
