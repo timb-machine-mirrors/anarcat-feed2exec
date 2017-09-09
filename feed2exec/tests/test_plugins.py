@@ -48,7 +48,7 @@ def test_maildir(tmpdir, test_db):  # noqa
         assert message.read() == '''To: to@example.com
 From: test author <from@example.com>
 Subject: Example entry
-Date: Sun, 06 Sep 2009 21:20:00 -0000
+Date: Sun, 06 Sep 2009 16:20:00 -0000
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"

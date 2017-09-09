@@ -4,6 +4,7 @@ image: debian:latest
 variables:
   LC_ALL: "C.UTF-8"
   LANG: "C.UTF-8"
+  TZ: UTC
 
 before_script:
   - apt-get update -qq

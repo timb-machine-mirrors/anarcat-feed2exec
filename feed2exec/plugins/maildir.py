@@ -43,6 +43,7 @@ class output(object):
                 # py2, less precision
                 msg.set_date(int(t.strftime('%s')))
         elif isinstance(t, time.struct_time):
+            # XXX: this breaks if our timezone is not UTC
             msg.set_date(time.mktime(t))
         msg['To'] = to_addr or "%s@%s" % (getpass.getuser(), socket.getfqdn())
         params = {'name': feed.get('name'),
