@@ -1,12 +1,10 @@
 # This file is a template, and might need editing before it works on your project.
-image: debian:latest
+image: python:latest
 
 before_script:
   - python -V                                   # Print out python version for debugging
-  - pip install -r requirements.txt
-  - pip install -r dev-requirements.txt
 
 test:
     stage: test
     script:
-        pytest feed2exec/tests
+        tox
