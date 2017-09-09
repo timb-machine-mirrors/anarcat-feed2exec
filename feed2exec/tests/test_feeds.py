@@ -136,11 +136,11 @@ def test_config(conf_path):
     conf.add(**test_sample)
     assert conf_path.check()
     assert conf_path.read() == '''[sample]
-url = file:///home/anarcat/src/feed2exec/feed2exec/tests/files/sample.xml
+url = %s
 output = feed2exec.plugins.echo
 output_args = 1 2 3 4
 
-'''
+''' % test_sample['url']
     assert 'sample' in conf
     for feed in conf:
         assert type(feed) is dict
