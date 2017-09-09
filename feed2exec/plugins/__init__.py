@@ -33,7 +33,7 @@ import logging
 import shlex
 
 
-def plugin_output(feed, item):
+def output(feed, item):
     """load and run the given plugin with the given arguments
 
     an "output plugin" is a simple Python module with an ``output``
@@ -75,15 +75,37 @@ def plugin_output(feed, item):
     params = defaultdict(str)
     params.update(feed)
     params.update(item)
-    if feed.get('args'):
-        args = [x % params for x in shlex.split(feed['args'])]
+    if feed.get('output_args'):
+        args = [x % params for x in shlex.split(feed['output_args'])]
     else:
         args = []
-    plugin = feed['plugin']
-    logging.info('running plugin %s with arguments %s', plugin, args)
-    plugin = importlib.import_module(plugin)
-    try:
-        return plugin.output(*args, feed=feed, entry=item)
-    except Exception as e:
-        logging.exception("plugin generated exception: %s, ignoring", e)
-        return None
+    plugin = feed.get('output')
+    if plugin:
+        logging.info('running output plugin %s with arguments %s',
+                     plugin, args)
+        plugin = importlib.import_module(plugin)
+        try:
+            return plugin.output(*args, feed=feed, entry=item)
+        except Exception as e:
+            logging.exception("plugin generated exception: %s, ignoring", e)
+            return None
+
+
+def filter(feed, item):
+    plugin = feed.get('filter')
+    if plugin:
+        params = defaultdict(str)
+        params.update(feed)
+        params.update(item)
+        if feed.get('filter_args'):
+            args = [x % params for x in shlex.split(feed['args'])]
+        else:
+            args = []
+        logging.info('running filter plugin %s with arguments %s',
+                     plugin, args)
+        plugin = importlib.import_module(plugin)
+        try:
+            return plugin.filter(*args, feed=feed, entry=item)
+        except Exception as e:
+            logging.exception("plugin generated exception: %s, ignoring", e)
+            return None
