@@ -1,6 +1,5 @@
 import datetime
 import email
-import logging
 
 import pytest
 
@@ -8,9 +7,6 @@ from feed2exec.feeds import parse, fetch
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import test_sample, test_db
-
-
-logging.basicConfig(format='%(message)s', level='DEBUG')
 
 
 def test_maildir(tmpdir, test_db):

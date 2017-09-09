@@ -81,8 +81,8 @@ def output(feed, item):
         args = []
     plugin = feed.get('output')
     if plugin:
-        logging.info('running output plugin %s with arguments %s',
-                     plugin, args)
+        logging.debug('running output plugin %s with arguments %s',
+                      plugin, args)
         plugin = importlib.import_module(plugin)
         try:
             return plugin.output(*args, feed=feed, entry=item)
@@ -92,6 +92,7 @@ def output(feed, item):
 
 
 def filter(feed, item):
+    """common code with output() should be factored out, but output() takes arguments..."""
     plugin = feed.get('filter')
     if plugin:
         params = defaultdict(str)
@@ -101,8 +102,8 @@ def filter(feed, item):
             args = [x % params for x in shlex.split(feed['args'])]
         else:
             args = []
-        logging.info('running filter plugin %s with arguments %s',
-                     plugin, args)
+        logging.debug('running filter plugin %s with arguments %s',
+                      plugin, args)
         plugin = importlib.import_module(plugin)
         try:
             return plugin.filter(*args, feed=feed, entry=item)

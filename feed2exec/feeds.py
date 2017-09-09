@@ -104,9 +104,9 @@ def parse(body, feed):
     """
     logging.info('parsing feed %s (%d bytes)', feed['url'], len(body))
     data = feedparser.parse(body)
-    logging.debug('parsed structure %s',
-                  json.dumps(data, indent=2, sort_keys=True,
-                             default=safe_serial))
+    #logging.debug('parsed structure %s',
+    #              json.dumps(data, indent=2, sort_keys=True,
+    #                         default=safe_serial))
     cache = FeedCacheStorage(feed=feed['name'])
     for entry in data['entries']:
         plugins.filter(feed, entry)
@@ -114,7 +114,7 @@ def parse(body, feed):
         # https://github.com/kurtmckee/feedparser/issues/112
         guid = entry.get('id', entry.get('title'))
         if guid in cache:
-            logging.info('entry %s already seen', guid)
+            logging.debug('entry %s already seen', guid)
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
             if plugins.output(feed, entry):
@@ -128,7 +128,7 @@ def fetch_feeds(pattern=None):
     logging.debug('looking for feeds %s', pattern)
     st = FeedStorage(pattern=pattern)
     for feed in st:
-        logging.info('found feed in DB: %s', dict(feed))
+        logging.debug('found feed in DB: %s', dict(feed))
         body = fetch(feed['url'])
         parse(body, feed)
 
@@ -199,7 +199,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
         self.commit()
         
     def commit(self):
-        logging.info('writing to config file %s', self.path)
+        logging.info('saving feed configuration in %s', self.path)
         make_dirs_helper(os.path.dirname(self.path))
         with open(self.path, 'w') as configfile:
             self.write(configfile)

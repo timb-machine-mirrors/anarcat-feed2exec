@@ -19,7 +19,6 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-import logging
 import os.path
 import pkg_resources
 
@@ -28,8 +27,6 @@ from feed2exec.feeds import (SqliteStorage, FeedStorage,
                              FeedCacheStorage, fetch_feeds, ConfFeedStorage)
 import feed2exec.plugins.echo
 import pytest
-
-logging.basicConfig(format='%(message)s', level='DEBUG')
 
 test_data = {'url': 'file:///dev/null',
              'name': 'test',
@@ -73,7 +70,6 @@ def conf_dir(tmpdir_factory):
 def test_db(tmpdir_factory):
     path = tmpdir_factory.mktemp('feed2exec').join('feed2exec.db')
     SqliteStorage.path = str(path)
-    logging.info('using storage path %s', path)
     return path
 
 
@@ -125,7 +121,6 @@ def test_fetch(test_db, conf_path):
     st.add(**test_sample)
 
     fetch_feeds()
-    logging.info('looking through cache')
     cache = FeedCacheStorage(feed=test_sample['name'])
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
     assert feed2exec.plugins.echo.output.called == ('1', '2', '3', '4')

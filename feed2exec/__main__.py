@@ -107,7 +107,7 @@ def import_(path):
     st = FeedStorage()
     for child in tree.getiterator():
         if child.tag == 'outline':
-            logging.debug(child.attrib)
+            logging.debug('found OPML entry: %s', child.attrib)
             try:
                 logging.info('importing element %s <%s>',
                              child.attrib['title'], child.attrib['xmlUrl'])
