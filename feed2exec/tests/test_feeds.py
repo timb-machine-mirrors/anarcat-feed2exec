@@ -33,12 +33,12 @@ logging.basicConfig(format='%(message)s', level='DEBUG')
 
 test_data = {'url': 'file:///dev/null',
              'name': 'test',
-             'plugin': None,
-             'args': None}
+             'output': None,
+             'output_args': None}
 test_data2 = {'url': 'http://example.com/',
               'name': 'test2',
-              'plugin': None,
-              'args': None}
+              'output': None,
+              'output_args': None}
 
 
 def find_test_file(name):
@@ -52,16 +52,16 @@ def find_test_file(name):
 
 test_nasa = {'url': 'file://%s' % find_test_file('breaking_news.rss'),
              'name': 'nasa-breaking-news',
-             'plugin': None,
-             'args': None}
+             'output': None,
+             'output_args': None}
 test_sample = {'url': 'file://%s' % find_test_file('sample.xml'),
                'name': 'sample',
-               'plugin': 'feed2exec.plugins.echo',
-               'args': '1 2 3 4'}
+               'output': 'feed2exec.plugins.echo',
+               'output_args': '1 2 3 4'}
 test_udd = {'url': 'file://%s' % find_test_file('udd.rss'),
             'name': 'udd',
-            'plugin': None,
-            'args': None}
+            'output': None,
+            'output_args': None}
 
 
 @pytest.fixture(scope='session')
@@ -142,8 +142,8 @@ def test_config(conf_path):
     assert conf_path.check()
     assert conf_path.read() == '''[sample]
 url = file:///home/anarcat/src/feed2exec/feed2exec/tests/files/sample.xml
-plugin = feed2exec.plugins.echo
-args = 1 2 3 4
+output = feed2exec.plugins.echo
+output_args = 1 2 3 4
 
 '''
     assert 'sample' in conf

@@ -33,7 +33,7 @@ import os.path
 
 
 import feed2exec
-from feed2exec.plugins import plugin_output
+import feed2exec.plugins as plugins
 import feedparser
 import requests
 import sqlite3
@@ -81,6 +81,7 @@ def parse(body, feed):
                              default=safe_serial))
     cache = FeedCacheStorage(feed=feed['name'])
     for entry in data['entries']:
+        plugins.filter(feed, entry)
         # workaround feedparser bug:
         # https://github.com/kurtmckee/feedparser/issues/112
         guid = entry.get('id', entry.get('title'))
@@ -88,9 +89,8 @@ def parse(body, feed):
             logging.info('entry %s already seen', guid)
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
-            if feed.get('plugin'):
-                if plugin_output(feed, entry):
-                    cache.add(guid)
+            if plugins.output(feed, entry):
+                cache.add(guid)
             else:
                 cache.add(guid)
     return data
@@ -152,15 +152,15 @@ class ConfFeedStorage(configparser.RawConfigParser):
               self).__init__(dict_type=OrderedDict)
         self.read(self.path)
 
-    def add(self, name, url, plugin=None, args=None):
+    def add(self, name, url, output=None, output_args=None):
         if self.has_section(name):
             raise AttributeError('key %s already exists' % name)
         d = OrderedDict()
         d['url'] = url
-        if plugin:
-            d['plugin'] = plugin
-        if args:
-            d['args'] = args
+        if output is not None:
+            d['output'] = output
+        if output_args is not None:
+            d['output_args'] = output_args
         self[name] = d
         self.commit()
 
@@ -184,9 +184,9 @@ class ConfFeedStorage(configparser.RawConfigParser):
 
 class SqliteFeedStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
-             feeds (name text, url text, plugin text, args text,
+             feeds (name text, url text, output text, output_args text,
              PRIMARY KEY (name))'''
-    record = namedtuple('record', 'name url plugin args')
+    record = namedtuple('record', 'name url output output_args')
 
     def __init__(self, pattern=None):
         if pattern is None:
@@ -195,10 +195,10 @@ class SqliteFeedStorage(SqliteStorage):
             self.pattern = '%' + pattern + '%'
         super(FeedStorage, self).__init__()
 
-    def add(self, name, url, plugin=None, args=None):
+    def add(self, name, url, output=None, output_args=None):
         try:
             self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?)",
-                              (name, url, plugin, args))
+                              (name, url, output, output_args))
             self.conn.commit()  # XXX
         except sqlite3.IntegrityError as e:
             if 'UNIQUE' in str(e):
