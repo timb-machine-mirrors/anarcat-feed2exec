@@ -75,7 +75,11 @@ This is an early prototype and may break in your setup, as the
 
 Furthermore, it may be slow: the default implementation doesn't do
 threading. There's a `threads` branch that's more or less in sync with
-master that improves the performance significantly.
+master that improves the performance significantly, but that hasn't
+been merged because we're still hesitant between using that design
+(``multiprocessing.Pool`` and ``pool.apply_async``) vs ``aiohttp`` (on
+the ``asyncio`` branch) vs ``pool.map`` (on the ``threadpoolmap``
+branch).
 
 Unit test coverage is incomplete.
 
