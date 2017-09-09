@@ -93,7 +93,7 @@ def parse(body, feed):
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
             if feed['plugin'] is not None:
-                if plugin_output(feed, entry, lock) is not None:
+                if plugin_output(feed=feed, item=entry, lock=LOCK) is not None:
                     cache.add(guid)
             else:
                 cache.add(guid)
@@ -110,8 +110,8 @@ def _init_lock(l):
     <https://stackoverflow.com/a/25558333/1174784>`_
 
     """
-    global lock
-    lock = l
+    global LOCK
+    LOCK = l
 
 
 def fetch_feeds(pattern=None):
