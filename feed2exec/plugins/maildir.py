@@ -22,6 +22,8 @@ import os.path
 import socket
 import time
 
+import html2text
+
 from feed2exec.feeds import make_dirs_helper
 
 
@@ -48,9 +50,12 @@ class output(object):
         msg['From'] = '{name} <{email}>'.format(**params)
         msg['Subject'] = entry.get('title', feed.get('title'))
         msg['Date'] = email.utils.formatdate(msg.get_date())
+        params = defaultdict(str)
+        params.update(entry)
+        params['summary'] = html2text.html2text(params['summary'])
         body = u'''{link}
 
-{summary}'''.format(**entry)
+{summary}'''.format(**params)
         msg.add_header('Content-Transfer-Encoding', 'quoted-printable')
         msg.set_payload(body.encode('utf-8'))
         msg.set_charset('utf-8')
