@@ -36,6 +36,17 @@ Using a standard OPML file, you can also import multiple feeds using
 the `feed2exec import` command. See the complete :doc:`usage` page for
 more information.
 
+Installation
+------------
+
+This can be installed using the normal Python procedures::
+
+  pip install .
+
+It can also be ran straight from the source, using::
+
+  python -m feed2exec
+
 Community guidelines
 --------------------
 
