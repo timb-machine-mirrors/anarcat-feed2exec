@@ -24,7 +24,8 @@ import os.path
 import pkg_resources
 
 from feed2exec import __prog__
-from feed2exec.feeds import SqliteStorage, FeedStorage, FeedCacheStorage, fetch_feeds, ConfFeedStorage
+from feed2exec.feeds import (SqliteStorage, FeedStorage,
+                             FeedCacheStorage, fetch_feeds, ConfFeedStorage)
 import feed2exec.plugins.echo
 import pytest
 
