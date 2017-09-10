@@ -39,8 +39,8 @@ def test_maildir(tmpdir, test_db):  # noqa
               'email': 'from@example.com',
               'output': 'feed2exec.plugins.maildir',
               'output_args': str(tmpdir.join('Mail')) + ' to@example.com'}
-    body, ts = fetch(sample['url'])
-    data = parse(body, sample, date_parsed=ts)
+    body = fetch(sample['url'])
+    data = parse(body, sample)
     for entry in data['entries']:
         f = plugins.output(sample, entry)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)

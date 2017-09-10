@@ -83,15 +83,13 @@ def fetch(url):
         logging.info('opening local file %s', filename)
         with open(filename, 'rb') as f:
             body = f.read().decode('utf-8')
-        ts = time.localtime(os.stat(filename).st_mtime)
     else:
         logging.info('fetching URL %s', url)
-        resp = requests.get(url)
-        body, ts = resp.text, eut.parsedate(resp.headers.get('Date'))
-    return body, ts
+        body = requests.get(url).text
+    return body
 
 
-def parse(body, feed, date_parsed=None):
+def parse(body, feed):
     """parse the body of the feed
 
     this calls the filter and output plugins and updates the cache
@@ -121,8 +119,8 @@ def parse(body, feed, date_parsed=None):
         # 2. updated_parsed of the feed
         entry['_fake'] = entry.get('updated_parsed',
                                    entry.get('created_parsed',
-                                             data.get('updated_parsed',
-                                                      date_parsed)))
+                                             data['feed'].get('updated_parsed',
+                                                              False)))
 
         assert entry.get('_fake') is not None
         # workaround feedparser bug:
@@ -144,8 +142,8 @@ def fetch_feeds(pattern=None):
     st = FeedStorage(pattern=pattern)
     for feed in st:
         logging.debug('found feed in DB: %s', dict(feed))
-        body, ts = fetch(feed['url'])
-        parse(body, feed, date_parsed=ts)
+        body = fetch(feed['url'])
+        parse(body, feed)
 
 
 def safe_serial(obj):

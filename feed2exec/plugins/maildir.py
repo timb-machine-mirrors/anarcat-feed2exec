@@ -64,7 +64,7 @@ class output(object):
         elif 'author_detail' in feed:
             params.update(feed['author_detail'])
         msg['From'] = '{name} <{email}>'.format(**params)
-        msg['Subject'] = entry.get('title', feed.get('title'))
+        msg['Subject'] = entry.get('title', feed.get('title', u''))
         msg['Date'] = email.utils.formatdate(timeval=timestamp,
                                              localtime=False)
         params = defaultdict(str)
