@@ -8,9 +8,9 @@ import html
 import json
 
 from click.testing import CliRunner
-import html2text
 
 from feed2exec.__main__ import main
+import feed2exec.plugins.html2text as html2text_plugin
 from feed2exec.tests.test_feeds import (ConfFeedStorage, test_data,
                                         test_nasa, find_test_file)
 
@@ -89,5 +89,5 @@ Content-Type: text/plain; charset="utf-8"
 
 http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
 
-%s''' % html2text.html2text(html.unescape(data))  # noqa
+%s''' % html2text_plugin.filter.parse(html.unescape(data))  # noqa
     assert expected == body

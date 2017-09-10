@@ -69,9 +69,12 @@ class output(object):
                                              localtime=False)
         params = defaultdict(str)
         params.update(entry)
+        # default to html summary if html2text filter is not enabled
+        params['summary_plain'] = params.get('summary_plain',
+                                             params.get('summary'))
         body = u'''{link}
 
-{summary}'''.format(**params)
+{summary_plain}'''.format(**params)
         msg.add_header('Content-Transfer-Encoding', 'quoted-printable')
         msg.set_payload(body.encode('utf-8'))
         msg.set_charset('utf-8')

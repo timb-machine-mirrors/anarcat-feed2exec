@@ -10,10 +10,23 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
-from html2text import html2text
+import html2text
 
 
-def filter(feed=None, entry=None, *args, **kwargs):
-    entry['summary_html'] = entry.get('summary', '')
-    entry['summary'] = entry['summary_plain'] = html2text(entry.get('summary',
-                                                                    ''))
+class filter(object):
+
+    def __init__(self, feed=None, entry=None, *args, **kwargs):
+        entry['summary_plain'] = self.parse(entry.get('summary', ''))
+
+    @staticmethod
+    def parse(html):
+        """parse html to text according to our preferences. this is where
+        subclasses can override the HTML2Text settings or use a
+        completely different parser
+        """
+        text_maker = html2text.HTML2Text()
+        text_maker.inline_links = False
+        text_maker.images_to_alt = True
+        text_maker.unicode_snob = True
+        text_maker.links_each_paragraph = True
+        return text_maker.handle(html)
