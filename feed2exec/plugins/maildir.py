@@ -38,13 +38,14 @@ class output(object):
         t = entry.get('published_parsed', datetime.datetime.now())
         if isinstance(t, (datetime.datetime, datetime.date, datetime.time)):
             try:
-                msg.set_date(t.timestamp())
+                timestamp = t.timestamp()
             except AttributeError:
                 # py2, less precision
-                msg.set_date(int(t.strftime('%s')))
+                timestamp = int(t.strftime('%s'))
         elif isinstance(t, time.struct_time):
             # XXX: this breaks if our timezone is not UTC
-            msg.set_date(time.mktime(t))
+            timestamp = time.mktime(t)
+        msg.set_date(timestamp)
         msg['To'] = to_addr or "%s@%s" % (getpass.getuser(), socket.getfqdn())
         params = {'name': feed.get('name'),
                   'email': msg['To']}
@@ -54,7 +55,7 @@ class output(object):
             params.update(feed['author_detail'])
         msg['From'] = '{name} <{email}>'.format(**params)
         msg['Subject'] = entry.get('title', feed.get('title'))
-        msg['Date'] = email.utils.formatdate(msg.get_date())
+        msg['Date'] = email.utils.formatdate(timeval=timestamp)
         params = defaultdict(str)
         params.update(entry)
         params['summary'] = html2text.html2text(params['summary'])
