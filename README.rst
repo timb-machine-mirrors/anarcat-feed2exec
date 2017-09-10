@@ -71,9 +71,13 @@ Known issues
 ------------
 
 This is an early prototype and may break in your setup, as the
-``feedparser`` library isn't as solid as I expected.
+``feedparser`` library isn't as solid as I expected. In particular, I
+had issues with `feeds without dates`_ and `without guid`_.
 
-Unit test coverage is incomplete.
+ .. _feeds without dates: https://github.com/kurtmckee/feedparser/issues/113
+ .. _without guid: https://github.com/kurtmckee/feedparser/issues/112
+
+Unit test coverage is incomplete, but still pretty decent, above 80%.
 
 The ``exec`` plugin itself is not well tested and may have serious
 security issues.
