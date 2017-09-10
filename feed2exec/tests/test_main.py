@@ -76,10 +76,10 @@ def test_basics(tmpdir_factory):
         assert False, "entry from Francois Marier not found"
 
     with open(test_path) as xml:
-        data = "".join(xml.readlines()[61:143])
+        data = "".join(xml.readlines()[60:143])
         data = data.replace("     <description>", '')
         data = data.replace("</description>", '')
-    assert '''To: to@example.com
+    expected = '''To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Fran=C3=A7ois_Marier=3A_TLS_Authentication_on_Freenode_and_OFTC?=
 Date: Sat, 09 Sep 2017 04:52:47 -0000
@@ -89,4 +89,5 @@ Content-Type: text/plain; charset="utf-8"
 
 http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
 
-%s''' % html2text.html2text(html.unescape(data)) == body
+%s''' % html2text.html2text(html.unescape(data))
+    assert expected == body

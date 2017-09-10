@@ -55,9 +55,7 @@ Content-Type: text/plain; charset="utf-8"
 
 http://www.example.com/blog/post/1
 
-Here is some text containing an interesting description.
-
-'''
+Here is some text containing an interesting description.'''
 
 
 def test_echo(capfd):

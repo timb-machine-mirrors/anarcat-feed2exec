@@ -27,8 +27,6 @@ import os.path
 import socket
 import time
 
-import html2text
-
 from feed2exec.feeds import make_dirs_helper
 
 
@@ -62,7 +60,6 @@ class output(object):
                                              localtime=False)
         params = defaultdict(str)
         params.update(entry)
-        params['summary'] = html2text.html2text(params['summary'])
         body = u'''{link}
 
 {summary}'''.format(**params)
