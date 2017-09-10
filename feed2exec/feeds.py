@@ -29,7 +29,6 @@ except ImportError:
 import datetime
 import time
 from collections import OrderedDict, namedtuple
-import errno
 import logging
 import multiprocessing
 import os
@@ -38,6 +37,7 @@ import os.path
 
 import feed2exec
 import feed2exec.plugins as plugins
+import feed2exec.utils as utils
 import feedparser
 import requests
 import sqlite3
@@ -48,20 +48,6 @@ def default_config_dir():
                                  os.path.join(os.environ.get('HOME'),
                                               '.config'))
     return os.path.join(home_config, feed2exec.__prog__)
-
-
-def make_dirs_helper(path):
-    """Create the directory if it does not exist
-
-    Return True if the directory was created, false if it was already
-    present, throw an OSError exception if it cannot be created"""
-    try:
-        os.makedirs(path)
-        return True
-    except OSError as ex:
-        if ex.errno != errno.EEXIST or not os.path.isdir(path):
-            raise
-        return False
 
 
 def fetch(url):
@@ -200,7 +186,7 @@ class SqliteStorage(object):
             logging.warning("storing feeds only in memory")
             self.path = ":memory:"
         else:
-            make_dirs_helper(os.path.dirname(self.path))
+            utils.make_dirs_helper(os.path.dirname(self.path))
         if self.path not in SqliteStorage.cache:
             logging.info('connecting to database at %s', self.path)
             conn = sqlite3.connect(self.path)
@@ -244,7 +230,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
 
     def commit(self):
         logging.info('saving feed configuration in %s', self.path)
-        make_dirs_helper(os.path.dirname(self.path))
+        utils.make_dirs_helper(os.path.dirname(self.path))
         with open(self.path, 'w') as configfile:
             self.write(configfile)
 

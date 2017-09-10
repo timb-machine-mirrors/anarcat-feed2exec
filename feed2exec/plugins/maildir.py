@@ -29,7 +29,6 @@ import time
 
 import feed2exec
 import feed2exec.utils as utils
-from feed2exec.feeds import make_dirs_helper
 
 
 class output(object):
@@ -83,7 +82,7 @@ class output(object):
         msg.set_payload(body.encode('utf-8'))
         msg.set_charset('utf-8')
 
-        make_dirs_helper(prefix)
+        utils.make_dirs_helper(prefix)
         folder = os.path.basename(os.path.abspath(feed.get('name')))
         path = os.path.join(prefix, folder)
         logging.debug('established folder path %s', path)

@@ -19,13 +19,10 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-import os.path
-import pkg_resources
-
-from feed2exec import __prog__
 from feed2exec.feeds import (SqliteStorage, FeedStorage,
                              FeedCacheStorage, fetch_feeds, ConfFeedStorage)
 import feed2exec.plugins.echo
+import feed2exec.utils as utils
 import pytest
 
 test_data = {'url': 'file:///dev/null',
@@ -36,26 +33,15 @@ test_data2 = {'url': 'http://example.com/',
               'name': 'test2',
               'output': None,
               'output_args': None}
-
-
-def find_test_file(name):
-    try:
-        pkg = pkg_resources.Requirement.parse(__prog__)
-        path = os.path.join(__prog__, 'tests', 'files', name)
-        return pkg_resources.resource_filename(pkg, path)
-    except pkg_resources.DistributionNotFound:
-        return os.path.join(os.path.dirname(__file__), 'files', name)
-
-
-test_nasa = {'url': 'file://%s' % find_test_file('breaking_news.rss'),
+test_nasa = {'url': 'file://%s' % utils.find_test_file('breaking_news.rss'),
              'name': 'nasa-breaking-news',
              'output': None,
              'output_args': None}
-test_sample = {'url': 'file://%s' % find_test_file('sample.xml'),
+test_sample = {'url': 'file://%s' % utils.find_test_file('sample.xml'),
                'name': 'sample',
                'output': 'feed2exec.plugins.echo',
                'output_args': '1 2 3 4'}
-test_udd = {'url': 'file://%s' % find_test_file('udd.rss'),
+test_udd = {'url': 'file://%s' % utils.find_test_file('udd.rss'),
             'name': 'udd',
             'output': None,
             'output_args': None}

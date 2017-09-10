@@ -4,8 +4,14 @@
 
 from __future__ import absolute_import
 
-from unidecode import unidecode
+import errno
+import os
+import os.path
+import pkg_resources
 import re
+from unidecode import unidecode
+
+from feed2exec import __prog__
 
 
 def slug(text):
@@ -38,3 +44,26 @@ def slug(text):
     <https://github.com/un33k/python-slugify>`_.
     """
     return re.sub(r'\W+', '-', unidecode(text).lower().strip()).strip('-')
+
+
+def make_dirs_helper(path):
+    """Create the directory if it does not exist
+
+    Return True if the directory was created, false if it was already
+    present, throw an OSError exception if it cannot be created"""
+    try:
+        os.makedirs(path)
+        return True
+    except OSError as ex:
+        if ex.errno != errno.EEXIST or not os.path.isdir(path):
+            raise
+        return False
+
+
+def find_test_file(name):
+    try:
+        pkg = pkg_resources.Requirement.parse(__prog__)
+        path = os.path.join(__prog__, 'tests', 'files', name)
+        return pkg_resources.resource_filename(pkg, path)
+    except pkg_resources.DistributionNotFound:
+        return os.path.join(os.path.dirname(__file__), 'tests', 'files', name)

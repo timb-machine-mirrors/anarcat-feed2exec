@@ -9,10 +9,11 @@ import json
 
 from click.testing import CliRunner
 
+import feed2exec.utils as utils
 from feed2exec.__main__ import main
 import feed2exec.plugins.html2text as html2text_plugin
 from feed2exec.tests.test_feeds import (ConfFeedStorage, test_data,
-                                        test_nasa, find_test_file)
+                                        test_nasa)
 
 
 def test_usage():
@@ -56,7 +57,7 @@ def test_basics(tmpdir_factory):
     assert result.exit_code == 0
 
     maildir = conf_dir.join('maildir')
-    test_path = find_test_file('planet-debian.xml')
+    test_path = utils.find_test_file('planet-debian.xml')
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'add', 'planet-debian',
                                   'file://' + test_path,
