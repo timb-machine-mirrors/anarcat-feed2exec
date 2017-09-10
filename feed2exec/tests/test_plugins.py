@@ -56,6 +56,8 @@ def test_maildir(tmpdir, test_db):  # noqa
 From: test author <from@example.com>
 Subject: Example entry
 Date: Sun, 06 Sep 2009 16:20:00 -0000
+Message-ID: 7bd204c6-1655-4c27-aeee-53f933c5395f
+User-Agent: feed2exec (???)
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -79,6 +81,8 @@ Here is some text containing an interesting description.'''
 From: date test <to@example.com>
 Subject: test item
 Date: Sun, 03 Sep 2017 09:03:54 -0000
+Message-ID: http-example-com-test
+User-Agent: feed2exec (???)
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"

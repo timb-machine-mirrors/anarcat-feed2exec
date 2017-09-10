@@ -27,6 +27,8 @@ import os.path
 import socket
 import time
 
+import feed2exec
+import feed2exec.utils as utils
 from feed2exec.feeds import make_dirs_helper
 
 
@@ -64,6 +66,11 @@ class output(object):
         msg['Subject'] = entry.get('title', feed.get('title', u''))
         msg['Date'] = email.utils.formatdate(timeval=timestamp,
                                              localtime=False)
+        # workaround feedparser bug:
+        # https://github.com/kurtmckee/feedparser/issues/112
+        msg['Message-ID'] = utils.slug(entry.get('id', entry.get('title')))
+        msg['User-Agent'] = "%s (%s)" % (feed2exec.__prog__,
+                                         feed2exec.__version__)
         params = defaultdict(str)
         params.update(entry)
         # default to html summary if html2text filter is not enabled
