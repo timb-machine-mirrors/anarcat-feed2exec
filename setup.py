@@ -36,16 +36,22 @@ mod = feed2exec
 
 
 classifiers = [
-    'Development Status :: 2 - Pre-Alpha',
+    'Development Status :: 3 - Alpha',
     'Environment :: Console',
+    'Intended Audience :: End Users/Desktop',
+    'Intended Audience :: System Administrators',
     'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',  # noqa
     'Natural Language :: English',
+    'Operating System :: POSIX',
     'Operating System :: POSIX :: Linux',
     'Programming Language :: Python',
     'Programming Language :: Python :: 2',
     'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.5',
+    'Topic :: Communications :: Email',
+    'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: News/Diary',
+    'Topic :: Text Processing :: Markup :: HTML',
 ]
 
 requires = [
