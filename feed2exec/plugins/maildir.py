@@ -42,10 +42,6 @@ class output(object):
         # also, default on the feed updated date
         orig = timestamp = datetime.datetime.utcnow().timestamp()
         timestamp = entry.get('_fake') or orig
-        if timestamp == orig:
-            from pprint import pprint
-            pprint(entry)
-            pprint(feed)
         if isinstance(timestamp, (datetime.datetime,
                                   datetime.date,
                                   datetime.time)):
