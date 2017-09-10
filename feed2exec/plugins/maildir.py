@@ -31,8 +31,8 @@ from feed2exec.feeds import make_dirs_helper
 
 
 class output(object):
-    def __init__(self, prefix, *args,
-                 to_addr=None, feed=None, entry=None, lock=None, **kwargs):
+    def __init__(self, prefix, to_addr=None, feed=None, entry=None, lock=None,
+                 *args, **kwargs):
         prefix = os.path.expanduser(prefix)
         msg = mailbox.MaildirMessage()
         # feedparser always returns UTC times and obliterates original
