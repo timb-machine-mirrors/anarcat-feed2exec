@@ -120,12 +120,9 @@ def parse(body, feed, lock=None):
         # add more defaults to entry dates:
         # 1. created_parsed of the item
         # 2. updated_parsed of the feed
-        entry['_fake'] = entry.get('updated_parsed',
-                                   entry.get('created_parsed',
-                                             data['feed'].get('updated_parsed',
-                                                              False)))
-
-        assert entry.get('_fake') is not None
+        # see https://github.com/kurtmckee/feedparser/issues/113
+        entry['updated_parsed'] = entry.get('updated_parsed', entry.get('created_parsed', data['feed'].get('updated_parsed', False)))  # noqa
+        assert entry.get('updated_parsed') is not None
         # workaround feedparser bug:
         # https://github.com/kurtmckee/feedparser/issues/112
         guid = entry.get('id', entry.get('title'))

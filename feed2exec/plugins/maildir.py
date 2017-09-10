@@ -41,7 +41,7 @@ class output(object):
         #
         # also, default on the feed updated date
         orig = timestamp = datetime.datetime.utcnow().timestamp()
-        timestamp = entry.get('_fake') or orig
+        timestamp = entry.get('updated_parsed') or orig
         if isinstance(timestamp, (datetime.datetime,
                                   datetime.date,
                                   datetime.time)):
