@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Test with weird dates.</title>
+    <link>http://example.com/</link>
+<description>Test feed with only a date on the feed but not on items.</description>
+<atom:link href="http://example.com/rss" rel="self"></atom:link>
+<language>en-us</language>
+<lastBuildDate>Sun, 03 Sep 2017 09:03:54 -0000</lastBuildDate>
+<item>
+  <title>test item</title>
+  <link>http://example.com/test/</link>
+  <description>test descr1</description>
+  <guid>http://example.com/test/</guid>
+</item>
+</channel></rss>

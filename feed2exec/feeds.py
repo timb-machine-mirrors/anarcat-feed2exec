@@ -27,6 +27,7 @@ except ImportError:
     # py2: should never happen as we depend on the newer one in setup.py
     import ConfigParser as configparser
 import datetime
+import email.utils as eut
 import time
 from collections import OrderedDict, namedtuple
 import errno
@@ -73,7 +74,7 @@ def fetch(url):
 
     :param str url: the URL to fetch
 
-    :return bytes: the body of the URL
+    :return bytes, tuple: the body of the URL and the modification timestamp
 
     """
     body = ''
@@ -82,13 +83,15 @@ def fetch(url):
         logging.info('opening local file %s', filename)
         with open(filename, 'rb') as f:
             body = f.read().decode('utf-8')
+        ts = time.localtime(os.stat(filename).st_mtime)
     else:
         logging.info('fetching URL %s', url)
-        body = requests.get(url).text
-    return body
+        resp = requests.get(url)
+        body, ts = resp.text, eut.parsedate(resp.headers.get('Date'))
+    return body, ts
 
 
-def parse(body, feed):
+def parse(body, feed, date_parsed=None):
     """parse the body of the feed
 
     this calls the filter and output plugins and updates the cache
@@ -113,6 +116,15 @@ def parse(body, feed):
     cache = FeedCacheStorage(feed=feed['name'])
     for entry in data['entries']:
         plugins.filter(feed, entry)
+        # add more defaults to entry dates:
+        # 1. created_parsed of the item
+        # 2. updated_parsed of the feed
+        entry['_fake'] = entry.get('updated_parsed',
+                                   entry.get('created_parsed',
+                                             data.get('updated_parsed',
+                                                      date_parsed)))
+
+        assert entry.get('_fake') is not None
         # workaround feedparser bug:
         # https://github.com/kurtmckee/feedparser/issues/112
         guid = entry.get('id', entry.get('title'))
@@ -132,8 +144,8 @@ def fetch_feeds(pattern=None):
     st = FeedStorage(pattern=pattern)
     for feed in st:
         logging.debug('found feed in DB: %s', dict(feed))
-        body = fetch(feed['url'])
-        parse(body, feed)
+        body, ts = fetch(feed['url'])
+        parse(body, feed, date_parsed=ts)
 
 
 def safe_serial(obj):

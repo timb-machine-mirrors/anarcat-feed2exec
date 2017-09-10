@@ -9,7 +9,7 @@ import pytest
 from feed2exec.feeds import parse, fetch
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
-from feed2exec.tests.test_feeds import test_sample, test_db  # noqa
+from feed2exec.tests.test_feeds import (test_sample, test_db, find_test_file)  # noqa
 
 
 def test_maildir(tmpdir, test_db):  # noqa
@@ -39,8 +39,8 @@ def test_maildir(tmpdir, test_db):  # noqa
               'email': 'from@example.com',
               'output': 'feed2exec.plugins.maildir',
               'output_args': str(tmpdir.join('Mail')) + ' to@example.com'}
-    body = fetch(sample['url'])
-    data = parse(body, sample)
+    body, ts = fetch(sample['url'])
+    data = parse(body, sample, date_parsed=ts)
     for entry in data['entries']:
         f = plugins.output(sample, entry)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
@@ -56,6 +56,29 @@ Content-Type: text/plain; charset="utf-8"
 http://www.example.com/blog/post/1
 
 Here is some text containing an interesting description.'''
+
+    sample = {'name': 'date test',
+              'url': 'file://' + find_test_file('weird-dates.xml'),
+              'email': 'from@example.com',
+              'output': 'feed2exec.plugins.maildir',
+              'output_args': str(tmpdir.join('Mail')) + ' to@example.com'}
+    body = fetch(sample['url'])
+    data = parse(body, sample)
+    for entry in data['entries']:
+        f = plugins.output(sample, entry)
+        message = tmpdir.join('Mail', sample['name'], 'new', f.key)
+        assert message.check()
+        assert '''To: to@example.com
+From: date test <to@example.com>
+Subject: test item
+Date: Sun, 03 Sep 2017 09:03:54 -0000
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+http://example.com/test/
+
+test descr1''' == message.read()
 
 
 def test_echo(capfd):

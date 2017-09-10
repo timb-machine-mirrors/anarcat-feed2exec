@@ -34,18 +34,27 @@ class output(object):
     def __init__(self, prefix, to_addr=None, feed=None, entry=None):
         prefix = os.path.expanduser(prefix)
         msg = mailbox.MaildirMessage()
-        # feedparser always returns UTC times and obliterates original TZ information
-        # it does do the conversion correctly, however, so just assume UTC
-        t = entry.get('published_parsed', datetime.datetime.utcnow())
-        if isinstance(t, (datetime.datetime, datetime.date, datetime.time)):
+        # feedparser always returns UTC times and obliterates original
+        # TZ information. it does do the conversion correctly,
+        # however, so just assume UTC.
+        #
+        # also, default on the feed updated date
+        orig = timestamp = datetime.datetime.utcnow().timestamp()
+        timestamp = entry.get('_fake') or orig
+        if timestamp == orig:
+            from pprint import pprint
+            pprint(entry)
+            pprint(feed)
+        if isinstance(timestamp, (datetime.datetime,
+                                  datetime.date,
+                                  datetime.time)):
             try:
-                timestamp = t.timestamp()
+                timestamp = timestamp.timestamp()
             except AttributeError:
                 # py2, less precision
-                timestamp = int(t.strftime('%s'))
-        elif isinstance(t, time.struct_time):
-            # XXX: this breaks if our timezone is not UTC
-            timestamp = calendar.timegm(t)
+                timestamp = int(timestamp.strftime('%s'))
+        elif isinstance(timestamp, (time.struct_time, tuple)):
+            timestamp = calendar.timegm(timestamp)
         msg.set_date(timestamp)
         msg['To'] = to_addr or "%s@%s" % (getpass.getuser(), socket.getfqdn())
         params = {'name': feed.get('name'),
