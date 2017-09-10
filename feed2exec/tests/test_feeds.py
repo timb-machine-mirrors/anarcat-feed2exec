@@ -123,6 +123,7 @@ def test_fetch(test_db, conf_path):
     fetch_feeds()
     cache = FeedCacheStorage(feed=test_sample['name'])
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
+    assert feed2exec.plugins.echo.output.called
 
     st.add(**test_nasa)
     st.add(**test_udd)
