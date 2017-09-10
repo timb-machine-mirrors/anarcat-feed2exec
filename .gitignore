@@ -4,3 +4,4 @@
 .tox/
 *.egg-info/
 _version.py
+.coverage

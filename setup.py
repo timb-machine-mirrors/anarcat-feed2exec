@@ -98,6 +98,7 @@ setup(name=mod.__prog__,
       extras_require={
           "dev": [
               "pytest",
+              "pytest-cov",
               "tox",
               "pyflakes",
           ],
