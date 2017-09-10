@@ -10,8 +10,10 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
-import html2text
+from html2text import html2text
 
 
 def filter(feed=None, entry=None, *args, **kwargs):
-    entry['summary'] = html2text.html2text(entry.get('summary', ''))
+    entry['summary_html'] = entry.get('summary', '')
+    entry['summary'] = entry['summary_plain'] = html2text(entry.get('summary',
+                                                                    ''))
