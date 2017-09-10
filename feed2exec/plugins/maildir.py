@@ -17,6 +17,7 @@ from __future__ import print_function
 
 
 from collections import defaultdict
+import calendar
 import datetime
 import getpass
 import email
@@ -35,7 +36,9 @@ class output(object):
     def __init__(self, prefix, to_addr=None, feed=None, entry=None):
         prefix = os.path.expanduser(prefix)
         msg = mailbox.MaildirMessage()
-        t = entry.get('published_parsed', datetime.datetime.now())
+        # feedparser always returns UTC times and obliterates original TZ information
+        # it does do the conversion correctly, however, so just assume UTC
+        t = entry.get('published_parsed', datetime.datetime.utcnow())
         if isinstance(t, (datetime.datetime, datetime.date, datetime.time)):
             try:
                 timestamp = t.timestamp()
@@ -44,7 +47,7 @@ class output(object):
                 timestamp = int(t.strftime('%s'))
         elif isinstance(t, time.struct_time):
             # XXX: this breaks if our timezone is not UTC
-            timestamp = time.mktime(t)
+            timestamp = calendar.timegm(t)
         msg.set_date(timestamp)
         msg['To'] = to_addr or "%s@%s" % (getpass.getuser(), socket.getfqdn())
         params = {'name': feed.get('name'),
@@ -55,7 +58,8 @@ class output(object):
             params.update(feed['author_detail'])
         msg['From'] = '{name} <{email}>'.format(**params)
         msg['Subject'] = entry.get('title', feed.get('title'))
-        msg['Date'] = email.utils.formatdate(timeval=timestamp)
+        msg['Date'] = email.utils.formatdate(timeval=timestamp,
+                                             localtime=False)
         params = defaultdict(str)
         params.update(entry)
         params['summary'] = html2text.html2text(params['summary'])
