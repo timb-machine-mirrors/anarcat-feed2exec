@@ -155,18 +155,29 @@ def _init_lock(l):
     LOCK = l
 
 
-def fetch_feeds(pattern=None):
+def fetch_feeds(pattern=None, parallel=False):
     logging.debug('looking for feeds %s', pattern)
     st = FeedStorage(pattern=pattern)
-    l = multiprocessing.Lock()
-    pool = multiprocessing.Pool(initializer=_init_lock, initargs=(l,))
+    if parallel:
+        l = multiprocessing.Lock()
+        processes = None
+        if isinstance(parallel, int):
+            processes = parallel
+        pool = multiprocessing.Pool(processes=processes,
+                                    initializer=_init_lock, initargs=(l,))
     for feed in st:
         logging.debug('found feed in DB: %s', dict(feed))
         body = fetch(feed['url'])
-        # if this fails silently, try to remove the `_async` bit to see errors
-        pool.apply_async(parse, (body, dict(feed)))
-    pool.close()
-    pool.join()
+        if parallel:
+            # if this fails silently, use plain apply() to see errors
+            pool.apply_async(parse, (body, dict(feed)))
+        else:
+            global LOCK
+            LOCK = None
+            parse(body, dict(feed))
+    if parallel:
+        pool.close()
+        pool.join()
 
 
 def safe_serial(obj):

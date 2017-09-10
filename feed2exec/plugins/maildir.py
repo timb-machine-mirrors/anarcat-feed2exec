@@ -84,11 +84,13 @@ class output(object):
         folder = os.path.basename(os.path.abspath(feed.get('name')))
         path = os.path.join(prefix, folder)
         logging.debug('established folder path %s', path)
-        lock.acquire()
+        if lock:
+            lock.acquire()
         maildir = mailbox.Maildir(path, create=True)
         self.key = maildir.add(msg)
         maildir.flush()
-        lock.release()
+        if lock:
+            lock.release()
         guid = entry.get('guid', entry.get('link', '???'))
         logging.info('saved entry %s to %s',
                      guid, os.path.join(path, self.key))
