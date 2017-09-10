@@ -62,6 +62,18 @@ except ImportError:
     # py2: we need a more recent configparser
     requires.append("configparser")
 
+try:
+    import unittest.mock  # noqa
+except ImportError:
+    # py2: we need the mock module, not in stdlib
+    requires.append("mock")
+
+try:
+    import html  # noqa
+except ImportError:
+    # py2: we need futures for this
+    requires.append("future")
+
 
 def read(*names, **kwargs):
     return io.open(

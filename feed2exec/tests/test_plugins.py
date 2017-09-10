@@ -6,6 +6,7 @@ import email
 try:
     import unittest.mock as mock
 except ImportError:
+    # py2
     import mock
 
 
