@@ -1,7 +1,7 @@
-*.pyc
 .cache
-.eggs/
-.tox/
-*.egg-info/
-_version.py
 .coverage
+*.egg-info/
+.eggs/
+*.pyc
+.tox/
+_version.py
