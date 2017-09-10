@@ -89,5 +89,5 @@ Content-Type: text/plain; charset="utf-8"
 
 http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
 
-%s''' % html2text.html2text(html.unescape(data))
+%s''' % html2text.html2text(html.unescape(data))  # noqa
     assert expected == body

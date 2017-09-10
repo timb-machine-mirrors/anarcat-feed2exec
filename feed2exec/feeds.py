@@ -27,7 +27,6 @@ except ImportError:
     # py2: should never happen as we depend on the newer one in setup.py
     import ConfigParser as configparser
 import datetime
-import email.utils as eut
 import time
 from collections import OrderedDict, namedtuple
 import errno
