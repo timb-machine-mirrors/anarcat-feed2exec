@@ -25,9 +25,11 @@ import io
 import os
 import os.path
 import re
+import sys
 
+sys.path.insert(0, os.path.dirname(__file__))
 
-from . import feed2exec
+import feed2exec
 
 
 mod = feed2exec
@@ -38,6 +40,20 @@ def read(*names, **kwargs):
         os.path.join(os.path.dirname(__file__), *names),
         encoding=kwargs.get('encoding', 'utf8')
     ).read()
+
+
+requires = [
+    "click",
+    "feedparser",
+    "html2text",
+    "requests",
+]
+
+try:
+    import configparser  # noqa
+except ImportError:
+    # py2: we need a more recent configparser
+    requires.append("configparser")
 
 
 setup(name=mod.__prog__,
@@ -65,12 +81,7 @@ setup(name=mod.__prog__,
                       'pytest-runner',
                       'sphinx',
                       ],
-      install_requires=[
-          "click",
-          "feedparser",
-          "requests",
-          "sqlite3",
-      ],
+      install_requires=requires,
       extras_require={
           "dev": [
               "pytest",

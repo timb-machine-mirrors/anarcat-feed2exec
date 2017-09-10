@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+
+<channel>
+	<title>Planet Debian</title>
+	<link>http://planet.debian.org/</link>
+	<language>en</language>
+	<description>Planet Debian - http://planet.debian.org/</description>
+
+
+<item>
+	<title>Lior Kaplan: PHP 7.2 is coming… mcrypt extension isn’t</title>
+	<guid>http://liorkaplan.wordpress.com/?p=593</guid>
+	<link>https://liorkaplan.wordpress.com/2017/09/10/php-7-2-is-coming-mcrypt-extension-isnt/</link>
+     <description>  &lt;p&gt;Early September, it’s about 3 months before PHP 7.2 is expected to be release (schedule &lt;a href=&quot;https://wiki.php.net/todo/php72&quot;&gt;here&lt;/a&gt;). One of the changes is the removal of the mcrypt extension after it was deprecated in PHP 7.1. The main problem with mcrypt extension is that it is based on libmcrypt that was abandoned by it’s upstream since 2007. That’s 10 years of keeping a library alive, moving the burden to distribution’s security teams. But this isn’t new, Remi already wrote about this two years ago: “&lt;a href=&quot;https://blog.remirepo.net/post/2015/07/07/About-libmcrypt-and-php-mcrypt&quot;&gt;About libmcrypt and php-mcrypt&lt;/a&gt;“.&lt;/p&gt;
+&lt;p&gt;But with removal of the extension from the PHP code base (about F**King time), it would force the recommendation was done “nicely” till now. And forcing people means some noise, although an alternative is PHP’s owns openssl extension. But as many migrations that require code change – it’s going slow.&lt;/p&gt;
+&lt;p&gt;The goal of this post is to reach to the PHP eco system and map the components (mostly frameworks and applications) to still require/recommend mcyrpt and to pressure them to fix it before PHP 72 is released. I’ll appreciate the readers’ help with this mapping in the comments.&lt;/p&gt;
+&lt;p&gt;For example, &lt;a href=&quot;https://laravel.com&quot;&gt;Laravel&lt;/a&gt;‘s release notes for 5.1:&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;In previous versions of Laravel, encryption was handled by the mcrypt PHP extension. However, beginning in Laravel 5.1, encryption is handled by the openssl extension, which is more actively maintained.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;Or, on the other hand Joomla 3 requirements still mentions mcrypt.&lt;/p&gt;
+&lt;p&gt;mcrypt safe:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Drupal 7 and up, see &lt;a href=&quot;https://www.drupal.org/docs/7/system-requirements/php&quot;&gt;https://www.drupal.org/docs/7/system-requirements/php&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Lavavel 5.1 and up, see &lt;a href=&quot;https://laravel.com/docs/5.1/releases&quot;&gt;https://laravel.com/docs/5.1/releases&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;mcrypt dependant:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Joomla, see &lt;a href=&quot;https://downloads.joomla.org/technical-requirements&quot;&gt;https://downloads.joomla.org/technical-requirements&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Magento, see &lt;a href=&quot;http://devdocs.magento.com/guides/v2.2/install-gde/system-requirements-tech.html&quot;&gt;http://devdocs.magento.com/guides/v2.2/install-gde/system-requirements-tech.html&lt;/a&gt;&lt;br /&gt;
+(Checking 2.2 RC release, as it just added support for PHP 7.1)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For those who really need mcrypt, it is part of &lt;a href=&quot;http://pecl.php.net/package/mcrypt&quot;&gt;PECL&lt;/a&gt;, PHP’s extensions repository. You’re welcome to compile it on your own risk.&lt;/p&gt;&lt;br /&gt;Filed under: &lt;a href=&quot;https://liorkaplan.wordpress.com/category/debian-gnulinux/&quot;&gt;Debian GNU/Linux&lt;/a&gt;, &lt;a href=&quot;https://liorkaplan.wordpress.com/category/php-2/&quot;&gt;PHP&lt;/a&gt;  &lt;a href=&quot;http://feeds.wordpress.com/1.0/gocomments/liorkaplan.wordpress.com/593/&quot; rel=&quot;nofollow&quot;&gt;&lt;img alt=&quot;&quot; border=&quot;0&quot; src=&quot;http://feeds.wordpress.com/1.0/comments/liorkaplan.wordpress.com/593/&quot; /&gt;&lt;/a&gt; </description> 
+	<pubDate>Sun, 10 Sep 2017 08:56:52 +0000</pubDate>
+
+</item> 
+<item>
+	<title>Russell Coker: Observing Reliability</title>
+	<guid>https://etbe.coker.com.au/?p=4411</guid>
+	<link>https://etbe.coker.com.au/2017/09/09/observing-reliability/</link>
+     <description>  &lt;p&gt;&lt;a href=&quot;https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/&quot;&gt;Last year I wrote about how great my latest Thinkpad is [1]&lt;/a&gt; in response to a discussion about whether a Thinkpad is still the “Rolls Royce” of laptops.&lt;/p&gt;
+&lt;p&gt;It was a few months after writing that post that I realised that I omitted an important point. After I had that laptop for about a year the DVD drive broke and made annoying clicking sounds all the time in addition to not working. I removed the DVD drive and the result was that the laptop was lighter and used less power without missing any feature that I desired. As I had installed Debian on that laptop by copying the hard drive from my previous laptop I had never used the DVD drive for any purpose. After a while I got used to my laptop being like that and the gaping hole in the side of the laptop where the DVD drive used to be didn’t even register to me. I would prefer it if Lenovo sold Thinkpads in the T series without DVD drives, but it seems that only the laptops with tiny screens are designed to lack DVD drives.&lt;/p&gt;
+&lt;p&gt;For my use of laptops this doesn’t change the conclusion of my previous post. Now the T420 has been in service for almost 4 years which makes the cost of ownership about $75 per year. $1.50 per week as a tax deductible business expense is very cheap for such a nice laptop. About a year ago I installed a SSD in that laptop, it cost me about $250 from memory and made it significantly faster while also reducing heat problems. The depreciation on the SSD about doubles the cost of ownership of the laptop, but it’s still cheaper than a mobile phone and thus not in the category of things that are expected to last for a long time – while also giving longer service than phones usually do.&lt;/p&gt;
+&lt;p&gt;One thing that’s interesting to consider is the fact that I forgot about the broken DVD drive when writing about this. I guess every review has an unspoken caveat of “this works well for me but might suck badly for your use case”. But I wonder how many other things that are noteworthy I’m forgetting to put in reviews because they just don’t impact my use. I don’t think that I am unusual in this regard, so reading multiple reviews is the sensible thing to do.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;[1]&lt;a href=&quot;https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/&quot;&gt; https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;yarpp-related-rss&quot;&gt;
+&lt;p&gt;Related posts:&lt;/p&gt;&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/&quot; rel=&quot;bookmark&quot; title=&quot;Is a Thinkpad Still Like a Rolls-Royce&quot;&gt;Is a Thinkpad Still Like a Rolls-Royce &lt;/a&gt; &lt;small&gt;For a long time the Thinkpad has been widely regarded...&lt;/small&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://etbe.coker.com.au/2007/05/18/pc-prices-drop-again/&quot; rel=&quot;bookmark&quot; title=&quot;PC prices drop again!&quot;&gt;PC prices drop again! &lt;/a&gt; &lt;small&gt;A few weeks ago Dell advertised new laptops for $849AU,...&lt;/small&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://etbe.coker.com.au/2009/11/23/laptop-reliability/&quot; rel=&quot;bookmark&quot; title=&quot;Laptop Reliability&quot;&gt;Laptop Reliability &lt;/a&gt; &lt;small&gt;Update: TumbleDry has a good analysis of the Square Trade...&lt;/small&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt; </description> 
+	<pubDate>Sat, 09 Sep 2017 10:18:21 +0000</pubDate>
+
+</item> 
+<item>
+	<title>François Marier: TLS Authentication on Freenode and OFTC</title>
+	<guid>http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/</guid>
+	<link>http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/</link>
+     <description>  &lt;p&gt;In order to easily authenticate with IRC networks such as
+&lt;a href=&quot;https://www.oftc.net/NickServ/CertFP/&quot;&gt;OFTC&lt;/a&gt; and
+&lt;a href=&quot;https://freenode.net/kb/answer/certfp&quot;&gt;Freenode&lt;/a&gt;, it is possible to use
+&lt;em&gt;client TLS certificates&lt;/em&gt; (also known as &lt;em&gt;SSL certificates&lt;/em&gt;). In fact, it
+turns out that it&#39;s very easy to setup both on &lt;a href=&quot;https://irssi.org/&quot;&gt;irssi&lt;/a&gt;
+and on &lt;a href=&quot;https://wiki.znc.in/&quot;&gt;znc&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;Generate_your_TLS_certificate&quot;&gt;Generate your TLS certificate&lt;/h1&gt;
+
+&lt;p&gt;On a machine with &lt;a href=&quot;http://altusmetrum.org/ChaosKey/&quot;&gt;good entropy&lt;/a&gt;, run the
+following command to create a keypair that will last for 10 years:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl req -nodes -newkey rsa:2048 -keyout user.pem -x509 -days 3650 -out user.pem -subj &quot;/CN=&amp;lt;your nick&amp;gt;&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then extract your key fingerprint using this command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl x509 -sha1 -noout -fingerprint -in user.pem | sed -e &#39;s/^.*=//;s/://g&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&quot;Share_your_fingerprints_with_NickServ&quot;&gt;Share your fingerprints with NickServ&lt;/h1&gt;
+
+&lt;p&gt;On each IRC network, do this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/msg NickServ IDENTIFY Password1!
+/msg NickServ CERT ADD &amp;lt;your fingerprint&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;in order to add your fingerprint to the access control list.&lt;/p&gt;
+
+&lt;h1 id=&quot;Configure_ZNC&quot;&gt;Configure ZNC&lt;/h1&gt;
+
+&lt;p&gt;To configure znc, start by putting the key in the right place:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cp user.pem ~/.znc/users/&amp;lt;your nick&amp;gt;/networks/oftc/moddata/cert/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and then enable the built-in &lt;a href=&quot;https://wiki.znc.in/Cert&quot;&gt;cert plugin&lt;/a&gt; for
+each network in &lt;code&gt;~/.znc/configs/znc.conf&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;Network oftc&amp;gt;
+    ...
+            LoadModule = cert
+    ...
+&amp;lt;/Network&amp;gt;
+    &amp;lt;Network freenode&amp;gt;
+    ...
+            LoadModule = cert
+    ...
+&amp;lt;/Network&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&quot;Configure_irssi&quot;&gt;Configure irssi&lt;/h1&gt;
+
+&lt;p&gt;For irssi, do the same thing but put the cert in &lt;code&gt;~/.irssi/user.pem&lt;/code&gt; and
+then change the OFTC entry in &lt;code&gt;~/.irssi/config&lt;/code&gt; to look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+  address = &quot;irc.oftc.net&quot;;
+  chatnet = &quot;OFTC&quot;;
+  port = &quot;6697&quot;;
+  use_tls = &quot;yes&quot;;
+  tls_cert = &quot;~/.irssi/user.pem&quot;;
+  tls_verify = &quot;yes&quot;;
+  autoconnect = &quot;yes&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and the Freenode one to look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+  address = &quot;chat.freenode.net&quot;;
+  chatnet = &quot;Freenode&quot;;
+  port = &quot;7000&quot;;
+  use_tls = &quot;yes&quot;;
+  tls_cert = &quot;~/.irssi/user.pem&quot;;
+  tls_verify = &quot;yes&quot;;
+  autoconnect = &quot;yes&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&#39;s it. That&#39;s all you need to replace password authentication with a
+much stronger alternative.&lt;/p&gt; </description> 
+	<pubDate>Sat, 09 Sep 2017 04:52:47 +0000</pubDate>
+
+</item> 
+<item>
+	<title>Vincent Fourmond: Extract many attachement from many mails in one go using ripmime</title>
+	<guid>tag:blogger.com,1999:blog-3019054489127059271.post-5906438607473667126</guid>
+	<link>http://vince-debian.blogspot.com/2017/09/extract-many-attachement-from-many.html</link>
+     <description>  I was recently looking for a way to extract many attachments from a series of emails. I first had a look at the &lt;a href=&quot;https://addons.mozilla.org/en-US/thunderbird/addon/attachmentextractor/&quot;&gt;AttachmentExtractor&lt;/a&gt; &lt;a href=&quot;https://www.mozilla.org/en-US/thunderbird/&quot;&gt;thunderbird&lt;/a&gt; plugin, but it seems very old and not maintained anymore. So I&#39;ve come up with another very simple solution that also works with any other mail client.&lt;p&gt;&lt;/p&gt;&lt;p&gt;Just copy all the mails you want to extract attachments from to a single (temporary) mail folder, find out which file holds the mail folder and use &lt;a href=&quot;http://www.pldaniels.com/ripmime/&quot;&gt;ripmime&lt;/a&gt; on that file (ripmime is packaged for &lt;a href=&quot;http://debian.org&quot;&gt;Debian&lt;/a&gt;). For my case, it looked like:&lt;br /&gt;
+&lt;/p&gt;&lt;pre&gt;~ ripmime -i .icedove/XXXXXXX.default/Mail/pop.xxxx/tmp -d target-directory
+&lt;/pre&gt;&lt;p&gt;Simple solution, but it saved me quite some time. Hope it helps !&lt;/p&gt; </description> 
+	<pubDate>Fri, 08 Sep 2017 21:42:29 +0000</pubDate>
+  <author>noreply@blogger.com (Vincent Fourmond)</author>  
+</item> 
+</channel>
+</rss>

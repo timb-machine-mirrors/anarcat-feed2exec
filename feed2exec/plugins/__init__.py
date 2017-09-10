@@ -80,8 +80,8 @@ def output(feed, item, lock=None):
     """
 
     params = defaultdict(str)
-    params.update(feed)
-    params.update(item)
+    params.update(dict(feed))
+    params.update(dict(item))
     if feed.get('output_args'):
         args = [x % params for x in shlex.split(feed['output_args'])]
     else:
@@ -99,7 +99,8 @@ def output(feed, item, lock=None):
 
 
 def filter(feed, item, lock=None):
-    """common code with output() should be factored out, but output() takes arguments..."""
+    """common code with output() should be factored out, but output()
+    takes arguments..."""
     plugin = feed.get('filter')
     if plugin:
         params = defaultdict(str)

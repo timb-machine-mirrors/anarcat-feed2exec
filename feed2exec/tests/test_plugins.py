@@ -1,3 +1,6 @@
+from __future__ import division, absolute_import
+from __future__ import print_function
+
 import datetime
 import email
 try:
@@ -11,10 +14,10 @@ import pytest
 from feed2exec.feeds import parse, fetch
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
-from feed2exec.tests.test_feeds import test_sample, test_db
+from feed2exec.tests.test_feeds import (test_sample, test_db, find_test_file)  # noqa
 
 
-def test_maildir(tmpdir, test_db):
+def test_maildir(tmpdir, test_db):  # noqa
     global LOCK
     LOCK = mock.MagicMock()
 
@@ -40,18 +43,19 @@ def test_maildir(tmpdir, test_db):
                               feed=feed, entry=entry, lock=LOCK)
     sample = {'name': 'maildir test',
               'url': test_sample['url'],
+              'email': 'from@example.com',
               'output': 'feed2exec.plugins.maildir',
-              'output_args': str(tmpdir.join('Mail'))}
+              'output_args': str(tmpdir.join('Mail')) + ' to@example.com'}
     body = fetch(sample['url'])
     data = parse(body, sample, lock=LOCK)
     for entry in data['entries']:
         f = plugins.output(sample, entry, lock=LOCK)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
         assert message.check()
-        assert message.read() == '''To: anarcat@curie.anarc.at
-From: maildir test <anarcat@curie.anarc.at>
+        assert message.read() == '''To: to@example.com
+From: test author <from@example.com>
 Subject: Example entry
-Date: Sun, 06 Sep 2009 21:20:00 -0000
+Date: Sun, 06 Sep 2009 16:20:00 -0000
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -62,10 +66,34 @@ Here is some text containing an interesting description.
 
 '''
 
+    sample = {'name': 'date test',
+              'url': 'file://' + find_test_file('weird-dates.xml'),
+              'email': 'from@example.com',
+              'output': 'feed2exec.plugins.maildir',
+              'output_args': str(tmpdir.join('Mail')) + ' to@example.com'}
+    body = fetch(sample['url'])
+    data = parse(body, sample)
+    for entry in data['entries']:
+        f = plugins.output(sample, entry)
+        message = tmpdir.join('Mail', sample['name'], 'new', f.key)
+        assert message.check()
+        assert '''To: to@example.com
+From: date test <to@example.com>
+Subject: test item
+Date: Sun, 03 Sep 2017 09:03:54 -0000
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+
+http://example.com/test/
+
+test descr1''' == message.read()
+
 
 def test_echo(capfd):
-    e = plugins.output(feed={'output': 'feed2exec.plugins.echo', 'output_args': 'foobar'},
-                   item={})
+    e = plugins.output(feed={'output': 'feed2exec.plugins.echo',
+                             'output_args': 'foobar'},
+                       item={})
     assert e.called
     out, err = capfd.readouterr()
     assert out == """arguments received: ('foobar',)\n"""
@@ -73,7 +101,8 @@ def test_echo(capfd):
 
 def test_error():
     # shouldn't raise
-    plugins.output(feed={'output': 'feed2exec.plugins.error', 'output_args': ''},
+    plugins.output(feed={'output': 'feed2exec.plugins.error',
+                         'output_args': ''},
                    item={})
 
 

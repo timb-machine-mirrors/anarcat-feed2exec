@@ -14,6 +14,7 @@ except ImportError:
 __description__ = '''This command will take a configured set of feeds and
 fire specific commands or plugins for every new item found in the feed.'''
 __version__ = version
+__website__ = 'https://gitlab.com/anarcat/feed2exec/'
 __prog__ = 'feed2exec'
 __author__ = 'Antoine Beaupré'
 __copyright__ = "Copyright (C) 2016  Antoine Beaupré"
@@ -32,4 +33,3 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-

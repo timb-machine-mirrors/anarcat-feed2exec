@@ -21,7 +21,11 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
-import configparser
+try:
+    import configparser
+except ImportError:
+    # py2: should never happen as we depend on the newer one in setup.py
+    import ConfigParser as configparser
 import datetime
 import time
 from collections import OrderedDict, namedtuple
@@ -70,7 +74,7 @@ def fetch(url):
 
     :param str url: the URL to fetch
 
-    :return bytes: the body of the URL
+    :return bytes, tuple: the body of the URL and the modification timestamp
 
     """
     body = ''
@@ -107,12 +111,21 @@ def parse(body, feed, lock=None):
         lock = LOCK
     logging.info('parsing feed %s (%d bytes)', feed['url'], len(body))
     data = feedparser.parse(body)
-    #logging.debug('parsed structure %s',
-    #              json.dumps(data, indent=2, sort_keys=True,
-    #                         default=safe_serial))
+    # logging.debug('parsed structure %s',
+    #               json.dumps(data, indent=2, sort_keys=True,
+    #                          default=safe_serial))
     cache = FeedCacheStorage(feed=feed['name'])
     for entry in data['entries']:
         plugins.filter(feed, entry, lock=lock)
+        # add more defaults to entry dates:
+        # 1. created_parsed of the item
+        # 2. updated_parsed of the feed
+        entry['_fake'] = entry.get('updated_parsed',
+                                   entry.get('created_parsed',
+                                             data['feed'].get('updated_parsed',
+                                                              False)))
+
+        assert entry.get('_fake') is not None
         # workaround feedparser bug:
         # https://github.com/kurtmckee/feedparser/issues/112
         guid = entry.get('id', entry.get('title'))
@@ -220,7 +233,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
     def remove(self, name):
         self.remove_section(name)
         self.commit()
-        
+
     def commit(self):
         logging.info('saving feed configuration in %s', self.path)
         make_dirs_helper(os.path.dirname(self.path))
@@ -237,7 +250,9 @@ class ConfFeedStorage(configparser.RawConfigParser):
 
 class SqliteFeedStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
-             feeds (name text, url text, output text, output_args text, filter text,
+             feeds (name text, url text,
+             output text, output_args text,
+             filter text,
              PRIMARY KEY (name))'''
     record = namedtuple('record', 'name url output output_args')
 
