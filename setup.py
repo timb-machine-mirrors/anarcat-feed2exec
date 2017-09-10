@@ -35,14 +35,6 @@ import feed2exec  # noqa
 mod = feed2exec
 
 
-requires = [
-    "click",
-    "feedparser",
-    "html2text",
-    "requests",
-    "unidecode",
-]
-
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
     'Environment :: Console',
@@ -54,6 +46,14 @@ classifiers = [
     'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.5',
+]
+
+requires = [
+    "click",
+    "feedparser",
+    "html2text",
+    "requests",
+    "unidecode",
 ]
 
 try:
