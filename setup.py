@@ -40,6 +40,7 @@ requires = [
     "feedparser",
     "html2text",
     "requests",
+    "unidecode",
 ]
 
 classifiers = [
