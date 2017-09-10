@@ -29,17 +29,10 @@ import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-import feed2exec
+import feed2exec  # noqa
 
 
 mod = feed2exec
-
-
-def read(*names, **kwargs):
-    return io.open(
-        os.path.join(os.path.dirname(__file__), *names),
-        encoding=kwargs.get('encoding', 'utf8')
-    ).read()
 
 
 requires = [
@@ -49,6 +42,19 @@ requires = [
     "requests",
 ]
 
+classifiers = [
+    'Development Status :: 2 - Pre-Alpha',
+    'Environment :: Console',
+    'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',  # noqa
+    'Natural Language :: English',
+    'Operating System :: POSIX :: Linux',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 2',
+    'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.5',
+]
+
 try:
     import configparser  # noqa
 except ImportError:
@@ -56,9 +62,16 @@ except ImportError:
     requires.append("configparser")
 
 
+def read(*names, **kwargs):
+    return io.open(
+        os.path.join(os.path.dirname(__file__), *names),
+        encoding=kwargs.get('encoding', 'utf8')
+    ).read()
+
+
 setup(name=mod.__prog__,
-      author="Antoine Beaupré",
-      author_email="anarcat@debian.org",
+      author=mod.__author__,
+      author_email=mod.__email__,
       description=mod.__description__,
       long_description=re.sub(':[a-z]+:`~?(.*?)`', r'``\1``',
                               read('README.rst')),
@@ -90,16 +103,5 @@ setup(name=mod.__prog__,
           ],
       },
       tests_require=['pytest'],
-      classifiers=[
-          'Development Status :: 2 - Pre-Alpha',
-          'Environment :: Console',
-          'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
-          'Natural Language :: English',
-          'Operating System :: POSIX :: Linux',
-          'Programming Language :: Python',
-          'Programming Language :: Python :: 2',
-          'Programming Language :: Python :: 2.7',
-          'Programming Language :: Python :: 3',
-          'Programming Language :: Python :: 3.5',
-          ],
+      classifiers=classifiers,
       )

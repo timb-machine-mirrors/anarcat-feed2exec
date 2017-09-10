@@ -17,6 +17,7 @@ __version__ = version
 __website__ = 'https://gitlab.com/anarcat/feed2exec/'
 __prog__ = 'feed2exec'
 __author__ = 'Antoine Beaupré'
+__email__ = 'anarcat@debian.org'
 __copyright__ = "Copyright (C) 2016  Antoine Beaupré"
 __license_short__ = 'AGPLv3'
 __license__ = """
