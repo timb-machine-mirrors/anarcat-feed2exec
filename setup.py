@@ -110,6 +110,7 @@ setup(name=mod.__prog__,
           ]
       },
       setup_requires=['setuptools_scm',
+                      'pytest<3.2.2',
                       'pytest-runner',
                       'pytest-cov',
                       'sphinx',
