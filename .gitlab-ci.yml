@@ -10,6 +10,5 @@ before_script:
   - pip install tox
 
 test:
-    stage: test
     script:
         tox -e py36,flake8
