@@ -66,6 +66,10 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
     msg['Message-ID'] = utils.slug(entry.get('id', entry.get('title')))
     msg['User-Agent'] = "%s (%s)" % (feed2exec.__prog__,
                                      feed2exec.__version__)
+    msg['Precedence'] = 'list'
+    msg['Auto-Submitted'] = 'auto-generated'
+    if entry.get('link'):
+        msg['Archive-At'] = entry.get('link')
     params = defaultdict(str)
     params.update(entry)
     # default to html summary if html2text filter is not enabled

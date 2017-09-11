@@ -86,6 +86,9 @@ From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Fran=C3=A7ois_Marier=3A_TLS_Authentication_on_Freenode_and_OFTC?=
 Message-ID: http-feeding-cloud-geek-nz-posts-tls_authentication_freenode_and_oftc
 User-Agent: feed2exec (???)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"

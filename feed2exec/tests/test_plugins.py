@@ -60,6 +60,9 @@ From: test author <from@example.com>
 Subject: Example entry
 Message-ID: 7bd204c6-1655-4c27-aeee-53f933c5395f
 User-Agent: feed2exec (???)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://www.example.com/blog/post/1
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -85,6 +88,9 @@ From: date test <to@example.com>
 Subject: test item
 Message-ID: http-example-com-test
 User-Agent: feed2exec (???)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://example.com/test/
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
