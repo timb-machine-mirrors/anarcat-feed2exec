@@ -12,6 +12,7 @@ except ImportError:
 
 import pytest
 
+import feed2exec
 import feed2exec.utils as utils
 from feed2exec.feeds import parse, fetch
 import feed2exec.plugins as plugins
@@ -54,12 +55,12 @@ def test_maildir(tmpdir, test_db):  # noqa
         f = plugins.output(sample, entry, lock=LOCK)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
         assert message.check()
-        assert message.read() == '''Date: Sun, 06 Sep 2009 16:20:00 -0000
+        expected = '''Date: Sun, 06 Sep 2009 16:20:00 -0000
 To: to@example.com
 From: test author <from@example.com>
 Subject: Example entry
 Message-ID: 7bd204c6-1655-4c27-aeee-53f933c5395f
-User-Agent: feed2exec (???)
+User-Agent: feed2exec (%s)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://www.example.com/blog/post/1
@@ -70,6 +71,7 @@ Content-Type: text/plain; charset="utf-8"
 http://www.example.com/blog/post/1
 
 Here is some text containing an interesting description.'''
+        assert (expected % feed2exec.__version__) == message.read()
 
     sample = {'name': 'date test',
               'url': 'file://' + utils.find_test_file('weird-dates.xml'),
@@ -87,7 +89,7 @@ To: to@example.com
 From: date test <to@example.com>
 Subject: test item
 Message-ID: http-example-com-test
-User-Agent: feed2exec (???)
+User-Agent: feed2exec (%s)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://example.com/test/
@@ -97,7 +99,7 @@ Content-Type: text/plain; charset="utf-8"
 
 http://example.com/test/
 
-test descr1''' == message.read()
+test descr1''' % feed2exec.__version__ == message.read()
 
 
 def test_echo(capfd):

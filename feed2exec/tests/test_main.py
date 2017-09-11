@@ -9,6 +9,7 @@ import json
 
 from click.testing import CliRunner
 
+import feed2exec
 import feed2exec.utils as utils
 from feed2exec.__main__ import main
 import feed2exec.plugins.html2text as html2text_plugin
@@ -85,7 +86,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Fran=C3=A7ois_Marier=3A_TLS_Authentication_on_Freenode_and_OFTC?=
 Message-ID: http-feeding-cloud-geek-nz-posts-tls_authentication_freenode_and_oftc
-User-Agent: feed2exec (???)
+User-Agent: feed2exec (%s)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
@@ -95,5 +96,5 @@ Content-Type: text/plain; charset="utf-8"
 
 http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
 
-%s''' % html2text_plugin.filter.parse(html.unescape(data))  # noqa
+%s''' % (feed2exec.__version__, html2text_plugin.filter.parse(html.unescape(data)))  # noqa
     assert expected == body
