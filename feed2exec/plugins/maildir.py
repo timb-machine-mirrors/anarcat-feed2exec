@@ -21,6 +21,8 @@ import calendar
 import datetime
 import getpass
 import email
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import logging
 import mailbox
 import os.path
@@ -31,8 +33,32 @@ import feed2exec
 import feed2exec.utils as utils
 
 
+boundary = None
+
+
 def make_message(feed, entry, to_addr=None, cls=email.message.Message):
-    msg = cls()
+    params = defaultdict(str)
+    params.update(entry)
+    cs = email.charset.Charset('utf-8')
+    cs.header_encoding = email.charset.QP
+    cs.body_encoding = email.charset.QP
+    html = MIMEText(params.get('summary', '').encode('utf-8'),
+                    _subtype='html', _charset=cs)
+    html.replace_header('Content-Transfer-Encoding', 'quoted-printable')
+    if params.get('summary_plain'):
+        # plain text version available
+        params['summary_plain'] = params.get('summary_plain')
+        body = u'''{link}
+
+{summary_plain}'''.format(**params)
+        text = MIMEText(body.encode('utf-8'),
+                        _subtype='plain', _charset=cs)
+        text.replace_header('Content-Transfer-Encoding', 'quoted-printable')
+        msg = MIMEMultipart('alternative', boundary, [text, html])
+    else:
+        msg = html
+    msg = cls(msg)
+
     # feedparser always returns UTC times and obliterates original
     # TZ information. it does do the conversion correctly,
     # however, so just assume UTC.
@@ -70,17 +96,6 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
     msg['Auto-Submitted'] = 'auto-generated'
     if entry.get('link'):
         msg['Archive-At'] = entry.get('link')
-    params = defaultdict(str)
-    params.update(entry)
-    # default to html summary if html2text filter is not enabled
-    params['summary_plain'] = params.get('summary_plain',
-                                         params.get('summary'))
-    body = u'''{link}
-
-{summary_plain}'''.format(**params)
-    msg.add_header('Content-Transfer-Encoding', 'quoted-printable')
-    msg.set_payload(body.encode('utf-8'))
-    msg.set_charset('utf-8')
     return msg, timestamp
 
 

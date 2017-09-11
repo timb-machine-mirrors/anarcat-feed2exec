@@ -55,7 +55,10 @@ def test_maildir(tmpdir, test_db):  # noqa
         f = plugins.output(sample, entry, lock=LOCK)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
         assert message.check()
-        expected = '''Date: Sun, 06 Sep 2009 16:20:00 -0000
+        expected = '''Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Date: Sun, 06 Sep 2009 16:20:00 -0000
 To: to@example.com
 From: test author <from@example.com>
 Subject: Example entry
@@ -64,11 +67,6 @@ User-Agent: feed2exec (%s)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://www.example.com/blog/post/1
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-
-http://www.example.com/blog/post/1
 
 Here is some text containing an interesting description.'''
         assert (expected % feed2exec.__version__) == message.read()
@@ -84,7 +82,10 @@ Here is some text containing an interesting description.'''
         f = plugins.output(sample, entry)
         message = tmpdir.join('Mail', sample['name'], 'new', f.key)
         assert message.check()
-        assert '''Date: Sun, 03 Sep 2017 09:03:54 -0000
+        assert '''Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Date: Sun, 03 Sep 2017 09:03:54 -0000
 To: to@example.com
 From: date test <to@example.com>
 Subject: test item
@@ -93,11 +94,6 @@ User-Agent: feed2exec (%s)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://example.com/test/
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-
-http://example.com/test/
 
 test descr1''' % feed2exec.__version__ == message.read()
 
