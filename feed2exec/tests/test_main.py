@@ -80,10 +80,10 @@ def test_basics(tmpdir_factory):
         data = "".join(xml.readlines()[60:143])
         data = data.replace("     <description>", '')
         data = data.replace("</description>", '')
-    expected = '''To: to@example.com
+    expected = '''Date: Sat, 09 Sep 2017 04:52:47 -0000
+To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Fran=C3=A7ois_Marier=3A_TLS_Authentication_on_Freenode_and_OFTC?=
-Date: Sat, 09 Sep 2017 04:52:47 -0000
 Message-ID: http-feeding-cloud-geek-nz-posts-tls_authentication_freenode_and_oftc
 User-Agent: feed2exec (???)
 Content-Transfer-Encoding: quoted-printable

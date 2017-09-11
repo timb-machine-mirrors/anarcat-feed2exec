@@ -54,10 +54,10 @@ def test_maildir(tmpdir, test_db):  # noqa
         f = plugins.output(sample, entry, lock=LOCK)
         message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
         assert message.check()
-        assert message.read() == '''To: to@example.com
+        assert message.read() == '''Date: Sun, 06 Sep 2009 16:20:00 -0000
+To: to@example.com
 From: test author <from@example.com>
 Subject: Example entry
-Date: Sun, 06 Sep 2009 16:20:00 -0000
 Message-ID: 7bd204c6-1655-4c27-aeee-53f933c5395f
 User-Agent: feed2exec (???)
 Content-Transfer-Encoding: quoted-printable
@@ -79,10 +79,10 @@ Here is some text containing an interesting description.'''
         f = plugins.output(sample, entry)
         message = tmpdir.join('Mail', sample['name'], 'new', f.key)
         assert message.check()
-        assert '''To: to@example.com
+        assert '''Date: Sun, 03 Sep 2017 09:03:54 -0000
+To: to@example.com
 From: date test <to@example.com>
 Subject: test item
-Date: Sun, 03 Sep 2017 09:03:54 -0000
 Message-ID: http-example-com-test
 User-Agent: feed2exec (???)
 Content-Transfer-Encoding: quoted-printable
