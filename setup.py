@@ -110,7 +110,6 @@ setup(name=mod.__prog__,
           ]
       },
       setup_requires=['setuptools_scm',
-                      'pytest<3.2.2',
                       'pytest-runner',
                       'pytest-cov',
                       'sphinx',
@@ -118,7 +117,7 @@ setup(name=mod.__prog__,
       install_requires=requires,
       extras_require={
           "dev": [
-              "pytest<3.2.2",
+              "pytest",
               "tox",
               "pyflakes",
           ],
