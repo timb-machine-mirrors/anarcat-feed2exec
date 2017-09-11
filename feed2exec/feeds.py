@@ -148,17 +148,20 @@ def fetch_feeds(pattern=None, parallel=False):
             processes = parallel
         pool = multiprocessing.Pool(processes=processes,
                                     initializer=_init_lock, initargs=(l,))
+    results = []
     for feed in st:
         logging.debug('found feed in DB: %s', dict(feed))
         body = fetch(feed['url'])
         if parallel:
             # if this fails silently, use plain apply() to see errors
-            pool.apply_async(parse, (body, dict(feed)))
+            results.append(pool.apply_async(parse, (body, dict(feed))))
         else:
             global LOCK
             LOCK = None
             parse(body, dict(feed))
     if parallel:
+        for result in results:
+            result.get()
         pool.close()
         pool.join()
 
