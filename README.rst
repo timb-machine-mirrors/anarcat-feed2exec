@@ -12,17 +12,17 @@ arbitrary folders.
  .. _feedparser: https://pypi.python.org/pypi/feedparser
  .. _Maildir: https://en.wikipedia.org/wiki/Maildir
 
-Example
--------
+.. marker-examples
 
-The user interface is still a bit rough, but this should get you
-started::
+Examples
+--------
 
-    feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --folder nasa
-    feed2exec fetch
+Saving feed items to a Maildir folder::
 
-An equivalent configuration file which may be more descriptive in
-``~/.config/feed2exec/feed2exec.ini``::
+  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --folder nasa
+  feed2exec fetch
+
+This creates the equivalent of this configuration file in ``~/.config/feed2exec/feed2exec.ini``::
 
   [DEFAULT]
   output = feed2exec.plugins.maildir
@@ -32,13 +32,33 @@ An equivalent configuration file which may be more descriptive in
   folder = nasa
   url = https://www.nasa.gov/rss/dyn/breaking_news.rss
 
-Another example, to send files into the Transmission program::
+
+Send new feed items to Transmission::
 
   feed2exec add "Example torrent list" http://example.com/torrents/feed --output feed2exec.plugins.exec --args 'transmission-remote marcos.anarc.at -a %(link)s -w /srv/incoming'
 
-Using a standard OPML file, you can also import multiple feeds using
-the `feed2exec import` command. See the complete :doc:`usage` page for
-more information.
+Send new feed items to Mastodon, using the `toot`_ commandline
+client::
+
+  feed2exec add "My torrent" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'toot post "%(title)s %(link)s'
+
+Send new feed items to Twitter, using the tweet commandline client
+from `python-twitter`_::
+
+  feed2exec add "My torrent" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'tweet "%(title)0.40s %(link)0.100s'
+
+Show feed contents::
+
+  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --output feed2exec.plugins.echo --args "%(title)s %(link)s"
+  feed2exec fetch
+
+.. _toot: https://github.com/ihabunek/toot/
+.. _python-twitter: https://github.com/bear/python-twitter
+
+.. marker-installation
+
+Multiple feeds can also be added with the OPML import command. See the
+:doc:`usage` document for more information.
 
 Installation
 ------------

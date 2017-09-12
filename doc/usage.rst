@@ -22,35 +22,9 @@ Options
   --config TEXT    configuration directory
   -h, --help       Show this message and exit.
 
-Examples
---------
-
-Saving feed items to a Maildir folder::
-
-  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss
-  feed2exec fetch
-
-Show feed contents::
-
-  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --output feed2exec.plugins.echo --args "%(title)s %(link)s"
-  feed2exec fetch
-
-Send new feed items to Transmission::
-
-  feed2exec add "Example torrent list" http://example.com/torrents/feed --output feed2exec.plugins.exec --args 'transmission-remote marcos.anarc.at -a %(link)s -w /srv/incoming'
-
-Send new feed items to Mastodon, using the `toot`_ commandline
-client::
-
-  feed2exec add "My torrent" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'toot post "%(title)s %(link)s'
-
-Send new feed items to Twitter, using the tweet commandline client
-from `python-twitter`_::
-
-  feed2exec add "My torrent" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'tweet "%(title)0.40s %(link)0.100s'
-
-.. _toot: https://github.com/ihabunek/toot/
-.. _python-twitter: https://github.com/bear/python-twitter
+.. include:: ../README.rst
+   :start-after: marker-examples
+   :end-before: marker-installation
 
 Commands
 --------
