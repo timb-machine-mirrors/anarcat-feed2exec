@@ -136,7 +136,7 @@ def _init_lock(l):
     LOCK = l
 
 
-def fetch_feeds(pattern=None, parallel=False, force=False):
+def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
     logging.debug('looking for feeds %s', pattern)
     st = FeedStorage(pattern=pattern)
     if parallel:
@@ -150,6 +150,10 @@ def fetch_feeds(pattern=None, parallel=False, force=False):
     for feed in st:
         logging.debug('found feed in DB: %s', dict(feed))
         body = fetch(feed['url'])
+        if catchup or feed.get('catchup'):
+            logging.info('catching up on feed %s (output plugin disabled)',
+                         feed['name'])
+            feed['output'] = None
         if parallel:
             # if this fails silently, use plain apply() to see errors
             results.append(pool.apply_async(parse,

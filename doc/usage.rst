@@ -52,6 +52,9 @@ Commands
        --force     skip reading and writing the cache and
                    will consider all entries as new
 
+       --catchup   do not run output plugins, equivalent of setting
+                   the output plugin to ``feed2exec.plugins.null``
+
        --parallel  run parsing in the background to improve
                    performance
 
@@ -171,6 +174,10 @@ The following configuration parameters are supported:
       character are replaced by ``-``) is used. For example, the feed
       named "NASA breaking news" would be stored in
       ``~/Maildir/nasa-breaking-news/``.
+
+  catchup
+      Disable output plugin execution. In this mode, the feed is still
+      read and parsed, but new entries are not added to the database.
 
 Cache database
 ~~~~~~~~~~~~~~
