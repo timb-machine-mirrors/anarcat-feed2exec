@@ -249,48 +249,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
                 yield d
 
 
-class SqliteFeedStorage(SqliteStorage):
-    sql = '''CREATE TABLE IF NOT EXISTS
-             feeds (name text, url text,
-             output text, args text,
-             filter text,
-             PRIMARY KEY (name))'''
-    record = namedtuple('record', 'name url output args')
-
-    def __init__(self, pattern=None):
-        if pattern is None:
-            self.pattern = '%'
-        else:
-            self.pattern = '%' + pattern + '%'
-        super(FeedStorage, self).__init__()
-
-    def add(self, name, url, output=None, args=None, filter=None):
-        try:
-            self.conn.execute("INSERT INTO feeds VALUES (?, ?, ?, ?, ?)",
-                              (name, url, output, args, filter))
-            self.conn.commit()  # XXX
-        except sqlite3.IntegrityError as e:
-            if 'UNIQUE' in str(e):
-                raise AttributeError('key %s already exists', name)
-
-    def remove(self, name):
-        self.conn.execute("DELETE FROM feeds WHERE name=?", (name, ))
-        self.conn.commit()  # XXX
-
-    def __contains__(self, name):
-        cur = self.conn.execute("SELECT * FROM feeds WHERE name=?", (name,))
-        return cur.fetchone() is not None
-
-    def __iter__(self):
-        cur = self.conn.cursor()
-        cur.row_factory = sqlite3.Row
-        return cur.execute("""SELECT * from feeds WHERE name
-                              LIKE ? OR url LIKE ?""",
-                           (self.pattern, self.pattern))
-
-
 FeedStorage = ConfFeedStorage
-# FeedStorage = SqliteFeedStorage
 
 
 class FeedCacheStorage(SqliteStorage):
