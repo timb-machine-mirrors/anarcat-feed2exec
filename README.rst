@@ -65,6 +65,10 @@ Installation
 
 This can be installed using the normal Python procedures::
 
+  pip install feed2exec
+
+It can also be installed from source, using::
+
   pip install .
 
 It can also be ran straight from the source, using::
