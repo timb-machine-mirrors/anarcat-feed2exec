@@ -1,11 +1,3 @@
-"""html2text filter
-================
-
-This filter plugin takes a given feed item and replaces the ``summary``
-with its HTML parsed as text.
-"""
-
-
 from __future__ import division, absolute_import
 from __future__ import print_function
 
@@ -14,6 +6,10 @@ import html2text
 
 
 class filter(object):
+    """
+    This filter plugin takes a given feed item and replaces the
+    ``summary`` with its HTML parsed as text.
+    """
 
     def __init__(self, feed=None, entry=None, *args, **kwargs):
         entry['summary_plain'] = self.parse(entry.get('summary', ''))

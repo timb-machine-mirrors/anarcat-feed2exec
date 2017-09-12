@@ -2,12 +2,13 @@
 # coding: utf-8
 
 '''
-Simple plugin interface
-=======================
+Plugin interface
+~~~~~~~~~~~~~~~~
 
 In this context, a "plugin" is simply a Python module with a defined
 interface.
 '''
+
 # Copyright (C) 2016 Antoine Beaupré <anarcat@debian.org>
 #
 # This program is free software: you can redistribute it and/or modify

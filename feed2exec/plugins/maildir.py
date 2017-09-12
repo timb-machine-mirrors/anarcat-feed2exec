@@ -1,17 +1,3 @@
-"""Maildir plugin
-==============
-
-The maildir plugin will save a feed item into a Maildir folder.
-
-The configuration is a little clunky, but it should be safe against
-hostile feeds.
-
-:param str prefix: trusted prefix path, with ~ expansion
-:param str to_addr: the email to use as "to" (defaults to USER@localdomain)
-:param dict feed: the feed
-:param dict item: the updated item
-"""
-
 from __future__ import division, absolute_import
 from __future__ import print_function
 
@@ -37,6 +23,9 @@ boundary = None
 
 
 def make_message(feed, entry, to_addr=None, cls=email.message.Message):
+    """generate a message from the feed
+
+    .. todo:: should be moved to utils?"""
     params = defaultdict(str)
     params.update(entry)
     cs = email.charset.Charset('utf-8')
@@ -100,6 +89,22 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
 
 
 class output(object):
+    """
+    The maildir plugin will save a feed item into a Maildir folder.
+
+    The configuration is a little clunky, but it should be safe
+    against hostile feeds.
+
+    :param str prefix: trusted prefix path, with ~ expansion
+
+    :param str to_addr: the email to use as "to" (defaults to
+    USER@localdomain)
+
+    :param dict feed: the feed
+
+    :param dict item: the updated item
+    """
+
     def __init__(self, prefix, to_addr=None, feed=None, entry=None, lock=None,
                  *args, **kwargs):
         prefix = os.path.expanduser(prefix)
