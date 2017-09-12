@@ -7,11 +7,11 @@ variables:
 
 before_script:
   - python -V                                   # Print out python version for debugging
-  - pip install tox
 
 test:
-    script:
-        tox -e py36,flake8
+  script:
+  - pip install tox
+  - tox -e py36,flake8
 
 pages:
   script:
