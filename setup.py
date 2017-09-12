@@ -101,7 +101,7 @@ setup(name=mod.__prog__,
           'write_to': '%s/_version.py'
           % mod.__prog__,
       },
-      packages=[mod.__prog__],
+      packages=[mod.__prog__, 'feed2exec.plugins'],
       entry_points={
           "console_scripts":
           [
