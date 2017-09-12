@@ -12,3 +12,14 @@ before_script:
 test:
     script:
         tox -e py36,flake8
+
+pages:
+  script:
+  - pip install sphinx
+  - make html
+  - mv _build/html/ public/
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
