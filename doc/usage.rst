@@ -27,7 +27,8 @@ Examples
 
 Saving feed items to a Maildir folder::
 
-  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --output feed2exec.plugins.maildir --filter feed2exec.plugins.html2text feed2exec fetch
+  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss
+  feed2exec fetch
 
 Show feed contents::
 
@@ -132,7 +133,6 @@ store new items in a maildir subfolder::
   [DEFAULT]
   output = feed2exec.plugins.maildir
   folder = feeds
-  filter = feed2exec.plugins.html2text
 
 This way individual feeds do not need to be indivudually configured.
 

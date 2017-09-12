@@ -18,9 +18,10 @@ from feed2exec.feeds import parse, fetch
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import (test_sample, test_db)  # noqa
+from feed2exec.tests.test_main import static_boundary  # noqa
 
 
-def test_maildir(tmpdir, test_db):  # noqa
+def test_maildir(tmpdir, test_db, static_boundary):  # noqa
     global LOCK
     LOCK = mock.MagicMock()
 
@@ -35,7 +36,8 @@ def test_maildir(tmpdir, test_db):  # noqa
     message = tmpdir.join('Mail', 'inbox', 'new', f.key)
     assert message.check()
     raw = message.read()
-    assert 'base64' not in raw and '==' not in raw
+    assert 'base64' not in raw
+    assert '==' not in raw
 
     # subject header hijack protection
     entry['title'] = 'subject\nX-Header-Hijack: true'
@@ -55,9 +57,8 @@ def test_maildir(tmpdir, test_db):  # noqa
         f = plugins.output(sample, entry, lock=LOCK)
         message = tmpdir.join('Mail', 'folder-test', 'new', f.key)
         assert message.check()
-        expected = '''Content-Type: text/html; charset="utf-8"
+        expected = '''Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Date: Sun, 06 Sep 2009 16:20:00 -0000
 To: to@example.com
 From: test author <from@example.com>
@@ -68,7 +69,24 @@ Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://www.example.com/blog/post/1
 
-This is the  body, which should show instead of the above'''
+--===============testboundary==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+This is the  body, which should show instead of the above
+--===============testboundary==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+http://www.example.com/blog/post/1
+
+This is the body, which should show instead of the above
+
+
+--===============testboundary==--
+'''  # noqa
         assert (expected % feed2exec.__version__) == message.read()
 
     sample = {'name': 'date test',
@@ -83,7 +101,7 @@ This is the  body, which should show instead of the above'''
         f = plugins.output(sample, entry)
         message = tmpdir.join('Mail', utils.slug(sample['name']), 'new', f.key)
         assert message.check()
-        assert '''Content-Type: text/html; charset="utf-8"
+        assert '''Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Date: Sun, 03 Sep 2017 09:03:54 -0000

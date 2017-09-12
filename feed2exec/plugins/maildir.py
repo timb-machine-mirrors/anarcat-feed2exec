@@ -17,6 +17,7 @@ import time
 
 import feed2exec
 import feed2exec.utils as utils
+from feed2exec.plugins.html2text import filter as html2text_filter
 
 
 boundary = None
@@ -39,25 +40,48 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
     cs = email.charset.Charset('utf-8')
     cs.header_encoding = email.charset.QP
     cs.body_encoding = email.charset.QP
-    content = flatten_content(params.get('content'),
-                              params.get('summary', ''))
-    html = MIMEText(content.encode('utf-8'),
-                    _subtype='html', _charset=cs)
-    html.replace_header('Content-Transfer-Encoding', 'quoted-printable')
-    content_plain = params.get('content_plain',
-                               params.get('summary_plain'))
-    if content_plain:
+    msg = MIMEMultipart('alternative', boundary)
+    html_parts = []
+    for content in params.get('content', []):
+        if content.type == 'application/xhtml+xml':
+            content.type = 'text/html'
+        basetype, subtype = content.type.split('/', 1)
+        if basetype != 'text':
+            logging.warning('unhandled mime type %s, skipped', content.type)
+            continue
+        html = MIMEText(content.value.encode('utf-8'),
+                        _subtype=subtype, _charset=cs)
+        html.replace_header('Content-Transfer-Encoding', 'quoted-printable')
+        if subtype == 'html':
+            html_parts.append(content.value)
+        msg.attach(html)
+
+    if not msg.get_payload() and params.get('summary'):
+        # no content found, fallback on summary
+        content = params.get('summary')
+        # stupid heuristic to guess if content is HTML, because
+        # feedparser sure won't tell
+        subtype = 'html' if '<' in content else 'plain'
+        part = MIMEText(content.encode('utf-8'),
+                        _subtype=subtype, _charset=cs)
+        if subtype == 'plain':
+            msg = part
+        else:
+            html_parts.append(params.get('summary'))
+            msg.attach(part)
+    for content in html_parts:
         # plain text version available
-        params['content_plain'] = content_plain
+        params['content_plain'] = html2text_filter.parse(content)
         body = u'''{link}
 
 {content_plain}'''.format(**params)
         text = MIMEText(body.encode('utf-8'),
                         _subtype='plain', _charset=cs)
         text.replace_header('Content-Transfer-Encoding', 'quoted-printable')
-        msg = MIMEMultipart('alternative', boundary, [text, html])
-    else:
-        msg = html
+        msg.attach(text)
+    payload = msg.get_payload()
+    if len(payload) == 1:
+        msg = payload.pop()
     msg = cls(msg)
 
     # feedparser always returns UTC times and obliterates original

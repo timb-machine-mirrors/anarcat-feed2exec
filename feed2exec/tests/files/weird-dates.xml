@@ -10,7 +10,7 @@
 <item>
   <title>test item</title>
   <link>http://example.com/test/</link>
-  <description>test descr1</description>
+  <description type="text/plain">test descr1</description>
   <guid>http://example.com/test/</guid>
 </item>
 </channel></rss>

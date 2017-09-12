@@ -18,7 +18,7 @@ Example
 The user interface is still a bit rough, but this should get you
 started::
 
-    feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --filter feed2exec.plugins.html2text --folder nasa
+    feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --folder nasa
     feed2exec fetch
 
 An equivalent configuration file which may be more descriptive in
@@ -27,7 +27,6 @@ An equivalent configuration file which may be more descriptive in
   [DEFAULT]
   output = feed2exec.plugins.maildir
   mailbox = '~/Maildir'
-  filter = feed2exec.plugins.html2text
 
   [NASA breaking news]
   folder = nasa
