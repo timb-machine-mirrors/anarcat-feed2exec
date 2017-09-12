@@ -30,18 +30,13 @@ import click
 import feed2exec
 from feed2exec.feeds import FeedStorage, fetch_feeds
 import feed2exec.feeds as feedsmod
+import feed2exec.logging
+
 try:
     from lxml import etree
 except ImportError:
     import xml.etree.ElementTree as etree
 import sqlite3
-
-# not sure why logging._levelNames are not exposed...
-levels = ['CRITICAL',
-          'ERROR',
-          'WARNING',
-          'INFO',
-          'DEBUG']
 
 
 @click.group(help=feed2exec.__description__,
@@ -49,19 +44,22 @@ levels = ['CRITICAL',
 @click.version_option(version=feed2exec.__version__)
 @click.option('--loglevel', 'loglevel',
               help='show only warning messages',
-              type=click.Choice(levels),
+              type=click.Choice(feed2exec.logging.levels),
               flag_value='WARNING', default=True)
 @click.option('-v', '--verbose', 'loglevel', help='be more verbose',
               flag_value='INFO')
 @click.option('-d', '--debug', 'loglevel', help='even more verbose',
               flag_value='DEBUG')
+@click.option('--syslog', help='send LEVEL logs to syslog', metavar='LEVEL',
+              type=click.Choice(feed2exec.logging.levels))
 @click.option('--config', default=feed2exec.feeds.default_config_dir(),
               help='use given directory instead of default')
 @click.pass_context
-def main(ctx, loglevel, config):
+def main(ctx, loglevel, syslog, config):
     feedsmod.SqliteStorage.path = os.path.join(config, 'feed2exec.db')
     feedsmod.ConfFeedStorage.path = os.path.join(config, 'feed2exec.ini')
-    logging.basicConfig(format='%(message)s', level=loglevel)
+    feed2exec.logging.advancedConfig(level=loglevel, syslog=syslog,
+                                     logFormat='%(messageq)s')
 
 
 @click.command(help='add a URL to the configuration')

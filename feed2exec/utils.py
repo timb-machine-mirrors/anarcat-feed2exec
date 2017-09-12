@@ -5,6 +5,7 @@
 from __future__ import absolute_import
 
 import errno
+import inspect
 import os
 import os.path
 import pkg_resources
@@ -72,3 +73,22 @@ def find_test_file(name):
             return localpath
     except pkg_resources.DistributionNotFound:
         return localpath
+
+
+def find_parent_module():
+    """find the name of a the first module calling this module
+
+    if we cannot find it, we return the current module's name
+    (__name__) instead.
+    """
+    try:
+        frame = inspect.currentframe().f_back
+        module = inspect.getmodule(frame)
+        while module is None or module.__name__ == __name__:
+            frame = frame.f_back
+            module = inspect.getmodule(frame)
+        return module.__name__
+    except AttributeError:
+        # somehow we failed to find our module
+        # return the logger module name by default
+        return __name__
