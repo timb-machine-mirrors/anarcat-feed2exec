@@ -39,6 +39,19 @@ Send new feed items to Transmission::
 
   feed2exec add "Example torrent list" http://example.com/torrents/feed --output feed2exec.plugins.exec --args 'transmission-remote marcos.anarc.at -a %(link)s -w /srv/incoming'
 
+Send new feed items to Mastodon, using the `toot`_ commandline
+client::
+
+  feed2exec add "My torrent" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'toot post "%(title)s %(link)s'
+
+Send new feed items to Twitter, using the tweet commandline client
+from `python-twitter`_::
+
+  feed2exec add "My torrent" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'tweet "%(title)0.40s %(link)0.100s'
+
+.. _toot: https://github.com/ihabunek/toot/
+.. _python-twitter: https://github.com/bear/python-twitter
+
 Commands
 --------
 
