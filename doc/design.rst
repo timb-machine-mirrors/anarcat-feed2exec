@@ -60,7 +60,7 @@ Program   Pause   OPML Retry Images Filter Exec Reply Digest
 feed2exec    ✗     ✓     ✗     ✗       ✓    ✓     ✓     ✗
 feed2imap    ✗     ✓     ✓     ✓       ✓    ✗     ✗     ✗
 rss2email    ✓     ✓     ✓     ✗       ✗    ✗     ✓     ✓
-========= ======= ==== ==== ======= ====== ==== ===== ======
+========= ======= ==== ===== ====== ====== ==== ===== ======
 
  * pause: feed reading can be disabled temporarily by user
  * retry: tolerate temporary errors. For example, ``feed2imap`` will

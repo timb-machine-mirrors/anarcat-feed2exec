@@ -16,9 +16,9 @@ fire specific commands or plugins for every new item found in the feed.'''
 __version__ = version
 __website__ = 'https://gitlab.com/anarcat/feed2exec/'
 __prog__ = 'feed2exec'
-__author__ = 'Antoine Beaupré'
+__author__ = u'Antoine Beaupré'
 __email__ = 'anarcat@debian.org'
-__copyright__ = "Copyright (C) 2016  Antoine Beaupré"
+__copyright__ = u"Copyright (C) 2016  Antoine Beaupré"
 __license_short__ = 'AGPLv3'
 __license__ = """
 This program is free software: you can redistribute it and/or modify

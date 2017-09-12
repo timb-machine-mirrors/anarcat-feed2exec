@@ -33,13 +33,16 @@ import feed2exec as mod  # noqa
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.viewcode',
+    'sphinx.ext.autodoc',      # parse API docs
+    'sphinx.ext.coverage',     # check for documentation coverage
+    'sphinx.ext.intersphinx',  # cross-references
+    'sphinx.ext.todo',         # .. todo:: items
+    'sphinx.ext.viewcode',     # show code samples
 ]
+
+# sort API documentation by source, not alphabetically
+autodoc_member_order = 'bysource'
+todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -129,14 +132,34 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'default'
+
+# on_rtd is whether we are on readthedocs.org, this line of code
+# grabbed from docs.readthedocs.org
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+# would prefer alabaster theme because it is visually lighter, but it
+# doesn't support arbitrary source links:
+# https://github.com/bitprophet/alabaster/issues/87
+if not on_rtd:  # only import and set the theme if we're building docs locally
+    try:
+        import sphinx_rtd_theme
+        html_theme = 'sphinx_rtd_theme'
+        html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+    except ImportError:  # nosec
+        pass
+
+html_context = {
+    'source_url_prefix': "https://gitlab.com/anarcat/feed2exec/blob/HEAD/doc/",
+    'source_suffix': '.rst',
+}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
 # https://alabaster.readthedocs.io/en/latest/customization.html#theme-options
-html_theme_options = {'show_related': True}
+# html_theme_options = {'show_related': True}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -435,4 +458,8 @@ epub_exclude_files = ['search.html']
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'click': ('http://click.pocoo.org/', None),
+    'jinja': ('http://jinja.pocoo.org/docs/', None),
+    'python': ('https://docs.python.org/3/', None),
+}

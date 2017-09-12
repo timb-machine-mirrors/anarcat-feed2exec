@@ -8,13 +8,10 @@
 
 Contents:
 
-.. contents::
-   :local:
-
 .. toctree::
    :maxdepth: 2
 
-   usage
-   contribute
+   Usage <usage>
    design
+   Contribute <contribute>
    license

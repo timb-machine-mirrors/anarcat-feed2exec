@@ -12,8 +12,6 @@ arbitrary folders.
  .. _feedparser: https://pypi.python.org/pypi/feedparser
  .. _Maildir: https://en.wikipedia.org/wiki/Maildir
 
-.. marker-toc
-
 Example
 -------
 
@@ -62,6 +60,11 @@ Why the name?
 There are already `feed2tweet`_ and `feed2imap`_ out there so I
 figured I would just reuse the prefix and extend *both* programs at
 once.
+
+.. _feed2tweet: https://github.com/chaica/feed2tweet
+.. _feed2imap: https://github.com/feed2imap/feed2imap/
+
+.. marker-toc
 
 Design and known issues
 -----------------------
