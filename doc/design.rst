@@ -25,7 +25,18 @@ Comparison
 ----------
 
 ``feed2exec`` is a fairly new and minimal program, so features you may
-expect from another feed reader may not be present.
+expect from another feed reader may not be present. I chose to write a
+new program because, when I started, both existing alternatives were
+in a questionable state: feed2imap was mostly abandoned and
+rss2email's maintainer was also unresponsive. Both were missing the
+features I was looking for, which was to unify my feed parsers in a
+single program: i needed something that could deliver mail, run
+commands and send tweets. The latter isn't done yet, but I am hoping
+to complete this eventually.
+
+The program may not be for everyone, however, so I made those
+comparison tables to clarify what feed2exec does compared to the
+alternatives.
 
 General information:
 
