@@ -33,7 +33,7 @@ def test_maildir(tmpdir, test_db):  # noqa
     f = maildir_plugin.output(str(tmpdir.join('Mail')),
                               to_addr='nobody@example.com',
                               feed=feed, entry=entry, lock=LOCK)
-    message = tmpdir.join('Mail', 'INBOX', 'new', f.key)
+    message = tmpdir.join('Mail', 'inbox', 'new', f.key)
     assert message.check()
     raw = message.read()
     assert 'base64' not in raw and '==' not in raw
@@ -47,13 +47,14 @@ def test_maildir(tmpdir, test_db):  # noqa
     sample = {'name': 'maildir test',
               'url': test_sample['url'],
               'email': 'from@example.com',
+              'folder': 'folder-test',
               'output': 'feed2exec.plugins.maildir',
               'output_args': str(tmpdir.join('Mail')) + ' to@example.com'}
     body = fetch(sample['url'])
     data = parse(body, sample, lock=LOCK)
     for entry in data['entries']:
         f = plugins.output(sample, entry, lock=LOCK)
-        message = tmpdir.join('Mail', 'maildir test', 'new', f.key)
+        message = tmpdir.join('Mail', 'folder-test', 'new', f.key)
         assert message.check()
         expected = '''Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
@@ -80,7 +81,7 @@ Here is some text containing an interesting description.'''
     data = parse(body, sample)
     for entry in data['entries']:
         f = plugins.output(sample, entry)
-        message = tmpdir.join('Mail', sample['name'], 'new', f.key)
+        message = tmpdir.join('Mail', utils.slug(sample['name']), 'new', f.key)
         assert message.check()
         assert '''Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0

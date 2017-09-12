@@ -30,6 +30,7 @@ An equivalent configuration file which may be more descriptive in
   filter = feed2exec.plugins.html2text
 
   [NASA breaking news]
+  folder = nasa
   url = https://www.nasa.gov/rss/dyn/breaking_news.rss
 
 Using a standard OPML file, you can also import multiple feeds using

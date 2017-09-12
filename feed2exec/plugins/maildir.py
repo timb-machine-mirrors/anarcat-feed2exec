@@ -109,7 +109,9 @@ class output(object):
                                       cls=mailbox.MaildirMessage)
         msg.set_date(timestamp)
         utils.make_dirs_helper(prefix)
-        folder = os.path.basename(os.path.abspath(feed.get('name')))
+        folder = os.path.basename(os.path.abspath(utils.slug(feed.get('name'))))  # noqa
+        # allow user to override our folder
+        folder = feed.get('folder', folder)
         path = os.path.join(prefix, folder)
         logging.debug('established folder path %s', path)
         if lock:
