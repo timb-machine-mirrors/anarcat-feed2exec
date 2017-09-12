@@ -107,19 +107,17 @@ class output(object):
     The configuration is a little clunky, but it should be safe
     against hostile feeds.
 
-    :param str prefix: trusted prefix path, with ~ expansion
-
     :param str to_addr: the email to use as "to" (defaults to
-    USER@localdomain)
+                        USER@localdomain)
 
     :param dict feed: the feed
 
     :param dict item: the updated item
     """
 
-    def __init__(self, prefix, to_addr=None, feed=None, entry=None, lock=None,
+    def __init__(self, to_addr=None, feed=None, entry=None, lock=None,
                  *args, **kwargs):
-        prefix = os.path.expanduser(prefix)
+        prefix = os.path.expanduser(feed.get('mailbox', '~/Maildir'))
         msg, timestamp = make_message(feed=feed,
                                       entry=entry,
                                       to_addr=to_addr,

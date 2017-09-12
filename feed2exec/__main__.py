@@ -72,10 +72,12 @@ def main(ctx, loglevel, config):
 @click.option('--args', metavar='ARGS',
               help="output plugin arguments, with parameter substitution")
 @click.option('--filter', help="filter plugin to call to process items")
-def add(name, url, output, args, filter):
+@click.option('--folder', help="subfolder to store email into")
+@click.option('--mailbox', help="basic mailbox to store email into")
+def add(name, url, output, args, filter, folder, mailbox):
     st = FeedStorage()
     try:
-        st.add(name, url, output, args, filter)
+        st.add(name, url, output, args, filter, folder, mailbox)
     except sqlite3.IntegrityError as e:
         logging.error('feed %s already exists: %s', name, e)
 

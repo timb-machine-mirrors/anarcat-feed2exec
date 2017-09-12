@@ -5,6 +5,10 @@ feed2exec (0.2) unstable; urgency=medium
   * custom folder support
   * documentation fixes
   * expanded email headers
+  * the ``output_args`` argument is renamed to ``args``
+  * the ``maildir`` plugin has now a sane default, and uses the
+    ``mailbox`` parameter instead of the first argument of ``output_args``
+  * add ``--force`` parameter
 
  -- Antoine Beaupré <anarcat@debian.org>  Mon, 11 Sep 2017 21:06:10 -0400
 

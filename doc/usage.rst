@@ -27,7 +27,7 @@ Examples
 
 Saving feed items to a Maildir folder::
 
-  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --output feed2exec.plugins.maildir --args /home/anarcat/Maildir/ --filter feed2exec.plugins.html2text feed2exec fetch
+  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --output feed2exec.plugins.maildir --filter feed2exec.plugins.html2text feed2exec fetch
 
 Show feed contents::
 
@@ -61,17 +61,22 @@ Commands
    The add command adds the given feed ``NAME`` that will be fetched
    from the provided ``URL``.
 
-       --output PLUGIN     use PLUGIN as an output module
+       --output PLUGIN  use PLUGIN as an output module
 
-       --args ARGS  pass arguments ARGS to the output
-                           module. supports interpolation of feed
-                           parameters using, for example ``%(title)s``
+       --args ARGS      pass arguments ARGS to the output
+                        module. supports interpolation of feed
+                        parameters using, for example ``%(title)s``
 
-       --filter PLUGIN     filter feed items through the PLUGIN filter
-                           plugin
+       --filter PLUGIN  filter feed items through the PLUGIN filter
+                        plugin
 
-   Those parameters have equivalent settings in the configuration
-   file, see below.
+       --mailbox PATH   folder to store email into, defaults to
+                        ``~/Maildir``.
+
+       --folder PATH    subfolder to store the email into
+
+   Those parameters are documented more extensively in their
+   equivalent settings in the configuration file, see below.
 
  * ls:
 
@@ -122,7 +127,7 @@ store new items in a maildir subfolder::
 
   [DEFAULT]
   output = feed2exec.plugins.maildir
-  args = /home/anarcat/Maildir/
+  folder = feeds
   filter = feed2exec.plugins.html2text
 
 This way individual feeds do not need to be indivudually configured.
@@ -149,10 +154,15 @@ The following configuration parameters are supported:
       Filter plugin to use. Equivalent to the ``--filter`` option in
       the ``add`` command.
 
+  mailbox
+      Store emails in that mailbox prefix. Defaults to ``~/Maildir``.
+
   folder
       Subfolder to use when writing to a mailbox. By default, a
       *slugified* version of the feed name (where spaces and special
-      character are replaced by ``-``) is used.
+      character are replaced by ``-``) is used. For example, the feed
+      named "NASA breaking news" would be stored in
+      ``~/Maildir/nasa-breaking-news/``.
 
 Cache database
 ~~~~~~~~~~~~~~

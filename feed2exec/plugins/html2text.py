@@ -11,7 +11,7 @@ class filter(object):
     ``content`` with its HTML parsed as text.
     """
 
-    def __init__(self, feed=None, entry=None, *args, **kwargs):
+    def __init__(self, *args, feed=None, entry=None, **kwargs):
         entry['summary_plain'] = self.parse(entry.get('summary'))
         if entry.get('content'):
             entry['content_plain'] = ''.join([self.parse(x.value)

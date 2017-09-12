@@ -24,14 +24,13 @@ def test_maildir(tmpdir, test_db):  # noqa
     global LOCK
     LOCK = mock.MagicMock()
 
-    feed = {'name': 'INBOX'}
+    feed = {'name': 'INBOX', "mailbox": str(tmpdir.join('Mail'))}
     entry = {'summary': 'body',
              'title': 'subject',
              'link': 'http://example.com/',
              'published_parsed': datetime.datetime.now()}
 
-    f = maildir_plugin.output(str(tmpdir.join('Mail')),
-                              to_addr='nobody@example.com',
+    f = maildir_plugin.output(to_addr='nobody@example.com',
                               feed=feed, entry=entry, lock=LOCK)
     message = tmpdir.join('Mail', 'inbox', 'new', f.key)
     assert message.check()
@@ -41,15 +40,15 @@ def test_maildir(tmpdir, test_db):  # noqa
     # subject header hijack protection
     entry['title'] = 'subject\nX-Header-Hijack: true'
     with pytest.raises(email.errors.HeaderParseError):
-        maildir_plugin.output(str(tmpdir.join('Mail')),
-                              to_addr='nobody@example.com',
+        maildir_plugin.output(to_addr='nobody@example.com',
                               feed=feed, entry=entry, lock=LOCK)
     sample = {'name': 'maildir test',
               'url': test_sample['url'],
               'email': 'from@example.com',
               'folder': 'folder-test',
               'output': 'feed2exec.plugins.maildir',
-              'args': str(tmpdir.join('Mail')) + ' to@example.com'}
+              'mailbox': str(tmpdir.join('Mail')),
+              'args': 'to@example.com'}
     body = fetch(sample['url'])
     data = parse(body, sample, lock=LOCK)
     for entry in data['entries']:
@@ -76,7 +75,8 @@ This is the  body, which should show instead of the above'''
               'url': 'file://' + utils.find_test_file('weird-dates.xml'),
               'email': 'from@example.com',
               'output': 'feed2exec.plugins.maildir',
-              'args': str(tmpdir.join('Mail')) + ' to@example.com'}
+              'mailbox': str(tmpdir.join('Mail')),
+              'args': 'to@example.com'}
     body = fetch(sample['url'])
     data = parse(body, sample)
     for entry in data['entries']:

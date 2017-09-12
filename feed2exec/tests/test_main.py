@@ -68,8 +68,8 @@ def test_basics(tmpdir_factory, static_boundary):
                                   'add', 'planet-debian',
                                   'file://' + test_path,
                                   '--output', 'feed2exec.plugins.maildir',
-                                  '--args',
-                                  str(maildir) + ' to@example.com',
+                                  '--args', 'to@example.com',
+                                  '--mailbox', str(maildir),
                                   '--filter', 'feed2exec.plugins.html2text'])
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'fetch'])

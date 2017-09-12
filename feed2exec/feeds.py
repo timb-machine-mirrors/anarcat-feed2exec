@@ -212,7 +212,8 @@ class ConfFeedStorage(configparser.RawConfigParser):
               self).__init__(dict_type=OrderedDict)
         self.read(self.path)
 
-    def add(self, name, url, output=None, args=None, filter=None):
+    def add(self, name, url, output=None, args=None, filter=None,
+            folder=None, mailbox=None):
         if self.has_section(name):
             raise AttributeError('key %s already exists' % name)
         d = OrderedDict()
@@ -223,6 +224,10 @@ class ConfFeedStorage(configparser.RawConfigParser):
             d['args'] = args
         if filter is not None:
             d['filter'] = filter
+        if folder is not None:
+            d['folder'] = folder
+        if mailbox is not None:
+            d['mailbox'] = mailbox
         self[name] = d
         self.commit()
 

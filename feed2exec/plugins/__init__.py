@@ -109,7 +109,7 @@ def filter(feed, item, lock=None):
         params = defaultdict(str)
         params.update(feed)
         params.update(item)
-        if feed.get('filter_args'):
+        if feed.get('args'):
             args = [x % params for x in shlex.split(feed['args'])]
         else:
             args = []
