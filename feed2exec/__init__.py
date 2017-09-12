@@ -11,8 +11,7 @@ except ImportError:
     except (ImportError, LookupError):
         version = '???'
 
-__description__ = '''This command will take a configured set of feeds and
-fire specific commands or plugins for every new item found in the feed.'''
+__description__ = 'The programmable feed reader'
 __version__ = version
 __website__ = 'https://anarcat.gitlab.io/feed2exec/'
 __prog__ = 'feed2exec'
