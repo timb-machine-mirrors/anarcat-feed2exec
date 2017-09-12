@@ -49,14 +49,15 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
     assert result.exit_code == 0
     assert result.output == ""
 
+    maildir = conf_dir.join('maildir')
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'add',
+                                  '--mailbox', str(maildir),
                                   test_nasa['name'],
                                   test_nasa['url']])
     assert conf_dir.join('feed2exec.ini').check()
     assert result.exit_code == 0
 
-    maildir = conf_dir.join('maildir')
     test_path = utils.find_test_file('planet-debian.xml')
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'add', 'planet-debian',
