@@ -1,0 +1,16 @@
+feed2exec (0.2) unstable; urgency=medium
+
+  * multipart HTML support
+  * improved plain text rendering
+  * custom folder support
+  * documentation fixes
+  * expanded email headers
+
+ -- Antoine Beaupré <anarcat@debian.org>  Mon, 11 Sep 2017 21:06:10 -0400
+
+feed2exec (0.1) unstable; urgency=medium
+
+  * first alpha release: maildir, exec support, parallelism
+
+ -- Antoine Beaupré <anarcat@debian.org>  Mon, 11 Sep 2017 21:05:13 -0400
+
