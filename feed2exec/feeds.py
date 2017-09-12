@@ -149,6 +149,9 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
     results = []
     for feed in st:
         logging.debug('found feed in DB: %s', dict(feed))
+        if feed.get('pause'):
+            logging.info('feed %s is paused, skipping', feed['name'])
+            continue
         body = fetch(feed['url'])
         if catchup or feed.get('catchup'):
             logging.info('catching up on feed %s (output plugin disabled)',

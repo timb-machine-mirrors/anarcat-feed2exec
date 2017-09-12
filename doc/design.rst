@@ -43,7 +43,7 @@ General information:
 ========= ======= ==== ==== ========
 Program   Version Date SLOC Language
 ========= ======= ==== ==== ========
-feed2exec  0.1    2017 1177  Python
+feed2exec  0.2.3  2017 1231  Python
 feed2imap  2.5    2015 3348  Ruby
 rss2email  3.9    2014 1754  Python
 ========= ======= ==== ==== ========
@@ -68,12 +68,15 @@ Features:
 ========= ======= ==== ===== ====== ====== ==== ===== ======
 Program   Pause   OPML Retry Images Filter Exec Reply Digest
 ========= ======= ==== ===== ====== ====== ==== ===== ======
-feed2exec    ✗     ✓     ✗     ✗       ✓    ✓     ✓     ✗
+feed2exec    ✓     ✓     ✗     ✗       ✓    ✓     ✓     ✗
 feed2imap    ✗     ✓     ✓     ✓       ✓    ✗     ✗     ✗
 rss2email    ✓     ✓     ✓     ✗       ✗    ✗     ✓     ✓
 ========= ======= ==== ===== ====== ====== ==== ===== ======
 
- * pause: feed reading can be disabled temporarily by user
+ * pause: feed reading can be disabled temporarily by user. in
+   feed2exec, this is implemented with the ``pause`` configuration
+   setting. the ``catchup`` option can also be used to catchup with
+   feed entries.
  * retry: tolerate temporary errors. For example, ``feed2imap`` will
    report errors only after 10 failures.
  * images: download images found in feed. ``feed2imap`` can download

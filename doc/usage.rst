@@ -179,6 +179,10 @@ The following configuration parameters are supported:
       Disable output plugin execution. In this mode, the feed is still
       read and parsed, but new entries are not added to the database.
 
+  pause
+      Completely skip feed during fetch. Similar to catchup, but
+      doesn't fetch the feed at all and doesn't touch the cache.
+
 Cache database
 ~~~~~~~~~~~~~~
 
