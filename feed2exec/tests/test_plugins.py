@@ -49,7 +49,7 @@ def test_maildir(tmpdir, test_db):  # noqa
               'email': 'from@example.com',
               'folder': 'folder-test',
               'output': 'feed2exec.plugins.maildir',
-              'output_args': str(tmpdir.join('Mail')) + ' to@example.com'}
+              'args': str(tmpdir.join('Mail')) + ' to@example.com'}
     body = fetch(sample['url'])
     data = parse(body, sample, lock=LOCK)
     for entry in data['entries']:
@@ -76,7 +76,7 @@ This is the  body, which should show instead of the above'''
               'url': 'file://' + utils.find_test_file('weird-dates.xml'),
               'email': 'from@example.com',
               'output': 'feed2exec.plugins.maildir',
-              'output_args': str(tmpdir.join('Mail')) + ' to@example.com'}
+              'args': str(tmpdir.join('Mail')) + ' to@example.com'}
     body = fetch(sample['url'])
     data = parse(body, sample)
     for entry in data['entries']:
@@ -101,7 +101,7 @@ test descr1''' % feed2exec.__version__ == message.read()
 
 def test_echo(capfd):
     e = plugins.output(feed={'output': 'feed2exec.plugins.echo',
-                             'output_args': 'foobar'},
+                             'args': 'foobar'},
                        item={})
     assert e.called
     out, err = capfd.readouterr()
@@ -111,13 +111,13 @@ def test_echo(capfd):
 def test_error():
     # shouldn't raise
     plugins.output(feed={'output': 'feed2exec.plugins.error',
-                         'output_args': ''},
+                         'args': ''},
                    item={})
 
 
 def test_exec(capfd):
     e = plugins.output(feed={'output': 'feed2exec.plugins.exec',
-                             'output_args': 'seq 1'},
+                             'args': 'seq 1'},
                        item={})
     out, err = capfd.readouterr()
     assert out == "1\n"

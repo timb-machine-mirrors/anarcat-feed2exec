@@ -28,23 +28,23 @@ import pytest
 test_data = {'url': 'file:///dev/null',
              'name': 'test',
              'output': None,
-             'output_args': None}
+             'args': None}
 test_data2 = {'url': 'http://example.com/',
               'name': 'test2',
               'output': None,
-              'output_args': None}
+              'args': None}
 test_nasa = {'url': 'file://%s' % utils.find_test_file('breaking_news.rss'),
              'name': 'nasa-breaking-news',
              'output': None,
-             'output_args': None}
+             'args': None}
 test_sample = {'url': 'file://%s' % utils.find_test_file('sample.xml'),
                'name': 'sample',
                'output': 'feed2exec.plugins.echo',
-               'output_args': '1 2 3 4'}
+               'args': '1 2 3 4'}
 test_udd = {'url': 'file://%s' % utils.find_test_file('udd.rss'),
             'name': 'udd',
             'output': None,
-            'output_args': None}
+            'args': None}
 
 
 @pytest.fixture(scope='session')
@@ -124,7 +124,7 @@ def test_config(conf_path):
     assert conf_path.read() == '''[sample]
 url = %s
 output = feed2exec.plugins.echo
-output_args = 1 2 3 4
+args = 1 2 3 4
 
 ''' % test_sample['url']
     assert 'sample' in conf

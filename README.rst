@@ -26,7 +26,7 @@ An equivalent configuration file which may be more descriptive in
 
   [DEFAULT]
   output = feed2exec.plugins.maildir
-  output_args = '~/Maildir'
+  args = '~/Maildir'
   filter = feed2exec.plugins.html2text
 
   [NASA breaking news]

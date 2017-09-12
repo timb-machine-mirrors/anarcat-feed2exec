@@ -42,7 +42,7 @@ def test_basics(tmpdir_factory, static_boundary):
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'ls'])
     assert result.exit_code == 0
-    del test_data['output_args']
+    del test_data['args']
     del test_data['output']
     assert result.output.strip() == json.dumps(test_data,
                                                indent=2,
@@ -68,7 +68,7 @@ def test_basics(tmpdir_factory, static_boundary):
                                   'add', 'planet-debian',
                                   'file://' + test_path,
                                   '--output', 'feed2exec.plugins.maildir',
-                                  '--output_args',
+                                  '--args',
                                   str(maildir) + ' to@example.com',
                                   '--filter', 'feed2exec.plugins.html2text'])
     result = runner.invoke(main, ['--config', str(conf_dir),

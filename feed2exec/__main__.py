@@ -69,13 +69,13 @@ def main(ctx, loglevel, config):
 @click.argument('url')
 @click.option('--output', metavar='PLUGIN',
               help="output plugin to call on new items")
-@click.option('--output_args', metavar='ARGS',
+@click.option('--args', metavar='ARGS',
               help="output plugin arguments, with parameter substitution")
 @click.option('--filter', help="filter plugin to call to process items")
-def add(name, url, output, output_args, filter):
+def add(name, url, output, args, filter):
     st = FeedStorage()
     try:
-        st.add(name, url, output, output_args, filter)
+        st.add(name, url, output, args, filter)
     except sqlite3.IntegrityError as e:
         logging.error('feed %s already exists: %s', name, e)
 
