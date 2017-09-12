@@ -55,23 +55,36 @@ rss2email  3.9    2014 1754  Python
 
 Delivery options:
 
-========= ======= ==== ==== ========
-Program   Maildir IMAP SMTP sendmail
-========= ======= ==== ==== ========
-feed2exec    ✓     ✗     ✗     ✗
-feed2imap    ✓     ✓     ✗     ✗
-rss2email    ✗     ✓     ✓     ✓
-========= ======= ==== ==== ========
+========= ======= ==== ==== ======== ====
+Program   Maildir IMAP SMTP sendmail exec
+========= ======= ==== ==== ======== ====
+feed2exec    ✓     ✗     ✗     ✗      ✓
+feed2imap    ✓     ✓     ✗     ✗      ✗
+rss2email    ✗     ✓     ✓     ✓      ✗
+========= ======= ==== ==== ======== ====
+
+ * maildir: writing to `Maildir`_ folders. r2e has a `pull request
+   <r2e-maildir>`_ to implement maildir support, but it's not merged
+   at the time of writing
+ * IMAP: sending emails to IMAP servers
+ * SMTP: delivering emails over the SMTP protocol, with authentication
+ * sendmail: delivering local using the local MTA
+ * exec: run arbitrary comands to run on new entries. feed2imap has a
+   ``execurl`` parameter to execute commands, but it receives an
+   unparsed dump of the feed instead of individual entries
+
+ .. _Maildir: https://en.wikipedia.org/wiki/Maildir
+ .. _r2e-maildir: https://github.com/wking/rss2email/pull/21
 
 Features:
 
-========= ======= ==== ===== ====== ====== ==== ===== ======
-Program   Pause   OPML Retry Images Filter Exec Reply Digest
-========= ======= ==== ===== ====== ====== ==== ===== ======
-feed2exec    ✓     ✓     ✗     ✗       ✓    ✓     ✓     ✗
-feed2imap    ✗     ✓     ✓     ✓       ✓    ✗     ✗     ✗
-rss2email    ✓     ✓     ✓     ✗       ✗    ✗     ✓     ✓
-========= ======= ==== ===== ====== ====== ==== ===== ======
+========= ======= ==== ===== ====== ====== ===== ======
+Program   Pause   OPML Retry Images Filter Reply Digest
+========= ======= ==== ===== ====== ====== ===== ======
+feed2exec    ✓     ✓     ✗     ✗       ✓     ✓     ✗
+feed2imap    ✗     ✓     ✓     ✓       ✓     ✗     ✗
+rss2email    ✓     ✓     ✓     ✗       ✗     ✓     ✓
+========= ======= ==== ===== ====== ====== ===== ======
 
  * pause: feed reading can be disabled temporarily by user. in
    feed2exec, this is implemented with the ``pause`` configuration
@@ -84,10 +97,6 @@ rss2email    ✓     ✓     ✓     ✗       ✗    ✗     ✓     ✓
  * filter: if we can apply arbitrary filters to the feed
    output. feed2imap can apply filters to the unparsed dump of the
    feed.
- * exec: if users can configure arbitrary comands to run on new
-   entries. feed2imap has a ``execurl`` parameter to execute commands,
-   but it receives an unparsed dump of the feed instead of individual
-   entries
  * reply: if the generated email 'from' header is usable to make a
    reply. ``rss2email`` has a ``use-publisher-email`` setting (off by
    default) for this, for example. feed2exec does this by default.
