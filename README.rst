@@ -81,6 +81,11 @@ It can also be ran straight from the source, using::
                Python 2.7 seems to suffer from a header injection flaw
                that currently makes tests fail.
 
+`Source <https://gitlab.com/anarcat/feed2exec/>`_, `documentation
+<https://anarcat.gitlab.io/feed2exec/>`_ and `issues
+<https://gitlab.com/anarcat/feed2exec/issues>`_ are available on
+GitLab.
+
 Why the name?
 -------------
 
