@@ -23,13 +23,6 @@ from feed2exec.plugins.html2text import filter as html2text_filter
 boundary = None
 
 
-def flatten_content(content, default=None):
-    if isinstance(content, list):
-        if len(content) > 0:
-            return ''.join([x.value for x in content])
-    return default
-
-
 def make_message(feed, entry, to_addr=None, cls=email.message.Message):
     """generate a message from the feed
 
