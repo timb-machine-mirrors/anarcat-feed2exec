@@ -190,7 +190,7 @@ Issue triage
 ------------
 
 Issue triage is a useful contribution as well. You can review the
-`issues`_ in the GitHub project and, for each issue:
+`issues`_ in the GitLab project and, for each issue:
 
 -  try to reproduce the issue, if it is not reproducible, label it with
    ``more-info`` and explain the steps taken to reproduce
