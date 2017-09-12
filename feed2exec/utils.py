@@ -61,9 +61,14 @@ def make_dirs_helper(path):
 
 
 def find_test_file(name):
+    localpath = os.path.join(os.path.dirname(__file__), 'tests', 'files', name)
     try:
         pkg = pkg_resources.Requirement.parse(__prog__)
         path = os.path.join(__prog__, 'tests', 'files', name)
-        return pkg_resources.resource_filename(pkg, path)
+        path = pkg_resources.resource_filename(pkg, path)
+        if os.path.exists(path):
+            return path
+        else:
+            return localpath
     except pkg_resources.DistributionNotFound:
-        return os.path.join(os.path.dirname(__file__), 'tests', 'files', name)
+        return localpath
