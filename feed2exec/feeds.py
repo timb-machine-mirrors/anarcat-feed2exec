@@ -115,7 +115,7 @@ def parse(body, feed, lock=None, force=False):
         if guid in cache and not force:
             logging.debug('entry %s already seen', guid)
         else:
-            logging.info('new entry %s <%s>', guid, entry['link'])
+            logging.debug('new entry %s <%s>', guid, entry['link'])
             if plugins.output(feed, entry, lock=lock) is not None and not force:  # noqa
                 cache.add(guid)
     return data
