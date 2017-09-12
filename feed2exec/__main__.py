@@ -67,8 +67,9 @@ def main(ctx, loglevel, config):
 @click.command(help='add a URL to the configuration')
 @click.argument('name')
 @click.argument('url')
-@click.option('--output', help="output plugin to call on new items")
-@click.option('--output_args',
+@click.option('--output', metavar='PLUGIN',
+              help="output plugin to call on new items")
+@click.option('--output_args', metavar='ARGS',
               help="output plugin arguments, with parameter substitution")
 @click.option('--filter', help="filter plugin to call to process items")
 def add(name, url, output, output_args, filter):

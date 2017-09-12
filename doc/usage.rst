@@ -34,8 +34,75 @@ Show feed contents::
   feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --output feed2exec.plugins.echo --output_args "%(title)s %(link)s"
   feed2exec fetch
 
+Commands
+--------
+
+ * fetch::
+
+     fetch [--parallel | -p | --jobs N | -j N] [--force | -f] [pattern]
+
+   The fetch command iterates through all the configured feeds or
+   those matching the ``pattern`` substring if provided.
+
+       --force     skip reading and writing the cache and
+                   will consider all entries as new
+
+       --parallel  run parsing in the background to improve
+                   performance
+
+       --jobs N    run N tasks in parallel maximum. implies
+                   ``--parallel`` which defaults to the number of CPUs
+                   detected on the machine
+
+ * add::
+
+     add [--output PLUGIN [--output_args ARG [ARG [...]]] [--filter PLUGIN] NAME URL
+
+   The add command adds the given feed ``NAME`` that will be fetched
+   from the provided ``URL``.
+
+       --output PLUGIN     use PLUGIN as an output module
+
+       --output_args ARGS  pass arguments ARGS to the output
+                           module. supports interpolation of feed
+                           parameters using, for example ``%(title)s``
+
+       --filter PLUGIN     filter feed items through the PLUGIN filter
+                           plugin
+
+   Those parameters have equivalent settings in the configuration
+   file, see below.
+
+ * ls:
+
+   The ``ls`` command lists all configured feeds as JSON packets.
+
+ * rm::
+
+     rm NAME
+
+   Remove the feed named ``NAME`` from the configuration.
+
+ * import::
+
+     import PATH
+
+   Import feeds from the file named PATH. The file is expected to have
+   ``outline`` elements and only the ``title`` and ``xmlUrl`` elements
+   are imported, as ``NAME`` and ``URL`` parameters, respectively.
+
+ * export::
+
+     export PATH
+
+   Export feeds into the file named PATH. The file will use the feed
+   NAME elements as ``title`` and the URL as ``xmlUrl``.
+
 Files
 -----
+
+Configuration file
+~~~~~~~~~~~~~~~~~~
 
 Any files used by feed2exec is stored in the config directory, in
 ``~/.config/feed2exec/`` or ``$XDG_CONFIG_HOME/feed2exec``. It can
@@ -59,6 +126,36 @@ store new items in a maildir subfolder::
   filter = feed2exec.plugins.html2text
 
 This way individual feeds do not need to be indivudually configured.
+
+The following configuration parameters are supported:
+
+  name
+      Human readable name for the feed. Equivalent to the ``NAME``
+      argument in the ``add`` command.
+
+  url
+      Address to fetch the feed from. Can be HTTP or HTTPS, but also
+      ``file://`` resources for test purposes.
+
+  output
+      Output plugin to use. Equivalent to the ``--output`` option in
+      the ``add`` command.
+
+  output_args
+      Arguments to pass to the output plugin. Equivalent to the
+      ``--output_args`` option in the ``add`` command.
+
+  filter
+      Filter plugin to use. Equivalent to the ``--filter`` option in
+      the ``add`` command.
+
+  folder
+      Subfolder to use when writing to a mailbox. By default, a
+      *slugified* version of the feed name (where spaces and special
+      character are replaced by ``-``) is used.
+
+Cache database
+~~~~~~~~~~~~~~
 
 The feeds cache is stored in a ``feed2exec.sqlite`` file. It is a
 normal SQLite database and can be inspected using the normal sqlite
