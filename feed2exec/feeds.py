@@ -56,7 +56,7 @@ def fetch(url):
     exceptions should be handled by the caller
 
     :todo: this should be moved to a plugin so it can be overridden,
-    but so far I haven't found a use case for this.
+           but so far I haven't found a use case for this.
 
     :param str url: the URL to fetch
 
@@ -82,8 +82,8 @@ def parse(body, feed, lock=None, force=False):
     with the found items.
 
     :todo: this could be moved to a plugin, but then we'd need to take
-    out the cache checking logic, which would remove most of the code
-    here...
+           out the cache checking logic, which would remove most of
+           the code here...
 
     :param bytes body: the body of the feed, as returned by :func:fetch
 

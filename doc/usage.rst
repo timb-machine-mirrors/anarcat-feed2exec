@@ -39,13 +39,10 @@ Commands
 
        --force     skip reading and writing the cache and
                    will consider all entries as new
-
        --catchup   do not run output plugins, equivalent of setting
                    the output plugin to ``feed2exec.plugins.null``
-
        --parallel  run parsing in the background to improve
                    performance
-
        --jobs N    run N tasks in parallel maximum. implies
                    ``--parallel`` which defaults to the number of CPUs
                    detected on the machine
@@ -62,17 +59,13 @@ Commands
                         mailbox. use ``feed2exec.plugins.null`` to
                         just fetch the feed without fetching
                         anything.
-
        --args ARGS      pass arguments ARGS to the output
                         module. supports interpolation of feed
                         parameters using, for example ``%(title)s``
-
        --filter PLUGIN  filter feed items through the PLUGIN filter
                         plugin
-
        --mailbox PATH   folder to store email into, defaults to
                         ``~/Maildir``.
-
        --folder PATH    subfolder to store the email into
 
    Those parameters are documented more extensively in their
