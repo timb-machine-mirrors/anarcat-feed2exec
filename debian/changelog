@@ -1,3 +1,11 @@
+feed2exec (0.3) unstable; urgency=medium
+
+  * pause and catchup support
+  * PyPI release
+  * add examples to implement Twitter and Mastodon output
+
+ -- Antoine Beaupré <anarcat@debian.org>  Tue, 12 Sep 2017 13:35:38 -0400
+
 feed2exec (0.2) unstable; urgency=medium
 
   * multipart HTML support
