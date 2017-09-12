@@ -16,4 +16,5 @@ Contents:
 
    usage
    contribute
+   design
    license
