@@ -22,5 +22,3 @@ def conf_path(tmpdir_factory):
 def static_boundary(monkeypatch):
     monkeypatch.setattr(feed2exec.plugins.maildir, 'boundary',
                         '===============testboundary==')
-
-
