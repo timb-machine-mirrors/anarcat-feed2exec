@@ -32,6 +32,10 @@ An equivalent configuration file which may be more descriptive in
   folder = nasa
   url = https://www.nasa.gov/rss/dyn/breaking_news.rss
 
+Another example, to send files into the Transmission program::
+
+  feed2exec add "Example torrent list" http://example.com/torrents/feed --output feed2exec.plugins.exec --args 'transmission-remote marcos.anarc.at -a %(link)s -w /srv/incoming'
+
 Using a standard OPML file, you can also import multiple feeds using
 the `feed2exec import` command. See the complete :doc:`usage` page for
 more information.

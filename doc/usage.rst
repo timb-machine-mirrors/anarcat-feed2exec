@@ -35,6 +35,10 @@ Show feed contents::
   feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --output feed2exec.plugins.echo --args "%(title)s %(link)s"
   feed2exec fetch
 
+Send new feed items to Transmission::
+
+  feed2exec add "Example torrent list" http://example.com/torrents/feed --output feed2exec.plugins.exec --args 'transmission-remote marcos.anarc.at -a %(link)s -w /srv/incoming'
+
 Commands
 --------
 
