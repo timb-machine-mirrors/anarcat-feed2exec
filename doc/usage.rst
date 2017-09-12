@@ -16,9 +16,10 @@ Options
 -------
 
   --version        Show the version and exit.
-  --loglevel       show only warning messages
-  -v, --verbose    be more verbose
-  -d, --debug      even more verbose
+  --loglevel       choose specific log level [default: WARNING]
+  -v, --verbose    show what is happening (loglevel: VERBOSE)
+  -d, --debug      show debugging information (loglevel: DEBUG)
+  --syslog LEVEL   send LEVEL logs to syslog
   --config TEXT    configuration directory
   -h, --help       Show this message and exit.
 

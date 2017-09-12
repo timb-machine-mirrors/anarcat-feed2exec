@@ -43,13 +43,13 @@ import sqlite3
              context_settings=dict(help_option_names=['-h', '--help']))
 @click.version_option(version=feed2exec.__version__)
 @click.option('--loglevel', 'loglevel',
-              help='show only warning messages',
+              help='choose specific log level [default: WARNING]',
               type=click.Choice(feed2exec.logging.levels),
               flag_value='WARNING', default=True)
-@click.option('-v', '--verbose', 'loglevel', help='be more verbose',
-              flag_value='INFO')
-@click.option('-d', '--debug', 'loglevel', help='even more verbose',
-              flag_value='DEBUG')
+@click.option('-v', '--verbose', 'loglevel', flag_value='INFO',
+              help='show what is happening (loglevel: VERBOSE)')
+@click.option('-d', '--debug', 'loglevel', flag_value='DEBUG',
+              help='show debugging information (loglevel: DEBUG)')
 @click.option('--syslog', help='send LEVEL logs to syslog', metavar='LEVEL',
               type=click.Choice(feed2exec.logging.levels))
 @click.option('--config', default=feed2exec.feeds.default_config_dir(),
