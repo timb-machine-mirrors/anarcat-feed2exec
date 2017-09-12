@@ -98,12 +98,18 @@ def read(*names, **kwargs):
     ).read()
 
 
+def sphinx2rst(path):
+    """turn a Sphinx file into simpler RST"""
+    return re.sub(':[a-z]+:`~?(.*?)`',
+                  r'`\1 <%s\1.html>`_' % mod.__website__,
+                  read(path))
+
+
 setup(name=mod.__prog__,
       author=mod.__author__,
       author_email=mod.__email__,
       description=mod.__description__.replace('\n', ''),
-      long_description=re.sub(':[a-z]+:`~?(.*?)`', r'``\1``',
-                              read('README.rst')),
+      long_description=sphinx2rst('README.rst'),
       platforms='Debian',
       license=mod.__license_short__,
       url=mod.__website__,
