@@ -14,7 +14,7 @@ except ImportError:
 __description__ = '''This command will take a configured set of feeds and
 fire specific commands or plugins for every new item found in the feed.'''
 __version__ = version
-__website__ = 'https://gitlab.com/anarcat/feed2exec/'
+__website__ = 'https://anarcat.gitlab.io/feed2exec/'
 __prog__ = 'feed2exec'
 __author__ = u'Antoine Beaupré'
 __email__ = 'anarcat@debian.org'
