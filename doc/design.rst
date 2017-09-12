@@ -112,9 +112,6 @@ security issues.
 API, commandline interface, configuration file syntax and database
 format can be changed at any moment.
 
-No way to bypass the cache yet, use ``rm
-~/.config/feed2exec/feed2exec.db`` to clear the cache for now.
-
 The program is written mainly targeting Python 3.5 and should work in
 3.6 but hasn't been explicitly tested there. Tests fail on Python 2.7
 and the maildir handler may specifically be vulnerable to header

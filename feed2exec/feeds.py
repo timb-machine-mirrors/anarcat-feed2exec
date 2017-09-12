@@ -75,7 +75,7 @@ def fetch(url):
     return body
 
 
-def parse(body, feed, lock=None):
+def parse(body, feed, lock=None, force=False):
     """parse the body of the feed
 
     this calls the filter and output plugins and updates the cache
@@ -112,13 +112,11 @@ def parse(body, feed, lock=None):
         # workaround feedparser bug:
         # https://github.com/kurtmckee/feedparser/issues/112
         guid = entry.get('id', entry.get('title'))
-        if guid in cache:
+        if guid in cache and not force:
             logging.debug('entry %s already seen', guid)
         else:
             logging.info('new entry %s <%s>', guid, entry['link'])
-            if plugins.output(feed, entry, lock=lock):
-                cache.add(guid)
-            else:
+            if plugins.output(feed, entry, lock=lock) is not None and not force:  # noqa
                 cache.add(guid)
     return data
 
@@ -138,7 +136,7 @@ def _init_lock(l):
     LOCK = l
 
 
-def fetch_feeds(pattern=None, parallel=False):
+def fetch_feeds(pattern=None, parallel=False, force=False):
     logging.debug('looking for feeds %s', pattern)
     st = FeedStorage(pattern=pattern)
     if parallel:
@@ -154,11 +152,12 @@ def fetch_feeds(pattern=None, parallel=False):
         body = fetch(feed['url'])
         if parallel:
             # if this fails silently, use plain apply() to see errors
-            results.append(pool.apply_async(parse, (body, dict(feed))))
+            results.append(pool.apply_async(parse,
+                                            (body, dict(feed), None, force)))
         else:
             global LOCK
             LOCK = None
-            parse(body, dict(feed))
+            parse(body=body, feed=dict(feed), force=force)
     if parallel:
         for result in results:
             result.get()

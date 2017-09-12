@@ -97,6 +97,8 @@ def output(feed, item, lock=None):
         except Exception as e:
             logging.exception("plugin generated exception: %s, ignoring", e)
             return None
+    else:
+        return False
 
 
 def filter(feed, item, lock=None):

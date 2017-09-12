@@ -99,9 +99,10 @@ def rm(name):
 @click.option('--parallel', help='start jobs in parallel', is_flag=True)
 @click.option('--jobs', '-j', help='start N jobs in parallel',
               default=None, type=int, metavar='N')
-def fetch(pattern, parallel, jobs):
+@click.option('--force', '-f', is_flag=True, help='do not check cache')
+def fetch(pattern, parallel, jobs, force):
     parallel = jobs or parallel
-    fetch_feeds(pattern, parallel)
+    fetch_feeds(pattern, parallel, force=force)
 
 
 @click.command(name='import', help='import feed list from OPML file')
