@@ -21,6 +21,68 @@ datastructure in memory before processing them.
  .. _Curio: http://curio.readthedocs.io/
  .. _Trio: https://github.com/python-trio/trio
 
+Comparison
+----------
+
+``feed2exec`` is a fairly new and minimal program, so features you may
+expect from another feed reader may not be present.
+
+General information:
+
+========= ======= ==== ==== ========
+Program   Version Date SLOC Language
+========= ======= ==== ==== ========
+feed2exec  0.1    2017 1177  Python
+feed2imap  2.5    2015 3348  Ruby
+rss2email  3.9    2014 1754  Python
+========= ======= ==== ==== ========
+
+ * version: the version analysed
+ * date: the date of that release
+ * SLOC: Source Lines of Codes as counted by sloccount
+ * Language: primary programming language
+
+Delivery options:
+
+========= ======= ==== ==== ========
+Program   Maildir IMAP SMTP sendmail
+========= ======= ==== ==== ========
+feed2exec    ✓     ✗     ✗     ✗
+feed2imap    ✓     ✓     ✗     ✗
+rss2email    ✗     ✓     ✓     ✓
+========= ======= ==== ==== ========
+
+Features:
+
+========= ======= ==== ===== ====== ====== ==== ===== ======
+Program   Pause   OPML Retry Images Filter Exec Reply Digest
+========= ======= ==== ===== ====== ====== ==== ===== ======
+feed2exec    ✗     ✓     ✗     ✗       ✓    ✓     ✓     ✗
+feed2imap    ✗     ✓     ✓     ✓       ✓    ✗     ✗     ✗
+rss2email    ✓     ✓     ✓     ✗       ✗    ✗     ✓     ✓
+========= ======= ==== ==== ======= ====== ==== ===== ======
+
+ * pause: feed reading can be disabled temporarily by user
+ * retry: tolerate temporary errors. For example, ``feed2imap`` will
+   report errors only after 10 failures.
+ * images: download images found in feed. ``feed2imap`` can download
+   images and attach them to the email.
+ * filter: if we can apply arbitrary filters to the feed
+   output. feed2imap can apply filters to the unparsed dump of the
+   feed.
+ * exec: if users can configure arbitrary comands to run on new
+   entries. feed2imap has a ``execurl`` parameter to execute commands,
+   but it receives an unparsed dump of the feed instead of individual
+   entries
+ * reply: if the generated email 'from' header is usable to make a
+   reply. ``rss2email`` has a ``use-publisher-email`` setting (off by
+   default) for this, for example. feed2exec does this by default.
+ * digest: possibility of sending a single email per run instead of
+   one per entry
+
+.. note:: ``feed2imap`` supports only importing OPML feeds, exporting
+          is supported by a third-party plugin.
+
 Known issues
 ------------
 
