@@ -19,10 +19,11 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-from feed2exec.feeds import (SqliteStorage, FeedStorage,
-                             FeedCacheStorage, fetch_feeds, ConfFeedStorage)
+from feed2exec.feeds import (FeedStorage, ConfFeedStorage,
+                             FeedCacheStorage, fetch_feeds)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
+from feed2exec.tests.fixtures import (test_db, conf_path)  # noqa
 import pytest
 
 test_data = {'url': 'file:///dev/null',
@@ -47,26 +48,7 @@ test_udd = {'url': 'file://%s' % utils.find_test_file('udd.rss'),
             'args': None}
 
 
-@pytest.fixture(scope='session')
-def conf_dir(tmpdir_factory):
-    return tmpdir_factory.mktemp('feed2exec')
-
-
-@pytest.fixture(scope='session')
-def test_db(tmpdir_factory):
-    path = tmpdir_factory.mktemp('feed2exec').join('feed2exec.db')
-    SqliteStorage.path = str(path)
-    return path
-
-
-@pytest.fixture(scope='session')
-def conf_path(tmpdir_factory):
-    path = tmpdir_factory.mktemp('feed2exec').join('feed2exex.ini')
-    ConfFeedStorage.path = str(path)
-    return path
-
-
-def test_add(test_db, conf_path):
+def test_add(test_db, conf_path):  # noqa
     st = FeedStorage()
     assert test_data['name'] not in st, 'this is supposed to be empty'
     st.add(**test_data)
@@ -79,7 +61,7 @@ def test_add(test_db, conf_path):
     assert test_data['name'] not in st, 'remove works'
 
 
-def test_pattern(test_db, conf_path):
+def test_pattern(test_db, conf_path):  # noqa
     st = FeedStorage()
     st.add(**test_data)
     assert test_data['name'] in st, 'previous test should have ran'
@@ -91,7 +73,7 @@ def test_pattern(test_db, conf_path):
     assert len(feeds) == 2, 'find two entries'
 
 
-def test_cache(test_db):
+def test_cache(test_db):  # noqa
     st = FeedCacheStorage(feed=test_data['name'])
     assert 'guid' not in st
     st.add('guid')
@@ -102,7 +84,7 @@ def test_cache(test_db):
     assert 'guid' not in st
 
 
-def test_fetch(test_db, conf_path):
+def test_fetch(test_db, conf_path):  # noqa
     st = FeedStorage()
     st.add(**test_sample)
 
@@ -116,7 +98,7 @@ def test_fetch(test_db, conf_path):
     fetch_feeds()
 
 
-def test_config(conf_path):
+def test_config(conf_path):  # noqa
     conf_path.remove()
     conf = ConfFeedStorage()
     conf.add(**test_sample)

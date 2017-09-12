@@ -17,8 +17,8 @@ import feed2exec.utils as utils
 from feed2exec.feeds import parse, fetch
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
-from feed2exec.tests.test_feeds import (test_sample, test_db)  # noqa
-from feed2exec.tests.test_main import static_boundary  # noqa
+from feed2exec.tests.test_feeds import test_sample
+from feed2exec.tests.fixtures import (test_db, static_boundary)  # noqa
 
 
 def test_maildir(tmpdir, test_db, static_boundary):  # noqa

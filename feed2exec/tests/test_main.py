@@ -7,13 +7,13 @@ from __future__ import print_function
 import json
 
 from click.testing import CliRunner
-import pytest
 
 import feed2exec
 import feed2exec.utils as utils
 from feed2exec.__main__ import main
 from feed2exec.tests.test_feeds import (ConfFeedStorage, test_sample,
                                         test_nasa)
+from feed2exec.tests.fixtures import static_boundary  # noqa
 
 
 def test_usage():
@@ -22,13 +22,7 @@ def test_usage():
     assert result.exit_code == 0
 
 
-@pytest.fixture(autouse=True)
-def static_boundary(monkeypatch):
-    monkeypatch.setattr(feed2exec.plugins.maildir, 'boundary',
-                        '===============testboundary==')
-
-
-def test_basics(tmpdir_factory, static_boundary):
+def test_basics(tmpdir_factory, static_boundary):  # noqa
     conf_dir = tmpdir_factory.mktemp('main')
     conf_path = conf_dir.join('feed2exec.ini')
     ConfFeedStorage.path = str(conf_path)
