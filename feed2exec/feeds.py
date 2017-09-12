@@ -147,7 +147,7 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
         pool = multiprocessing.Pool(processes=processes,
                                     initializer=_init_lock, initargs=(l,))
     results = []
-    for feed in st:
+    for i, feed in enumerate(st):
         logging.debug('found feed in DB: %s', dict(feed))
         if feed.get('pause'):
             logging.info('feed %s is paused, skipping', feed['name'])
@@ -170,6 +170,7 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
             result.get()
         pool.close()
         pool.join()
+    logging.info('%d feeds processed', i+1)
 
 
 def safe_serial(obj):
