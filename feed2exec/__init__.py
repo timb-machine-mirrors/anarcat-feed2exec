@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 try:
-    from _version import version
+    from ._version import version
 except ImportError:
     try:
         from setuptools_scm import get_version
