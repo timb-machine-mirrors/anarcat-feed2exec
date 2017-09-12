@@ -62,6 +62,16 @@ requires = [
     "unidecode",
 ]
 
+packages = [
+    mod.__prog__,
+    'feed2exec.plugins',
+    'feed2exec.tests',
+]
+
+package_data = {
+    'feed2exec.tests': ['files/*'],
+}
+
 try:
     import configparser  # noqa
 except ImportError:
@@ -101,7 +111,8 @@ setup(name=mod.__prog__,
           'write_to': '%s/_version.py'
           % mod.__prog__,
       },
-      packages=[mod.__prog__, 'feed2exec.plugins'],
+      packages=packages,
+      package_data=package_data,
       entry_points={
           "console_scripts":
           [
