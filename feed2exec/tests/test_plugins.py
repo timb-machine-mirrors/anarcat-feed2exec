@@ -69,7 +69,7 @@ Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://www.example.com/blog/post/1
 
-Here is some text containing an interesting description.'''
+This is the  body, which should show instead of the above'''
         assert (expected % feed2exec.__version__) == message.read()
 
     sample = {'name': 'date test',

@@ -22,24 +22,36 @@ import feed2exec.utils as utils
 boundary = None
 
 
+def flatten_content(content, default=None):
+    if isinstance(content, list):
+        if len(content) > 0:
+            return ''.join([x.value for x in content])
+    return default
+
+
 def make_message(feed, entry, to_addr=None, cls=email.message.Message):
     """generate a message from the feed
 
+    .. todo:: figure out a way to render multi-element Atom feeds.
     .. todo:: should be moved to utils?"""
     params = defaultdict(str)
     params.update(entry)
     cs = email.charset.Charset('utf-8')
     cs.header_encoding = email.charset.QP
     cs.body_encoding = email.charset.QP
-    html = MIMEText(params.get('summary', '').encode('utf-8'),
+    content = flatten_content(params.get('content'),
+                              params.get('summary', ''))
+    html = MIMEText(content.encode('utf-8'),
                     _subtype='html', _charset=cs)
     html.replace_header('Content-Transfer-Encoding', 'quoted-printable')
-    if params.get('summary_plain'):
+    content_plain = params.get('content_plain',
+                               params.get('summary_plain'))
+    if content_plain:
         # plain text version available
-        params['summary_plain'] = params.get('summary_plain')
+        params['content_plain'] = content_plain
         body = u'''{link}
 
-{summary_plain}'''.format(**params)
+{content_plain}'''.format(**params)
         text = MIMEText(body.encode('utf-8'),
                         _subtype='plain', _charset=cs)
         text.replace_header('Content-Transfer-Encoding', 'quoted-printable')

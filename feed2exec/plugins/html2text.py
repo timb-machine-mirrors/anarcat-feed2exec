@@ -8,18 +8,23 @@ import html2text
 class filter(object):
     """
     This filter plugin takes a given feed item and replaces the
-    ``summary`` with its HTML parsed as text.
+    ``content`` with its HTML parsed as text.
     """
 
     def __init__(self, feed=None, entry=None, *args, **kwargs):
-        entry['summary_plain'] = self.parse(entry.get('summary', ''))
+        entry['summary_plain'] = self.parse(entry.get('summary'))
+        if entry.get('content'):
+            entry['content_plain'] = ''.join([self.parse(x.value)
+                                              for x in entry.get('content')])
 
     @staticmethod
-    def parse(html):
+    def parse(html=None):
         """parse html to text according to our preferences. this is where
         subclasses can override the HTML2Text settings or use a
         completely different parser
         """
+        if html is None:
+            return None
         text_maker = html2text.HTML2Text()
         text_maker.inline_links = False
         text_maker.images_to_alt = True
