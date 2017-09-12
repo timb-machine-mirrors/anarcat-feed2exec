@@ -7,6 +7,7 @@ variables:
 
 before_script:
   - python -V                                   # Print out python version for debugging
+  - python setup.py build
 
 test:
   script:
@@ -17,7 +18,7 @@ pages:
   script:
   - pip install sphinx
   - cd doc ; make html
-  - mv doc/build/html/ public/
+  - mv build/html/ public/
   artifacts:
     paths:
     - public
