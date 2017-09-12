@@ -5,3 +5,4 @@
 *.pyc
 .tox/
 _version.py
+build
