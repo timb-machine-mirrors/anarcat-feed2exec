@@ -17,7 +17,7 @@ pages:
   script:
   - pip install sphinx
   - cd doc ; make html
-  - mv doc/_build/html/ public/
+  - mv doc/build/html/ public/
   artifacts:
     paths:
     - public
