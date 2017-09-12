@@ -13,7 +13,7 @@ import feed2exec
 import feed2exec.utils as utils
 from feed2exec.__main__ import main
 from feed2exec.tests.test_feeds import (ConfFeedStorage, test_data,
-                                        test_nasa)
+                                        test_nasa, test_sample)
 
 
 def test_usage():
@@ -35,20 +35,20 @@ def test_basics(tmpdir_factory, static_boundary):
     runner = CliRunner()
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'add',
-                                  test_data['name'],
-                                  test_data['url']])
+                                  '--output', 'feed2exec.plugins.echo',
+                                  test_sample['name'],
+                                  test_sample['url']])
     assert conf_dir.join('feed2exec.ini').check()
     assert result.exit_code == 0
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'ls'])
     assert result.exit_code == 0
-    del test_data['args']
-    del test_data['output']
-    assert result.output.strip() == json.dumps(test_data,
+    del test_sample['args']
+    assert result.output.strip() == json.dumps(test_sample,
                                                indent=2,
                                                sort_keys=True)
     result = runner.invoke(main, ['--config', str(conf_dir),
-                                  'rm', 'test'])
+                                  'rm', test_sample['name']])
     assert result.exit_code == 0
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'ls'])
@@ -67,7 +67,6 @@ def test_basics(tmpdir_factory, static_boundary):
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'add', 'planet-debian',
                                   'file://' + test_path,
-                                  '--output', 'feed2exec.plugins.maildir',
                                   '--args', 'to@example.com',
                                   '--mailbox', str(maildir),
                                   '--filter', 'feed2exec.plugins.html2text'])

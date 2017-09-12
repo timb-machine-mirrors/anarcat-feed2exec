@@ -61,7 +61,11 @@ Commands
    The add command adds the given feed ``NAME`` that will be fetched
    from the provided ``URL``.
 
-       --output PLUGIN  use PLUGIN as an output module
+       --output PLUGIN  use PLUGIN as an output module. defaults to
+                        ``feed2exec.plugins.maildir`` to store in a
+                        mailbox. use ``feed2exec.plugins.null`` to
+                        just fetch the feed without fetching
+                        anything.
 
        --args ARGS      pass arguments ARGS to the output
                         module. supports interpolation of feed

@@ -67,7 +67,8 @@ def main(ctx, loglevel, config):
 @click.command(help='add a URL to the configuration')
 @click.argument('name')
 @click.argument('url')
-@click.option('--output', metavar='PLUGIN',
+@click.option('--output', metavar='PLUGIN', show_default=True,
+              default='feed2exec.plugins.maildir',
               help="output plugin to call on new items")
 @click.option('--args', metavar='ARGS',
               help="output plugin arguments, with parameter substitution")
