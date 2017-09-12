@@ -14,4 +14,5 @@ Contents:
    Usage <usage>
    design
    Contribute <contribute>
+   changelog
    license
