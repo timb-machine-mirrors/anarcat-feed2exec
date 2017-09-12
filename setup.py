@@ -101,7 +101,7 @@ def read(*names, **kwargs):
 setup(name=mod.__prog__,
       author=mod.__author__,
       author_email=mod.__email__,
-      description=mod.__description__,
+      description=mod.__description__.replace('\n', ''),
       long_description=re.sub(':[a-z]+:`~?(.*?)`', r'``\1``',
                               read('README.rst')),
       platforms='Debian',
