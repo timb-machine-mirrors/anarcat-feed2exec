@@ -28,7 +28,6 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 
-from collections import defaultdict
 import importlib
 import logging
 import shlex
@@ -55,15 +54,18 @@ def output(feed, item, lock=None):
 
     The following keywords are usually replaced in the arguments:
 
-    * %(link)s
-    * %(title)s
-    * %(description)s
-    * %(published)s
-    * %(updated)s
-    * %(guid)s
+    * {item.link}
+    * {item.title}
+    * {item.description}
+    * {item.published}
+    * {item.updated}
+    * {item.guid}
 
     The full list of such parameters is determined by the
     :module:feedparser module.
+
+    Similarly, feed parameters from the configuration file are
+    accessible.
 
     .. caution:: None of those parameters are sanitized in any way
                  other than what feedparser does, so plugins writing
@@ -80,11 +82,9 @@ def output(feed, item, lock=None):
 
     """
 
-    params = defaultdict(str)
-    params.update(dict(feed))
-    params.update(dict(item))
     if feed.get('args'):
-        args = [x % params for x in shlex.split(feed['args'])]
+        args = [x.format(feed=feed, item=item)
+                for x in shlex.split(feed['args'])]
     else:
         args = []
     plugin = feed.get('output')
@@ -106,11 +106,9 @@ def filter(feed, item, lock=None):
     takes arguments..."""
     plugin = feed.get('filter')
     if plugin:
-        params = defaultdict(str)
-        params.update(feed)
-        params.update(item)
         if feed.get('args'):
-            args = [x % params for x in shlex.split(feed['args'])]
+            args = [x.format(feed=feed, item=item)
+                    for x in shlex.split(feed['args'])]
         else:
             args = []
         logging.debug('running filter plugin %s with arguments %s',

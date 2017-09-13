@@ -9,7 +9,7 @@ except ImportError:
     # py2
     import mock
 
-
+import feedparser
 import pytest
 
 import feed2exec
@@ -118,12 +118,13 @@ test descr1''' % feed2exec.__version__ == message.read()
 
 
 def test_echo(capfd):
+    item = feedparser.FeedParserDict({'title': 'bar'})
     e = plugins.output(feed={'output': 'feed2exec.plugins.echo',
-                             'args': 'foobar'},
-                       item={})
+                             'args': 'foo {item[title]}'},
+                       item=item)
     assert e.called
     out, err = capfd.readouterr()
-    assert out == """arguments received: ('foobar',)\n"""
+    assert out == """arguments received: ('foo', 'bar')\n"""
 
 
 def test_error():

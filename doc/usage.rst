@@ -61,7 +61,7 @@ Commands
                         anything.
        --args ARGS      pass arguments ARGS to the output
                         module. supports interpolation of feed
-                        parameters using, for example ``%(title)s``
+                        parameters using, for example ``{title}``
        --filter PLUGIN  filter feed items through the PLUGIN filter
                         plugin
        --mailbox PATH   folder to store email into, defaults to
@@ -111,7 +111,7 @@ commandline will yield the following configuration::
   [NASA breaking news]
   url = https://www.nasa.gov/rss/dyn/breaking_news.rss
   output = feed2exec.plugins.echo
-  args = %(title)s %(link)s
+  args = {title} {link}
 
 Naturally, those settings can be changed directly in the config
 file. Note that there is a ``[DEFAULT]`` section that can be used to

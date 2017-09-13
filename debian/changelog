@@ -1,3 +1,13 @@
+feed2exec (0.4) unstable; urgency=medium
+
+  * switch to Python 3 style format strings: you need to switch from
+    %(link) to {item.link}. feed parameter are also available, for example
+    {feed.name} or {feed.url}. see this document for details on the syntax:
+    https://docs.python.org/3/library/string.html#format-string-syntax
+  * add syslog support
+
+ -- Antoine Beaupré <anarcat@debian.org>  Wed, 13 Sep 2017 08:48:09 -0400
+
 feed2exec (0.3) unstable; urgency=medium
 
   * pause and catchup support
