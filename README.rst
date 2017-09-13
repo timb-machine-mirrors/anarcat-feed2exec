@@ -45,7 +45,7 @@ client::
 Send new feed items to Twitter, using the tweet commandline client
 from `python-twitter`_::
 
-  feed2exec add "My torrent" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'tweet "%(title)0.40s %(link)0.100s'
+  feed2exec add "My torrent" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'tweet "%(title)0.40s %(link)0.100s"'
 
 Show feed contents::
 
