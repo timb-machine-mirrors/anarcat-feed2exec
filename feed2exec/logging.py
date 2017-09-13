@@ -10,6 +10,8 @@
  * monkeysign also has facilities to (ab)use the logging handlers to
    send stuff to the GTK framework (GTKLoggingHandler) and a error
    handler in GTK (in msg_exception.py)
+
+taken from ecdysis
 '''
 
 from __future__ import absolute_import

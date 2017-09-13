@@ -43,6 +43,8 @@ def slug(text):
 
     This is a simpler, one-liner version of the `slugify module
     <https://github.com/un33k/python-slugify>`_.
+
+    taken from ecdysis
     """
     return re.sub(r'\W+', '-', unidecode(text).lower().strip()).strip('-')
 
@@ -62,6 +64,7 @@ def make_dirs_helper(path):
 
 
 def find_test_file(name):
+    """need to be updated from ecdysis"""
     localpath = os.path.join(os.path.dirname(__file__), 'tests', 'files', name)
     try:
         pkg = pkg_resources.Requirement.parse(__prog__)
@@ -80,6 +83,8 @@ def find_parent_module():
 
     if we cannot find it, we return the current module's name
     (__name__) instead.
+
+    taken from ecdysis
     """
     try:
         frame = inspect.currentframe().f_back
