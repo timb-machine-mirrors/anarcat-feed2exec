@@ -164,6 +164,12 @@ The following configuration parameters are supported:
       Completely skip feed during fetch. Similar to catchup, but
       doesn't fetch the feed at all and doesn't touch the cache.
 
+Here is a more complete example configuration with all the settings
+used:
+
+.. include:: ../feed2exec.ini
+   :literal:
+
 Cache database
 ~~~~~~~~~~~~~~
 
