@@ -20,7 +20,7 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 from feed2exec.feeds import (FeedStorage, ConfFeedStorage,
-                             FeedCacheStorage, fetch_feeds)
+                             FeedCacheStorage, fetch_feeds, fetch, parse)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
 from feed2exec.tests.fixtures import (test_db, conf_path)  # noqa
@@ -96,6 +96,16 @@ def test_fetch(test_db, conf_path):  # noqa
     st.add(**test_nasa)
     st.add(**test_udd)
     fetch_feeds()
+
+
+def test_parse(test_db, conf_path):  # noqa
+    feed = {'name': 'restic',
+            'url': 'file://%s' % utils.find_test_file('restic.atom')}
+    body = fetch(feed['url'])
+    data = parse(body, feed)
+    for entry in data.entries:
+        assert entry.get('link').startswith('file://')
+        assert 'restic.atom' not in entry.get('link')
 
 
 def test_config(conf_path):  # noqa

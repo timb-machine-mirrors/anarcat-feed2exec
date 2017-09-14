@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US">
+  <id>tag:github.com,2008:/restic/restic/releases</id>
+  <link type="text/html" rel="alternate" href="/restic/restic/releases"/>
+  <link type="application/atom+xml" rel="self" href="/restic/restic/releases.atom"/>
+  <title>Tags from restic</title>
+  <updated>2017-09-13T15:14:53Z</updated>
+  <entry>
+    <id>tag:github.com,2008:Repository/19205896/v0.7.2</id>
+    <updated>2017-09-13T15:24:28Z</updated>
+    <link rel="alternate" type="text/html" href="/restic/restic/releases/tag/v0.7.2"/>
+    <title>restic 0.7.2</title>
+    <content></content>
+    <author>
+      <name>fd0</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars2.githubusercontent.com/u/123276?v=4&amp;s=60"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/19205896/v0.7.1</id>
+    <updated>2017-08-09T06:20:32Z</updated>
+    <link rel="alternate" type="text/html" href="/restic/restic/releases/tag/v0.7.1"/>
+    <title>restic 0.7.1</title>
+    <content></content>
+    <author>
+      <name>fd0</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars2.githubusercontent.com/u/123276?v=4&amp;s=60"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/19205896/v0.7.0</id>
+    <updated>2017-07-01T12:46:02Z</updated>
+    <link rel="alternate" type="text/html" href="/restic/restic/releases/tag/v0.7.0"/>
+    <title>restic 0.7.0</title>
+    <content></content>
+    <author>
+      <name>fd0</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars2.githubusercontent.com/u/123276?v=4&amp;s=60"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/19205896/v0.6.1</id>
+    <updated>2017-05-31T22:14:33Z</updated>
+    <link rel="alternate" type="text/html" href="/restic/restic/releases/tag/v0.6.1"/>
+    <title>restic 0.6.1</title>
+    <content></content>
+    <author>
+      <name>fd0</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars2.githubusercontent.com/u/123276?v=4&amp;s=60"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/19205896/v0.6.0</id>
+    <updated>2017-05-29T21:30:06Z</updated>
+    <link rel="alternate" type="text/html" href="/restic/restic/releases/tag/v0.6.0"/>
+    <title>restic 0.6.0</title>
+    <content></content>
+    <author>
+      <name>fd0</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars2.githubusercontent.com/u/123276?v=4&amp;s=60"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/19205896/v0.6.0-rc.1</id>
+    <updated>2017-05-25T13:49:05Z</updated>
+    <link rel="alternate" type="text/html" href="/restic/restic/releases/tag/v0.6.0-rc.1"/>
+    <title>restic v0.6.0-rc.1</title>
+    <content></content>
+    <author>
+      <name>fd0</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars2.githubusercontent.com/u/123276?v=4&amp;s=60"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/19205896/v0.5.0</id>
+    <updated>2017-03-11T11:47:32Z</updated>
+    <link rel="alternate" type="text/html" href="/restic/restic/releases/tag/v0.5.0"/>
+    <title>restic 0.5.0</title>
+    <content></content>
+    <author>
+      <name>fd0</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars2.githubusercontent.com/u/123276?v=4&amp;s=60"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/19205896/v0.5.0-rc.1</id>
+    <updated>2017-03-09T10:23:03Z</updated>
+    <link rel="alternate" type="text/html" href="/restic/restic/releases/tag/v0.5.0-rc.1"/>
+    <title>restic 0.5.0-rc.1</title>
+    <content></content>
+    <author>
+      <name>fd0</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars2.githubusercontent.com/u/123276?v=4&amp;s=60"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/19205896/v0.4.0</id>
+    <updated>2017-02-02T09:30:15Z</updated>
+    <link rel="alternate" type="text/html" href="/restic/restic/releases/tag/v0.4.0"/>
+    <title>restic 0.4.0</title>
+    <content></content>
+    <author>
+      <name>fd0</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars2.githubusercontent.com/u/123276?v=4&amp;s=60"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/19205896/v0.3.3</id>
+    <updated>2017-01-08T09:49:13Z</updated>
+    <link rel="alternate" type="text/html" href="/restic/restic/releases/tag/v0.3.3"/>
+    <title>restic 0.3.3</title>
+    <content></content>
+    <author>
+      <name>fd0</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars2.githubusercontent.com/u/123276?v=4&amp;s=60"/>
+  </entry>
+</feed>

@@ -33,6 +33,11 @@ import logging
 import multiprocessing
 import os
 import os.path
+try:
+    import urllib.parse as urlparse
+except ImportError:
+    # py2
+    import urlparse
 
 
 import feed2exec
@@ -75,7 +80,42 @@ def fetch(url):
     return body
 
 
+def normalize_entry(feed=None, entry=None):
+    """normalize feeds a little more than what feedparser provides.
+
+    we do the following operation:
+
+     1. add more defaults to entry dates (`issue #113
+        <https://github.com/kurtmckee/feedparser/issues/113>`_):
+
+        * created_parsed of the item
+        * updated_parsed of the feed
+
+     2. missing GUID in some feeds (`issue #112
+        <https://github.com/kurtmckee/feedparser/issues/112>`_)
+
+     3. link normalization fails on some feeds, particilarly GitHub,
+        where feeds are /foo instead of https://github.com/foo.
+        unreported for now.
+    """
+    # 1. add more defaults (issue #113)
+    entry['updated_parsed'] = entry.get('updated_parsed', entry.get('created_parsed', feed.get('updated_parsed', False)))  # noqa
+    assert entry.get('updated_parsed') is not None
+
+    # 2. add UID if missing (issue #112)
+    if not entry.get('id'):
+        entry['id'] = entry.get('title')
+
+    # 3. not completely absolute links
+    scheme, netloc, *rest = urlparse.urlsplit(entry.get('link'))
+    if not scheme:
+        # take missing scheme/host from feed URL
+        scheme, netloc, *_ = urlparse.urlsplit(feed.get('url', ''))
+        entry['link'] = urlparse.urlunsplit((scheme, netloc, *rest))
+
+
 def parse(body, feed, lock=None, force=False):
+
     """parse the body of the feed
 
     this calls the filter and output plugins and updates the cache
@@ -102,16 +142,11 @@ def parse(body, feed, lock=None, force=False):
     #                          default=safe_serial))
     cache = FeedCacheStorage(feed=feed['name'])
     for entry in data['entries']:
+        params = feed.copy()
+        params.update(data['feed'])
+        normalize_entry(feed=params, entry=entry)
         plugins.filter(feed, entry, lock=lock)
-        # add more defaults to entry dates:
-        # 1. created_parsed of the item
-        # 2. updated_parsed of the feed
-        # see https://github.com/kurtmckee/feedparser/issues/113
-        entry['updated_parsed'] = entry.get('updated_parsed', entry.get('created_parsed', data['feed'].get('updated_parsed', False)))  # noqa
-        assert entry.get('updated_parsed') is not None
-        # workaround feedparser bug:
-        # https://github.com/kurtmckee/feedparser/issues/112
-        guid = entry.get('id', entry.get('title'))
+        guid = entry['id']
         if guid in cache and not force:
             logging.debug('entry %s already seen', guid)
         else:
