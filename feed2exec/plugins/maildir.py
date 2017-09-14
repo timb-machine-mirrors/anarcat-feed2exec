@@ -157,4 +157,4 @@ class output(object):
             lock.release()
         guid = entry.get('guid', entry.get('link', '???'))
         logging.info('saved entry %s to %s',
-                     guid, os.path.join(path, self.key))
+                     guid, os.path.join(path, 'new', self.key))
