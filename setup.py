@@ -105,40 +105,41 @@ def sphinx2rst(path):
                   read(path))
 
 
-setup(name=mod.__prog__,
-      author=mod.__author__,
-      author_email=mod.__email__,
-      description=mod.__description__.replace('\n', ''),
-      long_description=sphinx2rst('README.rst'),
-      platforms='Debian',
-      license=mod.__license_short__,
-      url=mod.__website__,
-      use_scm_version={
-          'write_to': '%s/_version.py'
-          % mod.__prog__,
-      },
-      packages=packages,
-      package_data=package_data,
-      entry_points={
-          "console_scripts":
-          [
-              "%s = %s.__main__:main"
-              % (mod.__prog__, mod.__prog__),
-          ]
-      },
-      setup_requires=['setuptools_scm',
-                      'pytest-runner',
-                      'pytest-cov',
-                      'sphinx',
-                      ],
-      install_requires=requires,
-      extras_require={
-          "dev": [
-              "pytest",
-              "tox",
-              "pyflakes",
-          ],
-      },
-      tests_require=['pytest'],
-      classifiers=classifiers,
-      )
+if __name__ == '__main__':
+    setup(name=mod.__prog__,
+          author=mod.__author__,
+          author_email=mod.__email__,
+          description=mod.__description__.replace('\n', ''),
+          long_description=sphinx2rst('README.rst'),
+          platforms='Debian',
+          license=mod.__license_short__,
+          url=mod.__website__,
+          use_scm_version={
+              'write_to': '%s/_version.py'
+              % mod.__prog__,
+          },
+          packages=packages,
+          package_data=package_data,
+          entry_points={
+              "console_scripts":
+              [
+                  "%s = %s.__main__:main"
+                  % (mod.__prog__, mod.__prog__),
+              ]
+          },
+          setup_requires=['setuptools_scm',
+                          'pytest-runner',
+                          'pytest-cov',
+                          'sphinx',
+                          ],
+          install_requires=requires,
+          extras_require={
+              "dev": [
+                  "pytest",
+                  "tox",
+                  "pyflakes",
+              ],
+          },
+          tests_require=['pytest'],
+          classifiers=classifiers,
+          )
