@@ -274,6 +274,14 @@ class ConfFeedStorage(configparser.RawConfigParser):
         self[name] = d
         self.commit()
 
+    def set(self, section, option, value=None):
+        super(ConfFeedStorage, self).set(section, option, value)
+        self.commit()
+
+    def remove_option(self, section, option):
+        super(ConfFeedStorage, self).remove_option(section, option)
+        self.commit()
+
     def remove(self, name):
         self.remove_section(name)
         self.commit()

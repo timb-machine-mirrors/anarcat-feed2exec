@@ -51,6 +51,12 @@ test_restic = {'url': 'file://%s' % utils.find_test_file('restic.atom'),
                'filter': 'feed2exec.plugins.emptysummary'}
 test_dates = {'url': 'file://' + utils.find_test_file('weird-dates.xml'),
               'name': 'date test'}
+test_params = {'url': 'file://%s' % utils.find_test_file('sample.xml'),
+               'name': 'params',
+               'folder': 'test-folder',
+               'filter': 'feed2exec.plugins.echo',
+               'output': 'feed2exec.plugins.echo',
+               'args': '1 2 3 4'}
 
 
 def test_add(test_db, conf_path):  # noqa
@@ -64,6 +70,28 @@ def test_add(test_db, conf_path):  # noqa
         assert r['name'] == test_data['name'], 'iterator works'
     st.remove(test_data['name'])
     assert test_data['name'] not in st, 'remove works'
+
+
+def test_settings(test_db, conf_path):  # noqa
+    st = FeedStorage()
+    assert len(list(st)) == 0
+    st.add(**test_params)
+    assert len(list(st)) == 1
+    st.set(test_params['name'], 'catchup', 'True')
+    st.remove_option(test_params['name'], 'filter')
+    fetch_feeds()
+    assert not feed2exec.plugins.echo.output.called
+
+    st.set(test_params['name'], 'filter', test_params['filter'])
+    fetch_feeds()
+    assert feed2exec.plugins.echo.output.called
+    feed2exec.plugins.echo.output.called = False
+
+    st.set(test_params['name'], 'pause', 'True')
+    fetch_feeds()
+    assert not feed2exec.plugins.echo.output.called
+
+    st.remove(test_params['name'])
 
 
 def test_pattern(test_db, conf_path):  # noqa
