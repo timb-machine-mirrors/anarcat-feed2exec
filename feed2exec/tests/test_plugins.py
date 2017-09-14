@@ -52,10 +52,8 @@ def test_maildir(tmpdir, test_db, static_boundary):  # noqa
               'args': 'to@example.com'}
     body = fetch(sample['url'])
     data = parse(body, sample, lock=LOCK)
-    for entry in data['entries']:
-        f = plugins.output(sample, entry, lock=LOCK)
-        message = tmpdir.join('Mail', utils.slug(sample['name']), 'new', f.key)
-        assert message.check()
+    folder = utils.slug(sample['name'])
+    for message in tmpdir.join('Mail', folder, 'new').visit():
         expected = '''Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
 Date: Sun, 06 Sep 2009 16:20:00 -0000
