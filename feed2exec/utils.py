@@ -53,7 +53,26 @@ def make_dirs_helper(path):
     """Create the directory if it does not exist
 
     Return True if the directory was created, false if it was already
-    present, throw an OSError exception if it cannot be created"""
+    present, throw an OSError exception if it cannot be created
+
+    >>> import tempfile
+    >>> import os
+    >>> import os.path as p
+    >>> d = tempfile.mkdtemp()
+    >>> make_dirs_helper(p.join(d, 'foo'))
+    True
+    >>> make_dirs_helper(p.join(d, 'foo'))
+    False
+    >>> os.chmod(d, 0)
+    >>> make_dirs_helper(p.join(d, 'foo')) # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    PermissionError: [Errno 13] Permission denied: ...
+    >>> os.chmod(d, 755)
+    >>> os.rmdir(p.join(d, 'foo'))
+    >>> os.rmdir(d)
+    >>>
+    """
     try:
         os.makedirs(path)
         return True
