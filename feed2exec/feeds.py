@@ -23,11 +23,9 @@ from __future__ import print_function
 
 try:
     import configparser
-except ImportError:
+except ImportError:  # pragma: nocover
     # py2: should never happen as we depend on the newer one in setup.py
     import ConfigParser as configparser
-import datetime
-import time
 from collections import OrderedDict, namedtuple
 import logging
 import multiprocessing
@@ -35,7 +33,7 @@ import os
 import os.path
 try:
     import urllib.parse as urlparse
-except ImportError:
+except ImportError:  # pragma: nocover
     # py2
     import urlparse
 
@@ -208,17 +206,6 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
     logging.info('%d feeds processed', i+1)
 
 
-def safe_serial(obj):
-    """JSON serializer for objects not serializable by default json code"""
-
-    if isinstance(obj, (datetime.datetime, datetime.date, datetime.time)):
-        return obj.isoformat()
-    elif isinstance(obj, time.struct_time):
-        return time.strftime('%c')
-    else:
-        return str(obj)
-
-
 class SqliteStorage(object):
     sql = None
     record = None
@@ -227,17 +214,14 @@ class SqliteStorage(object):
     cache = {}
 
     def __init__(self):
-        if self.path is None:
-            logging.warning("storing feeds only in memory")
-            self.path = ":memory:"
-        else:
-            utils.make_dirs_helper(os.path.dirname(self.path))
+        assert self.path
+        utils.make_dirs_helper(os.path.dirname(self.path))
         if self.path not in SqliteStorage.cache:
             logging.info('connecting to database at %s', self.path)
             conn = sqlite3.connect(self.path)
             try:
                 conn.set_trace_callback(logging.debug)
-            except AttributeError:
+            except AttributeError:  # pragma: nocover
                 logging.debug('no logging support in sqlite')
             SqliteStorage.cache[self.path] = conn
         self.conn = SqliteStorage.cache[self.path]

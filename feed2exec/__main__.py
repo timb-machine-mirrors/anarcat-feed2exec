@@ -34,9 +34,8 @@ import feed2exec.logging
 
 try:
     from lxml import etree
-except ImportError:
+except ImportError:  # pragma: nocover
     import xml.etree.ElementTree as etree
-import sqlite3
 
 
 @click.group(help=feed2exec.__description__,
@@ -77,8 +76,8 @@ def add(name, url, output, args, filter, folder, mailbox):
     st = FeedStorage()
     try:
         st.add(name, url, output, args, filter, folder, mailbox)
-    except sqlite3.IntegrityError as e:
-        logging.error('feed %s already exists: %s', name, e)
+    except AttributeError as e:
+        raise click.BadParameter('feed %s already exists' % name)
 
 
 @click.command(help='list configured feeds')

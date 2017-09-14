@@ -1,10 +1,3 @@
-import json
-import logging
-
-
-from feed2exec.feeds import safe_serial
-
-
 class output(object):
     """
     This plugin outputs, to standard output, the arguments it receives. It
@@ -18,9 +11,6 @@ class output(object):
 
     def __init__(self, *args, **kwargs):
         print("arguments received: %s" % str(args))
-        logging.debug("kwargs: %s"
-                      % (json.dumps(kwargs, sort_keys=True,
-                                    default=safe_serial)))
         output.called = args
 
 

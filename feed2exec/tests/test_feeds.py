@@ -113,6 +113,15 @@ def test_cache(test_db):  # noqa
     assert 'guid' in st
     tmp = FeedCacheStorage()
     assert 'guid' in tmp
+    st.add('another')
+    for entry in tmp:
+        assert entry
+        if entry['guid'] == 'another':
+            break
+    else:
+        assert False, 'failed to iterate through storage'
+    for entry in FeedCacheStorage(feed=test_data['name'], guid='guid'):
+        assert 'another' not in entry['guid']
     st.remove('guid')
     assert 'guid' not in st
 

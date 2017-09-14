@@ -35,6 +35,12 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
     assert conf_dir.join('feed2exec.ini').check()
     assert result.exit_code == 0
     result = runner.invoke(main, ['--config', str(conf_dir),
+                                  'add',
+                                  test_sample['name'],
+                                  test_sample['url']])
+    assert result.exit_code == 2
+    assert 'already exists' in result.output
+    result = runner.invoke(main, ['--config', str(conf_dir),
                                   'ls'])
     assert result.exit_code == 0
     del test_sample['args']
