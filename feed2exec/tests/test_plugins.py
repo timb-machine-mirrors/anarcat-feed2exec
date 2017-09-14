@@ -47,7 +47,6 @@ def test_maildir(tmpdir, test_db, static_boundary):  # noqa
     sample = {'name': 'maildir test',
               'url': test_sample['url'],
               'email': 'from@example.com',
-              'folder': 'folder-test',
               'output': 'feed2exec.plugins.maildir',
               'mailbox': str(tmpdir.join('Mail')),
               'args': 'to@example.com'}
@@ -55,7 +54,7 @@ def test_maildir(tmpdir, test_db, static_boundary):  # noqa
     data = parse(body, sample, lock=LOCK)
     for entry in data['entries']:
         f = plugins.output(sample, entry, lock=LOCK)
-        message = tmpdir.join('Mail', 'folder-test', 'new', f.key)
+        message = tmpdir.join('Mail', utils.slug(sample['name']), 'new', f.key)
         assert message.check()
         expected = '''Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
@@ -88,33 +87,14 @@ This is the body, which should show instead of the above
 --===============testboundary==--
 '''  # noqa
         assert (expected % feed2exec.__version__) == message.read()
-
-    sample = {'name': 'date test',
-              'url': 'file://' + utils.find_test_file('weird-dates.xml'),
-              'email': 'from@example.com',
-              'output': 'feed2exec.plugins.maildir',
-              'mailbox': str(tmpdir.join('Mail')),
-              'args': 'to@example.com'}
+    # test if folder setting works
+    sample['folder'] = 'folder-test'
     body = fetch(sample['url'])
-    data = parse(body, sample)
+    data = parse(body, sample, lock=LOCK)
     for entry in data['entries']:
-        f = plugins.output(sample, entry)
-        message = tmpdir.join('Mail', utils.slug(sample['name']), 'new', f.key)
+        f = plugins.output(sample, entry, lock=LOCK)
+        message = tmpdir.join('Mail', 'folder-test', 'new', f.key)
         assert message.check()
-        assert '''Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Date: Sun, 03 Sep 2017 09:03:54 -0000
-To: to@example.com
-From: date test <to@example.com>
-Subject: test item
-Message-ID: http-example-com-test
-User-Agent: feed2exec (%s)
-Precedence: list
-Auto-Submitted: auto-generated
-Archive-At: http://example.com/test/
-
-test descr1''' % feed2exec.__version__ == message.read()
 
 
 def test_echo(capfd):

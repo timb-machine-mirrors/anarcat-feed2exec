@@ -46,6 +46,11 @@ test_udd = {'url': 'file://%s' % utils.find_test_file('udd.rss'),
             'name': 'udd',
             'output': None,
             'args': None}
+test_restic = {'url': 'file://%s' % utils.find_test_file('restic.atom'),
+               'name': 'restic',
+               'filter': 'feed2exec.plugins.emptysummary'}
+test_dates = {'url': 'file://' + utils.find_test_file('weird-dates.xml'),
+              'name': 'date test'}
 
 
 def test_add(test_db, conf_path):  # noqa
@@ -98,14 +103,20 @@ def test_fetch(test_db, conf_path):  # noqa
     fetch_feeds()
 
 
-def test_parse(test_db, conf_path):  # noqa
-    feed = {'name': 'restic',
-            'url': 'file://%s' % utils.find_test_file('restic.atom')}
-    body = fetch(feed['url'])
-    data = parse(body, feed)
+def test_normalize(test_db, conf_path):  # noqa
+    '''black box testing for :func:feeds.normalize_entry()'''
+    data = parse(fetch(test_udd['url']), test_udd)
+    for entry in data.entries:
+        assert entry.get('id')
+    data = parse(fetch(test_restic['url']), test_restic)
     for entry in data.entries:
         assert entry.get('link').startswith('file://')
         assert 'restic.atom' not in entry.get('link')
+        # also test the "github filter"
+        assert entry.get('summary')
+    data = parse(fetch(test_dates['url']), test_dates)
+    for entry in data['entries']:
+        assert entry.get('updated_parsed')
 
 
 def test_config(conf_path):  # noqa

@@ -13,7 +13,7 @@
   <author>from@example.com (test author)</author>
   <description>Here is some text containing an interesting description.</description>
   <body>This is the  body, which should show instead of the above</body>
-  <link>/blog/post/1</link>
+  <link>http://www.example.com/blog/post/1</link>
   <guid isPermaLink="true">7bd204c6-1655-4c27-aeee-53f933c5395f</guid>
   <pubDate>Sun, 06 Sep 2009 12:20:00 -0400</pubDate>
  </item>
