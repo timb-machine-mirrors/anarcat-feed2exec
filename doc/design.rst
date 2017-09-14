@@ -129,6 +129,14 @@ The program is written mainly targeting Python 3.5 and should work in
 and the maildir handler may specifically be vulnerable to header
 injections.
 
+The SQL storage layer is badly written and is known to trigger locking
+issues with SQLite when doing multiprocessing. The global LOCK object
+could be used to work around this issue but that could mean pretty bad
+coupling. A good inspiration may be the `beets story about this
+problem <http://beets.io/blog/sqlite-nightmare.html>`_. And of course,
+another alternative would be to considering something like SQLalchemy
+instead of rolling our own ORM.
+
 API documentation
 =================
 
