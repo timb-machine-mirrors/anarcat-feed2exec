@@ -7,9 +7,18 @@ feed2exec (0.4) UNRELEASED; urgency=medium
   * this allows more fancy formatting which gives us, for example,
     podcasting capabilities.
   * a sample config file documenting all parameters
-  * add syslog support
+  * add syslog support through advanced logging module from ecdysis
+  * show message when done, useful for syslog
+  * add sample config file
+  * fix feedparser URL sanitization
+  * fix issues with empty github feeds
+  * note issue with SQLite locking
+  * refactor test suite to regroup normalization tests
+  * fix displayed path for maildir messages
+  * simplify test by not running plugins twice
+  * push test coverage from 87 to 90%
 
- -- Antoine Beaupré <anarcat@debian.org>  Wed, 13 Sep 2017 08:48:09 -0400
+ -- Antoine Beaupré <anarcat@debian.org>  Thu, 14 Sep 2017 17:20:57 -0400
 
 feed2exec (0.3) unstable; urgency=medium
 
