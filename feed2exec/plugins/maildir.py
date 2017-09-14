@@ -36,6 +36,8 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
     msg = MIMEMultipart('alternative', boundary)
     html_parts = []
     for content in params.get('content', []):
+        if not content.value:
+            continue
         if content.type == 'application/xhtml+xml':
             content.type = 'text/html'
         basetype, subtype = content.type.split('/', 1)
