@@ -4,7 +4,7 @@ from __future__ import print_function, absolute_import
 
 try:
     from ._version import version
-except ImportError:
+except ImportError:  # pragma: nocover
     try:
         from setuptools_scm import get_version
         version = get_version()
