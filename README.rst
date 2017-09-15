@@ -9,8 +9,8 @@ commands, but more actions can be easily implemented through
 plugins. Email are saved as multipart plain/HTML and can be sent to
 arbitrary folders.
 
- .. _feedparser: https://pypi.python.org/pypi/feedparser
- .. _Maildir: https://en.wikipedia.org/wiki/Maildir
+.. _feedparser: https://pypi.python.org/pypi/feedparser
+.. _Maildir: https://en.wikipedia.org/wiki/Maildir
 
 .. image:: https://gitlab.com/anarcat/feed2exec/badges/master/pipeline.svg
    :alt: pipeline status
