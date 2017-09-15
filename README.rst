@@ -12,6 +12,14 @@ arbitrary folders.
  .. _feedparser: https://pypi.python.org/pypi/feedparser
  .. _Maildir: https://en.wikipedia.org/wiki/Maildir
 
+.. image:: https://gitlab.com/anarcat/feed2exec/badges/master/pipeline.svg
+   :alt: pipeline status
+   :target: https://gitlab.com/anarcat/feed2exec/commits/master
+
+.. image:: https://gitlab.com/anarcat/feed2exec/badges/master/coverage.svg
+   :alt: coverage report
+   :target: https://gitlab.com/anarcat/feed2exec/commits/master
+
 .. marker-examples
 
 Examples
