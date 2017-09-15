@@ -111,7 +111,6 @@ if __name__ == '__main__':
           author_email=mod.__email__,
           description=mod.__description__.replace('\n', ''),
           long_description=sphinx2rst('README.rst'),
-          platforms='Debian',
           license=mod.__license_short__,
           url=mod.__website__,
           use_scm_version={
