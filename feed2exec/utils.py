@@ -63,12 +63,14 @@ def make_dirs_helper(path):
     True
     >>> make_dirs_helper(p.join(d, 'foo'))
     False
-    >>> os.chmod(d, 0)
-    >>> make_dirs_helper(p.join(d, 'foo')) # doctest: +ELLIPSIS
+    >>> make_dirs_helper(p.join('/dev/null', 'foo')) # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    NotADirectoryError: [Errno 20] Not a directory: ...
+    >>> make_dirs_helper(p.join('/dev', 'foo')) # doctest: +ELLIPSIS
     Traceback (most recent call last):
         ...
     PermissionError: [Errno 13] Permission denied: ...
-    >>> os.chmod(d, 755)
     >>> os.rmdir(p.join(d, 'foo'))
     >>> os.rmdir(d)
     >>>
