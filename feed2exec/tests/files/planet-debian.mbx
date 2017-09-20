@@ -6,7 +6,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Lior_Kaplan=3A_PHP_7=2E2_is_coming=E2=80=A6_mcrypt_extension_isn=E2=80=99t?=
 Message-ID: http-liorkaplan-wordpress-com-p-593
-User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://liorkaplan.wordpress.com/2017/09/10/php-7-2-is-coming-mcrypt-extension-isnt/
@@ -14,102 +14,57 @@ Archive-At: https://liorkaplan.wordpress.com/2017/09/10/php-7-2-is-coming-mcrypt
 --===============testboundary==
 Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-<p>Early September, it=E2=80=99s about 3 months before PHP 7.2 is expected =
-to be release (schedule <a href=3D"https://wiki.php.net/todo/php72">here</a=
->). One of the changes is the removal of the mcrypt extension after it was =
-deprecated in PHP 7.1. The main problem with mcrypt extension is that it is=
- based on libmcrypt that was abandoned by it=E2=80=99s upstream since 2007.=
- That=E2=80=99s 10 years of keeping a library alive, moving the burden to d=
-istribution=E2=80=99s security teams. But this isn=E2=80=99t new, Remi alre=
-ady wrote about this two years ago: =E2=80=9C<a href=3D"https://blog.remire=
-po.net/post/2015/07/07/About-libmcrypt-and-php-mcrypt">About libmcrypt and =
-php-mcrypt</a>=E2=80=9C.</p>
-<p>But with removal of the extension from the PHP code base (about F**King =
-time), it would force the recommendation was done =E2=80=9Cnicely=E2=80=9D =
-till now. And forcing people means some noise, although an alternative is P=
-HP=E2=80=99s owns openssl extension. But as many migrations that require co=
-de change =E2=80=93 it=E2=80=99s going slow.</p>
-<p>The goal of this post is to reach to the PHP eco system and map the comp=
-onents (mostly frameworks and applications) to still require/recommend mcyr=
-pt and to pressure them to fix it before PHP 72 is released. I=E2=80=99ll a=
-ppreciate the readers=E2=80=99 help with this mapping in the comments.</p>
-<p>For example, <a href=3D"https://laravel.com">Laravel</a>=E2=80=98s relea=
-se notes for 5.1:</p>
-<blockquote><p>In previous versions of Laravel, encryption was handled by t=
-he mcrypt PHP extension. However, beginning in Laravel 5.1, encryption is h=
-andled by the openssl extension, which is more actively maintained.</p></bl=
-ockquote>
+<p>Early September, it’s about 3 months before PHP 7.2 is expected to be release (schedule <a href="https://wiki.php.net/todo/php72">here</a>). One of the changes is the removal of the mcrypt extension after it was deprecated in PHP 7.1. The main problem with mcrypt extension is that it is based on libmcrypt that was abandoned by it’s upstream since 2007. That’s 10 years of keeping a library alive, moving the burden to distribution’s security teams. But this isn’t new, Remi already wrote about this two years ago: “<a href="https://blog.remirepo.net/post/2015/07/07/About-libmcrypt-and-php-mcrypt">About libmcrypt and php-mcrypt</a>“.</p>
+<p>But with removal of the extension from the PHP code base (about F**King time), it would force the recommendation was done “nicely” till now. And forcing people means some noise, although an alternative is PHP’s owns openssl extension. But as many migrations that require code change – it’s going slow.</p>
+<p>The goal of this post is to reach to the PHP eco system and map the components (mostly frameworks and applications) to still require/recommend mcyrpt and to pressure them to fix it before PHP 72 is released. I’ll appreciate the readers’ help with this mapping in the comments.</p>
+<p>For example, <a href="https://laravel.com">Laravel</a>‘s release notes for 5.1:</p>
+<blockquote><p>In previous versions of Laravel, encryption was handled by the mcrypt PHP extension. However, beginning in Laravel 5.1, encryption is handled by the openssl extension, which is more actively maintained.</p></blockquote>
 <p>Or, on the other hand Joomla 3 requirements still mentions mcrypt.</p>
 <p>mcrypt safe:</p>
 <ul>
-<li>Drupal 7 and up, see=C2=A0<a href=3D"https://www.drupal.org/docs/7/syst=
-em-requirements/php">https://www.drupal.org/docs/7/system-requirements/php<=
-/a></li>
-<li>Lavavel 5.1 and up, see=C2=A0<a href=3D"https://laravel.com/docs/5.1/re=
-leases">https://laravel.com/docs/5.1/releases</a></li>
+<li>Drupal 7 and up, see <a href="https://www.drupal.org/docs/7/system-requirements/php">https://www.drupal.org/docs/7/system-requirements/php</a></li>
+<li>Lavavel 5.1 and up, see <a href="https://laravel.com/docs/5.1/releases">https://laravel.com/docs/5.1/releases</a></li>
 </ul>
 <p>mcrypt dependant:</p>
 <ul>
-<li>Joomla, see=C2=A0<a href=3D"https://downloads.joomla.org/technical-requ=
-irements">https://downloads.joomla.org/technical-requirements</a></li>
-<li>Magento, see=C2=A0<a href=3D"http://devdocs.magento.com/guides/v2.2/ins=
-tall-gde/system-requirements-tech.html">http://devdocs.magento.com/guides/v=
-2.2/install-gde/system-requirements-tech.html</a><br />
+<li>Joomla, see <a href="https://downloads.joomla.org/technical-requirements">https://downloads.joomla.org/technical-requirements</a></li>
+<li>Magento, see <a href="http://devdocs.magento.com/guides/v2.2/install-gde/system-requirements-tech.html">http://devdocs.magento.com/guides/v2.2/install-gde/system-requirements-tech.html</a><br />
 (Checking 2.2 RC release, as it just added support for PHP 7.1)</li>
 </ul>
-<p>For those who really need mcrypt, it is part of <a href=3D"http://pecl.p=
-hp.net/package/mcrypt">PECL</a>, PHP=E2=80=99s extensions repository. You=
-=E2=80=99re welcome to compile it on your own risk.</p><br />Filed under: <=
-a href=3D"https://liorkaplan.wordpress.com/category/debian-gnulinux/">Debia=
-n GNU/Linux</a>, <a href=3D"https://liorkaplan.wordpress.com/category/php-2=
-/">PHP</a>  <a href=3D"http://feeds.wordpress.com/1.0/gocomments/liorkaplan=
-.wordpress.com/593/" rel=3D"nofollow"><img alt=3D"" border=3D"0" src=3D"htt=
-p://feeds.wordpress.com/1.0/comments/liorkaplan.wordpress.com/593/" /></a>
+<p>For those who really need mcrypt, it is part of <a href="http://pecl.php.net/package/mcrypt">PECL</a>, PHP’s extensions repository. You’re welcome to compile it on your own risk.</p><br />Filed under: <a href="https://liorkaplan.wordpress.com/category/debian-gnulinux/">Debian GNU/Linux</a>, <a href="https://liorkaplan.wordpress.com/category/php-2/">PHP</a>  <a href="http://feeds.wordpress.com/1.0/gocomments/liorkaplan.wordpress.com/593/" rel="nofollow"><img alt="" border="0" src="http://feeds.wordpress.com/1.0/comments/liorkaplan.wordpress.com/593/" /></a>
 --===============testboundary==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-https://liorkaplan.wordpress.com/2017/09/10/php-7-2-is-coming-mcrypt-extens=
-ion-isnt/
+https://liorkaplan.wordpress.com/2017/09/10/php-7-2-is-coming-mcrypt-extension-isnt/
 
-Early September, it=E2=80=99s about 3 months before PHP 7.2 is expected to =
-be release
+Early September, it’s about 3 months before PHP 7.2 is expected to be release
 (schedule [here][1]). One of the changes is the removal of the mcrypt
 extension after it was deprecated in PHP 7.1. The main problem with mcrypt
-extension is that it is based on libmcrypt that was abandoned by it=E2=80=
-=99s upstream
-since 2007. That=E2=80=99s 10 years of keeping a library alive, moving the =
-burden to
-distribution=E2=80=99s security teams. But this isn=E2=80=99t new, Remi alr=
-eady wrote about
-this two years ago: =E2=80=9C[About libmcrypt and php-mcrypt][2]=E2=80=9C.
+extension is that it is based on libmcrypt that was abandoned by it’s upstream
+since 2007. That’s 10 years of keeping a library alive, moving the burden to
+distribution’s security teams. But this isn’t new, Remi already wrote about
+this two years ago: “[About libmcrypt and php-mcrypt][2]“.
 
    [1]: <https://wiki.php.net/todo/php72>
 
    [2]: <https://blog.remirepo.net/post/2015/07/07/About-libmcrypt-and-php-
 mcrypt>
 
-But with removal of the extension from the PHP code base (about F**King tim=
-e),
-it would force the recommendation was done =E2=80=9Cnicely=E2=80=9D till no=
-w. And forcing
-people means some noise, although an alternative is PHP=E2=80=99s owns open=
-ssl
-extension. But as many migrations that require code change =E2=80=93 it=E2=
-=80=99s going slow.
+But with removal of the extension from the PHP code base (about F**King time),
+it would force the recommendation was done “nicely” till now. And forcing
+people means some noise, although an alternative is PHP’s owns openssl
+extension. But as many migrations that require code change – it’s going slow.
 
-The goal of this post is to reach to the PHP eco system and map the compone=
-nts
-(mostly frameworks and applications) to still require/recommend mcyrpt and =
-to
-pressure them to fix it before PHP 72 is released. I=E2=80=99ll appreciate =
-the
-readers=E2=80=99 help with this mapping in the comments.
+The goal of this post is to reach to the PHP eco system and map the components
+(mostly frameworks and applications) to still require/recommend mcyrpt and to
+pressure them to fix it before PHP 72 is released. I’ll appreciate the
+readers’ help with this mapping in the comments.
 
-For example, [Laravel][3]=E2=80=98s release notes for 5.1:
+For example, [Laravel][3]‘s release notes for 5.1:
 
    [3]: <https://laravel.com>
 
@@ -121,24 +76,21 @@ Or, on the other hand Joomla 3 requirements still mentions mcrypt.
 
 mcrypt safe:
 
-  * Drupal 7 and up, see <https://www.drupal.org/docs/7/system-requirements=
-/php>
+  * Drupal 7 and up, see <https://www.drupal.org/docs/7/system-requirements/php>
   * Lavavel 5.1 and up, see <https://laravel.com/docs/5.1/releases>
 
 mcrypt dependant:
 
   * Joomla, see <https://downloads.joomla.org/technical-requirements>
-  * Magento, see <http://devdocs.magento.com/guides/v2.2/install-gde/system=
--requirements-tech.html> =20
+  * Magento, see <http://devdocs.magento.com/guides/v2.2/install-gde/system-requirements-tech.html>  
 (Checking 2.2 RC release, as it just added support for PHP 7.1)
 
-For those who really need mcrypt, it is part of [PECL][4], PHP=E2=80=99s ex=
-tensions
-repository. You=E2=80=99re welcome to compile it on your own risk.
+For those who really need mcrypt, it is part of [PECL][4], PHP’s extensions
+repository. You’re welcome to compile it on your own risk.
 
    [4]: <http://pecl.php.net/package/mcrypt>
 
- =20
+  
 Filed under: [Debian GNU/Linux][5], [PHP][6] [][7]
 
    [5]: <https://liorkaplan.wordpress.com/category/debian-gnulinux/>
@@ -151,7 +103,7 @@ Filed under: [Debian GNU/Linux][5], [PHP][6] [][7]
 
 --===============testboundary==--
 
-From planet-debian <to@example.com> Sat Sep  9 10:18:21 2017
+From planet-debian Sat Sep  9 10:18:21 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
 Date: Sat, 09 Sep 2017 10:18:21 -0000
@@ -159,7 +111,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Russell Coker: Observing Reliability
 Message-ID: https-etbe-coker-com-au-p-4411
-User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://etbe.coker.com.au/2017/09/09/observing-reliability/
@@ -167,117 +119,63 @@ Archive-At: https://etbe.coker.com.au/2017/09/09/observing-reliability/
 --===============testboundary==
 Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-<p><a href=3D"https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/">L=
-ast year I wrote about how great my latest Thinkpad is [1]</a> in response =
-to a discussion about whether a Thinkpad is still the =E2=80=9CRolls Royce=
-=E2=80=9D of laptops.</p>
-<p>It was a few months after writing that post that I realised that I omitt=
-ed an important point. After I had that laptop for about a year the DVD dri=
-ve broke and made annoying clicking sounds all the time in addition to not =
-working. I removed the DVD drive and the result was that the laptop was lig=
-hter and used less power without missing any feature that I desired. As I h=
-ad installed Debian on that laptop by copying the hard drive from my previo=
-us laptop I had never used the DVD drive for any purpose. After a while I g=
-ot used to my laptop being like that and the gaping hole in the side of the=
- laptop where the DVD drive used to be didn=E2=80=99t even register to me. =
-I would prefer it if Lenovo sold Thinkpads in the T series without DVD driv=
-es, but it seems that only the laptops with tiny screens are designed to la=
-ck DVD drives.</p>
-<p>For my use of laptops this doesn=E2=80=99t change the conclusion of my p=
-revious post. Now the T420 has been in service for almost 4 years which mak=
-es the cost of ownership about $75 per year. $1.50 per week as a tax deduct=
-ible business expense is very cheap for such a nice laptop. About a year ag=
-o I installed a SSD in that laptop, it cost me about $250 from memory and m=
-ade it significantly faster while also reducing heat problems. The deprecia=
-tion on the SSD about doubles the cost of ownership of the laptop, but it=
-=E2=80=99s still cheaper than a mobile phone and thus not in the category o=
-f things that are expected to last for a long time =E2=80=93 while also giv=
-ing longer service than phones usually do.</p>
-<p>One thing that=E2=80=99s interesting to consider is the fact that I forg=
-ot about the broken DVD drive when writing about this. I guess every review=
- has an unspoken caveat of =E2=80=9Cthis works well for me but might suck b=
-adly for your use case=E2=80=9D. But I wonder how many other things that ar=
-e noteworthy I=E2=80=99m forgetting to put in reviews because they just don=
-=E2=80=99t impact my use. I don=E2=80=99t think that I am unusual in this r=
-egard, so reading multiple reviews is the sensible thing to do.</p>
+<p><a href="https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/">Last year I wrote about how great my latest Thinkpad is [1]</a> in response to a discussion about whether a Thinkpad is still the “Rolls Royce” of laptops.</p>
+<p>It was a few months after writing that post that I realised that I omitted an important point. After I had that laptop for about a year the DVD drive broke and made annoying clicking sounds all the time in addition to not working. I removed the DVD drive and the result was that the laptop was lighter and used less power without missing any feature that I desired. As I had installed Debian on that laptop by copying the hard drive from my previous laptop I had never used the DVD drive for any purpose. After a while I got used to my laptop being like that and the gaping hole in the side of the laptop where the DVD drive used to be didn’t even register to me. I would prefer it if Lenovo sold Thinkpads in the T series without DVD drives, but it seems that only the laptops with tiny screens are designed to lack DVD drives.</p>
+<p>For my use of laptops this doesn’t change the conclusion of my previous post. Now the T420 has been in service for almost 4 years which makes the cost of ownership about $75 per year. $1.50 per week as a tax deductible business expense is very cheap for such a nice laptop. About a year ago I installed a SSD in that laptop, it cost me about $250 from memory and made it significantly faster while also reducing heat problems. The depreciation on the SSD about doubles the cost of ownership of the laptop, but it’s still cheaper than a mobile phone and thus not in the category of things that are expected to last for a long time – while also giving longer service than phones usually do.</p>
+<p>One thing that’s interesting to consider is the fact that I forgot about the broken DVD drive when writing about this. I guess every review has an unspoken caveat of “this works well for me but might suck badly for your use case”. But I wonder how many other things that are noteworthy I’m forgetting to put in reviews because they just don’t impact my use. I don’t think that I am unusual in this regard, so reading multiple reviews is the sensible thing to do.</p>
 <ul>
-<li>[1]<a href=3D"https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce=
-/"> https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/</a></li>
+<li>[1]<a href="https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/"> https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/</a></li>
 </ul>
-<div class=3D"yarpp-related-rss">
+<div class="yarpp-related-rss">
 <p>Related posts:</p><ol>
-<li><a href=3D"https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/" =
-rel=3D"bookmark" title=3D"Is a Thinkpad Still Like a Rolls-Royce">Is a Thin=
-kpad Still Like a Rolls-Royce </a> <small>For a long time the Thinkpad has =
-been widely regarded...</small></li>
-<li><a href=3D"https://etbe.coker.com.au/2007/05/18/pc-prices-drop-again/" =
-rel=3D"bookmark" title=3D"PC prices drop again!">PC prices drop again! </a>=
- <small>A few weeks ago Dell advertised new laptops for $849AU,...</small><=
-/li>
-<li><a href=3D"https://etbe.coker.com.au/2009/11/23/laptop-reliability/" re=
-l=3D"bookmark" title=3D"Laptop Reliability">Laptop Reliability </a> <small>=
-Update: TumbleDry has a good analysis of the Square Trade...</small></li>
+<li><a href="https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/" rel="bookmark" title="Is a Thinkpad Still Like a Rolls-Royce">Is a Thinkpad Still Like a Rolls-Royce </a> <small>For a long time the Thinkpad has been widely regarded...</small></li>
+<li><a href="https://etbe.coker.com.au/2007/05/18/pc-prices-drop-again/" rel="bookmark" title="PC prices drop again!">PC prices drop again! </a> <small>A few weeks ago Dell advertised new laptops for $849AU,...</small></li>
+<li><a href="https://etbe.coker.com.au/2009/11/23/laptop-reliability/" rel="bookmark" title="Laptop Reliability">Laptop Reliability </a> <small>Update: TumbleDry has a good analysis of the Square Trade...</small></li>
 </ol>
 </div>
 --===============testboundary==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
 https://etbe.coker.com.au/2017/09/09/observing-reliability/
 
 [Last year I wrote about how great my latest Thinkpad is [1]][1] in response
-to a discussion about whether a Thinkpad is still the =E2=80=9CRolls Royce=
-=E2=80=9D of
+to a discussion about whether a Thinkpad is still the “Rolls Royce” of
 laptops.
 
    [1]: <https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/>
 
-It was a few months after writing that post that I realised that I omitted =
-an
-important point. After I had that laptop for about a year the DVD drive bro=
-ke
+It was a few months after writing that post that I realised that I omitted an
+important point. After I had that laptop for about a year the DVD drive broke
 and made annoying clicking sounds all the time in addition to not working. I
-removed the DVD drive and the result was that the laptop was lighter and us=
-ed
+removed the DVD drive and the result was that the laptop was lighter and used
 less power without missing any feature that I desired. As I had installed
-Debian on that laptop by copying the hard drive from my previous laptop I h=
-ad
+Debian on that laptop by copying the hard drive from my previous laptop I had
 never used the DVD drive for any purpose. After a while I got used to my
-laptop being like that and the gaping hole in the side of the laptop where =
-the
-DVD drive used to be didn=E2=80=99t even register to me. I would prefer it =
-if Lenovo
-sold Thinkpads in the T series without DVD drives, but it seems that only t=
-he
+laptop being like that and the gaping hole in the side of the laptop where the
+DVD drive used to be didn’t even register to me. I would prefer it if Lenovo
+sold Thinkpads in the T series without DVD drives, but it seems that only the
 laptops with tiny screens are designed to lack DVD drives.
 
-For my use of laptops this doesn=E2=80=99t change the conclusion of my prev=
-ious post.
+For my use of laptops this doesn’t change the conclusion of my previous post.
 Now the T420 has been in service for almost 4 years which makes the cost of
 ownership about $75 per year. $1.50 per week as a tax deductible business
 expense is very cheap for such a nice laptop. About a year ago I installed a
 SSD in that laptop, it cost me about $250 from memory and made it
 significantly faster while also reducing heat problems. The depreciation on
-the SSD about doubles the cost of ownership of the laptop, but it=E2=80=99s=
- still
+the SSD about doubles the cost of ownership of the laptop, but it’s still
 cheaper than a mobile phone and thus not in the category of things that are
-expected to last for a long time =E2=80=93 while also giving longer service=
- than
+expected to last for a long time – while also giving longer service than
 phones usually do.
 
-One thing that=E2=80=99s interesting to consider is the fact that I forgot =
-about the
-broken DVD drive when writing about this. I guess every review has an unspo=
-ken
-caveat of =E2=80=9Cthis works well for me but might suck badly for your use=
- case=E2=80=9D. But
-I wonder how many other things that are noteworthy I=E2=80=99m forgetting t=
-o put in
-reviews because they just don=E2=80=99t impact my use. I don=E2=80=99t thin=
-k that I am unusual
+One thing that’s interesting to consider is the fact that I forgot about the
+broken DVD drive when writing about this. I guess every review has an unspoken
+caveat of “this works well for me but might suck badly for your use case”. But
+I wonder how many other things that are noteworthy I’m forgetting to put in
+reviews because they just don’t impact my use. I don’t think that I am unusual
 in this regard, so reading multiple reviews is the sensible thing to do.
 
   * [1][ https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/][2]
@@ -286,12 +184,9 @@ in this regard, so reading multiple reviews is the sensible thing to do.
 
 Related posts:
 
-  1. [Is a Thinkpad Still Like a Rolls-Royce ][3] For a long time the Think=
-pad has been widely regarded...
-  2. [PC prices drop again! ][4] A few weeks ago Dell advertised new laptop=
-s for $849AU,...
-  3. [Laptop Reliability ][5] Update: TumbleDry has a good analysis of the =
-Square Trade...
+  1. [Is a Thinkpad Still Like a Rolls-Royce ][3] For a long time the Thinkpad has been widely regarded...
+  2. [PC prices drop again! ][4] A few weeks ago Dell advertised new laptops for $849AU,...
+  3. [Laptop Reliability ][5] Update: TumbleDry has a good analysis of the Square Trade...
 
    [3]: <https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/> (Is a
 Thinkpad Still Like a Rolls-Royce)
@@ -305,7 +200,7 @@ Reliability)
 
 --===============testboundary==--
 
-From planet-debian <to@example.com> Sat Sep  9 04:52:47 2017
+From planet-debian Sat Sep  9 04:52:47 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
 Date: Sat, 09 Sep 2017 04:52:47 -0000
@@ -313,7 +208,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Fran=C3=A7ois_Marier=3A_TLS_Authentication_on_Freenode_and_OFTC?=
 Message-ID: http-feeding-cloud-geek-nz-posts-tls_authentication_freenode_and_oftc
-User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
@@ -321,36 +216,29 @@ Archive-At: http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_o
 --===============testboundary==
 Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
 <p>In order to easily authenticate with IRC networks such as
-<a href=3D"https://www.oftc.net/NickServ/CertFP/">OFTC</a> and
-<a href=3D"https://freenode.net/kb/answer/certfp">Freenode</a>, it is possi=
-ble to use
-<em>client TLS certificates</em> (also known as <em>SSL certificates</em>).=
- In fact, it
-turns out that it's very easy to setup both on <a href=3D"https://irssi.org=
-/">irssi</a>
-and on <a href=3D"https://wiki.znc.in/">znc</a>.</p>
+<a href="https://www.oftc.net/NickServ/CertFP/">OFTC</a> and
+<a href="https://freenode.net/kb/answer/certfp">Freenode</a>, it is possible to use
+<em>client TLS certificates</em> (also known as <em>SSL certificates</em>). In fact, it
+turns out that it's very easy to setup both on <a href="https://irssi.org/">irssi</a>
+and on <a href="https://wiki.znc.in/">znc</a>.</p>
 
-<h1 id=3D"Generate_your_TLS_certificate">Generate your TLS certificate</h1>
+<h1 id="Generate_your_TLS_certificate">Generate your TLS certificate</h1>
 
-<p>On a machine with <a href=3D"http://altusmetrum.org/ChaosKey/">good entr=
-opy</a>, run the
+<p>On a machine with <a href="http://altusmetrum.org/ChaosKey/">good entropy</a>, run the
 following command to create a keypair that will last for 10 years:</p>
 
-<pre><code>openssl req -nodes -newkey rsa:2048 -keyout user.pem -x509 -days=
- 3650 -out user.pem -subj "/CN=3D&lt;your nick&gt;"
+<pre><code>openssl req -nodes -newkey rsa:2048 -keyout user.pem -x509 -days 3650 -out user.pem -subj "/CN=&lt;your nick&gt;"
 </code></pre>
 
 <p>Then extract your key fingerprint using this command:</p>
 
-<pre><code>openssl x509 -sha1 -noout -fingerprint -in user.pem | sed -e 's/=
-^.*=3D//;s/://g'
+<pre><code>openssl x509 -sha1 -noout -fingerprint -in user.pem | sed -e 's/^.*=//;s/://g'
 </code></pre>
 
-<h1 id=3D"Share_your_fingerprints_with_NickServ">Share your fingerprints wi=
-th NickServ</h1>
+<h1 id="Share_your_fingerprints_with_NickServ">Share your fingerprints with NickServ</h1>
 
 <p>On each IRC network, do this:</p>
 
@@ -360,58 +248,54 @@ th NickServ</h1>
 
 <p>in order to add your fingerprint to the access control list.</p>
 
-<h1 id=3D"Configure_ZNC">Configure ZNC</h1>
+<h1 id="Configure_ZNC">Configure ZNC</h1>
 
 <p>To configure znc, start by putting the key in the right place:</p>
 
-<pre><code>cp user.pem ~/.znc/users/&lt;your nick&gt;/networks/oftc/moddata=
-/cert/
+<pre><code>cp user.pem ~/.znc/users/&lt;your nick&gt;/networks/oftc/moddata/cert/
 </code></pre>
 
-<p>and then enable the built-in <a href=3D"https://wiki.znc.in/Cert">cert p=
-lugin</a> for
+<p>and then enable the built-in <a href="https://wiki.znc.in/Cert">cert plugin</a> for
 each network in <code>~/.znc/configs/znc.conf</code>:</p>
 
 <pre><code>&lt;Network oftc&gt;
     ...
-            LoadModule =3D cert
+            LoadModule = cert
     ...
 &lt;/Network&gt;
     &lt;Network freenode&gt;
     ...
-            LoadModule =3D cert
+            LoadModule = cert
     ...
 &lt;/Network&gt;
 </code></pre>
 
-<h1 id=3D"Configure_irssi">Configure irssi</h1>
+<h1 id="Configure_irssi">Configure irssi</h1>
 
-<p>For irssi, do the same thing but put the cert in <code>~/.irssi/user.pem=
-</code> and
-then change the OFTC entry in <code>~/.irssi/config</code> to look like thi=
-s:</p>
+<p>For irssi, do the same thing but put the cert in <code>~/.irssi/user.pem</code> and
+then change the OFTC entry in <code>~/.irssi/config</code> to look like this:</p>
 
 <pre><code>{
-  address =3D "irc.oftc.net";
-  chatnet =3D "OFTC";
-  port =3D "6697";
-  use_tls =3D "yes";
-  tls_cert =3D "~/.irssi/user.pem";
-  tls_verify =3D "yes";
-  autoconnect =3D "yes";
+  address = "irc.oftc.net";
+  chatnet = "OFTC";
+  port = "6697";
+  use_tls = "yes";
+  tls_cert = "~/.irssi/user.pem";
+  tls_verify = "yes";
+  autoconnect = "yes";
 }
 </code></pre>
 
 <p>and the Freenode one to look like this:</p>
 
 <pre><code>{
-  address =3D "chat.freenode.net";
-  chatnet =3D "Freenode";
-  port =3D "7000";
-  use_tls =3D "yes";
-  tls_cert =3D "~/.irssi/user.pem";
-  tls_verify =3D "yes";
-  autoconnect =3D "yes";
+  address = "chat.freenode.net";
+  chatnet = "Freenode";
+  port = "7000";
+  use_tls = "yes";
+  tls_cert = "~/.irssi/user.pem";
+  tls_verify = "yes";
+  autoconnect = "yes";
 }
 </code></pre>
 
@@ -420,13 +304,12 @@ much stronger alternative.</p>
 --===============testboundary==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
 http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
 
 In order to easily authenticate with IRC networks such as [OFTC][1] and
-[Freenode][2], it is possible to use _client TLS certificates_ (also known =
-as
+[Freenode][2], it is possible to use _client TLS certificates_ (also known as
 _SSL certificates_). In fact, it turns out that it's very easy to setup both
 on [irssi][3] and on [znc][4].
 
@@ -443,30 +326,28 @@ on [irssi][3] and on [znc][4].
 On a machine with [good entropy][5], run the following command to create a
 keypair that will last for 10 years:
 
-   =20
+    
        [5]: <http://altusmetrum.org/ChaosKey/>
 
-    openssl req -nodes -newkey rsa:2048 -keyout user.pem -x509 -days 3650 -=
-out user.pem -subj "/CN=3D<your nick>"
-   =20
+    openssl req -nodes -newkey rsa:2048 -keyout user.pem -x509 -days 3650 -out user.pem -subj "/CN=<your nick>"
+    
 
 Then extract your key fingerprint using this command:
 
-   =20
-   =20
-    openssl x509 -sha1 -noout -fingerprint -in user.pem | sed -e 's/^.*=3D/=
-/;s/://g'
-   =20
+    
+    
+    openssl x509 -sha1 -noout -fingerprint -in user.pem | sed -e 's/^.*=//;s/://g'
+    
 
 # Share your fingerprints with NickServ
 
 On each IRC network, do this:
 
-   =20
-   =20
+    
+    
     /msg NickServ IDENTIFY Password1!
     /msg NickServ CERT ADD <your fingerprint>
-   =20
+    
 
 in order to add your fingerprint to the access control list.
 
@@ -474,71 +355,69 @@ in order to add your fingerprint to the access control list.
 
 To configure znc, start by putting the key in the right place:
 
-   =20
-   =20
+    
+    
     cp user.pem ~/.znc/users/<your nick>/networks/oftc/moddata/cert/
-   =20
+    
 
 and then enable the built-in [cert plugin][6] for each network in
 `~/.znc/configs/znc.conf`:
 
-   =20
+    
        [6]: <https://wiki.znc.in/Cert>
 
     <Network oftc>
         ...
-                LoadModule =3D cert
+                LoadModule = cert
         ...
     </Network>
         <Network freenode>
         ...
-                LoadModule =3D cert
+                LoadModule = cert
         ...
     </Network>
-   =20
+    
 
 # Configure irssi
 
-For irssi, do the same thing but put the cert in `~/.irssi/user.pem` and th=
-en
+For irssi, do the same thing but put the cert in `~/.irssi/user.pem` and then
 change the OFTC entry in `~/.irssi/config` to look like this:
 
-   =20
-   =20
+    
+    
     {
-      address =3D "irc.oftc.net";
-      chatnet =3D "OFTC";
-      port =3D "6697";
-      use_tls =3D "yes";
-      tls_cert =3D "~/.irssi/user.pem";
-      tls_verify =3D "yes";
-      autoconnect =3D "yes";
+      address = "irc.oftc.net";
+      chatnet = "OFTC";
+      port = "6697";
+      use_tls = "yes";
+      tls_cert = "~/.irssi/user.pem";
+      tls_verify = "yes";
+      autoconnect = "yes";
     }
-   =20
+    
 
 and the Freenode one to look like this:
 
-   =20
-   =20
+    
+    
     {
-      address =3D "chat.freenode.net";
-      chatnet =3D "Freenode";
-      port =3D "7000";
-      use_tls =3D "yes";
-      tls_cert =3D "~/.irssi/user.pem";
-      tls_verify =3D "yes";
-      autoconnect =3D "yes";
+      address = "chat.freenode.net";
+      chatnet = "Freenode";
+      port = "7000";
+      use_tls = "yes";
+      tls_cert = "~/.irssi/user.pem";
+      tls_verify = "yes";
+      autoconnect = "yes";
     }
-   =20
+    
 
-That's it. That's all you need to replace password authentication with a mu=
-ch
+That's it. That's all you need to replace password authentication with a much
 stronger alternative.
 
 
 --===============testboundary==--
 
-From Vincent Fourmond <noreply@blogger.com> Fri Sep  8 21:42:29 2017
+From planet-debian Fri Sep  8 21:42:29 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
 Date: Fri, 08 Sep 2017 21:42:29 -0000
@@ -546,7 +425,7 @@ To: to@example.com
 From: Vincent Fourmond <noreply@blogger.com>
 Subject: Vincent Fourmond: Extract many attachement from many mails in one go using ripmime
 Message-ID: tag-blogger-com-1999-blog-3019054489127059271-post-5906438607473667126
-User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://vince-debian.blogspot.com/2017/09/extract-many-attachement-from-many.html
@@ -554,36 +433,21 @@ Archive-At: http://vince-debian.blogspot.com/2017/09/extract-many-attachement-fr
 --===============testboundary==
 Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-I was recently looking for a way to extract many attachments from a series =
-of emails. I first had a look at the <a href=3D"https://addons.mozilla.org/=
-en-US/thunderbird/addon/attachmentextractor/">AttachmentExtractor</a> <a hr=
-ef=3D"https://www.mozilla.org/en-US/thunderbird/">thunderbird</a> plugin, b=
-ut it seems very old and not maintained anymore. So I've come up with anoth=
-er very simple solution that also works with any other mail client.<p></p><=
-p>Just copy all the mails you want to extract attachments from to a single =
-(temporary) mail folder, find out which file holds the mail folder and use =
-<a href=3D"http://www.pldaniels.com/ripmime/">ripmime</a> on that file (rip=
-mime is packaged for <a href=3D"http://debian.org">Debian</a>). For my case=
-, it looked like:<br />
-</p><pre>~ ripmime -i .icedove/XXXXXXX.default/Mail/pop.xxxx/tmp -d target-=
-directory
-</pre><p>Simple solution, but it saved me quite some time. Hope it helps !<=
-/p>
+I was recently looking for a way to extract many attachments from a series of emails. I first had a look at the <a href="https://addons.mozilla.org/en-US/thunderbird/addon/attachmentextractor/">AttachmentExtractor</a> <a href="https://www.mozilla.org/en-US/thunderbird/">thunderbird</a> plugin, but it seems very old and not maintained anymore. So I've come up with another very simple solution that also works with any other mail client.<p></p><p>Just copy all the mails you want to extract attachments from to a single (temporary) mail folder, find out which file holds the mail folder and use <a href="http://www.pldaniels.com/ripmime/">ripmime</a> on that file (ripmime is packaged for <a href="http://debian.org">Debian</a>). For my case, it looked like:<br />
+</p><pre>~ ripmime -i .icedove/XXXXXXX.default/Mail/pop.xxxx/tmp -d target-directory
+</pre><p>Simple solution, but it saved me quite some time. Hope it helps !</p>
 --===============testboundary==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-http://vince-debian.blogspot.com/2017/09/extract-many-attachement-from-many=
-.html
+http://vince-debian.blogspot.com/2017/09/extract-many-attachement-from-many.html
 
-I was recently looking for a way to extract many attachments from a series =
-of
+I was recently looking for a way to extract many attachments from a series of
 emails. I first had a look at the [AttachmentExtractor][1] [thunderbird][2]
-plugin, but it seems very old and not maintained anymore. So I've come up w=
-ith
+plugin, but it seems very old and not maintained anymore. So I've come up with
 another very simple solution that also works with any other mail client.
 
    [1]: <https://addons.mozilla.org/en-
@@ -593,17 +457,15 @@ US/thunderbird/addon/attachmentextractor/>
 
 Just copy all the mails you want to extract attachments from to a single
 (temporary) mail folder, find out which file holds the mail folder and use
-[ripmime][3] on that file (ripmime is packaged for [Debian][4]). For my cas=
-e,
-it looked like: =20
+[ripmime][3] on that file (ripmime is packaged for [Debian][4]). For my case,
+it looked like:  
 
-   =20
+    
        [3]: <http://www.pldaniels.com/ripmime/>
    [4]: <http://debian.org>
 
-    ~ ripmime -i .icedove/XXXXXXX.default/Mail/pop.xxxx/tmp -d target-direc=
-tory
-   =20
+    ~ ripmime -i .icedove/XXXXXXX.default/Mail/pop.xxxx/tmp -d target-directory
+    
 
 Simple solution, but it saved me quite some time. Hope it helps !
 

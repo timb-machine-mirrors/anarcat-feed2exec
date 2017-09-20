@@ -31,8 +31,16 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
     params = defaultdict(str)
     params.update(entry)
     cs = email.charset.Charset('utf-8')
+    # headers are still not 8-bit clean but body probably is:
+    # https://stackoverflow.com/a/23875217
     cs.header_encoding = email.charset.QP
-    cs.body_encoding = email.charset.QP
+    # also: http://cr.yp.to/smtp/8bitmime.html
+    #
+    # quote: Do not implement Q-P conversion in an SMTP client. You
+    # will find that simply sending an 8-bit message is much more
+    # successful than attempting Q-P conversion, whether or not the
+    # server announces 8BITMIME.
+    cs.body_encoding = '8bit'
     msg = MIMEMultipart('alternative', boundary)
     html_parts = []
     for content in params.get('content', []):
@@ -46,7 +54,7 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
             continue
         html = MIMEText(content.value.encode('utf-8'),
                         _subtype=subtype, _charset=cs)
-        html.replace_header('Content-Transfer-Encoding', 'quoted-printable')
+        html.replace_header('Content-Transfer-Encoding', '8bit')
         if subtype == 'html':
             html_parts.append(content.value)
         msg.attach(html)
@@ -72,7 +80,7 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
 {content_plain}'''.format(**params)
         text = MIMEText(body.encode('utf-8'),
                         _subtype='plain', _charset=cs)
-        text.replace_header('Content-Transfer-Encoding', 'quoted-printable')
+        text.replace_header('Content-Transfer-Encoding', '8bit')
         msg.attach(text)
     payload = msg.get_payload()
     if len(payload) == 1:

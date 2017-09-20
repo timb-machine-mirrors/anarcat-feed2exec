@@ -6,7 +6,7 @@ To: to@example.com
 From: udd <to@example.com>
 Subject: smokeping: RC bug needs fixing: #826056: smokeping: please Build-Depend on rename
 Message-ID: smokeping-rc-bug-needs-fixing-826056-smokeping-please-build-depend-on-rename
-User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://bugs.debian.org/826056
@@ -15,7 +15,7 @@ Archive-At: https://bugs.debian.org/826056
 
 --===============testboundary==--
 
-From udd <to@example.com> Wed Sep  6 00:00:00 2017
+From udd Wed Sep  6 00:00:00 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
 Date: Wed, 06 Sep 2017 00:00:00 -0000
@@ -23,7 +23,7 @@ To: to@example.com
 From: udd <to@example.com>
 Subject: kedpm: Open security issue: CVE-2017-8296 for jessie (medium** urgency)
 Message-ID: kedpm-open-security-issue-cve-2017-8296-for-jessie-medium-urgency
-User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://security-tracker.debian.org/tracker/CVE-2017-8296
@@ -32,7 +32,7 @@ Archive-At: https://security-tracker.debian.org/tracker/CVE-2017-8296
 
 --===============testboundary==--
 
-From udd <to@example.com> Wed Sep  6 00:00:00 2017
+From udd Wed Sep  6 00:00:00 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
 Date: Wed, 06 Sep 2017 00:00:00 -0000
@@ -40,7 +40,7 @@ To: to@example.com
 From: udd <to@example.com>
 Subject: charybdis: Open security issue: CVE-2015-5290 for wheezy (not yet assigned urgency)
 Message-ID: charybdis-open-security-issue-cve-2015-5290-for-wheezy-not-yet-assigned-urgency
-User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://security-tracker.debian.org/tracker/CVE-2015-5290
@@ -49,7 +49,7 @@ Archive-At: https://security-tracker.debian.org/tracker/CVE-2015-5290
 
 --===============testboundary==--
 
-From udd <to@example.com> Wed Sep  6 00:00:00 2017
+From udd Wed Sep  6 00:00:00 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
 Date: Wed, 06 Sep 2017 00:00:00 -0000
@@ -57,7 +57,7 @@ To: to@example.com
 From: udd <to@example.com>
 Subject: magic-wormhole: New version available: 0.10.2
 Message-ID: magic-wormhole-new-version-available-0-10-2
-User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: file://
@@ -66,7 +66,7 @@ Archive-At: file://
 
 --===============testboundary==--
 
-From udd <to@example.com> Wed Sep  6 00:00:00 2017
+From udd Wed Sep  6 00:00:00 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
 Date: Wed, 06 Sep 2017 00:00:00 -0000
@@ -74,7 +74,7 @@ To: to@example.com
 From: udd <to@example.com>
 Subject: horst: Testing auto-removal: on 2017-10-11 (bug: )
 Message-ID: horst-testing-auto-removal-on-2017-10-11-bug
-User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: file://
@@ -83,7 +83,7 @@ Archive-At: file://
 
 --===============testboundary==--
 
-From udd <to@example.com> Wed Sep  6 00:00:00 2017
+From udd Wed Sep  6 00:00:00 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
 Date: Wed, 06 Sep 2017 00:00:00 -0000
@@ -91,7 +91,7 @@ To: to@example.com
 From: udd <to@example.com>
 Subject: smokeping: Testing auto-removal: on 2017-09-14 (bug: #826056)
 Message-ID: smokeping-testing-auto-removal-on-2017-09-14-bug-826056
-User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: file://

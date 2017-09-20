@@ -74,13 +74,13 @@ Archive-At: http://www.example.com/blog/post/1
 --===============testboundary==
 Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
 This is the  body, which should show instead of the above
 --===============testboundary==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
 http://www.example.com/blog/post/1
 
