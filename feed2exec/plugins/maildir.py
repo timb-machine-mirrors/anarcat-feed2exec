@@ -26,8 +26,17 @@ boundary = None
 def make_message(feed, entry, to_addr=None, cls=email.message.Message):
     """generate a message from the feed
 
-    .. todo:: figure out a way to render multi-element Atom feeds.
-    .. todo:: should be moved to utils?"""
+    this will generate multipart emails if HTML is detected, but also
+    for multipart Atom feeds (which may have multiple Content tags).
+
+    .. todo:: should be moved to utils?
+
+    .. todo:: port to the new email.message.EmailMessage interface,
+              only available in 3.6 however. See `this documentation
+              <https://docs.python.org/3/library/email.compat32-message.html#compat32-message>`_
+              for more information.
+
+    """
     params = defaultdict(str)
     params.update(entry)
     cs = email.charset.Charset('utf-8')
