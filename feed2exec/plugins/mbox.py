@@ -36,7 +36,7 @@ class output(object):
                                       entry=entry,
                                       to_addr=to_addr,
                                       cls=mailbox.mboxMessage)
-        msg.set_from(msg['From'], time.gmtime(timestamp))
+        msg.set_from(utils.slug(feed.get('name', 'MAILER-DAEMON')), time.gmtime(timestamp))
         utils.make_dirs_helper(prefix)
         folder = os.path.basename(os.path.abspath(utils.slug(feed.get('name'))))  # noqa
         # allow user to override our folder
