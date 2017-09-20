@@ -34,7 +34,7 @@ test_data2 = {'url': 'http://example.com/',
               'name': 'test2',
               'output': None,
               'args': None}
-test_nasa = {'url': 'file://%s' % utils.find_test_file('breaking_news.rss'),
+test_nasa = {'url': 'file://%s' % utils.find_test_file('breaking_news.xml'),
              'name': 'nasa-breaking-news',
              'output': None,
              'args': None}
@@ -42,11 +42,11 @@ test_sample = {'url': 'file://%s' % utils.find_test_file('sample.xml'),
                'name': 'sample',
                'output': 'feed2exec.plugins.echo',
                'args': '1 2 3 4'}
-test_udd = {'url': 'file://%s' % utils.find_test_file('udd.rss'),
+test_udd = {'url': 'file://%s' % utils.find_test_file('udd.xml'),
             'name': 'udd',
             'output': None,
             'args': None}
-test_restic = {'url': 'file://%s' % utils.find_test_file('restic.atom'),
+test_restic = {'url': 'file://%s' % utils.find_test_file('restic.xml'),
                'name': 'restic',
                'filter': 'feed2exec.plugins.emptysummary'}
 test_dates = {'url': 'file://' + utils.find_test_file('weird-dates.xml'),

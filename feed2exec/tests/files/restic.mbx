@@ -1,0 +1,170 @@
+From fd0 <to@example.com> Wed Sep 13 15:24:28 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Wed, 13 Sep 2017 15:24:28 -0000
+To: to@example.com
+From: fd0 <to@example.com>
+Subject: restic 0.7.2
+Message-ID: tag-github-com-2008-repository-19205896-v0-7-2
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: file:///restic/restic/releases/tag/v0.7.2
+
+--===============testboundary==
+
+--===============testboundary==--
+
+From fd0 <to@example.com> Wed Aug  9 06:20:32 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Wed, 09 Aug 2017 06:20:32 -0000
+To: to@example.com
+From: fd0 <to@example.com>
+Subject: restic 0.7.1
+Message-ID: tag-github-com-2008-repository-19205896-v0-7-1
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: file:///restic/restic/releases/tag/v0.7.1
+
+--===============testboundary==
+
+--===============testboundary==--
+
+From fd0 <to@example.com> Sat Jul  1 12:46:02 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Sat, 01 Jul 2017 12:46:02 -0000
+To: to@example.com
+From: fd0 <to@example.com>
+Subject: restic 0.7.0
+Message-ID: tag-github-com-2008-repository-19205896-v0-7-0
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: file:///restic/restic/releases/tag/v0.7.0
+
+--===============testboundary==
+
+--===============testboundary==--
+
+From fd0 <to@example.com> Wed May 31 22:14:33 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Wed, 31 May 2017 22:14:33 -0000
+To: to@example.com
+From: fd0 <to@example.com>
+Subject: restic 0.6.1
+Message-ID: tag-github-com-2008-repository-19205896-v0-6-1
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: file:///restic/restic/releases/tag/v0.6.1
+
+--===============testboundary==
+
+--===============testboundary==--
+
+From fd0 <to@example.com> Mon May 29 21:30:06 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Mon, 29 May 2017 21:30:06 -0000
+To: to@example.com
+From: fd0 <to@example.com>
+Subject: restic 0.6.0
+Message-ID: tag-github-com-2008-repository-19205896-v0-6-0
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: file:///restic/restic/releases/tag/v0.6.0
+
+--===============testboundary==
+
+--===============testboundary==--
+
+From fd0 <to@example.com> Thu May 25 13:49:05 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Thu, 25 May 2017 13:49:05 -0000
+To: to@example.com
+From: fd0 <to@example.com>
+Subject: restic v0.6.0-rc.1
+Message-ID: tag-github-com-2008-repository-19205896-v0-6-0-rc-1
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: file:///restic/restic/releases/tag/v0.6.0-rc.1
+
+--===============testboundary==
+
+--===============testboundary==--
+
+From fd0 <to@example.com> Sat Mar 11 11:47:32 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Sat, 11 Mar 2017 11:47:32 -0000
+To: to@example.com
+From: fd0 <to@example.com>
+Subject: restic 0.5.0
+Message-ID: tag-github-com-2008-repository-19205896-v0-5-0
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: file:///restic/restic/releases/tag/v0.5.0
+
+--===============testboundary==
+
+--===============testboundary==--
+
+From fd0 <to@example.com> Thu Mar  9 10:23:03 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Thu, 09 Mar 2017 10:23:03 -0000
+To: to@example.com
+From: fd0 <to@example.com>
+Subject: restic 0.5.0-rc.1
+Message-ID: tag-github-com-2008-repository-19205896-v0-5-0-rc-1
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: file:///restic/restic/releases/tag/v0.5.0-rc.1
+
+--===============testboundary==
+
+--===============testboundary==--
+
+From fd0 <to@example.com> Thu Feb  2 09:30:15 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Thu, 02 Feb 2017 09:30:15 -0000
+To: to@example.com
+From: fd0 <to@example.com>
+Subject: restic 0.4.0
+Message-ID: tag-github-com-2008-repository-19205896-v0-4-0
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: file:///restic/restic/releases/tag/v0.4.0
+
+--===============testboundary==
+
+--===============testboundary==--
+
+From fd0 <to@example.com> Sun Jan  8 09:49:13 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Sun, 08 Jan 2017 09:49:13 -0000
+To: to@example.com
+From: fd0 <to@example.com>
+Subject: restic 0.3.3
+Message-ID: tag-github-com-2008-repository-19205896-v0-3-3
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: file:///restic/restic/releases/tag/v0.3.3
+
+--===============testboundary==
+
+--===============testboundary==--
+

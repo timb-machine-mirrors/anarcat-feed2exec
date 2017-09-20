@@ -1,0 +1,31 @@
+From test author <from@example.com> Sun Sep  6 16:20:00 2009
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Sun, 06 Sep 2009 16:20:00 -0000
+To: to@example.com
+From: test author <from@example.com>
+Subject: Example entry
+Message-ID: 7bd204c6-1655-4c27-aeee-53f933c5395f
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://www.example.com/blog/post/1
+
+--===============testboundary==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+This is the  body, which should show instead of the above
+--===============testboundary==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+http://www.example.com/blog/post/1
+
+This is the body, which should show instead of the above
+
+
+--===============testboundary==--
+

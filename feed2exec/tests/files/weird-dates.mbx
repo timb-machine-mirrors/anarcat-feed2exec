@@ -1,0 +1,16 @@
+From weird-dates <to@example.com> Sun Sep  3 09:03:54 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Date: Sun, 03 Sep 2017 09:03:54 -0000
+To: to@example.com
+From: weird-dates <to@example.com>
+Subject: test item
+Message-ID: http-example-com-test
+User-Agent: feed2exec (0.5.dev5+ng055dc84.d20170920)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://example.com/test/
+
+test descr1
+

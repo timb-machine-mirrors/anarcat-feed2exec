@@ -1,13 +1,17 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
+from glob import glob
 import datetime
 import email
+import mailbox
 try:
     import unittest.mock as mock
 except ImportError:
     # py2
     import mock
+import os
+import os.path
 
 import feedparser
 import pytest
@@ -93,6 +97,28 @@ This is the body, which should show instead of the above
         f = plugins.output(sample, entry, lock=LOCK)
         message = tmpdir.join('Mail', 'folder-test', 'new', f.key)
         assert message.check()
+
+
+def test_email(tmpdir, test_db, static_boundary):
+    global LOCK
+    LOCK = mock.MagicMock()
+
+    testdir = utils.find_test_file('.')
+    for path in glob(os.path.join(testdir, '*.xml')):
+        feed = {'url': 'file://' + path,
+                'name': os.path.basename(path)[:-4],
+                'output': 'feed2exec.plugins.mbox',
+                'mailbox': str(tmpdir.join('Mail')),
+                'email': 'from@example.com',
+                'args': 'to@example.com',
+                }
+        body = fetch(feed['url'])
+        data = parse(body, feed, lock=LOCK)
+        p = path[:-3] + 'mbx'
+        with open(p) as expected:
+            folder = utils.slug(feed['name']) + '.mbx'
+            assert tmpdir.join('Mail', folder).read() == expected.read()
+    assert path
 
 
 def test_echo(capfd):

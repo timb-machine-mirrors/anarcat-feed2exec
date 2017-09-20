@@ -1,0 +1,22 @@
+Test files for feed2exec
+========================
+
+Those files represent source RSS and Atom feeds (the `.xml` files) and
+their rendered equivalent (the `.mbx` files) in [Mbox](https://en.wikipedia.org/wiki/Mbox) format.
+
+The format was chosen instead of the more efficient [Maildir](https://en.wikipedia.org/wiki/Maildir)
+format because we do not need to write those files on a regular basis
+and reading a single mbox file at once is more efficient than a whole
+Maildir folder, in our use case. Furthermore, it allows us to have a
+single file reprensenting a feed instead of multiple files and folders
+per feed.
+
+To add a new test case, simply add the downloaded feed as a `.xml`
+file. The test suite will pick it up and fail with some error
+message. If the problem is a crash, fix the crash and rerun the test
+suite until you get the mailbox to be generated. Once the mailbox is
+generated or if the problem is malformed output, look for a path like
+`/tmp/pytest-of-.*/pytest-\d+/Mail/.*.mbx` in the output and copy that
+file into this directory, after making sure the output is
+correct. Obviously, you will be testing for incorrect output, so you
+will probably need to modify the output file.

@@ -55,13 +55,13 @@ rss2email  3.9    2014 1754  Python
 
 Delivery options:
 
-========= ======= ==== ==== ======== ====
-Program   Maildir IMAP SMTP sendmail exec
-========= ======= ==== ==== ======== ====
-feed2exec    ✓     ✗     ✗     ✗      ✓
-feed2imap    ✓     ✓     ✗     ✗      ✗
-rss2email    ✗     ✓     ✓     ✓      ✗
-========= ======= ==== ==== ======== ====
+========= ======= ==== ==== ==== ======== ====
+Program   Maildir Mbox IMAP SMTP sendmail exec
+========= ======= ==== ==== ==== ======== ====
+feed2exec    ✓     ✓    ✗     ✗     ✗      ✓
+feed2imap    ✓     ✗    ✓     ✗     ✗      ✗
+rss2email    ✗     ✗    ✓     ✓     ✓      ✗
+========= ======= ==== ==== ==== ======== ====
 
  * maildir: writing to `Maildir`_ folders. r2e has a `pull request
    <r2e-maildir>`_ to implement maildir support, but it's not merged
