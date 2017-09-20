@@ -12,6 +12,7 @@ except ImportError:
     import mock
 import os
 import os.path
+import re
 
 import feedparser
 import pytest
@@ -117,7 +118,8 @@ def test_email(tmpdir, test_db, static_boundary):
         p = path[:-3] + 'mbx'
         with open(p) as expected:
             folder = utils.slug(feed['name']) + '.mbx'
-            assert tmpdir.join('Mail', folder).read() == expected.read()
+            r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
+            assert r.sub(tmpdir.join('Mail', folder).read(), '') == r.sub(expected.read(), '')
     assert path
 
 
