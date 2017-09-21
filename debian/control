@@ -30,7 +30,7 @@ Description: programmable feed reader
 
 Package: feed2exec-doc
 Section: doc
-Architecture: allow
+Architecture: all
 Depends: ${misc:Depends}
        , ${sphinxdoc:Depends}
 Description: programmable feed reader - documentation files
