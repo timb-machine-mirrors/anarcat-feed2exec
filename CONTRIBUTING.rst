@@ -187,7 +187,7 @@ professionnally. Issues and bug reports should be filed on the `issue
 tracker <issues>`_.
 
 Issue triage
-------------
+~~~~~~~~~~~~
 
 Issue triage is a useful contribution as well. You can review the
 `issues`_ in the GitLab project and, for each issue:
@@ -204,6 +204,28 @@ Issue triage is a useful contribution as well. You can review the
 
 Note that some of those operations are available only to project
 maintainers, see below for the different statuses.
+
+Test suite
+----------
+
+The test suite is in ``feed2exec/tests`` but also as doctest comments
+in some functions imported from the `ecdysis`_ project. You can run
+all the tests with `pytest`_, using, for example::
+
+  pytest feed2exec
+
+This is also hooked into the ``setup.py`` command, so this also works::
+
+  python3 setup.py test
+
+Note that some tests will fail in Python 2, as the code is written and
+tested in Python3. Furthermore, the feed output is taken from an up to
+date (5.2.1) feedparser version, so the tests are marked as expected
+to fail for lower versions. You should, naturally, run tests before
+submitting patches.
+
+.. _pytest: http://pytest.org/
+.. _ecdysis: https://gitlab.com/anarcat/ecdysis
 
 Membership
 ----------
