@@ -1,205 +1,3 @@
-From planet-debian Sun Sep 10 08:56:52 2017
-Content-Type: multipart/alternative; boundary="===============testboundary=="
-MIME-Version: 1.0
-Date: Sun, 10 Sep 2017 08:56:52 -0000
-To: to@example.com
-From: planet-debian <to@example.com>
-Subject: =?utf-8?q?Lior_Kaplan=3A_PHP_7=2E2_is_coming=E2=80=A6_mcrypt_extension_isn=E2=80=99t?=
-Message-ID: http-liorkaplan-wordpress-com-p-593
-User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
-Precedence: list
-Auto-Submitted: auto-generated
-Archive-At: https://liorkaplan.wordpress.com/2017/09/10/php-7-2-is-coming-mcrypt-extension-isnt/
-
---===============testboundary==
-Content-Type: text/html; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-<p>Early September, it’s about 3 months before PHP 7.2 is expected to be release (schedule <a href="https://wiki.php.net/todo/php72">here</a>). One of the changes is the removal of the mcrypt extension after it was deprecated in PHP 7.1. The main problem with mcrypt extension is that it is based on libmcrypt that was abandoned by it’s upstream since 2007. That’s 10 years of keeping a library alive, moving the burden to distribution’s security teams. But this isn’t new, Remi already wrote about this two years ago: “<a href="https://blog.remirepo.net/post/2015/07/07/About-libmcrypt-and-php-mcrypt">About libmcrypt and php-mcrypt</a>“.</p>
-<p>But with removal of the extension from the PHP code base (about F**King time), it would force the recommendation was done “nicely” till now. And forcing people means some noise, although an alternative is PHP’s owns openssl extension. But as many migrations that require code change – it’s going slow.</p>
-<p>The goal of this post is to reach to the PHP eco system and map the components (mostly frameworks and applications) to still require/recommend mcyrpt and to pressure them to fix it before PHP 72 is released. I’ll appreciate the readers’ help with this mapping in the comments.</p>
-<p>For example, <a href="https://laravel.com">Laravel</a>‘s release notes for 5.1:</p>
-<blockquote><p>In previous versions of Laravel, encryption was handled by the mcrypt PHP extension. However, beginning in Laravel 5.1, encryption is handled by the openssl extension, which is more actively maintained.</p></blockquote>
-<p>Or, on the other hand Joomla 3 requirements still mentions mcrypt.</p>
-<p>mcrypt safe:</p>
-<ul>
-<li>Drupal 7 and up, see <a href="https://www.drupal.org/docs/7/system-requirements/php">https://www.drupal.org/docs/7/system-requirements/php</a></li>
-<li>Lavavel 5.1 and up, see <a href="https://laravel.com/docs/5.1/releases">https://laravel.com/docs/5.1/releases</a></li>
-</ul>
-<p>mcrypt dependant:</p>
-<ul>
-<li>Joomla, see <a href="https://downloads.joomla.org/technical-requirements">https://downloads.joomla.org/technical-requirements</a></li>
-<li>Magento, see <a href="http://devdocs.magento.com/guides/v2.2/install-gde/system-requirements-tech.html">http://devdocs.magento.com/guides/v2.2/install-gde/system-requirements-tech.html</a><br />
-(Checking 2.2 RC release, as it just added support for PHP 7.1)</li>
-</ul>
-<p>For those who really need mcrypt, it is part of <a href="http://pecl.php.net/package/mcrypt">PECL</a>, PHP’s extensions repository. You’re welcome to compile it on your own risk.</p><br />Filed under: <a href="https://liorkaplan.wordpress.com/category/debian-gnulinux/">Debian GNU/Linux</a>, <a href="https://liorkaplan.wordpress.com/category/php-2/">PHP</a>  <a href="http://feeds.wordpress.com/1.0/gocomments/liorkaplan.wordpress.com/593/" rel="nofollow"><img alt="" border="0" src="http://feeds.wordpress.com/1.0/comments/liorkaplan.wordpress.com/593/" /></a>
---===============testboundary==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-https://liorkaplan.wordpress.com/2017/09/10/php-7-2-is-coming-mcrypt-extension-isnt/
-
-Early September, it’s about 3 months before PHP 7.2 is expected to be release
-(schedule [here][1]). One of the changes is the removal of the mcrypt
-extension after it was deprecated in PHP 7.1. The main problem with mcrypt
-extension is that it is based on libmcrypt that was abandoned by it’s upstream
-since 2007. That’s 10 years of keeping a library alive, moving the burden to
-distribution’s security teams. But this isn’t new, Remi already wrote about
-this two years ago: “[About libmcrypt and php-mcrypt][2]“.
-
-   [1]: <https://wiki.php.net/todo/php72>
-
-   [2]: <https://blog.remirepo.net/post/2015/07/07/About-libmcrypt-and-php-
-mcrypt>
-
-But with removal of the extension from the PHP code base (about F**King time),
-it would force the recommendation was done “nicely” till now. And forcing
-people means some noise, although an alternative is PHP’s owns openssl
-extension. But as many migrations that require code change – it’s going slow.
-
-The goal of this post is to reach to the PHP eco system and map the components
-(mostly frameworks and applications) to still require/recommend mcyrpt and to
-pressure them to fix it before PHP 72 is released. I’ll appreciate the
-readers’ help with this mapping in the comments.
-
-For example, [Laravel][3]‘s release notes for 5.1:
-
-   [3]: <https://laravel.com>
-
-> In previous versions of Laravel, encryption was handled by the mcrypt PHP
-extension. However, beginning in Laravel 5.1, encryption is handled by the
-openssl extension, which is more actively maintained.
-
-Or, on the other hand Joomla 3 requirements still mentions mcrypt.
-
-mcrypt safe:
-
-  * Drupal 7 and up, see <https://www.drupal.org/docs/7/system-requirements/php>
-  * Lavavel 5.1 and up, see <https://laravel.com/docs/5.1/releases>
-
-mcrypt dependant:
-
-  * Joomla, see <https://downloads.joomla.org/technical-requirements>
-  * Magento, see <http://devdocs.magento.com/guides/v2.2/install-gde/system-requirements-tech.html>  
-(Checking 2.2 RC release, as it just added support for PHP 7.1)
-
-For those who really need mcrypt, it is part of [PECL][4], PHP’s extensions
-repository. You’re welcome to compile it on your own risk.
-
-   [4]: <http://pecl.php.net/package/mcrypt>
-
-  
-Filed under: [Debian GNU/Linux][5], [PHP][6] [][7]
-
-   [5]: <https://liorkaplan.wordpress.com/category/debian-gnulinux/>
-
-   [6]: <https://liorkaplan.wordpress.com/category/php-2/>
-
-   [7]:
-<http://feeds.wordpress.com/1.0/gocomments/liorkaplan.wordpress.com/593/>
-
-
---===============testboundary==--
-
-From planet-debian Sat Sep  9 10:18:21 2017
-Content-Type: multipart/alternative; boundary="===============testboundary=="
-MIME-Version: 1.0
-Date: Sat, 09 Sep 2017 10:18:21 -0000
-To: to@example.com
-From: planet-debian <to@example.com>
-Subject: Russell Coker: Observing Reliability
-Message-ID: https-etbe-coker-com-au-p-4411
-User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
-Precedence: list
-Auto-Submitted: auto-generated
-Archive-At: https://etbe.coker.com.au/2017/09/09/observing-reliability/
-
---===============testboundary==
-Content-Type: text/html; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-<p><a href="https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/">Last year I wrote about how great my latest Thinkpad is [1]</a> in response to a discussion about whether a Thinkpad is still the “Rolls Royce” of laptops.</p>
-<p>It was a few months after writing that post that I realised that I omitted an important point. After I had that laptop for about a year the DVD drive broke and made annoying clicking sounds all the time in addition to not working. I removed the DVD drive and the result was that the laptop was lighter and used less power without missing any feature that I desired. As I had installed Debian on that laptop by copying the hard drive from my previous laptop I had never used the DVD drive for any purpose. After a while I got used to my laptop being like that and the gaping hole in the side of the laptop where the DVD drive used to be didn’t even register to me. I would prefer it if Lenovo sold Thinkpads in the T series without DVD drives, but it seems that only the laptops with tiny screens are designed to lack DVD drives.</p>
-<p>For my use of laptops this doesn’t change the conclusion of my previous post. Now the T420 has been in service for almost 4 years which makes the cost of ownership about $75 per year. $1.50 per week as a tax deductible business expense is very cheap for such a nice laptop. About a year ago I installed a SSD in that laptop, it cost me about $250 from memory and made it significantly faster while also reducing heat problems. The depreciation on the SSD about doubles the cost of ownership of the laptop, but it’s still cheaper than a mobile phone and thus not in the category of things that are expected to last for a long time – while also giving longer service than phones usually do.</p>
-<p>One thing that’s interesting to consider is the fact that I forgot about the broken DVD drive when writing about this. I guess every review has an unspoken caveat of “this works well for me but might suck badly for your use case”. But I wonder how many other things that are noteworthy I’m forgetting to put in reviews because they just don’t impact my use. I don’t think that I am unusual in this regard, so reading multiple reviews is the sensible thing to do.</p>
-<ul>
-<li>[1]<a href="https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/"> https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/</a></li>
-</ul>
-<div class="yarpp-related-rss">
-<p>Related posts:</p><ol>
-<li><a href="https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/" rel="bookmark" title="Is a Thinkpad Still Like a Rolls-Royce">Is a Thinkpad Still Like a Rolls-Royce </a> <small>For a long time the Thinkpad has been widely regarded...</small></li>
-<li><a href="https://etbe.coker.com.au/2007/05/18/pc-prices-drop-again/" rel="bookmark" title="PC prices drop again!">PC prices drop again! </a> <small>A few weeks ago Dell advertised new laptops for $849AU,...</small></li>
-<li><a href="https://etbe.coker.com.au/2009/11/23/laptop-reliability/" rel="bookmark" title="Laptop Reliability">Laptop Reliability </a> <small>Update: TumbleDry has a good analysis of the Square Trade...</small></li>
-</ol>
-</div>
---===============testboundary==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-https://etbe.coker.com.au/2017/09/09/observing-reliability/
-
-[Last year I wrote about how great my latest Thinkpad is [1]][1] in response
-to a discussion about whether a Thinkpad is still the “Rolls Royce” of
-laptops.
-
-   [1]: <https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/>
-
-It was a few months after writing that post that I realised that I omitted an
-important point. After I had that laptop for about a year the DVD drive broke
-and made annoying clicking sounds all the time in addition to not working. I
-removed the DVD drive and the result was that the laptop was lighter and used
-less power without missing any feature that I desired. As I had installed
-Debian on that laptop by copying the hard drive from my previous laptop I had
-never used the DVD drive for any purpose. After a while I got used to my
-laptop being like that and the gaping hole in the side of the laptop where the
-DVD drive used to be didn’t even register to me. I would prefer it if Lenovo
-sold Thinkpads in the T series without DVD drives, but it seems that only the
-laptops with tiny screens are designed to lack DVD drives.
-
-For my use of laptops this doesn’t change the conclusion of my previous post.
-Now the T420 has been in service for almost 4 years which makes the cost of
-ownership about $75 per year. $1.50 per week as a tax deductible business
-expense is very cheap for such a nice laptop. About a year ago I installed a
-SSD in that laptop, it cost me about $250 from memory and made it
-significantly faster while also reducing heat problems. The depreciation on
-the SSD about doubles the cost of ownership of the laptop, but it’s still
-cheaper than a mobile phone and thus not in the category of things that are
-expected to last for a long time – while also giving longer service than
-phones usually do.
-
-One thing that’s interesting to consider is the fact that I forgot about the
-broken DVD drive when writing about this. I guess every review has an unspoken
-caveat of “this works well for me but might suck badly for your use case”. But
-I wonder how many other things that are noteworthy I’m forgetting to put in
-reviews because they just don’t impact my use. I don’t think that I am unusual
-in this regard, so reading multiple reviews is the sensible thing to do.
-
-  * [1][ https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/][2]
-
-   [2]: <https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/>
-
-Related posts:
-
-  1. [Is a Thinkpad Still Like a Rolls-Royce ][3] For a long time the Thinkpad has been widely regarded...
-  2. [PC prices drop again! ][4] A few weeks ago Dell advertised new laptops for $849AU,...
-  3. [Laptop Reliability ][5] Update: TumbleDry has a good analysis of the Square Trade...
-
-   [3]: <https://etbe.coker.com.au/2016/11/06/thinkpad-rolls-royce/> (Is a
-Thinkpad Still Like a Rolls-Royce)
-
-   [4]: <https://etbe.coker.com.au/2007/05/18/pc-prices-drop-again/> (PC
-prices drop again!)
-
-   [5]: <https://etbe.coker.com.au/2009/11/23/laptop-reliability/> (Laptop
-Reliability)
-
-
---===============testboundary==--
-
 From planet-debian Sat Sep  9 04:52:47 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
@@ -208,7 +6,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Fran=C3=A7ois_Marier=3A_TLS_Authentication_on_Freenode_and_OFTC?=
 Message-ID: http-feeding-cloud-geek-nz-posts-tls_authentication_freenode_and_oftc
-User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
+User-Agent: feed2exec (0.5)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
@@ -417,57 +215,1275 @@ stronger alternative.
 
 --===============testboundary==--
 
-From planet-debian Fri Sep  8 21:42:29 2017
+From planet-debian Tue Sep  5 23:01:20 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
-Date: Fri, 08 Sep 2017 21:42:29 -0000
+Date: Tue, 05 Sep 2017 23:01:20 -0000
 To: to@example.com
-From: Vincent Fourmond <noreply@blogger.com>
-Subject: Vincent Fourmond: Extract many attachement from many mails in one go using ripmime
-Message-ID: tag-blogger-com-1999-blog-3019054489127059271-post-5906438607473667126
-User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
+From: planet-debian <to@example.com>
+Subject: Kees Cook: security things in Linux v4.13
+Message-ID: https-outflux-net-blog-p-1056
+User-Agent: feed2exec (0.5)
 Precedence: list
 Auto-Submitted: auto-generated
-Archive-At: http://vince-debian.blogspot.com/2017/09/extract-many-attachement-from-many.html
+Archive-At: https://outflux.net/blog/archives/2017/09/05/security-things-in-linux-v4-13/
+
+--===============testboundary==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+<img align="right" alt="" height="84" src="http://planet.debian.org/heads/kees.png" style="float: right;" width="92" />  <p>Previously: <a href="http://outflux.net/blog/archives/2017/07/10/security-things-in-linux-v4-12/">v4.12</a>.</p>
+<p>Here’s a short summary of some of interesting security things in Sunday’s v4.13 release of the Linux kernel:</p>
+<p><strong>security documentation ReSTification</strong><br />
+The kernel has been switching to formatting documentation with <a href="https://www.kernel.org/doc/html/latest/doc-guide/sphinx.html">ReST</a>, and I noticed that none of the <code>Documentation/security/</code> tree had been converted yet. I <a href="https://git.kernel.org/linus/c2ed6743434d1d9ef49b044c6bdfd6ac1ce140a2">took the opportunity</a> to take a few passes at formatting the existing documentation and, at Jon Corbet’s recommendation, split it up between <a href="https://www.kernel.org/doc/html/latest/admin-guide/LSM/index.html">end-user documentation</a> (which is mainly how to use LSMs) and <a href="https://www.kernel.org/doc/html/latest/security/index.html">developer documentation</a> (which is mainly how to use various internal APIs). A bunch of these docs need some updating, so maybe with the improved visibility, they’ll get some extra attention.</p>
+<p><strong>CONFIG_REFCOUNT_FULL</strong><br />
+Since Peter Zijlstra implemented the <a href="http://outflux.net/blog/archives/2017/05/02/security-things-in-linux-v4-11/"><code>refcount_t</code> API</a> in v4.11, Elena Reshetova (with Hans Liljestrand and David Windsor) has been systematically replacing <code>atomic_t</code> reference counters with <code>refcount_t</code>. As of v4.13, there are now <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?h=v4.13&amp;qt=grep&amp;q=refcount_t">close to 125 conversions</a> with many more to come. However, there were concerns over the performance characteristics of the <code>refcount_t</code> implementation from the maintainers of the net, mm, and block subsystems. In order to assuage these concerns and help the conversion progress continue, I added an “unchecked” <code>refcount_t</code> implementation (identical to the earlier <code>atomic_t</code> implementation) as the default, with the fully checked implementation now available under <code>CONFIG_REFCOUNT_FULL</code>. The plan is that for v4.14 and beyond, the kernel can grow <a href="https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=7a46ec0e2f4850407de5e1d19a44edee6efa58ec">per-architecture implementations of <code>refcount_t</code></a> that have performance characteristics on par with <code>atomic_t</code> (as done in grsecurity’s PAX_REFCOUNT).</p>
+<p><strong>CONFIG_FORTIFY_SOURCE</strong><br />
+Daniel Micay <a href="https://git.kernel.org/linus/6974f0c4555e285ab217cee58b6e874f776ff409">created a version</a> of glibc’s <code>FORTIFY_SOURCE</code> compile-time and run-time protection for finding overflows in the common string (e.g. <code>strcpy</code>, <code>strcmp</code>) and memory (e.g. <code>memcpy</code>, <code>memcmp</code>) functions. The idea is that since the compiler already knows the size of many of the buffer arguments used by these functions, it can already build in checks for buffer overflows. When all the sizes are known at compile time, this can actually allow the compiler to fail the build instead of continuing with a proven overflow. When only some of the sizes are known (e.g. destination size is known at compile-time, but source size is only known at run-time) run-time checks are added to catch any cases where an overflow might happen. Adding this <a href="https://git.kernel.org/linus/4c93496f18ce5044d78e4f7f9e018682a4f44b3d">found</a> <a href="https://git.kernel.org/linus/e2ae8ab4b571e2e4094a28acb60649bc2732c67f">several</a> <a href="https://git.kernel.org/linus/3e2c044a54e6b6373606f8ffad42a4a0759fcf3d">places</a> <a href="https://git.kernel.org/linus/c0944883c97c0ddc71da67cc731590a7c878a1a2">where</a> <a href="https://git.kernel.org/linus/42c335f7e67029d2e01711f2f2bc6252277c8993">minor</a> <a href="https://git.kernel.org/linus/dbbb08f500d6146398b794fdc68a8e811366b451">leaks</a> <a href="https://git.kernel.org/linus/12e3c0433e8a3b817fbb978a1be973a04cd5d6f3">were</a> <a href="https://git.kernel.org/linus/e48d661eb13f2f83861428f001c567fdb3f317e8">happening</a>, and Daniel and I chased down fixes for them.</p>
+<p>One interesting note about this protection is that is only examines the <a href="https://gcc.gnu.org/onlinedocs/gcc/Object-Size-Checking.html">size of the whole object</a> for its size (via <code>__builtin_object_size(..., <strong>0</strong>)</code>). If you have a string within a structure, <code>CONFIG_FORTIFY_SOURCE</code> as currently implemented will make sure only that you can’t copy beyond the structure (but therefore, you <em>can</em> still overflow the string within the structure). The next step in enhancing this protection is to switch from 0 (above) to 1, which will use the closest surrounding subobject (e.g. the string). However, there are a lot of cases where the kernel intentionally copies across multiple structure fields, which means more fixes before this higher level can be enabled.</p>
+<p><strong>NULL-prefixed stack canary</strong><br />
+Rik van Riel and Daniel Micay changed how the stack canary is defined on 64-bit systems to always make sure that the <a href="https://git.kernel.org/linus/022c204040f3fd22d6445bc35517786195b7ae80">leading byte is zero</a>. This provides a deterministic defense against overflowing string functions (e.g. <code>strcpy</code>), since they will either stop an overflowing read at the NULL byte, or be unable to write a NULL byte, thereby always triggering the canary check. This does reduce the entropy from 64 bits to 56 bits for overflow cases where NULL bytes can be written (e.g. <code>memcpy</code>), but the trade-off is worth it. (Besdies, x86_64’s canary was 32-bits <a href="http://outflux.net/blog/archives/2017/07/10/security-things-in-linux-v4-12/">until recently</a>.)</p>
+<p><strong>IPC refactoring</strong><br />
+Partially in support of allowing IPC structure layouts to be randomized by the randstruct plugin, Manfred Spraul and I reorganized the <a href="https://git.kernel.org/linus/1a23395672658969a4035dcc518ea6cab835c579">internal layout</a> of how IPC is tracked in the kernel. The resulting allocations are smaller and much easier to deal with, even if I initially missed a <a href="https://git.kernel.org/linus/ade9f91b32b964e83d294f4973d50083b08ef6fc">few needed container_of() uses</a>.</p>
+<p><strong>randstruct gcc plugin</strong><br />
+I ported grsecurity’s clever <a href="https://git.kernel.org/linus/313dd1b629219db50cad532dba6a3b3b22ffe622">randstruct gcc plugin to upstream</a>. This plugin allows structure layouts to be randomized on a per-build basis, providing a probabilistic defense against attacks that need to know the location of sensitive structure fields in kernel memory (which is most attacks). By moving things around in this fashion, attackers need to perform much more work to determine the resulting layout before they can mount a reliable attack.</p>
+<p>Unfortunately, due to the timing of the development cycle, only the “manual” mode of randstruct landed in upstream (i.e. <a href="https://git.kernel.org/linus/3859a271a003aba01e45b85c9d8b355eb7bf25f9">marking structures with <code>__randomize_layout</code></a>). v4.14 will also have the <a href="https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?id=9225331b310821760f39ba55b00b8973602adbb5">automatic mode enabled</a>, which randomizes all structures that contain only function pointers.</p>
+<p>A large number of fixes to support randstruct have been landing from <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?h=v4.13&amp;qt=grep&amp;q=designated+init">v4.10 through v4.13</a>, most of which were already identified and fixed by grsecurity, but many were novel, either in newly added drivers, as <a href="https://git.kernel.org/linus/1854c19cae0d108637c40f90ee0bb9b7c1adbc0a">whitelisted cross-structure casts</a>, <a href="https://git.kernel.org/linus/3e2e857f9c3a19d55ee0ba7b428b8be5008960bf">refactorings</a> (like IPC noted above), or in a <a href="https://git.kernel.org/linus/ffa47aa678cfaa9b88e8a26cfb115b4768325121">corner case on ARM</a> found during upstream testing.</p>
+<p><strong>lower ELF_ET_DYN_BASE</strong><br />
+One of the issues identified from the <a href="https://blog.qualys.com/securitylabs/2017/06/19/the-stack-clash">Stack Clash</a> set of vulnerabilities was that it was possible to collide stack memory with the highest portion of a PIE program’s text memory since the default <code>ELF_ET_DYN_BASE</code> (the lowest possible random position of a PIE executable in memory) was already so high in the memory layout (specifically, 2/3rds of the way through the address space). Fixing this required <a href="http://git.kernel.org/linus/eab09532d40090698b05a07c1c87f39fdbc5fab5">teaching the ELF loader</a> how to load interpreters as shared objects in the mmap region instead of as a PIE executable (to avoid potentially colliding with the binary it was loading). As a result, the PIE default could be moved down to ET_EXEC (0x400000) on 32-bit, entirely avoiding the subset of Stack Clash attacks. 64-bit could be moved to just above the 32-bit address space (0x100000000), leaving the entire 32-bit region open for VMs to do 32-bit addressing, but late in the cycle it was discovered that <a href="https://git.kernel.org/linus/c715b72c1ba406f133217b509044c38d8e714a37">Address Sanitizer couldn’t handle it moving</a>. With most of the Stack Clash risk only applicable to 32-bit, fixing 64-bit has been deferred until there is a way to teach Address Sanitizer how to load itself as a shared object instead of as a PIE binary.</p>
+<p><strong>early device randomness</strong><br />
+I noticed that early device randomness wasn’t actually getting added to the kernel entropy pools, so I <a href="https://git.kernel.org/linus/ee7998c50c2697737c6530431709f77c852bf0d6">fixed that</a> to improve the effectiveness of the latent_entropy gcc plugin.</p>
+<p>That’s it for now; please let me know if I missed anything. As a side note, I was rather alarmed to discover that due to all my trivial ReSTification formatting, and tiny FORTIFY_SOURCE and randstruct fixes, I made it into the <a href="https://lwn.net/Articles/731794/">most active 4.13 developers</a> list (by patch count) at LWN with 76 patches: a whopping 0.6% of the cycle’s patches. ;)</p>
+<p>Anyway, the v4.14 merge window is open!</p>
+<p style="clear: both; text-align: left;">© 2017, <a href="https://outflux.net/blog/">Kees Cook</a>. This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/3.0/us/" rel="license">Creative Commons Attribution-ShareAlike 3.0 License</a>.<br /><a href="http://creativecommons.org/licenses/by-sa/3.0/us/" rel="license"><img alt="Creative Commons License" src="http://outflux.net/illustrations/cc-88x31.png" style="border-width: 0;" /></a> </p>
+--===============testboundary==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+https://outflux.net/blog/archives/2017/09/05/security-things-in-linux-v4-13/
+
+Previously: [v4.12][1].
+
+   [1]: <http://outflux.net/blog/archives/2017/07/10/security-things-in-
+linux-v4-12/>
+
+Here’s a short summary of some of interesting security things in Sunday’s
+v4.13 release of the Linux kernel:
+
+**security documentation ReSTification**  
+The kernel has been switching to formatting documentation with [ReST][2], and
+I noticed that none of the `Documentation/security/` tree had been converted
+yet. I [took the opportunity][3] to take a few passes at formatting the
+existing documentation and, at Jon Corbet’s recommendation, split it up
+between [end-user documentation][4] (which is mainly how to use LSMs) and
+[developer documentation][5] (which is mainly how to use various internal
+APIs). A bunch of these docs need some updating, so maybe with the improved
+visibility, they’ll get some extra attention.
+
+   [2]: <https://www.kernel.org/doc/html/latest/doc-guide/sphinx.html>
+
+   [3]:
+<https://git.kernel.org/linus/c2ed6743434d1d9ef49b044c6bdfd6ac1ce140a2>
+
+   [4]: <https://www.kernel.org/doc/html/latest/admin-guide/LSM/index.html>
+
+   [5]: <https://www.kernel.org/doc/html/latest/security/index.html>
+
+**CONFIG_REFCOUNT_FULL**  
+Since Peter Zijlstra implemented the [`refcount_t` API][6] in v4.11, Elena
+Reshetova (with Hans Liljestrand and David Windsor) has been systematically
+replacing `atomic_t` reference counters with `refcount_t`. As of v4.13, there
+are now [close to 125 conversions][7] with many more to come. However, there
+were concerns over the performance characteristics of the `refcount_t`
+implementation from the maintainers of the net, mm, and block subsystems. In
+order to assuage these concerns and help the conversion progress continue, I
+added an “unchecked” `refcount_t` implementation (identical to the earlier
+`atomic_t` implementation) as the default, with the fully checked
+implementation now available under `CONFIG_REFCOUNT_FULL`. The plan is that
+for v4.14 and beyond, the kernel can grow [per-architecture implementations of
+`refcount_t`][8] that have performance characteristics on par with `atomic_t`
+(as done in grsecurity’s PAX_REFCOUNT).
+
+   [6]: <http://outflux.net/blog/archives/2017/05/02/security-things-in-
+linux-v4-11/>
+
+   [7]:
+<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?h=v4.13&qt=grep&q=refcount_t>
+
+   [8]:
+<https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=7a46ec0e2f4850407de5e1d19a44edee6efa58ec>
+
+**CONFIG_FORTIFY_SOURCE**  
+Daniel Micay [created a version][9] of glibc’s `FORTIFY_SOURCE` compile-time
+and run-time protection for finding overflows in the common string (e.g.
+`strcpy`, `strcmp`) and memory (e.g. `memcpy`, `memcmp`) functions. The idea
+is that since the compiler already knows the size of many of the buffer
+arguments used by these functions, it can already build in checks for buffer
+overflows. When all the sizes are known at compile time, this can actually
+allow the compiler to fail the build instead of continuing with a proven
+overflow. When only some of the sizes are known (e.g. destination size is
+known at compile-time, but source size is only known at run-time) run-time
+checks are added to catch any cases where an overflow might happen. Adding
+this [found][10] [several][11] [places][12] [where][13] [minor][14]
+[leaks][15] [were][16] [happening][17], and Daniel and I chased down fixes for
+them.
+
+   [9]:
+<https://git.kernel.org/linus/6974f0c4555e285ab217cee58b6e874f776ff409>
+
+   [10]:
+<https://git.kernel.org/linus/4c93496f18ce5044d78e4f7f9e018682a4f44b3d>
+
+   [11]:
+<https://git.kernel.org/linus/e2ae8ab4b571e2e4094a28acb60649bc2732c67f>
+
+   [12]:
+<https://git.kernel.org/linus/3e2c044a54e6b6373606f8ffad42a4a0759fcf3d>
+
+   [13]:
+<https://git.kernel.org/linus/c0944883c97c0ddc71da67cc731590a7c878a1a2>
+
+   [14]:
+<https://git.kernel.org/linus/42c335f7e67029d2e01711f2f2bc6252277c8993>
+
+   [15]:
+<https://git.kernel.org/linus/dbbb08f500d6146398b794fdc68a8e811366b451>
+
+   [16]:
+<https://git.kernel.org/linus/12e3c0433e8a3b817fbb978a1be973a04cd5d6f3>
+
+   [17]:
+<https://git.kernel.org/linus/e48d661eb13f2f83861428f001c567fdb3f317e8>
+
+One interesting note about this protection is that is only examines the [size
+of the whole object][18] for its size (via `__builtin_object_size(...,
+**0**)`). If you have a string within a structure, `CONFIG_FORTIFY_SOURCE` as
+currently implemented will make sure only that you can’t copy beyond the
+structure (but therefore, you _can_ still overflow the string within the
+structure). The next step in enhancing this protection is to switch from 0
+(above) to 1, which will use the closest surrounding subobject (e.g. the
+string). However, there are a lot of cases where the kernel intentionally
+copies across multiple structure fields, which means more fixes before this
+higher level can be enabled.
+
+   [18]: <https://gcc.gnu.org/onlinedocs/gcc/Object-Size-Checking.html>
+
+**NULL-prefixed stack canary**  
+Rik van Riel and Daniel Micay changed how the stack canary is defined on
+64-bit systems to always make sure that the [leading byte is zero][19]. This
+provides a deterministic defense against overflowing string functions (e.g.
+`strcpy`), since they will either stop an overflowing read at the NULL byte,
+or be unable to write a NULL byte, thereby always triggering the canary check.
+This does reduce the entropy from 64 bits to 56 bits for overflow cases where
+NULL bytes can be written (e.g. `memcpy`), but the trade-off is worth it.
+(Besdies, x86_64’s canary was 32-bits [until recently][20].)
+
+   [19]:
+<https://git.kernel.org/linus/022c204040f3fd22d6445bc35517786195b7ae80>
+
+   [20]: <http://outflux.net/blog/archives/2017/07/10/security-things-in-
+linux-v4-12/>
+
+**IPC refactoring**  
+Partially in support of allowing IPC structure layouts to be randomized by the
+randstruct plugin, Manfred Spraul and I reorganized the [internal layout][21]
+of how IPC is tracked in the kernel. The resulting allocations are smaller and
+much easier to deal with, even if I initially missed a [few needed
+container_of() uses][22].
+
+   [21]:
+<https://git.kernel.org/linus/1a23395672658969a4035dcc518ea6cab835c579>
+
+   [22]:
+<https://git.kernel.org/linus/ade9f91b32b964e83d294f4973d50083b08ef6fc>
+
+**randstruct gcc plugin**  
+I ported grsecurity’s clever [randstruct gcc plugin to upstream][23]. This
+plugin allows structure layouts to be randomized on a per-build basis,
+providing a probabilistic defense against attacks that need to know the
+location of sensitive structure fields in kernel memory (which is most
+attacks). By moving things around in this fashion, attackers need to perform
+much more work to determine the resulting layout before they can mount a
+reliable attack.
+
+   [23]:
+<https://git.kernel.org/linus/313dd1b629219db50cad532dba6a3b3b22ffe622>
+
+Unfortunately, due to the timing of the development cycle, only the “manual”
+mode of randstruct landed in upstream (i.e. [marking structures with
+`__randomize_layout`][24]). v4.14 will also have the [automatic mode
+enabled][25], which randomizes all structures that contain only function
+pointers.
+
+   [24]:
+<https://git.kernel.org/linus/3859a271a003aba01e45b85c9d8b355eb7bf25f9>
+
+   [25]:
+<https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?id=9225331b310821760f39ba55b00b8973602adbb5>
+
+A large number of fixes to support randstruct have been landing from [v4.10
+through v4.13][26], most of which were already identified and fixed by
+grsecurity, but many were novel, either in newly added drivers, as
+[whitelisted cross-structure casts][27], [refactorings][28] (like IPC noted
+above), or in a [corner case on ARM][29] found during upstream testing.
+
+   [26]:
+<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?h=v4.13&qt=grep&q=designated+init>
+
+   [27]:
+<https://git.kernel.org/linus/1854c19cae0d108637c40f90ee0bb9b7c1adbc0a>
+
+   [28]:
+<https://git.kernel.org/linus/3e2e857f9c3a19d55ee0ba7b428b8be5008960bf>
+
+   [29]:
+<https://git.kernel.org/linus/ffa47aa678cfaa9b88e8a26cfb115b4768325121>
+
+**lower ELF_ET_DYN_BASE**  
+One of the issues identified from the [Stack Clash][30] set of vulnerabilities
+was that it was possible to collide stack memory with the highest portion of a
+PIE program’s text memory since the default `ELF_ET_DYN_BASE` (the lowest
+possible random position of a PIE executable in memory) was already so high in
+the memory layout (specifically, 2/3rds of the way through the address space).
+Fixing this required [teaching the ELF loader][31] how to load interpreters as
+shared objects in the mmap region instead of as a PIE executable (to avoid
+potentially colliding with the binary it was loading). As a result, the PIE
+default could be moved down to ET_EXEC (0x400000) on 32-bit, entirely avoiding
+the subset of Stack Clash attacks. 64-bit could be moved to just above the
+32-bit address space (0x100000000), leaving the entire 32-bit region open for
+VMs to do 32-bit addressing, but late in the cycle it was discovered that
+[Address Sanitizer couldn’t handle it moving][32]. With most of the Stack
+Clash risk only applicable to 32-bit, fixing 64-bit has been deferred until
+there is a way to teach Address Sanitizer how to load itself as a shared
+object instead of as a PIE binary.
+
+   [30]: <https://blog.qualys.com/securitylabs/2017/06/19/the-stack-clash>
+
+   [31]:
+<http://git.kernel.org/linus/eab09532d40090698b05a07c1c87f39fdbc5fab5>
+
+   [32]:
+<https://git.kernel.org/linus/c715b72c1ba406f133217b509044c38d8e714a37>
+
+**early device randomness**  
+I noticed that early device randomness wasn’t actually getting added to the
+kernel entropy pools, so I [fixed that][33] to improve the effectiveness of
+the latent_entropy gcc plugin.
+
+   [33]:
+<https://git.kernel.org/linus/ee7998c50c2697737c6530431709f77c852bf0d6>
+
+That’s it for now; please let me know if I missed anything. As a side note, I
+was rather alarmed to discover that due to all my trivial ReSTification
+formatting, and tiny FORTIFY_SOURCE and randstruct fixes, I made it into the
+[most active 4.13 developers][34] list (by patch count) at LWN with 76
+patches: a whopping 0.6% of the cycle’s patches. ;)
+
+   [34]: <https://lwn.net/Articles/731794/>
+
+Anyway, the v4.14 merge window is open!
+
+© 2017, [Kees Cook][35]. This work is licensed under a [Creative Commons
+Attribution-ShareAlike 3.0 License][36].  
+[Creative Commons License][36]
+
+   [35]: <https://outflux.net/blog/>
+
+   [36]: <http://creativecommons.org/licenses/by-sa/3.0/us/>
+
+
+--===============testboundary==--
+
+From planet-debian Tue Sep  5 19:05:48 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Tue, 05 Sep 2017 19:05:48 -0000
+To: to@example.com
+From: planet-debian <to@example.com>
+Subject: Gunnar Wolf: Made with Creative Commons: Over half translated, yay!
+Message-ID: http-gwolf-org-4110-at-http-gwolf-org
+User-Agent: feed2exec (0.5)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://gwolf.org/node/4110
+
+--===============testboundary==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+<img align="right" alt="" height="83" src="http://planet.debian.org/heads/gwolf.png" style="float: right;" width="69" />  <p>An image speaks for a thousand words...<br />
+<a href="http://gwolf.org/files/weblated.png"><img height="443" src="http://gwolf.org/files/weblated.png" width="448" /></a><br />
+And our translation project is worth several thousand words!<br />
+I am very happy and surprised to say we have surpassed the 50% mark of the <a href="https://creativecommons.org/use-remix/made-with-cc/">Made with Creative Commons</a> translation project. We have translated 666 out of 1210 strings (yay for 3v1l numbers)!<br />
+I have to <em>really</em> thank <a href="https://weblate.org/en/">Weblate</a> for hosting us and allowing for collaboration to happen there. And, of course, I have to thank the people that have jumped on board and helped the translation — We are over half way there! Lets keep pushing!<br />
+<a href="https://hosted.weblate.org/engage/madewithcc/es/?utm_source=widget"><br />
+<img alt="Translation status" src="https://hosted.weblate.org/widgets/madewithcc/es/translation/287x66-grey.png" /><br />
+</a><br />
+<b>PS -</b> If you want to join the project, just get in Weblate and start translating right away, either to Spanish or other languages! (Polish, Dutch and Norwegian Bokmål are on their way) If you translate into Spanish, *please* read and abide by the specific <a href="https://gitlab.com/gunnarwolf/madewithcc-es/blob/master/README_es.md">Spanish translation guidelines</a>.</p>
+--===============testboundary==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+http://gwolf.org/node/4110
+
+An image speaks for a thousand words...  
+[][1]  
+And our translation project is worth several thousand words!  
+I am very happy and surprised to say we have surpassed the 50% mark of the
+[Made with Creative Commons][2] translation project. We have translated 666
+out of 1210 strings (yay for 3v1l numbers)!  
+I have to _really_ thank [Weblate][3] for hosting us and allowing for
+collaboration to happen there. And, of course, I have to thank the people that
+have jumped on board and helped the translation — We are over half way there!
+Lets keep pushing!  
+[  
+Translation status  
+][4]  
+**PS -** If you want to join the project, just get in Weblate and start translating right away, either to Spanish or other languages! (Polish, Dutch and Norwegian Bokmål are on their way) If you translate into Spanish, *please* read and abide by the specific [Spanish translation guidelines][5].
+
+   [1]: <http://gwolf.org/files/weblated.png>
+
+   [2]: <https://creativecommons.org/use-remix/made-with-cc/>
+
+   [3]: <https://weblate.org/en/>
+
+   [4]: <https://hosted.weblate.org/engage/madewithcc/es/?utm_source=widget>
+
+   [5]: <https://gitlab.com/gunnarwolf/madewithcc-es/blob/master/README_es.md>
+
+
+--===============testboundary==--
+
+From planet-debian Tue Sep  5 00:26:34 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Tue, 05 Sep 2017 00:26:34 -0000
+To: to@example.com
+From: planet-debian <to@example.com>
+Subject: Junichi Uekawa: It's already September.
+Message-ID: http-www-netfort-gr-jp-dancer-diary-daily-2017-sep-5-html-en-2017-sep-5-09-26-34
+User-Agent: feed2exec (0.5)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://www.netfort.gr.jp/~dancer/diary/daily/2017-Sep-5.html.en#2017-Sep-5-09:26:34
 
 --===============testboundary==
 Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-I was recently looking for a way to extract many attachments from a series of emails. I first had a look at the <a href="https://addons.mozilla.org/en-US/thunderbird/addon/attachmentextractor/">AttachmentExtractor</a> <a href="https://www.mozilla.org/en-US/thunderbird/">thunderbird</a> plugin, but it seems very old and not maintained anymore. So I've come up with another very simple solution that also works with any other mail client.<p></p><p>Just copy all the mails you want to extract attachments from to a single (temporary) mail folder, find out which file holds the mail folder and use <a href="http://www.pldaniels.com/ripmime/">ripmime</a> on that file (ripmime is packaged for <a href="http://debian.org">Debian</a>). For my case, it looked like:<br />
-</p><pre>~ ripmime -i .icedove/XXXXXXX.default/Mail/pop.xxxx/tmp -d target-directory
-</pre><p>Simple solution, but it saved me quite some time. Hope it helps !</p>
+<img align="right" alt="" height="97" src="http://planet.debian.org/heads/dancer.png" style="float: right;" width="75" />  It's already September. I haven't written much code last month. I wrote a CSV parser and felt a little depressed after reading rfc4180. None of my CSV files were in CRLF.
+        <p></p>
 --===============testboundary==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-http://vince-debian.blogspot.com/2017/09/extract-many-attachement-from-many.html
+http://www.netfort.gr.jp/~dancer/diary/daily/2017-Sep-5.html.en#2017-Sep-5-09:26:34
 
-I was recently looking for a way to extract many attachments from a series of
-emails. I first had a look at the [AttachmentExtractor][1] [thunderbird][2]
-plugin, but it seems very old and not maintained anymore. So I've come up with
-another very simple solution that also works with any other mail client.
+It's already September. I haven't written much code last month. I wrote a CSV
+parser and felt a little depressed after reading rfc4180. None of my CSV files
+were in CRLF.
 
-   [1]: <https://addons.mozilla.org/en-
-US/thunderbird/addon/attachmentextractor/>
 
-   [2]: <https://www.mozilla.org/en-US/thunderbird/>
+--===============testboundary==--
 
-Just copy all the mails you want to extract attachments from to a single
-(temporary) mail folder, find out which file holds the mail folder and use
-[ripmime][3] on that file (ripmime is packaged for [Debian][4]). For my case,
-it looked like:  
+From planet-debian Sat Sep  2 20:16:43 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Sat, 02 Sep 2017 20:16:43 -0000
+To: to@example.com
+From: planet-debian <to@example.com>
+Subject: =?utf-8?q?Antoine_Beaupr=C3=A9=3A_My_free_software_activities=2C_August_2017?=
+Message-ID: http-anarc-at-blog-2017-09-01-free-software-activities-august-2017
+User-Agent: feed2exec (0.5)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://anarc.at/blog/2017-09-01-free-software-activities-august-2017/
+
+--===============testboundary==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+<h1 id="debian-long-term-support-lts">Debian Long Term Support (LTS)</h1>
+
+<p>This is my monthly <a href="https://www.freexian.com/services/debian-lts.html">Debian LTS</a> report. This month I worked on a few
+major packages that took a long time instead of multiple smaller
+issues. Affected packages were Mercurial, libdbd-mysql-perl and Ruby.</p>
+
+<h2 id="mercurial-updates">Mercurial updates</h2>
+
+<p>Mercurial was vulnerable to two CVEs: <a href="https://security-tracker.debian.org/CVE-2017-1000116">CVE-2017-1000116</a>
+(command injection on clients through malicious ssh URLs) and
+<a href="https://security-tracker.debian.org/CVE-2017-1000115">CVE-2017-1000115</a> (path traversal via symlink). The former
+is an issue that actually affects many other similar software like Git
+(<a href="https://security-tracker.debian.org/CVE-2017-1000117">CVE-2017-1000117</a>), Subversion (<a href="https://security-tracker.debian.org/CVE-2017-9800">CVE-2017-9800</a>)
+and even CVS (<a href="https://security-tracker.debian.org/CVE-2017-12836">CVE-2017-12836</a>). The latter symlink issue is
+a distinct issue that came up during an internal audit.</p>
+
+<p>The fix, shipped as <a href="https://lists.debian.org/debian-lts-announce/2017/08/msg00032.html">DLA-1072-1</a>, involved a rather difficult
+backport, especially because the Mercurial test suite takes a long
+time to complete. This reminded me of the virtues of
+<code>DEB_BUILD_OPTIONS=parallel=4</code>, which sped up the builds
+considerably. I also discovered that the Wheezy build chain doesn't
+support <a href="http://manpages.debian.org/sbuild">sbuild</a>'s <code>--source-only-changes</code> flag which I had
+hardcoded in my <a href="http://manpages.debian.org/sbuild%2Econf">sbuild.conf</a> file. This seems to be simply
+because sbuild passes <code>--build=source</code> to <a href="http://manpages.debian.org/dpkg%2Dbuildpackage">dpkg-buildpackage</a>, an option that is supported only in jessie or
+later.</p>
+
+<h2 id="libdbd-mysql-perl">libdbd-mysql-perl</h2>
+
+<p>I have worked on fixing two issues with the <a href="http://packages.debian.org/libdbd%2Dmysql%2Dperl">libdbd-mysql-perl</a> package, <a href="https://security-tracker.debian.org/CVE-2017-10788">CVE-2017-10788</a> and <a href="https://security-tracker.debian.org/CVE-2017-10789">CVE-2017-10789</a>, which resulted in the <a href="https://lists.debian.org/20170831115827.eaciz7h6g7ecl5jh@curie.anarc.at">DLA-1079-1</a> upload.
+Behind this mysteriously named package sits a critical piece of
+infrastructure, namely the <code>mysql</code> commandline client which is
+probably used and abused by hundreds if not thousands of home-made
+scripts, but also all of Perl's MySQL support, which is probably used
+by even a larger base of software.</p>
+
+<p>Through the Debian bug reports (<a href="http://bugs.debian.org/866818">Debian bug #866818</a> and <a href="http://bugs.debian.org/866821">Debian bug #866821</a>), I have learned that the patches existed in the upstream
+tracker but were either <a href="https://github.com/perl5-dbi/DBD-mysql/issues/120#issuecomment-325342844">ignored</a> or even <a href="https://github.com/perl5-dbi/DBD-mysql/issues/110">reverted</a> in the
+latest 4.043 upstream release. It turns out that there are talks of
+<a href="https://www.nntp.perl.org/group/perl.dbi.dev/2017/08/msg8030.html">forking that library</a> because of maintainership issue. It blows my
+mind that such an important part of MySQL is basically unmaintained.</p>
+
+<p>I ended up backporting the upstream patches, which was also somewhat
+difficult because of the long-standing issues with SSL support in
+MySQL. The backport there was particularly hard to test, as you need
+to run that test suite by hand, twice: once with a server configured
+with a (valid!) SSL certificate and one without (!). I'm wondering how
+much time it is really worth spending on trying to fix SSL in MySQL,
+however. It has been badly broken forever, and while the patch <em>is</em> an
+improvement, I would actually still never trust SSL transports in
+MySQL over an untrusted network. The few people that I know use such
+transports wrap their connections around a simpler <a href="http://packages.debian.org/stunnel">stunnel</a>
+instead.</p>
+
+<p>The other issue was easier to fix so I submitted a <a href="https://github.com/perl5-dbi/DBD-mysql/pull/142">pull request
+upstream</a> to make sure that work isn't lost, although it is not
+clear what the future of that patch (or project!) will be at this
+point.</p>
+
+<h2 id="rubygems">Rubygems</h2>
+
+<p>I also worked on the <a href="http://packages.debian.org/rubygems">rubygems</a> issues, which, thanks to the
+"vendoring" practice of the Ruby community, also affects the <a href="http://packages.debian.org/ruby1%2E9">ruby1.9</a> package. 4 distinct CVEs were triaged here (<a href="https://security-tracker.debian.org/CVE-2017-0899">CVE-2017-0899</a>, <a href="https://security-tracker.debian.org/CVE-2017-0900">CVE-2017-0900</a>, <a href="https://security-tracker.debian.org/CVE-2017-0901">CVE-2017-0901</a>
+and <a href="https://security-tracker.debian.org/CVE-2017-0902">CVE-2017-0902</a>) and I determined the latter issue
+didn't affect wheezy as rubygems doesn't do its own DNS resolution
+there (later versions lookup SRV records).</p>
+
+<p>This is another package where the test suite takes a long time to
+run. Worse, the packages in Wheezy actually fails to build from
+source: the test suites just fail in various steps, particularly
+because of <code>dh key too small</code> errors for Rubygems, but also other
+errors for Ruby. I also had trouble backporting one test which I had
+to simply skip for Rubygems. I uploaded and <a href="https://lists.debian.org/87h8wkzyos.fsf@curie.anarc.at">announced</a> test
+packages and hopefully I'll be able to complete this work soon,
+although I would certainly appreciate any help on this...</p>
+
+<h2 id="triage">Triage</h2>
+
+<p>I took a look at the <a href="http://packages.debian.org/sox">sox</a>, <a href="http://packages.debian.org/libvorbis">libvorbis</a> and
+<a href="http://packages.debian.org/exiv2">exiv2</a> issues. None had fixes available. sox and exiv2 were
+basically a list of fuzzing issues, which are often minor or at least
+of unknown severity. Those would have required a significant amount of
+work and I figured I would prioritize other work first.</p>
+
+<p>I also triaged <a href="https://security-tracker.debian.org/CVE-2017-7506">CVE-2017-7506</a>, which doesn't seem to affect
+the <a href="http://packages.debian.org/spice">spice</a> package in wheezy, after doing a fairly thorough
+audit of the code. The vulnerability is specifically bound to the
+<code>reds_on_main_agent_monitors_config</code> function, which is simply not
+present in our older version. A hostile message would fall through the
+code and not provoke memory allocation or out of bounds access, so I
+simply marked the wheezy version as <code>not-affected</code>, something which
+usually happens during the original triage but can also happen during
+the actual patching work, as in this case.</p>
+
+<h1 id="other-free-software-work">Other free software work</h1>
+
+<p>This describes the volunteer work I do on various free software
+projects. This month, again, my internal reports show that I spent
+about the same time on volunteer and paid time, but this is probably a
+wrong estimate because I spent a lot of time at Debconf which I didn't
+clock in...</p>
+
+<h2 id="debconf">Debconf</h2>
+
+<p>So I participated in the <a href="http://debconf17.debconf.org/">17th Debian Conference</a> in Montreal. It
+was great to see (and make!) so many friends from all over the world
+in person again, and I was happy to work on specific issues together
+with other Debian developers. I am especially thankful to David
+Bremner for fixing the syncing of the <code>flagged</code> tag when added to new
+messages (<a href="https://notmuchmail.org/pipermail/notmuch/2017/025046.html">patch series</a>). This allows me to easily sync the one
+tag (<code>inbox</code>) that is not statically assigned during <code>notmuch new</code>, by
+using <code>flagged</code> as a synchronization tool. This allows me to use
+notmuch more easily across multiple machines without having to sync
+all tags with dump/restore or using muchsync which wasn't working for
+me (although a <a href="https://notmuchmail.org/pipermail/notmuch/2017/024500.html">new release came out</a> which may fix my issues). The
+magic incantation looks something like this:</p>
+
+<pre><code>notmuch tag -inbox tag:inbox and not tag:flagged
+notmuch tag +inbox not tag:inbox and tag:flagged
+</code></pre>
+
+<p>However, most of my time in the first week (Debcamp) was spent trying
+to complete the networking setup: configure switches, setup wiring and
+so on. I also configured an <a href="http://packages.debian.org/apt%2Dcacher%2Dng">apt-cacher-ng</a> proxy to serve
+packages to attendees during the conference. I configured it with
+Avahi to configure clients automatically, which led me to discover
+(and fix) issue <a href="http://bugs.debian.org/870321">Debian bug #870321</a>) although there are more issues
+with the autodiscovery mechanism... I spent extra time to document the
+(somewhat simple) configuration of such a server in the <a href="https://wiki.debian.org/AptCacherNg">Debian
+wiki</a> because it was not the first time I had research that
+procedure...</p>
+
+<p>I somehow thought this was a great time to upgrade my laptop to
+stretch. Normally, I keep that device running stable because I don't
+use it often and I don't want to have major traumatizing upgrades
+every time I leave with it on a trip. But this time was special: there
+were literally <em>hundreds</em> of Debian developers to help me out if there
+was trouble. And there was, of course, trouble as it turns out! I had
+problems with the fonts on my display, because, well, I had
+<em>suspended</em> (twice) my laptop <em>during</em> the install. The fix was simply
+to flush the fontconfig cache, and I tried to document this in the
+<a href="https://wiki.debian.org/Fonts">fonts wiki page</a> and my <a href="http://anarc.at/services/upgrades/stretch/">upgrades page</a>.</p>
+
+<p>I also gave a short training called <a href="https://debconf17.debconf.org/talks/161/">Debian packaging 101</a> which
+was pretty successful. Like the short presentation I made at the last
+<a href="http://anarc.at/blog/2017-04-09-montreal-bsp-report/">Montreal BSP</a>, the workshop was
+based on my <a href="http://anarc.at/software/debian-development/">quick debian development guide</a>. 
+I'm thinking of expanding this to a larger audience with a "102"
+course that would discuss more complex packaging problems. But my
+secret plan (well, secret until now I guess) is to make packaging
+procedures more uniform in Debian by training new Debian packagers
+using that same training for the next 2 decades. But I will probably
+start by just trying to do this again at the next Debconf, if I can
+attend.</p>
+
+<h2 id="debian-uploads">Debian uploads</h2>
+
+<p>I also sponsored two packages during Debconf: one was a "scratch an
+itch" upload (<a href="http://packages.debian.org/elpa%2Divy">elpa-ivy</a>) which I requested (<a href="http://bugs.debian.org/863216">Debian bug #863216</a>) as part of a larger effort to ship the Emacs elisp packages
+as Debian packages. The other was an <a href="https://tracker.debian.org/news/864378">upload</a> of <a href="http://packages.debian.org/diceware">diceware</a> to build the documentation in a separate package and fix
+other issues I have found in the package during a review.</p>
+
+<p>I also uploaded a bunch of other fixes to the Debian archive:</p>
+
+<ul>
+<li><a href="http://packages.debian.org/slop">slop</a> upstream update and matching <a href="http://packages.debian.org/maim">maim</a> NMU</li>
+<li>asked for <a href="http://packages.debian.org/gnome%2Dweb%2Dphoto">gnome-web-photo</a> removal (<a href="http://bugs.debian.org/873015">Debian bug #873015</a>)</li>
+<li><a href="http://packages.debian.org/charybdis">charybdis</a> 3.5.5-2 to officially switch to <a href="http://packages.debian.org/mbedtls">mbedtls</a> (<a href="http://bugs.debian.org/705369">Debian bug #705369</a>)</li>
+<li><a href="http://packages.debian.org/gmpc">gmpc</a>: ship pending patches from git and Ubuntu</li>
+<li><a href="http://packages.debian.org/horst">horst</a>: new upstream release and workaround for sparse
+bug <a href="http://bugs.debian.org/873508">Debian bug #873508</a></li>
+<li>uploaded <a href="https://github.com/mooz/percol">percol</a> to NEW (<a href="http://bugs.debian.org/754972">Debian bug #754972</a>)</li>
+</ul>
+
+<h2 id="signing-keys-rotation">Signing keys rotation</h2>
+
+<p>I also started the process of moving my main OpenPGP certification key
+by adding a signing subkey. The subkey is stored in a cryptographic
+token so I can sign things on more than one machine without storing
+that critical key on all those devices physically.</p>
+
+<p>Unfortunately, this meant that I need to do some shenanigans when I
+want to sign content in my Debian work, because the new subkey takes
+time to propagate to the Debian archive. For example, I have to
+specify the primary key with a "bang" when signing packages (<code>debsign
+-k '792152527B75921E!' ...</code>) or use inline signatures in email sent
+for security announcement (since that trick doesn't work in Mutt <em>or</em>
+Notmuch). I tried to figure out how to better coordinate this next
+time by reading up documentation on <a href="https://keyring.debian.org/">keyring.debian.org</a>, but there
+is no fixed date for key changes on the rsync interface. There are
+"monthly changes" so one's best bet is to look for the last change in
+their git repository.</p>
+
+<h2 id="gitlabcom-and-lfs-migration">GitLab.com and LFS migration</h2>
+
+<p>I finally turned off my <a href="http://src.anarc.at/">src.anarc.at</a> git repository service by
+moving the remaining repos to <a href="https://gitlab.com/">GitLab</a>. Unfortunately, GitLab
+<a href="https://gitlab.com/gitlab-org/gitlab-ee/issues/1648">removed support for git-annex</a> recently, so I had to migrate my
+repositories to Git-LFS, which was an interesting experience. LFS is
+pretty easy to use, definitely simpler than git-annex. It also seems
+to be a good match for the use-case at hand, which is to store large
+files (videos, namely) as part of slides for presentations.</p>
+
+<p>It turns out that their migration guide could have been made much
+simpler. I tried to submit those changes to the documentation but
+<a href="https://gitlab.com/gitlab-org/gitlab-ee/issues/3287">couldn't fork the GitLab EE project</a> to make a patch, so I just
+documented the issue in <a href="https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1230#note_38813881">the original MR</a> for now. While I was
+there I filed a <a href="https://gitlab.com/gitlab-org/gitlab-ce/issues/37242">feature request</a> to add a new reference shortcut
+(<code>GL-NNN</code>) after noticing a similar token <a href="https://github.com/jrblevin/markdown-mode/commit/b163f104d83fd3eeb909920284c981e8fba1b481">used on GitHub</a>. This
+would be a useful addition because I often have numbering conflicts
+between Debian BTS bug numbers and GitLab issues in packages I
+maintain there. In particular, I have problems using GitLab issue
+numbers in Monkeysign, because commit logs end up in Debian changelogs
+and will be detected by the Debian infrastructure even though those
+are GitLab bug numbers. Using such a shortcut would avoid detection
+and such a conflict.</p>
+
+<h2 id="numpy-stats">Numpy-stats</h2>
+
+<p>I wrote a small tool to extract numeric statistics from a given
+file. I often do ad-hoc benchmarks where I store a bunch of numbers in
+a file and then try to make averages and so on. As an exercise in
+learning <a href="http://www.numpy.org/">NumPy</a>, I figured I would write such a simple tool,
+called <a href="https://gitlab.com/anarcat/scripts/blob/master/numpy-stats">numpy-stats</a>, which probably sounds naive to seasoned
+Python scientists.</p>
+
+<p>My incentive was that I was trying to figure out what was the
+distribution of password length in a given <a href="https://superuser.com/questions/237228/command-line-tool-to-generate-memorable-passwords/1246245#comment1828733_1052689">password generator
+scheme</a>. So I wrote this simple script:</p>
+
+<pre><code>for i in seq 10000 ; do
+    shuf -n4 /usr/share/dict/words | tr -d '\n'
+done &gt; length
+</code></pre>
+
+<p>And then feed that data in the tool:</p>
+
+<pre><code>$ numpy-stats lengths 
+{
+  "max": 60, 
+  "mean": 33.883293722913464, 
+  "median": 34.0, 
+  "min": 14, 
+  "size": 143060, 
+  "std": 5.101490225062775
+}
+</code></pre>
+
+<p>I am surprised that there isn't such a tool already: hopefully I am
+wrong and will just be pointed towards the better alternative in the
+comments here!</p>
+
+<h2 id="safe-eyes">Safe Eyes</h2>
+
+<p>I added <a href="https://github.com/slgobinath/SafeEyes/commit/6a8b29a87baa53aca2ccc3e280079d04c2b2bf39">screensaver support</a> to the new <a href="https://github.com/slgobinath/SafeEyes/">SafeEyes</a> project,
+which I am considering as a replacement to the <a href="http://packages.debian.org/workrave">workrave</a>
+project I have been using for years. I really like how the
+interruptions basically block the whole screen: way more effective
+than only blocking the keyboard, because all potential distractions go
+away.</p>
+
+<p>One feature that is missing is <a href="https://github.com/slgobinath/SafeEyes/issues/184">keystrokes and mouse movement
+counting</a> and of course an <a href="https://github.com/slgobinath/SafeEyes/issues/183">official Debian package</a>, although
+the latter would be easy to fix because upstream already has an
+unofficial build. I am thinking of writing my own little tool to count
+keystrokes, since the overlap between SafeEyes and such a counter
+isn't absolutely necessary. This is something that workrave does, but
+there are "idle time" extensions in Xorg that do not <em>need</em> to count
+keystrokes. There are already certain tools to count input events, but
+none seem to do what I want (most of them are basically
+keyloggers). It would be an interesting test to see if it's possible
+to write something that would work both for Xorg and Wayland at the
+same time. Unfortunately, preliminary research show that:</p>
+
+<ol>
+<li><p>in Xorg, the only way to implement this is to sniff all events,
+ie. to implement a keylogger</p></li>
+<li><p>in Wayland, this is <a href="https://superuser.com/questions/1032270/wayland-alternative-for-xorgs-xdotool">completely unsupported</a>. it seems <em>some</em>
+compositors <em>could</em> implement such a counter, but then it means
+that this is compositor specific, or, in other words, unportable</p></li>
+</ol>
+
+<p>So there is little hope here, which brings to my mind "painmeter" as
+an appropriate name for this future programming nightmare.</p>
+
+<h2 id="ansible">Ansible</h2>
+
+<p>I sent my first contribution to the <a href="http://packages.debian.org/ansible">ansible</a> project with a
+small <a href="https://github.com/ansible/ansible/pull/28766">documentation fix</a>. I had an eye opener recently when I
+discovered a <a href="https://gist.github.com/kpcyrd/1bde93b2bb9c77e0b6c14a2b3f75b026">GitLab ansible prototype</a> that would manipulate
+GitLab settings. When I first discovered Ansible, I was frustrated by
+the YAML/Jinja DSL: it felt silly to write all this code in YAML when
+you are a Python developer. It was great to see reasonably
+well-written Python code that would do things and delegate the
+metadata storage (and only that!) to YAML, as opposed to using YAML as
+a DSL.</p>
+
+<p>So I figured I would look at the Ansible documentation on how this
+works, but unfortunately, the Ansible documentation is severly lacking
+in this area. There are broken links (I only fixed <em>one</em> page) and
+missing pieces. For example, the <a href="http://docs.ansible.com/ansible/latest/dev_guide/developing_plugins.html">developing plugins page</a> doesn't
+explain how to program a plugin at all.</p>
+
+<p>I was told on IRC that: "<em>documentation around developing plugins is
+sparse in general. the code is the best documentation that exists
+(right now)</em>". I didn't get a reply when asking <em>which</em> code in
+particular could provide good examples either. In comparison, Puppet
+has excellent documentation on how to create <a href="https://docs.puppet.com/puppet/5.1/custom_types.html">custom types</a>,
+<a href="https://docs.puppet.com/puppet/5.1/functions_ruby_overview.html">functions</a> and <a href="https://docs.puppet.com/facter/3.8/fact_overview.html">facts</a>. That is definitely a turn-off for a new
+contributor, but at least my pull request was merged in and I can only
+hope that seasoned Ansible contributors expand on this critical piece
+of documentation eventually.</p>
+
+<h2 id="misc">Misc</h2>
+
+<p>As you can see, I'm all over the place, as usual. GitHub tells me I
+"Opened 13 <em>other</em> pull requests in 11 repositories" (emphasis mine),
+which I guess means on top of the "9 commits in 5 repositories"
+mentioned earlier. My <a href="https://github.com/anarcat">profile</a> probably tells a more detailed
+story that what would be useful to mention here. I should also mention
+how difficult it is to write those reports: I basically do a
+combination of looking into my GitHub and GitLab profiles, the last 30
+days of emails <img alt="(!)" src="http://anarc.at/smileys/idea.png" /> and filesystem changes (!!). En vrac, a list of
+changes which may be of interest:</p>
+
+<ul>
+<li><a href="https://gitlab.com/anarcat/scripts/blob/master/font-large">font-large</a> (and its alias, <a href="https://gitlab.com/anarcat/scripts/blob/master/font-small">font-small</a>): shortcut to send
+the right escape sequence to rxvt so it changes its font</li>
+<li><a href="https://gitlab.com/anarcat/scripts/blob/master/fix-acer">fix-acer</a>: short script to hardcode the modeline (you remember
+those?!) for my screen which has a broken EDID pin (so
+autodetection fails, yay Xorg log files...)</li>
+<li><a href="https://gitlab.com/anarcat/scripts/blob/master/ikiwiki-pandoc-quickie">ikiwiki-pandoc-quickie</a>: fake ikiwiki renderer that (ab)uses
+pandoc to generate a HTML file with the right stylesheet to preview
+Markdown as it <em>may</em> look in this blog (the basic template is
+missing still)</li>
+<li><a href="https://gitlab.com/anarcat/scripts/blob/master/git-annex-transfer">git-annex-transfer</a>: a command I've often been missing in
+<a href="https://git-annex.branchable.com/">git-annex</a>, which is a way to transfer files between remotes
+without having to copy them locally (<a href="http://git-annex.branchable.com/todo/transitive_transfers/">upstream feature request</a>)</li>
+<li>I linked the graphics of the Debian archive software architecture
+in the <a href="https://wiki.debian.org/DebianDak">Debian wiki</a> in the hope more people notice it.</li>
+<li>I did some tweaks on my <a href="https://github.com/travitch/taffybar/">Taffybar</a> to introduce a battery meter
+and hoping to have temperature sensors, which mostly
+failed. there's a pending <a href="https://github.com/travitch/taffybar/pull/157">pull request</a> that may bring some
+sense into this, hopefully.</li>
+<li>I made two <a href="https://0xacab.org/monkeysphere/monkeysign/commit/2d5df2b499c1d2da7fd1d509fc7784e4d67093d9">small</a> <a href="https://0xacab.org/monkeysphere/monkeysign/commit/c296bf82e7de224281844e2b07d5b803ce501619">patches</a> in <a href="https://0xacab.org/monkeysphere/monkeysign/">Monkeysign</a> to fix
+gpg.conf handling and multiple email output, a dumb bug I cannot
+believe anyone noticed or reported just yet. Thanks Valerie for the
+bug report! The upload of this in Debian is pending a review from
+the <a href="https://bugs.debian.org/871937">release team</a>.</li>
+</ul>
+--===============testboundary==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+http://anarc.at/blog/2017-09-01-free-software-activities-august-2017/
+
+# Debian Long Term Support (LTS)
+
+This is my monthly [Debian LTS][1] report. This month I worked on a few major
+packages that took a long time instead of multiple smaller issues. Affected
+packages were Mercurial, libdbd-mysql-perl and Ruby.
+
+   [1]: <https://www.freexian.com/services/debian-lts.html>
+
+## Mercurial updates
+
+Mercurial was vulnerable to two CVEs: [CVE-2017-1000116][2] (command injection
+on clients through malicious ssh URLs) and [CVE-2017-1000115][3] (path
+traversal via symlink). The former is an issue that actually affects many
+other similar software like Git ([CVE-2017-1000117][4]), Subversion
+([CVE-2017-9800][5]) and even CVS ([CVE-2017-12836][6]). The latter symlink
+issue is a distinct issue that came up during an internal audit.
+
+   [2]: <https://security-tracker.debian.org/CVE-2017-1000116>
+
+   [3]: <https://security-tracker.debian.org/CVE-2017-1000115>
+
+   [4]: <https://security-tracker.debian.org/CVE-2017-1000117>
+
+   [5]: <https://security-tracker.debian.org/CVE-2017-9800>
+
+   [6]: <https://security-tracker.debian.org/CVE-2017-12836>
+
+The fix, shipped as [DLA-1072-1][7], involved a rather difficult backport,
+especially because the Mercurial test suite takes a long time to complete.
+This reminded me of the virtues of `DEB_BUILD_OPTIONS=parallel=4`, which sped
+up the builds considerably. I also discovered that the Wheezy build chain
+doesn't support [sbuild][8]'s `--source-only-changes` flag which I had
+hardcoded in my [sbuild.conf][9] file. This seems to be simply because sbuild
+passes `--build=source` to [dpkg-buildpackage][10], an option that is
+supported only in jessie or later.
+
+   [7]: <https://lists.debian.org/debian-lts-announce/2017/08/msg00032.html>
+
+   [8]: <http://manpages.debian.org/sbuild>
+
+   [9]: <http://manpages.debian.org/sbuild%2Econf>
+
+   [10]: <http://manpages.debian.org/dpkg%2Dbuildpackage>
+
+## libdbd-mysql-perl
+
+I have worked on fixing two issues with the [libdbd-mysql-perl][11] package,
+[CVE-2017-10788][12] and [CVE-2017-10789][13], which resulted in the
+[DLA-1079-1][14] upload. Behind this mysteriously named package sits a
+critical piece of infrastructure, namely the `mysql` commandline client which
+is probably used and abused by hundreds if not thousands of home-made scripts,
+but also all of Perl's MySQL support, which is probably used by even a larger
+base of software.
+
+   [11]: <http://packages.debian.org/libdbd%2Dmysql%2Dperl>
+
+   [12]: <https://security-tracker.debian.org/CVE-2017-10788>
+
+   [13]: <https://security-tracker.debian.org/CVE-2017-10789>
+
+   [14]:
+<https://lists.debian.org/20170831115827.eaciz7h6g7ecl5jh@curie.anarc.at>
+
+Through the Debian bug reports ([Debian bug #866818][15] and [Debian bug
+#866821][16]), I have learned that the patches existed in the upstream tracker
+but were either [ignored][17] or even [reverted][18] in the latest 4.043
+upstream release. It turns out that there are talks of [forking that
+library][19] because of maintainership issue. It blows my mind that such an
+important part of MySQL is basically unmaintained.
+
+   [15]: <http://bugs.debian.org/866818>
+
+   [16]: <http://bugs.debian.org/866821>
+
+   [17]: <https://github.com/perl5-dbi/DBD-
+mysql/issues/120#issuecomment-325342844>
+
+   [18]: <https://github.com/perl5-dbi/DBD-mysql/issues/110>
+
+   [19]: <https://www.nntp.perl.org/group/perl.dbi.dev/2017/08/msg8030.html>
+
+I ended up backporting the upstream patches, which was also somewhat difficult
+because of the long-standing issues with SSL support in MySQL. The backport
+there was particularly hard to test, as you need to run that test suite by
+hand, twice: once with a server configured with a (valid!) SSL certificate and
+one without (!). I'm wondering how much time it is really worth spending on
+trying to fix SSL in MySQL, however. It has been badly broken forever, and
+while the patch _is_ an improvement, I would actually still never trust SSL
+transports in MySQL over an untrusted network. The few people that I know use
+such transports wrap their connections around a simpler [stunnel][20] instead.
+
+   [20]: <http://packages.debian.org/stunnel>
+
+The other issue was easier to fix so I submitted a [pull request upstream][21]
+to make sure that work isn't lost, although it is not clear what the future of
+that patch (or project!) will be at this point.
+
+   [21]: <https://github.com/perl5-dbi/DBD-mysql/pull/142>
+
+## Rubygems
+
+I also worked on the [rubygems][22] issues, which, thanks to the "vendoring"
+practice of the Ruby community, also affects the [ruby1.9][23] package. 4
+distinct CVEs were triaged here ([CVE-2017-0899][24], [CVE-2017-0900][25],
+[CVE-2017-0901][26] and [CVE-2017-0902][27]) and I determined the latter issue
+didn't affect wheezy as rubygems doesn't do its own DNS resolution there
+(later versions lookup SRV records).
+
+   [22]: <http://packages.debian.org/rubygems>
+
+   [23]: <http://packages.debian.org/ruby1%2E9>
+
+   [24]: <https://security-tracker.debian.org/CVE-2017-0899>
+
+   [25]: <https://security-tracker.debian.org/CVE-2017-0900>
+
+   [26]: <https://security-tracker.debian.org/CVE-2017-0901>
+
+   [27]: <https://security-tracker.debian.org/CVE-2017-0902>
+
+This is another package where the test suite takes a long time to run. Worse,
+the packages in Wheezy actually fails to build from source: the test suites
+just fail in various steps, particularly because of `dh key too small` errors
+for Rubygems, but also other errors for Ruby. I also had trouble backporting
+one test which I had to simply skip for Rubygems. I uploaded and
+[announced][28] test packages and hopefully I'll be able to complete this work
+soon, although I would certainly appreciate any help on this...
+
+   [28]: <https://lists.debian.org/87h8wkzyos.fsf@curie.anarc.at>
+
+## Triage
+
+I took a look at the [sox][29], [libvorbis][30] and [exiv2][31] issues. None
+had fixes available. sox and exiv2 were basically a list of fuzzing issues,
+which are often minor or at least of unknown severity. Those would have
+required a significant amount of work and I figured I would prioritize other
+work first.
+
+   [29]: <http://packages.debian.org/sox>
+
+   [30]: <http://packages.debian.org/libvorbis>
+
+   [31]: <http://packages.debian.org/exiv2>
+
+I also triaged [CVE-2017-7506][32], which doesn't seem to affect the
+[spice][33] package in wheezy, after doing a fairly thorough audit of the
+code. The vulnerability is specifically bound to the
+`reds_on_main_agent_monitors_config` function, which is simply not present in
+our older version. A hostile message would fall through the code and not
+provoke memory allocation or out of bounds access, so I simply marked the
+wheezy version as `not-affected`, something which usually happens during the
+original triage but can also happen during the actual patching work, as in
+this case.
+
+   [32]: <https://security-tracker.debian.org/CVE-2017-7506>
+
+   [33]: <http://packages.debian.org/spice>
+
+# Other free software work
+
+This describes the volunteer work I do on various free software projects. This
+month, again, my internal reports show that I spent about the same time on
+volunteer and paid time, but this is probably a wrong estimate because I spent
+a lot of time at Debconf which I didn't clock in...
+
+## Debconf
+
+So I participated in the [17th Debian Conference][34] in Montreal. It was
+great to see (and make!) so many friends from all over the world in person
+again, and I was happy to work on specific issues together with other Debian
+developers. I am especially thankful to David Bremner for fixing the syncing
+of the `flagged` tag when added to new messages ([patch series][35]). This
+allows me to easily sync the one tag (`inbox`) that is not statically assigned
+during `notmuch new`, by using `flagged` as a synchronization tool. This
+allows me to use notmuch more easily across multiple machines without having
+to sync all tags with dump/restore or using muchsync which wasn't working for
+me (although a [new release came out][36] which may fix my issues). The magic
+incantation looks something like this:
 
     
-       [3]: <http://www.pldaniels.com/ripmime/>
-   [4]: <http://debian.org>
+       [34]: <http://debconf17.debconf.org/>
+   [35]: <https://notmuchmail.org/pipermail/notmuch/2017/025046.html>
 
-    ~ ripmime -i .icedove/XXXXXXX.default/Mail/pop.xxxx/tmp -d target-directory
+   [36]: <https://notmuchmail.org/pipermail/notmuch/2017/024500.html>
+
+    notmuch tag -inbox tag:inbox and not tag:flagged
+    notmuch tag +inbox not tag:inbox and tag:flagged
     
 
-Simple solution, but it saved me quite some time. Hope it helps !
+However, most of my time in the first week (Debcamp) was spent trying to
+complete the networking setup: configure switches, setup wiring and so on. I
+also configured an [apt-cacher-ng][37] proxy to serve packages to attendees
+during the conference. I configured it with Avahi to configure clients
+automatically, which led me to discover (and fix) issue [Debian bug
+#870321][38]) although there are more issues with the autodiscovery
+mechanism... I spent extra time to document the (somewhat simple)
+configuration of such a server in the [Debian wiki][39] because it was not the
+first time I had research that procedure...
+
+   [37]: <http://packages.debian.org/apt%2Dcacher%2Dng>
+
+   [38]: <http://bugs.debian.org/870321>
+
+   [39]: <https://wiki.debian.org/AptCacherNg>
+
+I somehow thought this was a great time to upgrade my laptop to stretch.
+Normally, I keep that device running stable because I don't use it often and I
+don't want to have major traumatizing upgrades every time I leave with it on a
+trip. But this time was special: there were literally _hundreds_ of Debian
+developers to help me out if there was trouble. And there was, of course,
+trouble as it turns out! I had problems with the fonts on my display, because,
+well, I had _suspended_ (twice) my laptop _during_ the install. The fix was
+simply to flush the fontconfig cache, and I tried to document this in the
+[fonts wiki page][40] and my [upgrades page][41].
+
+   [40]: <https://wiki.debian.org/Fonts>
+
+   [41]: <http://anarc.at/services/upgrades/stretch/>
+
+I also gave a short training called [Debian packaging 101][42] which was
+pretty successful. Like the short presentation I made at the last [Montreal
+BSP][43], the workshop was based on my [quick debian development guide][44].
+I'm thinking of expanding this to a larger audience with a "102" course that
+would discuss more complex packaging problems. But my secret plan (well,
+secret until now I guess) is to make packaging procedures more uniform in
+Debian by training new Debian packagers using that same training for the next
+2 decades. But I will probably start by just trying to do this again at the
+next Debconf, if I can attend.
+
+   [42]: <https://debconf17.debconf.org/talks/161/>
+
+   [43]: <http://anarc.at/blog/2017-04-09-montreal-bsp-report/>
+
+   [44]: <http://anarc.at/software/debian-development/>
+
+## Debian uploads
+
+I also sponsored two packages during Debconf: one was a "scratch an itch"
+upload ([elpa-ivy][45]) which I requested ([Debian bug #863216][46]) as part
+of a larger effort to ship the Emacs elisp packages as Debian packages. The
+other was an [upload][47] of [diceware][48] to build the documentation in a
+separate package and fix other issues I have found in the package during a
+review.
+
+   [45]: <http://packages.debian.org/elpa%2Divy>
+
+   [46]: <http://bugs.debian.org/863216>
+
+   [47]: <https://tracker.debian.org/news/864378>
+
+   [48]: <http://packages.debian.org/diceware>
+
+I also uploaded a bunch of other fixes to the Debian archive:
+
+  * [slop][49] upstream update and matching [maim][50] NMU
+  * asked for [gnome-web-photo][51] removal ([Debian bug #873015][52])
+  * [charybdis][53] 3.5.5-2 to officially switch to [mbedtls][54] ([Debian bug #705369][55])
+  * [gmpc][56]: ship pending patches from git and Ubuntu
+  * [horst][57]: new upstream release and workaround for sparse bug [Debian bug #873508][58]
+  * uploaded [percol][59] to NEW ([Debian bug #754972][60])
+
+   [49]: <http://packages.debian.org/slop>
+
+   [50]: <http://packages.debian.org/maim>
+
+   [51]: <http://packages.debian.org/gnome%2Dweb%2Dphoto>
+
+   [52]: <http://bugs.debian.org/873015>
+
+   [53]: <http://packages.debian.org/charybdis>
+
+   [54]: <http://packages.debian.org/mbedtls>
+
+   [55]: <http://bugs.debian.org/705369>
+
+   [56]: <http://packages.debian.org/gmpc>
+
+   [57]: <http://packages.debian.org/horst>
+
+   [58]: <http://bugs.debian.org/873508>
+
+   [59]: <https://github.com/mooz/percol>
+
+   [60]: <http://bugs.debian.org/754972>
+
+## Signing keys rotation
+
+I also started the process of moving my main OpenPGP certification key by
+adding a signing subkey. The subkey is stored in a cryptographic token so I
+can sign things on more than one machine without storing that critical key on
+all those devices physically.
+
+Unfortunately, this meant that I need to do some shenanigans when I want to
+sign content in my Debian work, because the new subkey takes time to propagate
+to the Debian archive. For example, I have to specify the primary key with a
+"bang" when signing packages (`debsign -k '792152527B75921E!' ...`) or use
+inline signatures in email sent for security announcement (since that trick
+doesn't work in Mutt _or_ Notmuch). I tried to figure out how to better
+coordinate this next time by reading up documentation on
+[keyring.debian.org][61], but there is no fixed date for key changes on the
+rsync interface. There are "monthly changes" so one's best bet is to look for
+the last change in their git repository.
+
+   [61]: <https://keyring.debian.org/>
+
+## GitLab.com and LFS migration
+
+I finally turned off my [src.anarc.at][62] git repository service by moving
+the remaining repos to [GitLab][63]. Unfortunately, GitLab [removed support
+for git-annex][64] recently, so I had to migrate my repositories to Git-LFS,
+which was an interesting experience. LFS is pretty easy to use, definitely
+simpler than git-annex. It also seems to be a good match for the use-case at
+hand, which is to store large files (videos, namely) as part of slides for
+presentations.
+
+   [62]: <http://src.anarc.at/>
+
+   [63]: <https://gitlab.com/>
+
+   [64]: <https://gitlab.com/gitlab-org/gitlab-ee/issues/1648>
+
+It turns out that their migration guide could have been made much simpler. I
+tried to submit those changes to the documentation but [couldn't fork the
+GitLab EE project][65] to make a patch, so I just documented the issue in [the
+original MR][66] for now. While I was there I filed a [feature request][67] to
+add a new reference shortcut (`GL-NNN`) after noticing a similar token [used
+on GitHub][68]. This would be a useful addition because I often have numbering
+conflicts between Debian BTS bug numbers and GitLab issues in packages I
+maintain there. In particular, I have problems using GitLab issue numbers in
+Monkeysign, because commit logs end up in Debian changelogs and will be
+detected by the Debian infrastructure even though those are GitLab bug
+numbers. Using such a shortcut would avoid detection and such a conflict.
+
+   [65]: <https://gitlab.com/gitlab-org/gitlab-ee/issues/3287>
+
+   [66]: <https://gitlab.com/gitlab-org/gitlab-
+ee/merge_requests/1230#note_38813881>
+
+   [67]: <https://gitlab.com/gitlab-org/gitlab-ce/issues/37242>
+
+   [68]: <https://github.com/jrblevin/markdown-
+mode/commit/b163f104d83fd3eeb909920284c981e8fba1b481>
+
+## Numpy-stats
+
+I wrote a small tool to extract numeric statistics from a given file. I often
+do ad-hoc benchmarks where I store a bunch of numbers in a file and then try
+to make averages and so on. As an exercise in learning [NumPy][69], I figured
+I would write such a simple tool, called [numpy-stats][70], which probably
+sounds naive to seasoned Python scientists.
+
+   [69]: <http://www.numpy.org/>
+
+   [70]: <https://gitlab.com/anarcat/scripts/blob/master/numpy-stats>
+
+My incentive was that I was trying to figure out what was the distribution of
+password length in a given [password generator scheme][71]. So I wrote this
+simple script:
+
+    
+       [71]: <https://superuser.com/questions/237228/command-line-tool-to-generate-memorable-passwords/1246245#comment1828733_1052689>
+
+    for i in seq 10000 ; do
+        shuf -n4 /usr/share/dict/words | tr -d '\n'
+    done > length
+    
+
+And then feed that data in the tool:
+
+    
+    
+    $ numpy-stats lengths 
+    {
+      "max": 60, 
+      "mean": 33.883293722913464, 
+      "median": 34.0, 
+      "min": 14, 
+      "size": 143060, 
+      "std": 5.101490225062775
+    }
+    
+
+I am surprised that there isn't such a tool already: hopefully I am wrong and
+will just be pointed towards the better alternative in the comments here!
+
+## Safe Eyes
+
+I added [screensaver support][72] to the new [SafeEyes][73] project, which I
+am considering as a replacement to the [workrave][74] project I have been
+using for years. I really like how the interruptions basically block the whole
+screen: way more effective than only blocking the keyboard, because all
+potential distractions go away.
+
+   [72]:
+<https://github.com/slgobinath/SafeEyes/commit/6a8b29a87baa53aca2ccc3e280079d04c2b2bf39>
+
+   [73]: <https://github.com/slgobinath/SafeEyes/>
+
+   [74]: <http://packages.debian.org/workrave>
+
+One feature that is missing is [keystrokes and mouse movement counting][75]
+and of course an [official Debian package][76], although the latter would be
+easy to fix because upstream already has an unofficial build. I am thinking of
+writing my own little tool to count keystrokes, since the overlap between
+SafeEyes and such a counter isn't absolutely necessary. This is something that
+workrave does, but there are "idle time" extensions in Xorg that do not _need_
+to count keystrokes. There are already certain tools to count input events,
+but none seem to do what I want (most of them are basically keyloggers). It
+would be an interesting test to see if it's possible to write something that
+would work both for Xorg and Wayland at the same time. Unfortunately,
+preliminary research show that:
+
+   [75]: <https://github.com/slgobinath/SafeEyes/issues/184>
+
+   [76]: <https://github.com/slgobinath/SafeEyes/issues/183>
+
+  1. in Xorg, the only way to implement this is to sniff all events, ie. to implement a keylogger
+
+  2. in Wayland, this is [completely unsupported][77]. it seems _some_ compositors _could_ implement such a counter, but then it means that this is compositor specific, or, in other words, unportable
+
+   [77]: <https://superuser.com/questions/1032270/wayland-alternative-for-
+xorgs-xdotool>
+
+So there is little hope here, which brings to my mind "painmeter" as an
+appropriate name for this future programming nightmare.
+
+## Ansible
+
+I sent my first contribution to the [ansible][78] project with a small
+[documentation fix][79]. I had an eye opener recently when I discovered a
+[GitLab ansible prototype][80] that would manipulate GitLab settings. When I
+first discovered Ansible, I was frustrated by the YAML/Jinja DSL: it felt
+silly to write all this code in YAML when you are a Python developer. It was
+great to see reasonably well-written Python code that would do things and
+delegate the metadata storage (and only that!) to YAML, as opposed to using
+YAML as a DSL.
+
+   [78]: <http://packages.debian.org/ansible>
+
+   [79]: <https://github.com/ansible/ansible/pull/28766>
+
+   [80]: <https://gist.github.com/kpcyrd/1bde93b2bb9c77e0b6c14a2b3f75b026>
+
+So I figured I would look at the Ansible documentation on how this works, but
+unfortunately, the Ansible documentation is severly lacking in this area.
+There are broken links (I only fixed _one_ page) and missing pieces. For
+example, the [developing plugins page][81] doesn't explain how to program a
+plugin at all.
+
+   [81]:
+<http://docs.ansible.com/ansible/latest/dev_guide/developing_plugins.html>
+
+I was told on IRC that: "_documentation around developing plugins is sparse in
+general. the code is the best documentation that exists (right now)_". I
+didn't get a reply when asking _which_ code in particular could provide good
+examples either. In comparison, Puppet has excellent documentation on how to
+create [custom types][82], [functions][83] and [facts][84]. That is definitely
+a turn-off for a new contributor, but at least my pull request was merged in
+and I can only hope that seasoned Ansible contributors expand on this critical
+piece of documentation eventually.
+
+   [82]: <https://docs.puppet.com/puppet/5.1/custom_types.html>
+
+   [83]: <https://docs.puppet.com/puppet/5.1/functions_ruby_overview.html>
+
+   [84]: <https://docs.puppet.com/facter/3.8/fact_overview.html>
+
+## Misc
+
+As you can see, I'm all over the place, as usual. GitHub tells me I "Opened 13
+_other_ pull requests in 11 repositories" (emphasis mine), which I guess means
+on top of the "9 commits in 5 repositories" mentioned earlier. My
+[profile][85] probably tells a more detailed story that what would be useful
+to mention here. I should also mention how difficult it is to write those
+reports: I basically do a combination of looking into my GitHub and GitLab
+profiles, the last 30 days of emails \(!\) and filesystem changes (!!). En
+vrac, a list of changes which may be of interest:
+
+   [85]: <https://github.com/anarcat>
+
+  * [font-large][86] (and its alias, [font-small][87]): shortcut to send the right escape sequence to rxvt so it changes its font
+  * [fix-acer][88]: short script to hardcode the modeline (you remember those?!) for my screen which has a broken EDID pin (so autodetection fails, yay Xorg log files...)
+  * [ikiwiki-pandoc-quickie][89]: fake ikiwiki renderer that (ab)uses pandoc to generate a HTML file with the right stylesheet to preview Markdown as it _may_ look in this blog (the basic template is missing still)
+  * [git-annex-transfer][90]: a command I've often been missing in [git-annex][91], which is a way to transfer files between remotes without having to copy them locally ([upstream feature request][92])
+  * I linked the graphics of the Debian archive software architecture in the [Debian wiki][93] in the hope more people notice it.
+  * I did some tweaks on my [Taffybar][94] to introduce a battery meter and hoping to have temperature sensors, which mostly failed. there's a pending [pull request][95] that may bring some sense into this, hopefully.
+  * I made two [small][96] [patches][97] in [Monkeysign][98] to fix gpg.conf handling and multiple email output, a dumb bug I cannot believe anyone noticed or reported just yet. Thanks Valerie for the bug report! The upload of this in Debian is pending a review from the [release team][99].
+
+   [86]: <https://gitlab.com/anarcat/scripts/blob/master/font-large>
+
+   [87]: <https://gitlab.com/anarcat/scripts/blob/master/font-small>
+
+   [88]: <https://gitlab.com/anarcat/scripts/blob/master/fix-acer>
+
+   [89]: <https://gitlab.com/anarcat/scripts/blob/master/ikiwiki-pandoc-
+quickie>
+
+   [90]: <https://gitlab.com/anarcat/scripts/blob/master/git-annex-transfer>
+
+   [91]: <https://git-annex.branchable.com/>
+
+   [92]: <http://git-annex.branchable.com/todo/transitive_transfers/>
+
+   [93]: <https://wiki.debian.org/DebianDak>
+
+   [94]: <https://github.com/travitch/taffybar/>
+
+   [95]: <https://github.com/travitch/taffybar/pull/157>
+
+   [96]:
+<https://0xacab.org/monkeysphere/monkeysign/commit/2d5df2b499c1d2da7fd1d509fc7784e4d67093d9>
+
+   [97]:
+<https://0xacab.org/monkeysphere/monkeysign/commit/c296bf82e7de224281844e2b07d5b803ce501619>
+
+   [98]: <https://0xacab.org/monkeysphere/monkeysign/>
+
+   [99]: <https://bugs.debian.org/871937>
 
 
 --===============testboundary==--
