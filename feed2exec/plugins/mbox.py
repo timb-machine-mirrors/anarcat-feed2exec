@@ -7,7 +7,7 @@ import os.path
 import time
 
 
-from feed2exec.plugins.maildir import make_message
+from feed2exec.email import make_message
 import feed2exec.utils as utils
 
 
