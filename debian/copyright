@@ -1,0 +1,100 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: feed2exec
+Source: https://gitlab.com/anarcat/feed2exec
+
+Files: *
+Copyright: 2017 Antoine Beaupré <anarcat@debian.org>
+License: AGPL-3.0+
+
+Files: debian/*
+Copyright: 2017 Antoine Beaupré <anarcat@debian.org>
+License: AGPL-3.0+
+
+License: AGPL-3.0+
+ Copyright (C) 2017 Antoine Beaupré <anarcat@debian.org>
+ .
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as
+ published by the Free Software Foundation, either version 3 of the
+ License, or (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+ .
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+
+Files: feed2exec/tests/files/breaking_news.*
+Copyright: NASA
+License: public-domain
+ Content form NASA is generally "not copyrighted" and available under
+ public domain legislation in the US. See
+ https://www.nasa.gov/multimedia/guidelines/index.html for details.
+
+Files: feed2exec/tests/files/planet-debian.*
+Copyright: 2017 Antoine Beaupré <anarcat@debian.org>
+           2017 Junichi Uekawa <dancer@netfort.gr.jp>
+           2017 Gunnar Wolf
+           2017 Kees Cook
+License: public-domain or CC-BY-SA-4.0 or CC-BY-SA-3.0
+ This file and derivative is a curated copy of the Debian Planet RSS
+ feed on 2017-09-21. Some articles were extracted after the license
+ was verified as being permissive, while more than 80% of the content
+ was removed due to lack of time or lack of permission or explicit
+ license on the source sites.
+ .
+ Dancer has the following copyright notice on his blog:
+ .
+ Feel free to reuse anything in the diary, however, sending a note to
+ the author is considered polite. Please feel free to make your links
+ point to the diary. I reserve my right to make mistakes, above all.
+ .
+ Gunnar has the following:
+ .
+ All the material found at this site is freely available, and you can
+ use it as you wish, except when the document mentions explicitly
+ different conditions.
+ .
+ Kees Cook uses the "Creative Commons Attribution-ShareAlike 3.0
+ License" available at: http://creativecommons.org/licenses/by-sa/3.0/us/
+ .
+ Antoine Beaupré uses the "Creative Commons Attribution-ShareAlike 4.0
+ International License", available at:
+ http://creativecommons.org/licenses/by-sa/4.0/
+
+Files: feed2exec/tests/files/restic.*
+Copyright: Alexander Neumann
+License: BSD-2-clause
+ Copyright (c) 2014, Alexander Neumann <alexander@bumpern.de>
+ All rights reserved.
+ .
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ .
+ 1. Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+ .
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+Files: feed2exec/tests/files/udd.*
+Copyright: Collab-QA project <debian-qa@lists.debian.org>
+License: ODbL-1.0
+ This database is made available under the Open Database License:
+ http://opendatacommons.org/licenses/odbl/1.0/. The contents comes
+ from many places in the Debian ecosystem, and may be covered by its
+ own license.
