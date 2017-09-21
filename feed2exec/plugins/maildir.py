@@ -27,12 +27,12 @@ class output(object):
 
     def __init__(self, to_addr=None, feed=None, entry=None, lock=None,
                  *args, **kwargs):
-        prefix = os.path.expanduser(feed.get('mailbox', '~/Maildir'))
         msg, timestamp = make_message(feed=feed,
                                       entry=entry,
                                       to_addr=to_addr,
                                       cls=mailbox.MaildirMessage)
         msg.set_date(timestamp)
+        prefix = os.path.expanduser(feed.get('mailbox', '~/Maildir'))
         utils.make_dirs_helper(prefix)
         folder = os.path.basename(os.path.abspath(utils.slug(feed.get('name'))))  # noqa
         # allow user to override our folder

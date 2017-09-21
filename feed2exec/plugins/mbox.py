@@ -31,13 +31,13 @@ class output(object):
     """
     def __init__(self, to_addr=None, feed=None, entry=None, lock=None,
                  *args, **kwargs):
-        prefix = os.path.expanduser(feed.get('mailbox', '~/Mail'))
         msg, timestamp = make_message(feed=feed,
                                       entry=entry,
                                       to_addr=to_addr,
                                       cls=mailbox.mboxMessage)
         msg.set_from(utils.slug(feed.get('name', 'MAILER-DAEMON')),
                      time.gmtime(timestamp))
+        prefix = os.path.expanduser(feed.get('mailbox', '~/Mail'))
         utils.make_dirs_helper(prefix)
         folder = os.path.basename(os.path.abspath(utils.slug(feed.get('name'))))  # noqa
         # allow user to override our folder
