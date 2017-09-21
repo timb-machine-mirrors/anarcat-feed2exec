@@ -35,9 +35,10 @@ License: public-domain
 
 Files: feed2exec/tests/files/planet-debian.*
 Copyright: 2017 Antoine Beaupré <anarcat@debian.org>
+           2017 François Marier <francois@debian.org>
            2017 Junichi Uekawa <dancer@netfort.gr.jp>
-           2017 Gunnar Wolf
-           2017 Kees Cook
+           2017 Gunnar Wolf <gwolf@debian.org>
+           2017 Kees Cook <kees@debian.org>
 License: public-domain or CC-BY-SA-4.0 or CC-BY-SA-3.0
  This file and derivative is a curated copy of the Debian Planet RSS
  feed on 2017-09-21. Some articles were extracted after the license
@@ -60,8 +61,8 @@ License: public-domain or CC-BY-SA-4.0 or CC-BY-SA-3.0
  Kees Cook uses the "Creative Commons Attribution-ShareAlike 3.0
  License" available at: http://creativecommons.org/licenses/by-sa/3.0/us/
  .
- Antoine Beaupré uses the "Creative Commons Attribution-ShareAlike 4.0
- International License", available at:
+ Antoine Beaupré and François Marier use the "Creative Commons
+ Attribution-ShareAlike 4.0 International License", available at:
  http://creativecommons.org/licenses/by-sa/4.0/
 
 Files: feed2exec/tests/files/restic.*

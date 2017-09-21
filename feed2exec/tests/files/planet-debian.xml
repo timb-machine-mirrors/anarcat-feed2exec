@@ -9,6 +9,96 @@
 
 
 <item>
+	<title>François Marier: TLS Authentication on Freenode and OFTC</title>
+	<guid>http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/</guid>
+	<link>http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/</link>
+     <description>  &lt;p&gt;In order to easily authenticate with IRC networks such as
+&lt;a href=&quot;https://www.oftc.net/NickServ/CertFP/&quot;&gt;OFTC&lt;/a&gt; and
+&lt;a href=&quot;https://freenode.net/kb/answer/certfp&quot;&gt;Freenode&lt;/a&gt;, it is possible to use
+&lt;em&gt;client TLS certificates&lt;/em&gt; (also known as &lt;em&gt;SSL certificates&lt;/em&gt;). In fact, it
+turns out that it&#39;s very easy to setup both on &lt;a href=&quot;https://irssi.org/&quot;&gt;irssi&lt;/a&gt;
+and on &lt;a href=&quot;https://wiki.znc.in/&quot;&gt;znc&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;Generate_your_TLS_certificate&quot;&gt;Generate your TLS certificate&lt;/h1&gt;
+
+&lt;p&gt;On a machine with &lt;a href=&quot;http://altusmetrum.org/ChaosKey/&quot;&gt;good entropy&lt;/a&gt;, run the
+following command to create a keypair that will last for 10 years:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl req -nodes -newkey rsa:2048 -keyout user.pem -x509 -days 3650 -out user.pem -subj &quot;/CN=&amp;lt;your nick&amp;gt;&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then extract your key fingerprint using this command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl x509 -sha1 -noout -fingerprint -in user.pem | sed -e &#39;s/^.*=//;s/://g&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&quot;Share_your_fingerprints_with_NickServ&quot;&gt;Share your fingerprints with NickServ&lt;/h1&gt;
+
+&lt;p&gt;On each IRC network, do this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/msg NickServ IDENTIFY Password1!
+/msg NickServ CERT ADD &amp;lt;your fingerprint&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;in order to add your fingerprint to the access control list.&lt;/p&gt;
+
+&lt;h1 id=&quot;Configure_ZNC&quot;&gt;Configure ZNC&lt;/h1&gt;
+
+&lt;p&gt;To configure znc, start by putting the key in the right place:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cp user.pem ~/.znc/users/&amp;lt;your nick&amp;gt;/networks/oftc/moddata/cert/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and then enable the built-in &lt;a href=&quot;https://wiki.znc.in/Cert&quot;&gt;cert plugin&lt;/a&gt; for
+each network in &lt;code&gt;~/.znc/configs/znc.conf&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;Network oftc&amp;gt;
+    ...
+            LoadModule = cert
+    ...
+&amp;lt;/Network&amp;gt;
+    &amp;lt;Network freenode&amp;gt;
+    ...
+            LoadModule = cert
+    ...
+&amp;lt;/Network&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&quot;Configure_irssi&quot;&gt;Configure irssi&lt;/h1&gt;
+
+&lt;p&gt;For irssi, do the same thing but put the cert in &lt;code&gt;~/.irssi/user.pem&lt;/code&gt; and
+then change the OFTC entry in &lt;code&gt;~/.irssi/config&lt;/code&gt; to look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+  address = &quot;irc.oftc.net&quot;;
+  chatnet = &quot;OFTC&quot;;
+  port = &quot;6697&quot;;
+  use_tls = &quot;yes&quot;;
+  tls_cert = &quot;~/.irssi/user.pem&quot;;
+  tls_verify = &quot;yes&quot;;
+  autoconnect = &quot;yes&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and the Freenode one to look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+  address = &quot;chat.freenode.net&quot;;
+  chatnet = &quot;Freenode&quot;;
+  port = &quot;7000&quot;;
+  use_tls = &quot;yes&quot;;
+  tls_cert = &quot;~/.irssi/user.pem&quot;;
+  tls_verify = &quot;yes&quot;;
+  autoconnect = &quot;yes&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&#39;s it. That&#39;s all you need to replace password authentication with a
+much stronger alternative.&lt;/p&gt; </description> 
+	<pubDate>Sat, 09 Sep 2017 04:52:47 +0000</pubDate>
+
+</item> 
+<item>
 	<title>Kees Cook: security things in Linux v4.13</title>
 	<guid>https://outflux.net/blog/?p=1056</guid>
 	<link>https://outflux.net/blog/archives/2017/09/05/security-things-in-linux-v4-13/</link>
