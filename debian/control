@@ -11,6 +11,11 @@ Build-Depends: debhelper (>= 10)
              , python3-sphinx-rtd-theme
              , python3-pytest-cov
              , python3-pytest-runner
+             , python3-click
+             , python3-feedparser
+             , python3-html2text
+             , python3-requests
+             , python3-unidecode
 X-Python-3-Version: >= 3.5
 Standards-Version: 4.1.0
 Homepage: https://gitlab.com/anarcat/feed2exec
