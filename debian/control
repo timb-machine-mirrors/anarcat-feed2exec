@@ -19,6 +19,7 @@ Package: feed2exec
 Architecture: any
 Depends: ${misc:Depends}
        , ${python3:Depends}
+Suggests: feed2exec-doc
 Description: programmable feed reader
  feed2exec is a simple program that runs custom actions on new RSS
  feed items (or whatever feedparser can read). It currently has
