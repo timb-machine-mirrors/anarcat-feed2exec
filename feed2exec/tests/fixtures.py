@@ -20,5 +20,5 @@ def conf_path(tmpdir_factory):
 
 @pytest.fixture(autouse=True)
 def static_boundary(monkeypatch):
-    monkeypatch.setattr(feed2exec.plugins.maildir, 'boundary',
+    monkeypatch.setattr(feed2exec.email, 'boundary',
                         '===============testboundary==')

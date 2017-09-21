@@ -118,8 +118,10 @@ def test_email(tmpdir, test_db, static_boundary):  # noqa
         with open(p) as expected:
             folder = utils.slug(feed['name']) + '.mbx'
             r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
-            assert r.sub(tmpdir.join('Mail', folder).read(),
-                         '') == r.sub(expected.read(), '')
+            actual = r.sub('', tmpdir.join('Mail', folder).read())
+            expect = r.sub('', expected.read())
+            assert actual
+            assert actual == expect
     assert path
 
 
