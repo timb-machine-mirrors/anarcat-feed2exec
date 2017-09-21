@@ -6,7 +6,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Fran=C3=A7ois_Marier=3A_TLS_Authentication_on_Freenode_and_OFTC?=
 Message-ID: http-feeding-cloud-geek-nz-posts-tls_authentication_freenode_and_oftc
-User-Agent: feed2exec (0.5)
+User-Agent: feed2exec (0.6.dev2+ng3158a4f)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
@@ -223,7 +223,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Kees Cook: security things in Linux v4.13
 Message-ID: https-outflux-net-blog-p-1056
-User-Agent: feed2exec (0.5)
+User-Agent: feed2exec (0.6.dev2+ng3158a4f)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://outflux.net/blog/archives/2017/09/05/security-things-in-linux-v4-13/
@@ -233,7 +233,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img align="right" alt="" height="84" src="http://planet.debian.org/heads/kees.png" style="float: right;" width="92" />  <p>Previously: <a href="http://outflux.net/blog/archives/2017/07/10/security-things-in-linux-v4-12/">v4.12</a>.</p>
+<img src="http://planet.debian.org/heads/kees.png" width="92" height="84" alt="" align="right" style="float: right;">  <p>Previously: <a href="http://outflux.net/blog/archives/2017/07/10/security-things-in-linux-v4-12/">v4.12</a>.</p>
 <p>Here’s a short summary of some of interesting security things in Sunday’s v4.13 release of the Linux kernel:</p>
 <p><strong>security documentation ReSTification</strong><br />
 The kernel has been switching to formatting documentation with <a href="https://www.kernel.org/doc/html/latest/doc-guide/sphinx.html">ReST</a>, and I noticed that none of the <code>Documentation/security/</code> tree had been converted yet. I <a href="https://git.kernel.org/linus/c2ed6743434d1d9ef49b044c6bdfd6ac1ce140a2">took the opportunity</a> to take a few passes at formatting the existing documentation and, at Jon Corbet’s recommendation, split it up between <a href="https://www.kernel.org/doc/html/latest/admin-guide/LSM/index.html">end-user documentation</a> (which is mainly how to use LSMs) and <a href="https://www.kernel.org/doc/html/latest/security/index.html">developer documentation</a> (which is mainly how to use various internal APIs). A bunch of these docs need some updating, so maybe with the improved visibility, they’ll get some extra attention.</p>
@@ -504,7 +504,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Gunnar Wolf: Made with Creative Commons: Over half translated, yay!
 Message-ID: http-gwolf-org-4110-at-http-gwolf-org
-User-Agent: feed2exec (0.5)
+User-Agent: feed2exec (0.6.dev2+ng3158a4f)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://gwolf.org/node/4110
@@ -514,7 +514,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img align="right" alt="" height="83" src="http://planet.debian.org/heads/gwolf.png" style="float: right;" width="69" />  <p>An image speaks for a thousand words...<br />
+<img src="http://planet.debian.org/heads/gwolf.png" width="69" height="83" alt="" align="right" style="float: right;">  <p>An image speaks for a thousand words...<br />
 <a href="http://gwolf.org/files/weblated.png"><img height="443" src="http://gwolf.org/files/weblated.png" width="448" /></a><br />
 And our translation project is worth several thousand words!<br />
 I am very happy and surprised to say we have surpassed the 50% mark of the <a href="https://creativecommons.org/use-remix/made-with-cc/">Made with Creative Commons</a> translation project. We have translated 666 out of 1210 strings (yay for 3v1l numbers)!<br />
@@ -566,7 +566,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Junichi Uekawa: It's already September.
 Message-ID: http-www-netfort-gr-jp-dancer-diary-daily-2017-sep-5-html-en-2017-sep-5-09-26-34
-User-Agent: feed2exec (0.5)
+User-Agent: feed2exec (0.6.dev2+ng3158a4f)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://www.netfort.gr.jp/~dancer/diary/daily/2017-Sep-5.html.en#2017-Sep-5-09:26:34
@@ -576,7 +576,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img align="right" alt="" height="97" src="http://planet.debian.org/heads/dancer.png" style="float: right;" width="75" />  It's already September. I haven't written much code last month. I wrote a CSV parser and felt a little depressed after reading rfc4180. None of my CSV files were in CRLF.
+<img src="http://planet.debian.org/heads/dancer.png" width="75" height="97" alt="" align="right" style="float: right;">  It's already September. I haven't written much code last month. I wrote a CSV parser and felt a little depressed after reading rfc4180. None of my CSV files were in CRLF.
         <p></p>
 --===============testboundary==
 Content-Type: text/plain; charset="utf-8"
@@ -600,7 +600,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Antoine_Beaupr=C3=A9=3A_My_free_software_activities=2C_August_2017?=
 Message-ID: http-anarc-at-blog-2017-09-01-free-software-activities-august-2017
-User-Agent: feed2exec (0.5)
+User-Agent: feed2exec (0.6.dev2+ng3158a4f)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://anarc.at/blog/2017-09-01-free-software-activities-august-2017/
