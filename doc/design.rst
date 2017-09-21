@@ -72,7 +72,11 @@ rss2email    ✗     ✗    ✓     ✓     ✓      ✗
  * sendmail: delivering local using the local MTA
  * exec: run arbitrary comands to run on new entries. feed2imap has a
    ``execurl`` parameter to execute commands, but it receives an
-   unparsed dump of the feed instead of individual entries
+   unparsed dump of the feed instead of individual entries. rss2email
+   has a postprocess filter that is a Python plugin that can act on
+   indiviual (or digest) messages which could possibly be extended to
+   support arbitrary commands, but that is rather difficult to
+   implement for normal users.
 
  .. _Maildir: https://en.wikipedia.org/wiki/Maildir
  .. _r2e-maildir: https://github.com/wking/rss2email/pull/21
@@ -84,7 +88,7 @@ Program   Pause   OPML Retry Images Filter Reply Digest
 ========= ======= ==== ===== ====== ====== ===== ======
 feed2exec    ✓     ✓     ✗     ✗       ✓     ✓     ✗
 feed2imap    ✗     ✓     ✓     ✓       ✓     ✗     ✗
-rss2email    ✓     ✓     ✓     ✗       ✗     ✓     ✓
+rss2email    ✓     ✓     ✓     ✗       ✓     ✓     ✓
 ========= ======= ==== ===== ====== ====== ===== ======
 
  * pause: feed reading can be disabled temporarily by user. in
