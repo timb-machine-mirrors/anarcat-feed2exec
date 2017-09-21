@@ -243,6 +243,10 @@ Release process
 
 To make a release:
 
+1. make sure tests pass::
+
+       python3 setup.py test
+
 1. generate release notes with::
 
        gbp dch
@@ -251,34 +255,26 @@ To make a release:
    the file. also make sure to add a summary and choose a proper
    version according to `Semantic Versioning`_
 
-2. tag the release according to `Semantic Versioning`_ rules:
-
-   ::
+2. tag the release according to `Semantic Versioning`_ rules::
 
        git tag -s x.y.z
 
-3. build and test the Python package:
+3. build and test the Python package::
 
-   ::
-
-       python setup.py bdist_wheel
-       sudo pip install dist/*.whl
+       python3 setup.py bdist_wheel
+       sudo pip3 install dist/*.whl
        feed2exec --version
        # check your emails and the logfile
-       sudo pip uninstall feed2exec
+       sudo pip3 uninstall feed2exec
 
-4. build and test the debian package:
-
-   ::
+4. build and test the debian package::
 
        git-buildpackage
        sudo dpkg -i ../feed2exec_*.deb
        feed2exec --version
        sudo dpkg --remove feed2exec
 
-5. push changes:
-
-   ::
+5. push changes::
 
        git push
        git push --tags
