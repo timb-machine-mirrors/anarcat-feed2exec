@@ -122,7 +122,7 @@ store new items in a maildir subfolder::
   output = feed2exec.plugins.maildir
   folder = feeds
 
-This way individual feeds do not need to be indivudually configured.
+This way individual feeds do not need to be individually configured.
 
 The following configuration parameters are supported:
 
