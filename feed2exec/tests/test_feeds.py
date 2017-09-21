@@ -151,6 +151,7 @@ def test_normalize(test_db, conf_path):  # noqa
         assert 'restic.atom' not in entry.get('link')
         # also test the "github filter"
         assert entry.get('summary')
+        assert entry.get('link') in entry.get('summary')
     data = parse(fetch(test_dates['url']), test_dates)
     for entry in data['entries']:
         assert entry.get('updated_parsed')
