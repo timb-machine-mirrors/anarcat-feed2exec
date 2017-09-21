@@ -8,7 +8,6 @@ import json
 
 from click.testing import CliRunner
 
-import feed2exec
 import feed2exec.utils as utils
 from feed2exec.__main__ import main
 from feed2exec.tests.test_feeds import (ConfFeedStorage, test_sample,

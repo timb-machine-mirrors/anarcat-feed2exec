@@ -4,7 +4,6 @@ from __future__ import print_function
 from glob import glob
 import datetime
 import email
-import mailbox
 try:
     import unittest.mock as mock
 except ImportError:
@@ -100,7 +99,7 @@ This is the body, which should show instead of the above
         assert message.check()
 
 
-def test_email(tmpdir, test_db, static_boundary):
+def test_email(tmpdir, test_db, static_boundary):  # noqa
     global LOCK
     LOCK = mock.MagicMock()
 
@@ -114,12 +113,13 @@ def test_email(tmpdir, test_db, static_boundary):
                 'args': 'to@example.com',
                 }
         body = fetch(feed['url'])
-        data = parse(body, feed, lock=LOCK)
+        parse(body, feed, lock=LOCK)
         p = path[:-3] + 'mbx'
         with open(p) as expected:
             folder = utils.slug(feed['name']) + '.mbx'
             r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
-            assert r.sub(tmpdir.join('Mail', folder).read(), '') == r.sub(expected.read(), '')
+            assert r.sub(tmpdir.join('Mail', folder).read(),
+                         '') == r.sub(expected.read(), '')
     assert path
 
 
