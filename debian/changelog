@@ -1,4 +1,19 @@
-feed2exec (0.4) UNRELEASED; urgency=medium
+feed2exec (0.5) unstable; urgency=medium
+
+  * add mbox output format
+  * switch to 8-bit email encodings, drop QP
+  * remove useless platforms tag
+  * fix tests on gitlab, no chmod allowed there
+  * add fancy badges for pipeline and coverage status
+  * add more generic feed test procedures
+  * refactor email generation to move to its own module
+  * correction: rss2email has filters
+  * make sure github filter actually works
+  * add example for the emptysummary filter
+
+ -- Antoine Beaupré <anarcat@debian.org>  Thu, 21 Sep 2017 11:17:28 -0400
+
+feed2exec (0.4) unstable; urgency=medium
 
   * switch to Python 3 style format strings: you need to switch from
     %(link) to {item.link}. feed parameter are also available, for example
