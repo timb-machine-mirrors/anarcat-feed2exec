@@ -1,3 +1,13 @@
+feed2exec (0.5.1) unstable; urgency=medium
+
+  * regenerate planet test output based on new feed
+  * fix release process to workaround recent issues
+  * update test suite results with feedparser 5.2.1
+  * add minimal test suite documentation
+  * fix typo in gbp.conf
+
+ -- Antoine Beaupré <anarcat@debian.org>  Thu, 21 Sep 2017 18:50:54 -0400
+
 feed2exec (0.5) unstable; urgency=medium
 
   * add mbox output format
