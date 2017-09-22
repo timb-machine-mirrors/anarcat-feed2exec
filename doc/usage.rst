@@ -124,6 +124,15 @@ store new items in a maildir subfolder::
 
 This way individual feeds do not need to be individually configured.
 
+.. note:: feed2exec does not take care of adding the folder to
+          "subscriptions" in the mailbox. it is assumed that folders
+          are auto-susbcribed or the user ignores subscription. if
+          that is a problem, you should subscribe to the folder by
+          hand in your email client when you add a new config. you can
+          also subscribe to a folder (say ``feeds`` above) directly
+          using the ``doveadm mailbox subscribe feeds`` command in
+          Dovecot, for example.
+
 The following configuration parameters are supported:
 
   name
