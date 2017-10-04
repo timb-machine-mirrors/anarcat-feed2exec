@@ -40,7 +40,6 @@ This creates the equivalent of this configuration file in ``~/.config/feed2exec/
   folder = nasa
   url = https://www.nasa.gov/rss/dyn/breaking_news.rss
 
-
 Send new feed items to Transmission::
 
   feed2exec add "Example torrent list" http://example.com/torrents/feed --output feed2exec.plugins.exec --args 'transmission-remote marcos.anarc.at -a '{item.link}' -w /srv/incoming'
