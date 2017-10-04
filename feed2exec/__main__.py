@@ -70,12 +70,16 @@ def main(ctx, loglevel, syslog, config):
 @click.option('--args', metavar='ARGS',
               help="output plugin arguments, with parameter substitution")
 @click.option('--filter', help="filter plugin to call to process items")
+@click.option('--filter_args',
+              help="filter plugin arguments, also with parameter substitution")
 @click.option('--folder', help="subfolder to store email into")
 @click.option('--mailbox', help="basic mailbox to store email into")
-def add(name, url, output, args, filter, folder, mailbox):
+def add(name, url, output, args, filter, filter_args, folder, mailbox):
     st = FeedStorage()
     try:
-        st.add(name, url, output, args, filter, folder, mailbox)
+        st.add(name=name, url=url, output=output, args=args,
+               filter=filter, filter_args=filter_args,
+               folder=folder, mailbox=mailbox)
     except AttributeError as e:
         raise click.BadParameter('feed %s already exists' % name)
 

@@ -106,9 +106,9 @@ def filter(feed, item, lock=None):
     takes arguments..."""
     plugin = feed.get('filter')
     if plugin:
-        if feed.get('args'):
+        if feed.get('filter_args'):
             args = [x.format(feed=feed, item=item)
-                    for x in shlex.split(feed['args'])]
+                    for x in shlex.split(feed['filter_args'])]
         else:
             args = []
         logging.debug('running filter plugin %s with arguments %s',

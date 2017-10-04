@@ -55,6 +55,7 @@ test_params = {'url': 'file://%s' % utils.find_test_file('sample.xml'),
                'name': 'params',
                'folder': 'test-folder',
                'filter': 'feed2exec.plugins.echo',
+               'filter_args': 'test',
                'output': 'feed2exec.plugins.echo',
                'args': '1 2 3 4'}
 
