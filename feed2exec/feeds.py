@@ -144,6 +144,10 @@ def parse(body, feed, lock=None, force=False):
         params.update(data['feed'])
         normalize_entry(feed=params, entry=entry)
         plugins.filter(feed, entry, lock=lock)
+        if feed.get('skip'):
+            logging.info('entry %s of feed %s filtered out',
+                         entry.get('title'), feed.get('title'))
+            continue
         guid = entry['id']
         if guid in cache and not force:
             logging.debug('entry %s already seen', guid)
