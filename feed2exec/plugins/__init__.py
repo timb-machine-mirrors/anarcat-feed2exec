@@ -37,10 +37,10 @@ def output(feed, item, lock=None):
     """load and run the given plugin with the given arguments
 
     an "output plugin" is a simple Python module with an ``output``
-    callable defined which will process arguments and
-    should output them somewhere, for example by email or through
-    another command. the plugin is called when a new item is found,
-    unless cache is flushed or ignored.
+    callable defined which will process arguments and should output
+    them somewhere, for example by email or through another
+    command. the plugin is called (from :func:`feed2exec.feeds.parse`)
+    when a new item is found, unless cache is flushed or ignored.
 
     The "callable" can be a class, in which case only the constructor
     is called or a function. The ``*args`` and ``**kwargs`` parameter
@@ -102,8 +102,14 @@ def output(feed, item, lock=None):
 
 
 def filter(feed, item, lock=None):
-    """common code with output() should be factored out, but output()
-    takes arguments..."""
+    """call filter plugins.
+
+    very similar to the output plugin, but just calls the ``filter``
+    module member instead of ``output``
+
+    .. todo:: common code with output() should be factored out, but
+              output() takes arguments...
+    """
     plugin = feed.get('filter')
     if plugin:
         if feed.get('filter_args'):

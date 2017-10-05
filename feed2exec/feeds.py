@@ -47,6 +47,16 @@ import sqlite3
 
 
 def default_config_dir():
+    """the default configuration directory
+
+    this is conforming to the `XDG base directory specification
+    <https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>`_
+
+    ..todo:: this more or less conforms: the feed database is also
+             stored in this directory, whereas the database may be
+             better stored in XDG_CACHE_HOME or XDG_RUNTIME_DIR.
+    """
+
     home_config = os.environ.get('XDG_CONFIG_HOME',
                                  os.path.join(os.environ.get('HOME'),
                                               '.config'))
@@ -56,9 +66,11 @@ def default_config_dir():
 def fetch(url):
     """fetch the given URL
 
-    exceptions should be handled by the caller
+    this is a simple wrapper around the :mod:`requests` module.
 
-    :todo: this should be moved to a plugin so it can be overridden,
+    exceptions should be handled by the caller.
+
+    :todo: this could be moved to a plugin so it can be overridden,
            but so far I haven't found a use case for this.
 
     :param str url: the URL to fetch
@@ -113,11 +125,15 @@ def normalize_item(feed=None, item=None):
 
 
 def parse(body, feed, lock=None, force=False):
-
     """parse the body of the feed
 
-    this calls the filter and output plugins and updates the cache
-    with the found items.
+    this parses the given body using :mod:`feedparser` and calls the
+    plugins configured in the ``feed`` (using
+    :func:`feed2exec.plugins.output` and
+    :func:`feed2exec.plugins.filter`). updates the cache with the
+    found items if the ``output`` plugin succeeds (returns True) and
+    if the ``filter`` plugin doesn't set the ``skip`` element in the
+    feed item.
 
     :todo: this could be moved to a plugin, but then we'd need to take
            out the cache checking logic, which would remove most of
@@ -126,6 +142,17 @@ def parse(body, feed, lock=None, force=False):
     :param bytes body: the body of the feed, as returned by :func:fetch
 
     :param dict feed: a feed object used to pass to plugins and debugging
+
+    :param object lock: a :class:`multiprocessing.Lock` object
+                        previously initialized. if None, the global
+                        `LOCK` variable will be used: this is used in
+                        the test suite to avoid having to pass locks
+                        all the way through the API. this lock is in
+                        turn passed to plugin calls.
+
+    :param bool force: force plugin execution even if entry was
+                       already seen. passed to
+                       :class:`feed2exec.feeds.parse` as is
 
     :return dict: the parsed data
 
@@ -174,6 +201,30 @@ def _init_lock(l):
 
 
 def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
+    """main entry point for the feed fetch routines.
+
+    this iterates through all feeds configured in the
+    :class:`feed2exec.feeds.FeedStorage` that match the given
+    ``pattern``.
+
+    :param str pattern: restrict operations to feeds named
+                        ``pattern``. passed to
+                        :class:`feed2exec.feeds.FeedStorage` as is
+
+    :param bool parallel: parse feeds in parallel, using
+                          :mod:`multiprocessing`
+
+    :param bool force: force plugin execution even if entry was
+                       already seen. passed to
+                       :class:`feed2exec.feeds.parse` as is
+
+    :param bool catchup: disables the output plugin by setting the
+                         ``output`` field to None in the ``feed``
+                         argument passed to
+                         :func:`feed2exec.feeds.parse`, used to
+                         catchup on feed entries without firing
+                         plugins.
+    """
     logging.debug('looking for feeds %s', pattern)
     st = FeedStorage(pattern=pattern)
     if parallel:
@@ -235,6 +286,21 @@ class SqliteStorage(object):
 
 
 class ConfFeedStorage(configparser.RawConfigParser):
+    """Feed configuration stored in a config file.
+
+    This derives from :class:`configparser.RawConfigParser` and uses
+    the ``.ini`` file set in the ``path`` member to read and write
+    settings.
+
+    Changes are committed immediately, and no locking is performed so
+    loading here should be safe but not editing.
+
+    The particular thing about this configuration is that there is an
+    iterator that will yield entries matching the ``pattern``
+    substring provided in the constructor.
+    """
+
+    #: default ConfFeedStorage path
     path = os.path.join(default_config_dir(), 'feed2exec.ini')
 
     def __init__(self, pattern=None):
@@ -246,6 +312,9 @@ class ConfFeedStorage(configparser.RawConfigParser):
     def add(self, name, url, output=None, args=None,
             filter=None, filter_args=None,
             folder=None, mailbox=None):
+        """add the designated feed to the configuration
+
+        this is not thread-safe."""
         if self.has_section(name):
             raise AttributeError('key %s already exists' % name)
         d = OrderedDict()
@@ -266,24 +335,41 @@ class ConfFeedStorage(configparser.RawConfigParser):
         self.commit()
 
     def set(self, section, option, value=None):
+        """override parent to make sure we immediately write changes
+
+        not thread-safe
+        """
         super(ConfFeedStorage, self).set(section, option, value)
         self.commit()
 
     def remove_option(self, section, option):
+        """override parent to make sure we immediately write changes
+
+        not thread-safe
+        """
         super(ConfFeedStorage, self).remove_option(section, option)
         self.commit()
 
     def remove(self, name):
+        """convenient alias for
+        :func:`configparser.RawConfigParser.remove_section`
+
+        not thread-safe
+        """
         self.remove_section(name)
         self.commit()
 
     def commit(self):
+        """write the feed configuration
+
+        see :func:`configparser.RawConfigParser.write`"""
         logging.info('saving feed configuration in %s', self.path)
         utils.make_dirs_helper(os.path.dirname(self.path))
         with open(self.path, 'w') as configfile:
             self.write(configfile)
 
     def __iter__(self):
+        """override iterator to allow for pattern matching"""
         for name in self.sections():
             if self.pattern is None or self.pattern in name:
                 d = dict(self[name])
@@ -291,6 +377,11 @@ class ConfFeedStorage(configparser.RawConfigParser):
                 yield d
 
 
+#: Feed storage used.
+#:
+#: An alias to
+#: :class:`feed2exec.feeds.ConfFeedStorage`, but can be overridden by
+#: plugins
 FeedStorage = ConfFeedStorage
 
 
