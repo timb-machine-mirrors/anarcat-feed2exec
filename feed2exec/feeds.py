@@ -255,7 +255,7 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
             parse(body=body, feed=dict(feed), force=force)
     if parallel:
         for result in results:
-            result.get()
+            result.wait()
         pool.close()
         pool.join()
     logging.info('%d feeds processed', i+1)

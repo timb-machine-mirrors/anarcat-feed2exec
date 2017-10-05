@@ -141,6 +141,17 @@ def test_fetch(test_db, conf_path):  # noqa
     fetch_feeds()
 
 
+def test_fetch_parallel(test_db, conf_path, capfd):  # noqa
+    fetch_feeds(parallel=True, force=True)
+    # can't use feed2exec.feeds.plugins.echo.output.called as it is
+    # set in a separate process.
+    out, err = capfd.readouterr()
+    assert 'arguments received' in out
+    fetch_feeds(parallel=2, force=True)
+    out, err = capfd.readouterr()
+    assert 'arguments received' in out
+
+
 def test_normalize(test_db, conf_path):  # noqa
     '''black box testing for :func:feeds.normalize_item()'''
     data = parse(fetch(test_udd['url']), test_udd)
