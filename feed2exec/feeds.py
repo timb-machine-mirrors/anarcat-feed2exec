@@ -181,6 +181,9 @@ def parse(body, feed, lock=None, force=False):
             logging.debug('new item %s <%s>', guid, item['link'])
             if plugins.output(feed, item, lock=lock) is not None and not force:  # noqa
                 cache.add(guid)
+    # massage result for multiprocessing module
+    if data['bozo']:
+        data['bozo_exception'] = str(data['bozo_exception'])
     return data
 
 
@@ -254,7 +257,7 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
             parse(body=body, feed=dict(feed), force=force)
     if parallel:
         for result in results:
-            result.wait()
+            result.get()
         pool.close()
         pool.join()
     logging.info('%d feeds processed', i+1)
