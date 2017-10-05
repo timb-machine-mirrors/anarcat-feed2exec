@@ -184,7 +184,7 @@ def parse(body, feed, lock=None, force=False):
     return data
 
 
-def _init_lock(l):
+def init_global_lock(l):
     """setup a global lock across pool threads
 
     this is necessary because Lock objects are not serializable so we
@@ -232,7 +232,8 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
         if isinstance(parallel, int):
             processes = parallel
         pool = multiprocessing.Pool(processes=processes,
-                                    initializer=_init_lock, initargs=(l,))
+                                    initializer=init_global_lock,
+                                    initargs=(l,))
     results = []
     for i, feed in enumerate(st):
         logging.debug('found feed in DB: %s', dict(feed))
