@@ -1,3 +1,32 @@
+feed2exec (0.6.0) unstable; urgency=medium
+
+  * API-breaking changes:
+    * use 'item' vocabulary consistently in API
+    * allow filters to skip entry by setting the "skip" field
+    * separate filter arguments (`filter_args`) from output arguments
+      (`args`)
+    * officially drop support for Python 2
+  * features
+    * add sample plugin to drop feed items matchin a certain title (`droptitle`)
+    * fix sample tweet to avoid extraneous padding
+    * add transmission exec to sample config
+    * do *not* wrap links even in references
+    * add some limited parallelism tests
+    * handle http errors more gracefully
+  * bugfixes
+    * html2text got a new release which broke tests, update tests and skip
+      older releases
+  * documentation fixes
+    * clarify error message from plugin exceptions
+    * expand API documentation
+    * note that feed2exec doesn't take care of IMAP folder subscriptions:
+      you'll need to subscribe to new feeds by hand if you use that feature
+      for now.
+    * use tox in the release process, slower but more reliable
+    * mark this as beta
+
+ -- Antoine Beaupré <anarcat@debian.org>  Thu, 05 Oct 2017 14:04:16 -0400
+
 feed2exec (0.5.1) unstable; urgency=medium
 
   * regenerate planet test output based on new feed
