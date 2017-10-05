@@ -291,6 +291,7 @@ class SqliteStorage(object):
     cache = {}
 
     def __init__(self):
+        self.path = os.path.expanduser(SqliteStorage.path)
         assert self.path
         utils.make_dirs_helper(os.path.dirname(self.path))
         if self.path not in SqliteStorage.cache:
