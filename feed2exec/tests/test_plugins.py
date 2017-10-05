@@ -32,13 +32,13 @@ def test_maildir(tmpdir, test_db, static_boundary):  # noqa
     LOCK = mock.MagicMock()
 
     feed = {'name': 'INBOX', "mailbox": str(tmpdir.join('Mail'))}
-    entry = {'summary': 'body',
-             'title': 'subject',
-             'link': 'http://example.com/',
-             'published_parsed': datetime.datetime.now()}
+    item = {'summary': 'body',
+            'title': 'subject',
+            'link': 'http://example.com/',
+            'published_parsed': datetime.datetime.now()}
 
     f = maildir_plugin.output(to_addr='nobody@example.com',
-                              feed=feed, entry=entry, lock=LOCK)
+                              feed=feed, item=item, lock=LOCK)
     message = tmpdir.join('Mail', 'inbox', 'new', f.key)
     assert message.check()
     raw = message.read()
@@ -46,10 +46,10 @@ def test_maildir(tmpdir, test_db, static_boundary):  # noqa
     assert '==' not in raw
 
     # subject header hijack protection
-    entry['title'] = 'subject\nX-Header-Hijack: true'
+    item['title'] = 'subject\nX-Header-Hijack: true'
     with pytest.raises(email.errors.HeaderParseError):
         maildir_plugin.output(to_addr='nobody@example.com',
-                              feed=feed, entry=entry, lock=LOCK)
+                              feed=feed, item=item, lock=LOCK)
     sample = {'name': 'maildir test',
               'url': test_sample['url'],
               'email': 'from@example.com',
@@ -95,8 +95,8 @@ This is the body, which should show instead of the above
     sample['folder'] = 'folder-test'
     body = fetch(sample['url'])
     data = parse(body, sample, lock=LOCK)
-    for entry in data['entries']:
-        f = plugins.output(sample, entry, lock=LOCK)
+    for item in data['entries']:
+        f = plugins.output(sample, item, lock=LOCK)
         message = tmpdir.join('Mail', 'folder-test', 'new', f.key)
         assert message.check()
 

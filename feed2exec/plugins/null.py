@@ -6,9 +6,9 @@ def output(*args, **kwargs):
     pass
 
 
-def filter(entry=None, *args, **kwargs):
+def filter(item=None, *args, **kwargs):
     """
     The null filter removes all elements from a feed item
     """
-    for i in entry:
-        entry[i] = None
+    for i in item:
+        item[i] = None

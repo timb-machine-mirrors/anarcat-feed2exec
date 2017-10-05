@@ -102,9 +102,9 @@ def test_pattern(test_db, conf_path):  # noqa
     st.add(**test_data2)
     assert test_data2['name'] in st, 'second add works'
     feeds = list(FeedStorage(pattern='test2'))
-    assert len(feeds) == 1, 'find only one entry'
+    assert len(feeds) == 1, 'find only one item'
     feeds = list(FeedStorage(pattern='test'))
-    assert len(feeds) == 2, 'find two entries'
+    assert len(feeds) == 2, 'find two items'
 
 
 def test_cache(test_db):  # noqa
@@ -115,14 +115,14 @@ def test_cache(test_db):  # noqa
     tmp = FeedCacheStorage()
     assert 'guid' in tmp
     st.add('another')
-    for entry in tmp:
-        assert entry
-        if entry['guid'] == 'another':
+    for item in tmp:
+        assert item
+        if item['guid'] == 'another':
             break
     else:
         assert False, 'failed to iterate through storage'
-    for entry in FeedCacheStorage(feed=test_data['name'], guid='guid'):
-        assert 'another' not in entry['guid']
+    for item in FeedCacheStorage(feed=test_data['name'], guid='guid'):
+        assert 'another' not in item['guid']
     st.remove('guid')
     assert 'guid' not in st
 
@@ -142,20 +142,20 @@ def test_fetch(test_db, conf_path):  # noqa
 
 
 def test_normalize(test_db, conf_path):  # noqa
-    '''black box testing for :func:feeds.normalize_entry()'''
+    '''black box testing for :func:feeds.normalize_item()'''
     data = parse(fetch(test_udd['url']), test_udd)
-    for entry in data.entries:
-        assert entry.get('id')
+    for item in data.entries:
+        assert item.get('id')
     data = parse(fetch(test_restic['url']), test_restic)
-    for entry in data.entries:
-        assert entry.get('link').startswith('file://')
-        assert 'restic.atom' not in entry.get('link')
+    for item in data.entries:
+        assert item.get('link').startswith('file://')
+        assert 'restic.atom' not in item.get('link')
         # also test the "github filter"
-        assert entry.get('summary')
-        assert entry.get('link') in entry.get('summary')
+        assert item.get('summary')
+        assert item.get('link') in item.get('summary')
     data = parse(fetch(test_dates['url']), test_dates)
-    for entry in data['entries']:
-        assert entry.get('updated_parsed')
+    for item in data['entries']:
+        assert item.get('updated_parsed')
 
 
 def test_config(conf_path):  # noqa

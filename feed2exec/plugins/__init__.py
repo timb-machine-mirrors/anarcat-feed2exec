@@ -93,7 +93,7 @@ def output(feed, item, lock=None):
                       plugin, args)
         plugin = importlib.import_module(plugin)
         try:
-            return plugin.output(*args, feed=feed, entry=item, lock=lock)
+            return plugin.output(*args, feed=feed, item=item, lock=lock)
         except Exception as e:
             logging.exception("plugin generated exception: %s, ignoring", e)
             return None
@@ -115,7 +115,7 @@ def filter(feed, item, lock=None):
                       plugin, args)
         plugin = importlib.import_module(plugin)
         try:
-            return plugin.filter(*args, feed=feed, entry=item, lock=lock)
+            return plugin.filter(*args, feed=feed, item=item, lock=lock)
         except Exception as e:
             logging.exception("plugin generated exception: %s, ignoring", e)
             return None

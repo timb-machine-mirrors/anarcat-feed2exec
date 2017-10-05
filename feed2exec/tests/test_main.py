@@ -78,4 +78,4 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
         if 'Marier' in body:
             break
     else:
-        assert False, "entry from Francois Marier not found"
+        assert False, "Francois Marier item not found"

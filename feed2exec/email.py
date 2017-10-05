@@ -16,7 +16,7 @@ from feed2exec.plugins.html2text import filter as html2text_filter
 boundary = None
 
 
-def make_message(feed, entry, to_addr=None, cls=email.message.Message):
+def make_message(feed, item, to_addr=None, cls=email.message.Message):
     """generate a message from the feed
 
     this will generate multipart emails if HTML is detected, but also
@@ -31,7 +31,7 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
 
     """
     params = defaultdict(str)
-    params.update(entry)
+    params.update(item)
     cs = email.charset.Charset('utf-8')
     # headers are still not 8-bit clean but body probably is:
     # https://stackoverflow.com/a/23875217
@@ -95,7 +95,7 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
     #
     # also, default on the feed updated date
     orig = timestamp = datetime.datetime.utcnow().timestamp()
-    timestamp = entry.get('updated_parsed') or orig
+    timestamp = item.get('updated_parsed') or orig
     if isinstance(timestamp, (datetime.datetime,
                               datetime.date,
                               datetime.time)):
@@ -111,19 +111,19 @@ def make_message(feed, entry, to_addr=None, cls=email.message.Message):
     msg['To'] = to_addr or "%s@%s" % (getpass.getuser(), socket.getfqdn())
     params = {'name': feed.get('name'),
               'email': msg['To']}
-    if 'author_detail' in entry:
-        params.update(entry['author_detail'])
+    if 'author_detail' in item:
+        params.update(item['author_detail'])
     elif 'author_detail' in feed:
         params.update(feed['author_detail'])
     msg['From'] = '{name} <{email}>'.format(**params)
-    msg['Subject'] = entry.get('title', feed.get('title', u''))
+    msg['Subject'] = item.get('title', feed.get('title', u''))
     # workaround feedparser bug:
     # https://github.com/kurtmckee/feedparser/issues/112
-    msg['Message-ID'] = utils.slug(entry.get('id', entry.get('title')))
+    msg['Message-ID'] = utils.slug(item.get('id', item.get('title')))
     msg['User-Agent'] = "%s (%s)" % (feed2exec.__prog__,
                                      feed2exec.__version__)
     msg['Precedence'] = 'list'
     msg['Auto-Submitted'] = 'auto-generated'
-    if entry.get('link'):
-        msg['Archive-At'] = entry.get('link')
+    if item.get('link'):
+        msg['Archive-At'] = item.get('link')
     return msg, timestamp

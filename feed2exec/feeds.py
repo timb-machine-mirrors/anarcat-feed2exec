@@ -78,12 +78,12 @@ def fetch(url):
     return body
 
 
-def normalize_entry(feed=None, entry=None):
+def normalize_item(feed=None, item=None):
     """normalize feeds a little more than what feedparser provides.
 
     we do the following operation:
 
-     1. add more defaults to entry dates (`issue #113
+     1. add more defaults to item dates (`issue #113
         <https://github.com/kurtmckee/feedparser/issues/113>`_):
 
         * created_parsed of the item
@@ -97,19 +97,19 @@ def normalize_entry(feed=None, entry=None):
         unreported for now.
     """
     # 1. add more defaults (issue #113)
-    entry['updated_parsed'] = entry.get('updated_parsed', entry.get('created_parsed', feed.get('updated_parsed', False)))  # noqa
-    assert entry.get('updated_parsed') is not None
+    item['updated_parsed'] = item.get('updated_parsed', item.get('created_parsed', feed.get('updated_parsed', False)))  # noqa
+    assert item.get('updated_parsed') is not None
 
     # 2. add UID if missing (issue #112)
-    if not entry.get('id'):
-        entry['id'] = entry.get('title')
+    if not item.get('id'):
+        item['id'] = item.get('title')
 
     # 3. not completely absolute links
-    scheme, netloc, *rest = urlparse.urlsplit(entry.get('link'))
+    scheme, netloc, *rest = urlparse.urlsplit(item.get('link'))
     if not scheme:
         # take missing scheme/host from feed URL
         scheme, netloc, *_ = urlparse.urlsplit(feed.get('url', ''))
-        entry['link'] = urlparse.urlunsplit((scheme, netloc, *rest))
+        item['link'] = urlparse.urlunsplit((scheme, netloc, *rest))
 
 
 def parse(body, feed, lock=None, force=False):
@@ -139,21 +139,21 @@ def parse(body, feed, lock=None, force=False):
     #               json.dumps(data, indent=2, sort_keys=True,
     #                          default=safe_serial))
     cache = FeedCacheStorage(feed=feed['name'])
-    for entry in data['entries']:
+    for item in data['entries']:
         params = feed.copy()
         params.update(data['feed'])
-        normalize_entry(feed=params, entry=entry)
-        plugins.filter(feed, entry, lock=lock)
+        normalize_item(feed=params, item=item)
+        plugins.filter(feed=feed, item=item, lock=lock)
         if feed.get('skip'):
-            logging.info('entry %s of feed %s filtered out',
-                         entry.get('title'), feed.get('title'))
+            logging.info('item %s of feed %s filtered out',
+                         item.get('title'), feed.get('title'))
             continue
-        guid = entry['id']
+        guid = item['id']
         if guid in cache and not force:
-            logging.debug('entry %s already seen', guid)
+            logging.debug('item %s already seen', guid)
         else:
-            logging.debug('new entry %s <%s>', guid, entry['link'])
-            if plugins.output(feed, entry, lock=lock) is not None and not force:  # noqa
+            logging.debug('new item %s <%s>', guid, item['link'])
+            if plugins.output(feed, item, lock=lock) is not None and not force:  # noqa
                 cache.add(guid)
     return data
 

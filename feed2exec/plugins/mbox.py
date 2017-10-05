@@ -29,10 +29,10 @@ class output(object):
            implementation. Refactoring may be in order, particularly
            if we add another mailbox format, though that is unlikely.
     """
-    def __init__(self, to_addr=None, feed=None, entry=None, lock=None,
+    def __init__(self, to_addr=None, feed=None, item=None, lock=None,
                  *args, **kwargs):
         msg, timestamp = make_message(feed=feed,
-                                      entry=entry,
+                                      item=item,
                                       to_addr=to_addr,
                                       cls=mailbox.mboxMessage)
         msg.set_from(utils.slug(feed.get('name', 'MAILER-DAEMON')),
@@ -51,5 +51,5 @@ class output(object):
         maildir.flush()
         if lock:
             lock.release()
-        guid = entry.get('guid', entry.get('link', '???'))
-        logging.info('saved entry %s to %s (%s)', guid, folder, self.key)
+        guid = item.get('guid', item.get('link', '???'))
+        logging.info('saved item %s to %s (%s)', guid, folder, self.key)

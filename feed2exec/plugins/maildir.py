@@ -25,10 +25,10 @@ class output(object):
     :param dict item: the updated item
     """
 
-    def __init__(self, to_addr=None, feed=None, entry=None, lock=None,
+    def __init__(self, to_addr=None, feed=None, item=None, lock=None,
                  *args, **kwargs):
         msg, timestamp = make_message(feed=feed,
-                                      entry=entry,
+                                      item=item,
                                       to_addr=to_addr,
                                       cls=mailbox.MaildirMessage)
         msg.set_date(timestamp)
@@ -46,6 +46,6 @@ class output(object):
         maildir.flush()
         if lock:
             lock.release()
-        guid = entry.get('guid', entry.get('link', '???'))
-        logging.info('saved entry %s to %s',
+        guid = item.get('guid', item.get('link', '???'))
+        logging.info('saved item %s to %s',
                      guid, os.path.join(path, 'new', self.key))

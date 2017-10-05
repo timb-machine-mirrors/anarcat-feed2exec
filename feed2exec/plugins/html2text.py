@@ -11,11 +11,11 @@ class filter(object):
     ``content`` with its HTML parsed as text.
     """
 
-    def __init__(self, *args, feed=None, entry=None, **kwargs):
-        entry['summary_plain'] = self.parse(entry.get('summary'))
-        if entry.get('content'):
-            entry['content_plain'] = ''.join([self.parse(x.value)
-                                              for x in entry.get('content')])
+    def __init__(self, *args, feed=None, item=None, **kwargs):
+        item['summary_plain'] = self.parse(item.get('summary'))
+        if item.get('content'):
+            item['content_plain'] = ''.join([self.parse(x.value)
+                                             for x in item.get('content')])
 
     @staticmethod
     def parse(html=None):
