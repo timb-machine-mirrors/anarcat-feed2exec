@@ -95,7 +95,7 @@ def output(feed, item, lock=None):
         try:
             return plugin.output(*args, feed=feed, item=item, lock=lock)
         except Exception as e:
-            logging.exception("plugin generated exception: %s, ignoring", e)
+            logging.exception("plugin generated exception: %s, skipping", e)
             return None
     else:
         return False
