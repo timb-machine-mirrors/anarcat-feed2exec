@@ -112,11 +112,8 @@ _SSL certificates_ ). In fact, it turns out that it's very easy to setup both
 on [irssi][3] and on [znc][4].
 
    [1]: <https://www.oftc.net/NickServ/CertFP/>
-
    [2]: <https://freenode.net/kb/answer/certfp>
-
    [3]: <https://irssi.org/>
-
    [4]: <https://wiki.znc.in/>
 
 # Generate your TLS certificate
@@ -266,29 +263,17 @@ https://outflux.net/blog/archives/2017/09/05/security-things-in-linux-v4-13/
 
 Previously: [v4.12][1].
 
-   [1]: <http://outflux.net/blog/archives/2017/07/10/security-things-in-
-linux-v4-12/>
+   [1]: <http://outflux.net/blog/archives/2017/07/10/security-things-in-linux-v4-12/>
 
 Here’s a short summary of some of interesting security things in Sunday’s
 v4.13 release of the Linux kernel:
 
 **security documentation ReSTification**  
-The kernel has been switching to formatting documentation with [ReST][2], and
-I noticed that none of the `Documentation/security/` tree had been converted
-yet. I [took the opportunity][3] to take a few passes at formatting the
-existing documentation and, at Jon Corbet’s recommendation, split it up
-between [end-user documentation][4] (which is mainly how to use LSMs) and
-[developer documentation][5] (which is mainly how to use various internal
-APIs). A bunch of these docs need some updating, so maybe with the improved
-visibility, they’ll get some extra attention.
+The kernel has been switching to formatting documentation with [ReST][2], and I noticed that none of the `Documentation/security/` tree had been converted yet. I [took the opportunity][3] to take a few passes at formatting the existing documentation and, at Jon Corbet’s recommendation, split it up between [end-user documentation][4] (which is mainly how to use LSMs) and [developer documentation][5] (which is mainly how to use various internal APIs). A bunch of these docs need some updating, so maybe with the improved visibility, they’ll get some extra attention.
 
    [2]: <https://www.kernel.org/doc/html/latest/doc-guide/sphinx.html>
-
-   [3]:
-<https://git.kernel.org/linus/c2ed6743434d1d9ef49b044c6bdfd6ac1ce140a2>
-
+   [3]: <https://git.kernel.org/linus/c2ed6743434d1d9ef49b044c6bdfd6ac1ce140a2>
    [4]: <https://www.kernel.org/doc/html/latest/admin-guide/LSM/index.html>
-
    [5]: <https://www.kernel.org/doc/html/latest/security/index.html>
 
 **CONFIG_REFCOUNT_FULL**  
@@ -306,14 +291,9 @@ for v4.14 and beyond, the kernel can grow [per-architecture implementations of
 `refcount_t`][8] that have performance characteristics on par with `atomic_t`
 (as done in grsecurity’s PAX_REFCOUNT).
 
-   [6]: <http://outflux.net/blog/archives/2017/05/02/security-things-in-
-linux-v4-11/>
-
-   [7]:
-<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?h=v4.13&qt=grep&q=refcount_t>
-
-   [8]:
-<https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=7a46ec0e2f4850407de5e1d19a44edee6efa58ec>
+   [6]: <http://outflux.net/blog/archives/2017/05/02/security-things-in-linux-v4-11/>
+   [7]: <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?h=v4.13&qt=grep&q=refcount_t>
+   [8]: <https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=7a46ec0e2f4850407de5e1d19a44edee6efa58ec>
 
 **CONFIG_FORTIFY_SOURCE**  
 Daniel Micay [created a version][9] of glibc’s `FORTIFY_SOURCE` compile-time
@@ -330,32 +310,15 @@ this [found][10] [several][11] [places][12] [where][13] [minor][14]
 [leaks][15] [were][16] [happening][17], and Daniel and I chased down fixes for
 them.
 
-   [9]:
-<https://git.kernel.org/linus/6974f0c4555e285ab217cee58b6e874f776ff409>
-
-   [10]:
-<https://git.kernel.org/linus/4c93496f18ce5044d78e4f7f9e018682a4f44b3d>
-
-   [11]:
-<https://git.kernel.org/linus/e2ae8ab4b571e2e4094a28acb60649bc2732c67f>
-
-   [12]:
-<https://git.kernel.org/linus/3e2c044a54e6b6373606f8ffad42a4a0759fcf3d>
-
-   [13]:
-<https://git.kernel.org/linus/c0944883c97c0ddc71da67cc731590a7c878a1a2>
-
-   [14]:
-<https://git.kernel.org/linus/42c335f7e67029d2e01711f2f2bc6252277c8993>
-
-   [15]:
-<https://git.kernel.org/linus/dbbb08f500d6146398b794fdc68a8e811366b451>
-
-   [16]:
-<https://git.kernel.org/linus/12e3c0433e8a3b817fbb978a1be973a04cd5d6f3>
-
-   [17]:
-<https://git.kernel.org/linus/e48d661eb13f2f83861428f001c567fdb3f317e8>
+   [9]: <https://git.kernel.org/linus/6974f0c4555e285ab217cee58b6e874f776ff409>
+   [10]: <https://git.kernel.org/linus/4c93496f18ce5044d78e4f7f9e018682a4f44b3d>
+   [11]: <https://git.kernel.org/linus/e2ae8ab4b571e2e4094a28acb60649bc2732c67f>
+   [12]: <https://git.kernel.org/linus/3e2c044a54e6b6373606f8ffad42a4a0759fcf3d>
+   [13]: <https://git.kernel.org/linus/c0944883c97c0ddc71da67cc731590a7c878a1a2>
+   [14]: <https://git.kernel.org/linus/42c335f7e67029d2e01711f2f2bc6252277c8993>
+   [15]: <https://git.kernel.org/linus/dbbb08f500d6146398b794fdc68a8e811366b451>
+   [16]: <https://git.kernel.org/linus/12e3c0433e8a3b817fbb978a1be973a04cd5d6f3>
+   [17]: <https://git.kernel.org/linus/e48d661eb13f2f83861428f001c567fdb3f317e8>
 
 One interesting note about this protection is that is only examines the [size
 of the whole object][18] for its size (via `__builtin_object_size(..., **0**
@@ -380,11 +343,8 @@ This does reduce the entropy from 64 bits to 56 bits for overflow cases where
 NULL bytes can be written (e.g. `memcpy`), but the trade-off is worth it.
 (Besdies, x86_64’s canary was 32-bits [until recently][20].)
 
-   [19]:
-<https://git.kernel.org/linus/022c204040f3fd22d6445bc35517786195b7ae80>
-
-   [20]: <http://outflux.net/blog/archives/2017/07/10/security-things-in-
-linux-v4-12/>
+   [19]: <https://git.kernel.org/linus/022c204040f3fd22d6445bc35517786195b7ae80>
+   [20]: <http://outflux.net/blog/archives/2017/07/10/security-things-in-linux-v4-12/>
 
 **IPC refactoring**  
 Partially in support of allowing IPC structure layouts to be randomized by the
@@ -393,11 +353,8 @@ of how IPC is tracked in the kernel. The resulting allocations are smaller and
 much easier to deal with, even if I initially missed a [few needed
 container_of() uses][22].
 
-   [21]:
-<https://git.kernel.org/linus/1a23395672658969a4035dcc518ea6cab835c579>
-
-   [22]:
-<https://git.kernel.org/linus/ade9f91b32b964e83d294f4973d50083b08ef6fc>
+   [21]: <https://git.kernel.org/linus/1a23395672658969a4035dcc518ea6cab835c579>
+   [22]: <https://git.kernel.org/linus/ade9f91b32b964e83d294f4973d50083b08ef6fc>
 
 **randstruct gcc plugin**  
 I ported grsecurity’s clever [randstruct gcc plugin to upstream][23]. This
@@ -408,8 +365,7 @@ attacks). By moving things around in this fashion, attackers need to perform
 much more work to determine the resulting layout before they can mount a
 reliable attack.
 
-   [23]:
-<https://git.kernel.org/linus/313dd1b629219db50cad532dba6a3b3b22ffe622>
+   [23]: <https://git.kernel.org/linus/313dd1b629219db50cad532dba6a3b3b22ffe622>
 
 Unfortunately, due to the timing of the development cycle, only the “manual”
 mode of randstruct landed in upstream (i.e. [marking structures with
@@ -417,29 +373,15 @@ mode of randstruct landed in upstream (i.e. [marking structures with
 enabled][25], which randomizes all structures that contain only function
 pointers.
 
-   [24]:
-<https://git.kernel.org/linus/3859a271a003aba01e45b85c9d8b355eb7bf25f9>
+   [24]: <https://git.kernel.org/linus/3859a271a003aba01e45b85c9d8b355eb7bf25f9>
+   [25]: <https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?id=9225331b310821760f39ba55b00b8973602adbb5>
 
-   [25]:
-<https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?id=9225331b310821760f39ba55b00b8973602adbb5>
+A large number of fixes to support randstruct have been landing from [v4.10 through v4.13][26], most of which were already identified and fixed by grsecurity, but many were novel, either in newly added drivers, as [whitelisted cross-structure casts][27], [refactorings][28] (like IPC noted above), or in a [corner case on ARM][29] found during upstream testing.
 
-A large number of fixes to support randstruct have been landing from [v4.10
-through v4.13][26], most of which were already identified and fixed by
-grsecurity, but many were novel, either in newly added drivers, as
-[whitelisted cross-structure casts][27], [refactorings][28] (like IPC noted
-above), or in a [corner case on ARM][29] found during upstream testing.
-
-   [26]:
-<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?h=v4.13&qt=grep&q=designated+init>
-
-   [27]:
-<https://git.kernel.org/linus/1854c19cae0d108637c40f90ee0bb9b7c1adbc0a>
-
-   [28]:
-<https://git.kernel.org/linus/3e2e857f9c3a19d55ee0ba7b428b8be5008960bf>
-
-   [29]:
-<https://git.kernel.org/linus/ffa47aa678cfaa9b88e8a26cfb115b4768325121>
+   [26]: <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?h=v4.13&qt=grep&q=designated+init>
+   [27]: <https://git.kernel.org/linus/1854c19cae0d108637c40f90ee0bb9b7c1adbc0a>
+   [28]: <https://git.kernel.org/linus/3e2e857f9c3a19d55ee0ba7b428b8be5008960bf>
+   [29]: <https://git.kernel.org/linus/ffa47aa678cfaa9b88e8a26cfb115b4768325121>
 
 **lower ELF_ET_DYN_BASE**  
 One of the issues identified from the [Stack Clash][30] set of vulnerabilities
@@ -460,20 +402,15 @@ there is a way to teach Address Sanitizer how to load itself as a shared
 object instead of as a PIE binary.
 
    [30]: <https://blog.qualys.com/securitylabs/2017/06/19/the-stack-clash>
-
-   [31]:
-<http://git.kernel.org/linus/eab09532d40090698b05a07c1c87f39fdbc5fab5>
-
-   [32]:
-<https://git.kernel.org/linus/c715b72c1ba406f133217b509044c38d8e714a37>
+   [31]: <http://git.kernel.org/linus/eab09532d40090698b05a07c1c87f39fdbc5fab5>
+   [32]: <https://git.kernel.org/linus/c715b72c1ba406f133217b509044c38d8e714a37>
 
 **early device randomness**  
 I noticed that early device randomness wasn’t actually getting added to the
 kernel entropy pools, so I [fixed that][33] to improve the effectiveness of
 the latent_entropy gcc plugin.
 
-   [33]:
-<https://git.kernel.org/linus/ee7998c50c2697737c6530431709f77c852bf0d6>
+   [33]: <https://git.kernel.org/linus/ee7998c50c2697737c6530431709f77c852bf0d6>
 
 That’s it for now; please let me know if I missed anything. As a side note, I
 was rather alarmed to discover that due to all my trivial ReSTification
@@ -490,7 +427,6 @@ Attribution-ShareAlike 3.0 License][36].
 [Creative Commons License][36]
 
    [35]: <https://outflux.net/blog/>
-
    [36]: <http://creativecommons.org/licenses/by-sa/3.0/us/>
 
 
@@ -549,13 +485,9 @@ and Norwegian Bokmål are on their way) If you translate into Spanish, *please*
 read and abide by the specific [Spanish translation guidelines][5].
 
    [1]: <http://gwolf.org/files/weblated.png>
-
    [2]: <https://creativecommons.org/use-remix/made-with-cc/>
-
    [3]: <https://weblate.org/en/>
-
    [4]: <https://hosted.weblate.org/engage/madewithcc/es/?utm_source=widget>
-
    [5]: <https://gitlab.com/gunnarwolf/madewithcc-es/blob/master/README_es.md>
 
 
@@ -979,21 +911,12 @@ packages were Mercurial, libdbd-mysql-perl and Ruby.
 
 ## Mercurial updates
 
-Mercurial was vulnerable to two CVEs: [CVE-2017-1000116][2] (command injection
-on clients through malicious ssh URLs) and [CVE-2017-1000115][3] (path
-traversal via symlink). The former is an issue that actually affects many
-other similar software like Git ([CVE-2017-1000117][4]), Subversion
-([CVE-2017-9800][5]) and even CVS ([CVE-2017-12836][6]). The latter symlink
-issue is a distinct issue that came up during an internal audit.
+Mercurial was vulnerable to two CVEs: [CVE-2017-1000116][2] (command injection on clients through malicious ssh URLs) and [CVE-2017-1000115][3] (path traversal via symlink). The former is an issue that actually affects many other similar software like Git ([CVE-2017-1000117][4]), Subversion ([CVE-2017-9800][5]) and even CVS ([CVE-2017-12836][6]). The latter symlink issue is a distinct issue that came up during an internal audit.
 
    [2]: <https://security-tracker.debian.org/CVE-2017-1000116>
-
    [3]: <https://security-tracker.debian.org/CVE-2017-1000115>
-
    [4]: <https://security-tracker.debian.org/CVE-2017-1000117>
-
    [5]: <https://security-tracker.debian.org/CVE-2017-9800>
-
    [6]: <https://security-tracker.debian.org/CVE-2017-12836>
 
 The fix, shipped as [DLA-1072-1][7], involved a rather difficult backport,
@@ -1006,11 +929,8 @@ passes `--build=source` to [dpkg-buildpackage][10], an option that is
 supported only in jessie or later.
 
    [7]: <https://lists.debian.org/debian-lts-announce/2017/08/msg00032.html>
-
    [8]: <http://manpages.debian.org/sbuild>
-
    [9]: <http://manpages.debian.org/sbuild%2Econf>
-
    [10]: <http://manpages.debian.org/dpkg%2Dbuildpackage>
 
 ## libdbd-mysql-perl
@@ -1024,13 +944,9 @@ but also all of Perl's MySQL support, which is probably used by even a larger
 base of software.
 
    [11]: <http://packages.debian.org/libdbd%2Dmysql%2Dperl>
-
    [12]: <https://security-tracker.debian.org/CVE-2017-10788>
-
    [13]: <https://security-tracker.debian.org/CVE-2017-10789>
-
-   [14]:
-<https://lists.debian.org/20170831115827.eaciz7h6g7ecl5jh@curie.anarc.at>
+   [14]: <https://lists.debian.org/20170831115827.eaciz7h6g7ecl5jh@curie.anarc.at>
 
 Through the Debian bug reports ([Debian bug #866818][15] and [Debian bug
 #866821][16]), I have learned that the patches existed in the upstream tracker
@@ -1040,14 +956,9 @@ library][19] because of maintainership issue. It blows my mind that such an
 important part of MySQL is basically unmaintained.
 
    [15]: <http://bugs.debian.org/866818>
-
    [16]: <http://bugs.debian.org/866821>
-
-   [17]: <https://github.com/perl5-dbi/DBD-
-mysql/issues/120#issuecomment-325342844>
-
+   [17]: <https://github.com/perl5-dbi/DBD-mysql/issues/120#issuecomment-325342844>
    [18]: <https://github.com/perl5-dbi/DBD-mysql/issues/110>
-
    [19]: <https://www.nntp.perl.org/group/perl.dbi.dev/2017/08/msg8030.html>
 
 I ended up backporting the upstream patches, which was also somewhat difficult
@@ -1078,15 +989,10 @@ didn't affect wheezy as rubygems doesn't do its own DNS resolution there
 (later versions lookup SRV records).
 
    [22]: <http://packages.debian.org/rubygems>
-
    [23]: <http://packages.debian.org/ruby1%2E9>
-
    [24]: <https://security-tracker.debian.org/CVE-2017-0899>
-
    [25]: <https://security-tracker.debian.org/CVE-2017-0900>
-
    [26]: <https://security-tracker.debian.org/CVE-2017-0901>
-
    [27]: <https://security-tracker.debian.org/CVE-2017-0902>
 
 This is another package where the test suite takes a long time to run. Worse,
@@ -1108,9 +1014,7 @@ required a significant amount of work and I figured I would prioritize other
 work first.
 
    [29]: <http://packages.debian.org/sox>
-
    [30]: <http://packages.debian.org/libvorbis>
-
    [31]: <http://packages.debian.org/exiv2>
 
 I also triaged [CVE-2017-7506][32], which doesn't seem to affect the
@@ -1124,7 +1028,6 @@ original triage but can also happen during the actual patching work, as in
 this case.
 
    [32]: <https://security-tracker.debian.org/CVE-2017-7506>
-
    [33]: <http://packages.debian.org/spice>
 
 # Other free software work
@@ -1151,7 +1054,6 @@ incantation looks something like this:
     
        [34]: <http://debconf17.debconf.org/>
    [35]: <https://notmuchmail.org/pipermail/notmuch/2017/025046.html>
-
    [36]: <https://notmuchmail.org/pipermail/notmuch/2017/024500.html>
 
     notmuch tag -inbox tag:inbox and not tag:flagged
@@ -1169,9 +1071,7 @@ configuration of such a server in the [Debian wiki][39] because it was not the
 first time I had research that procedure...
 
    [37]: <http://packages.debian.org/apt%2Dcacher%2Dng>
-
    [38]: <http://bugs.debian.org/870321>
-
    [39]: <https://wiki.debian.org/AptCacherNg>
 
 I somehow thought this was a great time to upgrade my laptop to stretch.
@@ -1185,7 +1085,6 @@ simply to flush the fontconfig cache, and I tried to document this in the
 [fonts wiki page][40] and my [upgrades page][41].
 
    [40]: <https://wiki.debian.org/Fonts>
-
    [41]: <http://anarc.at/services/upgrades/stretch/>
 
 I also gave a short training called [Debian packaging 101][42] which was
@@ -1199,9 +1098,7 @@ Debian by training new Debian packagers using that same training for the next
 next Debconf, if I can attend.
 
    [42]: <https://debconf17.debconf.org/talks/161/>
-
    [43]: <http://anarc.at/blog/2017-04-09-montreal-bsp-report/>
-
    [44]: <http://anarc.at/software/debian-development/>
 
 ## Debian uploads
@@ -1214,11 +1111,8 @@ separate package and fix other issues I have found in the package during a
 review.
 
    [45]: <http://packages.debian.org/elpa%2Divy>
-
    [46]: <http://bugs.debian.org/863216>
-
    [47]: <https://tracker.debian.org/news/864378>
-
    [48]: <http://packages.debian.org/diceware>
 
 I also uploaded a bunch of other fixes to the Debian archive:
@@ -1231,27 +1125,16 @@ I also uploaded a bunch of other fixes to the Debian archive:
   * uploaded [percol][59] to NEW ([Debian bug #754972][60])
 
    [49]: <http://packages.debian.org/slop>
-
    [50]: <http://packages.debian.org/maim>
-
    [51]: <http://packages.debian.org/gnome%2Dweb%2Dphoto>
-
    [52]: <http://bugs.debian.org/873015>
-
    [53]: <http://packages.debian.org/charybdis>
-
    [54]: <http://packages.debian.org/mbedtls>
-
    [55]: <http://bugs.debian.org/705369>
-
    [56]: <http://packages.debian.org/gmpc>
-
    [57]: <http://packages.debian.org/horst>
-
    [58]: <http://bugs.debian.org/873508>
-
    [59]: <https://github.com/mooz/percol>
-
    [60]: <http://bugs.debian.org/754972>
 
 ## Signing keys rotation
@@ -1285,9 +1168,7 @@ hand, which is to store large files (videos, namely) as part of slides for
 presentations.
 
    [62]: <http://src.anarc.at/>
-
    [63]: <https://gitlab.com/>
-
    [64]: <https://gitlab.com/gitlab-org/gitlab-ee/issues/1648>
 
 It turns out that their migration guide could have been made much simpler. I
@@ -1303,14 +1184,9 @@ detected by the Debian infrastructure even though those are GitLab bug
 numbers. Using such a shortcut would avoid detection and such a conflict.
 
    [65]: <https://gitlab.com/gitlab-org/gitlab-ee/issues/3287>
-
-   [66]: <https://gitlab.com/gitlab-org/gitlab-
-ee/merge_requests/1230#note_38813881>
-
+   [66]: <https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1230#note_38813881>
    [67]: <https://gitlab.com/gitlab-org/gitlab-ce/issues/37242>
-
-   [68]: <https://github.com/jrblevin/markdown-
-mode/commit/b163f104d83fd3eeb909920284c981e8fba1b481>
+   [68]: <https://github.com/jrblevin/markdown-mode/commit/b163f104d83fd3eeb909920284c981e8fba1b481>
 
 ## Numpy-stats
 
@@ -1321,7 +1197,6 @@ I would write such a simple tool, called [numpy-stats][70], which probably
 sounds naive to seasoned Python scientists.
 
    [69]: <http://www.numpy.org/>
-
    [70]: <https://gitlab.com/anarcat/scripts/blob/master/numpy-stats>
 
 My incentive was that I was trying to figure out what was the distribution of
@@ -1362,11 +1237,8 @@ using for years. I really like how the interruptions basically block the whole
 screen: way more effective than only blocking the keyboard, because all
 potential distractions go away.
 
-   [72]:
-<https://github.com/slgobinath/SafeEyes/commit/6a8b29a87baa53aca2ccc3e280079d04c2b2bf39>
-
+   [72]: <https://github.com/slgobinath/SafeEyes/commit/6a8b29a87baa53aca2ccc3e280079d04c2b2bf39>
    [73]: <https://github.com/slgobinath/SafeEyes/>
-
    [74]: <http://packages.debian.org/workrave>
 
 One feature that is missing is [keystrokes and mouse movement counting][75]
@@ -1382,15 +1254,13 @@ would work both for Xorg and Wayland at the same time. Unfortunately,
 preliminary research show that:
 
    [75]: <https://github.com/slgobinath/SafeEyes/issues/184>
-
    [76]: <https://github.com/slgobinath/SafeEyes/issues/183>
 
   1. in Xorg, the only way to implement this is to sniff all events, ie. to implement a keylogger
 
   2. in Wayland, this is [completely unsupported][77]. it seems _some_ compositors _could_ implement such a counter, but then it means that this is compositor specific, or, in other words, unportable
 
-   [77]: <https://superuser.com/questions/1032270/wayland-alternative-for-
-xorgs-xdotool>
+   [77]: <https://superuser.com/questions/1032270/wayland-alternative-for-xorgs-xdotool>
 
 So there is little hope here, which brings to my mind "painmeter" as an
 appropriate name for this future programming nightmare.
@@ -1407,9 +1277,7 @@ delegate the metadata storage (and only that!) to YAML, as opposed to using
 YAML as a DSL.
 
    [78]: <http://packages.debian.org/ansible>
-
    [79]: <https://github.com/ansible/ansible/pull/28766>
-
    [80]: <https://gist.github.com/kpcyrd/1bde93b2bb9c77e0b6c14a2b3f75b026>
 
 So I figured I would look at the Ansible documentation on how this works, but
@@ -1418,8 +1286,7 @@ There are broken links (I only fixed _one_ page) and missing pieces. For
 example, the [developing plugins page][81] doesn't explain how to program a
 plugin at all.
 
-   [81]:
-<http://docs.ansible.com/ansible/latest/dev_guide/developing_plugins.html>
+   [81]: <http://docs.ansible.com/ansible/latest/dev_guide/developing_plugins.html>
 
 I was told on IRC that: " _documentation around developing plugins is sparse
 in general. the code is the best documentation that exists (right now)_ ". I
@@ -1431,9 +1298,7 @@ and I can only hope that seasoned Ansible contributors expand on this critical
 piece of documentation eventually.
 
    [82]: <https://docs.puppet.com/puppet/5.1/custom_types.html>
-
    [83]: <https://docs.puppet.com/puppet/5.1/functions_ruby_overview.html>
-
    [84]: <https://docs.puppet.com/facter/3.8/fact_overview.html>
 
 ## Misc
@@ -1458,34 +1323,18 @@ vrac, a list of changes which may be of interest:
   * I made two [small][96] [patches][97] in [Monkeysign][98] to fix gpg.conf handling and multiple email output, a dumb bug I cannot believe anyone noticed or reported just yet. Thanks Valerie for the bug report! The upload of this in Debian is pending a review from the [release team][99].
 
    [86]: <https://gitlab.com/anarcat/scripts/blob/master/font-large>
-
    [87]: <https://gitlab.com/anarcat/scripts/blob/master/font-small>
-
    [88]: <https://gitlab.com/anarcat/scripts/blob/master/fix-acer>
-
-   [89]: <https://gitlab.com/anarcat/scripts/blob/master/ikiwiki-pandoc-
-quickie>
-
+   [89]: <https://gitlab.com/anarcat/scripts/blob/master/ikiwiki-pandoc-quickie>
    [90]: <https://gitlab.com/anarcat/scripts/blob/master/git-annex-transfer>
-
    [91]: <https://git-annex.branchable.com/>
-
    [92]: <http://git-annex.branchable.com/todo/transitive_transfers/>
-
    [93]: <https://wiki.debian.org/DebianDak>
-
    [94]: <https://github.com/travitch/taffybar/>
-
    [95]: <https://github.com/travitch/taffybar/pull/157>
-
-   [96]:
-<https://0xacab.org/monkeysphere/monkeysign/commit/2d5df2b499c1d2da7fd1d509fc7784e4d67093d9>
-
-   [97]:
-<https://0xacab.org/monkeysphere/monkeysign/commit/c296bf82e7de224281844e2b07d5b803ce501619>
-
+   [96]: <https://0xacab.org/monkeysphere/monkeysign/commit/2d5df2b499c1d2da7fd1d509fc7784e4d67093d9>
+   [97]: <https://0xacab.org/monkeysphere/monkeysign/commit/c296bf82e7de224281844e2b07d5b803ce501619>
    [98]: <https://0xacab.org/monkeysphere/monkeysign/>
-
    [99]: <https://bugs.debian.org/871937>
 
 
