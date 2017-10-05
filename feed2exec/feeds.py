@@ -194,6 +194,16 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
     :class:`feed2exec.feeds.FeedStorage` that match the given
     ``pattern``.
 
+    This will call :func:`logging.warning` for exceptions
+    :exception:`requests.exceptions.Timeout` and
+    :exception:`requests.exceptions.ConnectionError` as they are
+    transient errors and the user may want to ignore those.
+
+    Other exceptions raised from :mod:`requests.exceptions` (like
+    TooManyRedirects or HTTPError but basically any other exception)
+    may be a configuration error or a more permanent failure so will
+    be signaled with :func:`logging.error`.
+
     :param str pattern: restrict operations to feeds named
                         ``pattern``. passed to
                         :class:`feed2exec.feeds.FeedStorage` as is
@@ -242,7 +252,17 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
         if feed.get('pause'):
             logging.info('feed %s is paused, skipping', feed['name'])
             continue
-        body = fetch(feed['url'])
+        try:
+            body = fetch(feed['url'])
+        except (requests.exceptions.Timeout,
+                requests.exceptions.ConnectionError) as e:
+            # XXX: we should count those and warn after a few
+            # occurrences
+            logging.warning('timeout while fetching feed %s at %s: %s',
+                            feed['name'], feed['url'], e)
+        except requests.exceptions.RequestException as e:
+            logging.error('exception while fetching feed %s at %s: %s',
+                          feed['name'], feed['url'], e)
         if catchup or feed.get('catchup'):
             logging.info('catching up on feed %s (output plugin disabled)',
                          feed['name'])
