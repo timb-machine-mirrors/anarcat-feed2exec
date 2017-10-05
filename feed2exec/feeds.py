@@ -58,8 +58,7 @@ def default_config_dir():
     """
 
     home_config = os.environ.get('XDG_CONFIG_HOME',
-                                 os.path.join(os.environ.get('HOME'),
-                                              '.config'))
+                                 os.path.join('~', '.config'))
     return os.path.join(home_config, feed2exec.__prog__)
 
 
@@ -305,6 +304,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
 
     def __init__(self, pattern=None):
         self.pattern = pattern
+        self.path = os.path.expanduser(ConfFeedStorage.path)
         super(ConfFeedStorage,
               self).__init__(dict_type=OrderedDict)
         self.read(self.path)
