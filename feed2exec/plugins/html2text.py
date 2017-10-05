@@ -31,4 +31,5 @@ class filter(object):
         text_maker.unicode_snob = True
         text_maker.links_each_paragraph = True
         text_maker.protect_links = True
+        text_maker.wrap_links = False
         return text_maker.handle(html)
