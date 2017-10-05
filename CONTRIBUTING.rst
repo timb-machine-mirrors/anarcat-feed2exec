@@ -267,7 +267,7 @@ To make a release:
 
 1. make sure tests pass::
 
-       python3 setup.py test
+       tox
 
 2. generate release notes with::
 
