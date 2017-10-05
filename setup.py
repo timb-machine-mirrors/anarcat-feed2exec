@@ -36,7 +36,7 @@ mod = feed2exec
 
 
 classifiers = [
-    'Development Status :: 3 - Alpha',
+    'Development Status :: 4 - Beta',
     'Environment :: Console',
     'Intended Audience :: End Users/Desktop',
     'Intended Audience :: System Administrators',
