@@ -82,11 +82,15 @@ It can also be ran straight from the source, using::
 
   python -m feed2exec
 
-.. important:: Make sure you use Python 3. feed2exec is written to
-               also support Python 2.7, but there may be performance
-               or security issues in that older version. For example,
-               Python 2.7 seems to suffer from a header injection flaw
-               that currently makes tests fail.
+.. important:: feed2exec is explicitly written for Python 3. It may be
+               possible to backport it to Python 2 if there is
+               sufficient demand, but there are too many convenient
+               Python3 constructs to make this useful. Furthermore,
+               all dependencies are well-packaged for Py3 and the
+               platform is widely available. Upgrade already.
+
+The program may also be available as an official package from your
+Linux distribution.
 
 `Source <https://gitlab.com/anarcat/feed2exec/>`_, `documentation
 <https://anarcat.gitlab.io/feed2exec/>`_ and `issues
