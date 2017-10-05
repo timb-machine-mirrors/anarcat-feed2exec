@@ -184,21 +184,6 @@ def parse(body, feed, lock=None, force=False):
     return data
 
 
-def init_global_lock(l):
-    """setup a global lock across pool threads
-
-    this is necessary because Lock objects are not serializable so we
-    can't pass them as arguments. An alternative pattern is to have a
-    `Manager` process and use IPC for locking.
-
-    cargo-culted from this `stackoverflow answer
-    <https://stackoverflow.com/a/25558333/1174784>`_
-
-    """
-    global LOCK
-    LOCK = l
-
-
 def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
     """main entry point for the feed fetch routines.
 
@@ -231,6 +216,20 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
         processes = None
         if isinstance(parallel, int):
             processes = parallel
+
+        def init_global_lock(l):
+            """setup a global lock across pool threads
+
+            this is necessary because Lock objects are not serializable so we
+            can't pass them as arguments. An alternative pattern is to have a
+            `Manager` process and use IPC for locking.
+
+            cargo-culted from this `stackoverflow answer
+            <https://stackoverflow.com/a/25558333/1174784>`_
+            """
+            global LOCK
+            LOCK = l
+
         pool = multiprocessing.Pool(processes=processes,
                                     initializer=init_global_lock,
                                     initargs=(l,))
