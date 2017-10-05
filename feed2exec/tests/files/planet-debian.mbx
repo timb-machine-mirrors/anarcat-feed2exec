@@ -108,7 +108,7 @@ http://feeding.cloud.geek.nz/posts/tls_authentication_freenode_and_oftc/
 
 In order to easily authenticate with IRC networks such as [OFTC][1] and
 [Freenode][2], it is possible to use _client TLS certificates_ (also known as
-_SSL certificates_). In fact, it turns out that it's very easy to setup both
+_SSL certificates_ ). In fact, it turns out that it's very easy to setup both
 on [irssi][3] and on [znc][4].
 
    [1]: <https://www.oftc.net/NickServ/CertFP/>
@@ -358,8 +358,8 @@ them.
 <https://git.kernel.org/linus/e48d661eb13f2f83861428f001c567fdb3f317e8>
 
 One interesting note about this protection is that is only examines the [size
-of the whole object][18] for its size (via `__builtin_object_size(...,
-**0**)`). If you have a string within a structure, `CONFIG_FORTIFY_SOURCE` as
+of the whole object][18] for its size (via `__builtin_object_size(..., **0**
+)`). If you have a string within a structure, `CONFIG_FORTIFY_SOURCE` as
 currently implemented will make sure only that you can’t copy beyond the
 structure (but therefore, you _can_ still overflow the string within the
 structure). The next step in enhancing this protection is to switch from 0
@@ -543,7 +543,10 @@ Lets keep pushing!
 [  
 Translation status  
 ][4]  
-**PS -** If you want to join the project, just get in Weblate and start translating right away, either to Spanish or other languages! (Polish, Dutch and Norwegian Bokmål are on their way) If you translate into Spanish, *please* read and abide by the specific [Spanish translation guidelines][5].
+**PS -** If you want to join the project, just get in Weblate and start
+translating right away, either to Spanish or other languages! (Polish, Dutch
+and Norwegian Bokmål are on their way) If you translate into Spanish, *please*
+read and abide by the specific [Spanish translation guidelines][5].
 
    [1]: <http://gwolf.org/files/weblated.png>
 
@@ -1418,8 +1421,8 @@ plugin at all.
    [81]:
 <http://docs.ansible.com/ansible/latest/dev_guide/developing_plugins.html>
 
-I was told on IRC that: "_documentation around developing plugins is sparse in
-general. the code is the best documentation that exists (right now)_". I
+I was told on IRC that: " _documentation around developing plugins is sparse
+in general. the code is the best documentation that exists (right now)_ ". I
 didn't get a reply when asking _which_ code in particular could provide good
 examples either. In comparison, Puppet has excellent documentation on how to
 create [custom types][82], [functions][83] and [facts][84]. That is definitely
