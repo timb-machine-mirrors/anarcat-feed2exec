@@ -260,9 +260,11 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
             # occurrences
             logging.warning('timeout while fetching feed %s at %s: %s',
                             feed['name'], feed['url'], e)
+            continue
         except requests.exceptions.RequestException as e:
             logging.error('exception while fetching feed %s at %s: %s',
                           feed['name'], feed['url'], e)
+            continue
         if catchup or feed.get('catchup'):
             logging.info('catching up on feed %s (output plugin disabled)',
                          feed['name'])
