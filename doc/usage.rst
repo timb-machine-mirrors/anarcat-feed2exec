@@ -220,6 +220,9 @@ problem <http://beets.io/blog/sqlite-nightmare.html>`_. And of course,
 another alternative would be to considering something like SQLalchemy
 instead of rolling our own ORM.
 
+Older feed items are not purged from the database when they disappear from the
+feed, which may lead to database bloat in the long term.
+
 See also
 --------
 
