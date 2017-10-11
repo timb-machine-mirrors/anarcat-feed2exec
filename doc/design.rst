@@ -111,37 +111,6 @@ rss2email    ✓     ✓     ✓     ✗       ✓     ✓     ✓
 .. note:: ``feed2imap`` supports only importing OPML feeds, exporting
           is supported by a third-party plugin.
 
-Known issues
-------------
-
-This is an early prototype and may break in your setup, as the
-``feedparser`` library isn't as solid as I expected. In particular, I
-had issues with `feeds without dates`_ and `without guid`_.
-
- .. _feeds without dates: https://github.com/kurtmckee/feedparser/issues/113
- .. _without guid: https://github.com/kurtmckee/feedparser/issues/112
-
-Unit test coverage is incomplete, but still pretty decent, above 80%.
-
-The ``exec`` plugin itself is not well tested and may have serious
-security issues.
-
-API, commandline interface, configuration file syntax and database
-format can be changed at any moment.
-
-The program is written mainly targeting Python 3.5 and should work in
-3.6 but hasn't been explicitly tested there. Tests fail on Python 2.7
-and the maildir handler may specifically be vulnerable to header
-injections.
-
-The SQL storage layer is badly written and is known to trigger locking
-issues with SQLite when doing multiprocessing. The global LOCK object
-could be used to work around this issue but that could mean pretty bad
-coupling. A good inspiration may be the `beets story about this
-problem <http://beets.io/blog/sqlite-nightmare.html>`_. And of course,
-another alternative would be to considering something like SQLalchemy
-instead of rolling our own ORM.
-
 API documentation
 =================
 

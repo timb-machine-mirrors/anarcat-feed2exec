@@ -65,7 +65,8 @@ Show feed contents::
 .. marker-installation
 
 Multiple feeds can also be added with the OPML import command. See the
-:doc:`usage` document for more information.
+:doc:`usage` document for more information including known issues and
+limitations.
 
 Installation
 ------------
@@ -109,9 +110,9 @@ once.
 
 .. marker-toc
 
-Design and known issues
------------------------
+Design information
+------------------
 
-See the :doc:`design` document for more information about how and why
-the program was built and its limitations. The design document also
-features a comparison with other similar software.
+See the :doc:`design` document for more information about how and why the
+program was built. The design document also features a comparison with other
+similar software.
