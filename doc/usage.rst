@@ -193,25 +193,24 @@ doing any sort of processing to catchup with the feeds.
 Limitations
 -----------
 
-This is an early prototype and may break in your setup, as the
-``feedparser`` library isn't as solid as I expected. In particular, I
-had issues with `feeds without dates`_ and `without guid`_.
+Feed support is only as good as ``feedparser`` library which isn't as solid as
+I expected. In particular, I had issues with `feeds without dates`_ and
+`without guid`_.
 
  .. _feeds without dates: https://github.com/kurtmckee/feedparser/issues/113
  .. _without guid: https://github.com/kurtmckee/feedparser/issues/112
 
-Unit test coverage is incomplete, but still pretty decent, above 80%.
+Unit test coverage is incomplete, but still pretty decent, above 90%.
 
 The ``exec`` plugin itself is not well tested and may have serious
 security issues.
 
-API, commandline interface, configuration file syntax and database
-format can be changed at any moment.
+API, commandline interface, configuration file syntax and database format can
+be changed until the 1.0 release is published, at which point normal `Semantic
+Versioning <http://semver.org>`_ semantics apply.
 
 The program is written mainly targeting Python 3.5 and should work in
-3.6 but hasn't been explicitly tested there. Tests fail on Python 2.7
-and the maildir handler may specifically be vulnerable to header
-injections.
+3.6. Python 2.7 is not supported anymore.
 
 The SQL storage layer is badly written and is known to trigger locking
 issues with SQLite when doing multiprocessing. The global LOCK object
