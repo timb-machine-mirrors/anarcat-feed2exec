@@ -1,3 +1,24 @@
+feed2exec (0.7.0) unstable; urgency=medium
+
+  * API changes: cache skipped only if plugin returns False, not None
+  * bugfixes:
+    * correctly skip feeds generating fetch errors
+    * add unit tests for droptitle and make it actually work
+    * do not crash on empty config files
+  * new plugins:
+    * 'wayback' to save feed items to wayback machine
+    * 'archive' to save to the local filesystem
+  * documentation:
+    * make build reproducible by using local doc objects
+    * move design and known issues to manpage
+    * add feed2exec-plugins manpage, including plugin writing
+      documentation and extended plugins docs
+    * fix pause and catchup descriptions
+    * move documentation to RTD
+    * silence docs build errors
+
+ -- Antoine Beaupré <anarcat@debian.org>  Thu, 12 Oct 2017 16:10:02 -0400
+
 feed2exec (0.6.0) unstable; urgency=medium
 
   * API-breaking changes:
