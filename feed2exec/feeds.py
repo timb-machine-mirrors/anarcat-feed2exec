@@ -247,6 +247,7 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
                                     initializer=init_global_lock,
                                     initargs=(l,))
     results = []
+    i = -1
     for i, feed in enumerate(st):
         logging.debug('found feed in DB: %s', dict(feed))
         if feed.get('pause'):
