@@ -24,6 +24,16 @@ def output(command, *args, **kwargs):
 
     Alternatively, writing a Python plugin is much safer as you can
     sanitize the arguments yourself.
+
+    Example::
+
+      [NASA Whats up?]
+      url = https://www.nasa.gov/rss/dyn/whats_up.rss
+      output = feed2exec.plugins.exec
+      args = wget -P /srv/archives/nasa/ {item.link}
+
+    The above is the equivalent of the archive plugin: it will save
+    feed item links to the given directory.
     """
     logging.info('calling command: %s', [command] + list(args))
     return subprocess.check_call([command] + list(args))

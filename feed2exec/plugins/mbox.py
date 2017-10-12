@@ -21,10 +21,6 @@ class output(object):
     :param str to_addr: the email to use as "to" (defaults to
                         USER@localdomain)
 
-    :param dict feed: the feed
-
-    :param dict item: the updated item
-
     :todo: There is some overlap between the code here and the maildir
            implementation. Refactoring may be in order, particularly
            if we add another mailbox format, though that is unlikely.

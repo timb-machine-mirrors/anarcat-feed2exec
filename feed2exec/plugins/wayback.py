@@ -7,6 +7,19 @@ WAYBACK_URL = 'https://web.archive.org'
 
 
 def output(*args, item=None, **kwargs):
+    """This plugin saves the feed items `link` element to the wayback
+    machine. It will retry URLs that fail, so it may be necessary to
+    manually catchup feeds if they have broken `link` fields.
+
+    Example::
+
+      [NASA IOTD wayback]
+      url = https://www.nasa.gov/rss/dyn/lg_image_of_the_day.rss
+      output = feed2exec.plugins.wayback
+
+    The above will save the Image of the day updates to the wayback
+    machine.
+    """
     if item and item.get('link'):
         res = requests.head('%s/save/%s' % (WAYBACK_URL, item.get('link')))
         res.headers['status_code'] = res.status_code

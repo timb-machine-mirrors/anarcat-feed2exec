@@ -45,42 +45,8 @@ Plugins
 .. automodule:: feed2exec.plugins
    :members:
 
-Echo
-~~~~
-
-.. automodule:: feed2exec.plugins.echo
-   :members:
-
-Error
-~~~~~
-
-.. automodule:: feed2exec.plugins.error
-   :members:
-
-Exec
-~~~~
-
-.. automodule:: feed2exec.plugins.exec
-   :members:
-
-Html2text
-~~~~~~~~~
-
-.. automodule:: feed2exec.plugins.html2text
-   :members:
-
-Maildir
-~~~~~~~
-
-.. automodule:: feed2exec.plugins.maildir
-   :members:
-
-Null
-~~~~
-
-.. automodule:: feed2exec.plugins.null
-   :members:
-
+.. note:: actual plugins are documented in the :doc:`plugins`
+          document.
 
 Utilities
 ---------

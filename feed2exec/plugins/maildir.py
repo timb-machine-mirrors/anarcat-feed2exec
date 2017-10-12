@@ -11,8 +11,7 @@ import feed2exec.utils as utils
 
 
 class output(object):
-    """
-    The maildir plugin will save a feed item into a Maildir folder.
+    """The maildir plugin will save a feed item into a Maildir folder.
 
     The configuration is a little clunky, but it should be safe
     against hostile feeds.
@@ -20,9 +19,17 @@ class output(object):
     :param str to_addr: the email to use as "to" (defaults to
                         USER@localdomain)
 
-    :param dict feed: the feed
+    Example::
 
-    :param dict item: the updated item
+      [NASA breaking news]
+      url = https://www.nasa.gov/rss/dyn/breaking_news.rss
+      mailbox = ~/Maildir/
+      folder = nasa
+      args = me@example.com
+
+    The above will save new feed items from the NASA feed into the
+    ~/Maildir/nasa/ maildir folder, and will set the `To` field of the
+    email to `me@example.com`.
     """
 
     def __init__(self, to_addr=None, feed=None, item=None, lock=None,

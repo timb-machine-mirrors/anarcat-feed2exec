@@ -6,9 +6,12 @@ import html2text
 
 
 class filter(object):
-    """
-    This filter plugin takes a given feed item and replaces the
-    ``content`` with its HTML parsed as text.
+    """This filter plugin takes a given feed item and adds a
+    ``content_plain`` field with the HTML parsed as text.
+
+    .. important:: the html2text plugin is called automatically from
+                   the email output plugins and should normally not be
+                   called directly.
     """
 
     def __init__(self, *args, feed=None, item=None, **kwargs):

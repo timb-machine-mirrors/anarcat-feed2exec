@@ -4,10 +4,28 @@ import requests
 from feed2exec.utils import slug
 
 
+#: default archive directory
 DEFAULT_ARCHIVE_DIR = '/run/user/1000/'
 
 
 def output(*args, feed=None, item=None, **kwargs):
+    """The archive plugin saves the feed's item.link URLs into a
+    directory, specified by DEFAULT_ARCHIVE_DIR or through the output
+    `args` value.
+
+    Example::
+
+      [NASA breaking news]
+      url = https://www.nasa.gov/rss/dyn/breaking_news.rss
+      output = archive
+      args = /srv/archive/nasa/
+
+    The above will save the "NASA breaking news" into the
+    ``/srv/archive/nasa`` directory. Do *not* use interpolation here
+    as the feed's variable could be used to mount a directory
+    transversal attack.
+    """
+
     # make a safe path from the item name
     path = slug(item.get('title', 'no-name'))
     # take the archive dir from the user or use the default

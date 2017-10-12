@@ -86,7 +86,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('usage', mod.__prog__, u'%s Documentation' % mod.__prog__,
+    ('usage', mod.__prog__, mod.__description__, [author], 1),
+    ('plugins', mod.__prog__ + '-plugins', 'feed2exec plugin documentation',
      [author], 1)
 ]
 

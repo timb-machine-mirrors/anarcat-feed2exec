@@ -1,12 +1,87 @@
+Plugins
+=======
+
+This is a quick overview of the available plugins.
+
+Core plugins
+------------
+
+Archive
+~~~~~~~
+
+.. automodule:: feed2exec.plugins.archive
+   :members:
+
+Droptitle
+~~~~~~~~~
+
+.. automodule:: feed2exec.plugins.droptitle
+   :members:
+
+
+Echo
+~~~~
+
+.. automodule:: feed2exec.plugins.echo
+   :members:
+
+Emptysummary
+~~~~~~~~~~~~
+
+.. automodule:: feed2exec.plugins.emptysummary
+   :members:
+
+Error
+~~~~~
+
+.. automodule:: feed2exec.plugins.error
+   :members:
+
+Exec
+~~~~
+
+.. automodule:: feed2exec.plugins.exec
+   :members:
+
+Html2text
+~~~~~~~~~
+
+.. automodule:: feed2exec.plugins.html2text
+   :members:
+
+Maildir
+~~~~~~~
+
+.. automodule:: feed2exec.plugins.maildir
+   :members:
+
+Mbox
+~~~~
+
+.. automodule:: feed2exec.plugins.mbox
+   :members:
+
+Null
+~~~~
+
+.. automodule:: feed2exec.plugins.null
+   :members:
+
+Wayback
+~~~~~~~
+
+.. automodule:: feed2exec.plugins.wayback
+   :members:
+
 Writing new plugins
-===================
+-------------------
 
 Most of the actual work in the program is performed by plugins. A
 plugin is a simple Python module that has a ``output`` or ``filter``
 "callable" (function or class) with a predefined interface.
 
 Basic plugin principles
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 To write a new plugin, you should start by creating a simple Python
 module, in your `PYTHONPATH
@@ -36,7 +111,7 @@ participate in this project. We of course welcome contributions to
 this documentation as well!
 
 Filters
--------
+~~~~~~~
 
 Now, you need your plugin to do something. In our case, let's say we'd
 like to skip any feed entry that has the word `Trump
@@ -166,7 +241,7 @@ turning HTML into text. At this point, the only limit is your
 knowledge of Python programming and your imagination!
 
 Output plugins
---------------
+~~~~~~~~~~~~~~
 
 Output plugins are another beast entirely. While they operate with the
 same principle than filter plugins (search path and function signature
