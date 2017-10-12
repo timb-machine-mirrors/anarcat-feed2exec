@@ -94,7 +94,7 @@ The program may also be available as an official package from your
 Linux distribution.
 
 `Source <https://gitlab.com/anarcat/feed2exec/>`_, `documentation
-<https://anarcat.gitlab.io/feed2exec/>`_ and `issues
+<https://feed2exec.readthedocs.io/>`_ and `issues
 <https://gitlab.com/anarcat/feed2exec/issues>`_ are available on
 GitLab.
 

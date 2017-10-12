@@ -13,14 +13,3 @@ test:
   script:
   - pip install tox
   - tox -e py36,flake8
-
-pages:
-  script:
-  - pip install sphinx sphinx-rtd-theme
-  - cd doc ; make html
-  - mv build/html/ ../public/
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
