@@ -36,16 +36,18 @@ test_data2 = {'url': 'http://example.com/',
               'args': None}
 test_nasa = {'url': 'file://%s' % utils.find_test_file('breaking_news.xml'),
              'name': 'nasa-breaking-news',
-             'output': None,
-             'args': None}
+             'filter': 'feed2exec.plugins.droptitle',
+             'filter_args': 'Trump',
+             'output': 'feed2exec.plugins.echo',
+             'args': 'test_nasa'}
 test_sample = {'url': 'file://%s' % utils.find_test_file('sample.xml'),
                'name': 'sample',
                'output': 'feed2exec.plugins.echo',
                'args': '1 2 3 4'}
 test_udd = {'url': 'file://%s' % utils.find_test_file('udd.xml'),
             'name': 'udd',
-            'output': None,
-            'args': None}
+            'output': 'feed2exec.plugins.echo',
+            'args': 'test_udd'}
 test_restic = {'url': 'file://%s' % utils.find_test_file('restic.xml'),
                'name': 'restic',
                'filter': 'feed2exec.plugins.emptysummary'}
@@ -137,8 +139,15 @@ def test_fetch(test_db, conf_path):  # noqa
     assert feed2exec.plugins.echo.output.called
 
     st.add(**test_nasa)
+    feed2exec.plugins.echo.output.called = False
+    assert not feed2exec.plugins.echo.output.called
+    fetch_feeds()
+    assert feed2exec.plugins.echo.output.called == ('test_nasa', )
+    feed2exec.plugins.echo.output.called = False
+    assert not feed2exec.plugins.echo.output.called
     st.add(**test_udd)
     fetch_feeds()
+    assert feed2exec.plugins.echo.output.called == ('test_udd', )
 
 
 def test_fetch_parallel(test_db, conf_path, capfd):  # noqa
