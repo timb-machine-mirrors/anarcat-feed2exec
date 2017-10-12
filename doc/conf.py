@@ -115,7 +115,6 @@ epub_exclude_files = ['search.html']
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'click': ('http://click.pocoo.org/', None),
-    'jinja': ('http://jinja.pocoo.org/docs/', None),
-    'python': ('https://docs.python.org/3/', None),
+    'python': ('https://docs.python.org/3/',
+               ('/usr/share/doc/python3-doc/html/objects.inv', None)),
 }
