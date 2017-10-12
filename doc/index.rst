@@ -13,6 +13,7 @@ Contents:
 
    Usage <usage>
    design
+   api
    plugins
    Contribute <contribute>
    changelog
