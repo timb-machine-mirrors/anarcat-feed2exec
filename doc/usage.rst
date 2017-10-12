@@ -166,12 +166,13 @@ The following configuration parameters are supported:
       ``~/Maildir/nasa-breaking-news/``.
 
   catchup
-      Disable output plugin execution. In this mode, the feed is still
-      read and parsed, but new entries are not added to the database.
+      Skip to the latest feed items. The feed is still read and
+      parsed, and new feed items are added to the database, but output
+      plugins are never called. 
 
   pause
-      Completely skip feed during fetch. Similar to catchup, but
-      doesn't fetch the feed at all and doesn't touch the cache.
+      Completely skip feed during fetch or parse. Similar to catchup,
+      but doesn't fetch the feed at all and doesn't touch the cache.
 
 Here is a more complete example configuration with all the settings
 used:
