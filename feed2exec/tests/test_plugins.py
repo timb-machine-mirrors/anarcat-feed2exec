@@ -115,6 +115,8 @@ def test_email(tmpdir, test_db, static_boundary):  # noqa
                 'mailbox': str(tmpdir.join('Mail')),
                 'email': 'from@example.com',
                 'args': 'to@example.com',
+                'filter': 'feed2exec.plugins.droptitle',
+                'filter_args': 'Trump',
                 }
         body = fetch(feed['url'])
         parse(body, feed, lock=LOCK)
