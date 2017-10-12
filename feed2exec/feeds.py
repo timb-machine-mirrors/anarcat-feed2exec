@@ -179,7 +179,7 @@ def parse(body, feed, lock=None, force=False):
             logging.debug('item %s already seen', guid)
         else:
             logging.debug('new item %s <%s>', guid, item['link'])
-            if plugins.output(feed, item, lock=lock) is not None and not force:  # noqa
+            if plugins.output(feed, item, lock=lock) is not False and not force:  # noqa
                 cache.add(guid)
     # massage result for multiprocessing module
     if data['bozo']:
