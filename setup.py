@@ -137,6 +137,6 @@ if __name__ == '__main__':
                   "pyflakes",
               ],
           },
-          tests_require=['pytest', 'vcr'],
+          tests_require=['pytest', 'betamax'],
           classifiers=classifiers,
           )

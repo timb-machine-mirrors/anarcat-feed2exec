@@ -46,6 +46,30 @@ import requests
 import sqlite3
 
 
+#: global :class:`request.Session` object that can be used by plugins
+#: to make HTTP requests. initialized in main() or the test suite,
+#: using the :func:`feed2exec.feeds.defaultSessionConfig()` function
+session = None
+
+
+def defaultSessionConfig(existing_session=None):
+    """instantiate the global session
+
+    mostly sets up the user agent with the program name and version
+
+    :param object existing_session: an existing session to use to
+                                    override the base session
+    """
+    global session
+    if existing_session is None:
+        session = requests.Session()
+    else:
+        session = existing_session
+    session.headers.update({'User-Agent': '%s/%s' % (feed2exec.__prog__,
+                                                     feed2exec.__version__)})
+    return session
+
+
 def default_config_dir():
     """the default configuration directory
 
@@ -85,7 +109,7 @@ def fetch(url):
             body = f.read().decode('utf-8')
     else:
         logging.info('fetching URL %s', url)
-        body = requests.get(url).text
+        body = session.get(url).text
     return body
 
 

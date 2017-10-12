@@ -18,7 +18,6 @@ import re
 import feedparser
 import html2text
 import pytest
-import vcr
 
 
 import feed2exec
@@ -27,10 +26,10 @@ from feed2exec.feeds import parse, fetch
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import test_sample
-from feed2exec.tests.fixtures import (test_db, static_boundary)  # noqa
+from feed2exec.tests.fixtures import (test_db, static_boundary, betamax)  # noqa
 
 
-def test_maildir(tmpdir, test_db, static_boundary):  # noqa
+def test_maildir(tmpdir, test_db, static_boundary, betamax):  # noqa
     global LOCK
     LOCK = mock.MagicMock()
 
@@ -106,7 +105,7 @@ This is the body, which should show instead of the above
 
 @pytest.mark.xfail(condition=parse_version(feedparser.__version__) < parse_version('5.2.1'), reason="older feedparser version do not sort <img> tags, install feedparser 5.2.1 or later")  # noqa
 @pytest.mark.xfail(condition=html2text.__version__ < (2017, 10, 4), reason="older html2text output varies, install version 2017.10.4 or later")  # noqa
-def test_email(tmpdir, test_db, static_boundary):  # noqa
+def test_email(tmpdir, test_db, static_boundary, betamax):  # noqa
     global LOCK
     LOCK = mock.MagicMock()
 
@@ -173,8 +172,9 @@ def test_filter():
     assert p.called is not None
 
 
-@vcr.use_cassette('feed2exec/tests/cassettes/wayback.yml')
-def test_wayback(capfd):
+def test_wayback(capfd, betamax):  # noqa
+    import feed2exec.feeds
+    assert feed2exec.feeds.session
     handler = logging.handlers.MemoryHandler(0)
     handler.setLevel('DEBUG')
     logging.getLogger('').addHandler(handler)

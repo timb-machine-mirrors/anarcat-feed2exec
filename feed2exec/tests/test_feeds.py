@@ -23,7 +23,7 @@ from feed2exec.feeds import (FeedStorage, ConfFeedStorage,
                              FeedCacheStorage, fetch_feeds, fetch, parse)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
-from feed2exec.tests.fixtures import (test_db, conf_path)  # noqa
+from feed2exec.tests.fixtures import (test_db, conf_path, betamax)  # noqa
 import pytest
 
 test_data = {'url': 'file:///dev/null',
@@ -75,7 +75,7 @@ def test_add(test_db, conf_path):  # noqa
     assert test_data['name'] not in st, 'remove works'
 
 
-def test_settings(test_db, conf_path):  # noqa
+def test_settings(test_db, conf_path, betamax):  # noqa
     st = FeedStorage()
     assert len(list(st)) == 0
     st.add(**test_params)
@@ -129,7 +129,7 @@ def test_cache(test_db):  # noqa
     assert 'guid' not in st
 
 
-def test_fetch(test_db, conf_path):  # noqa
+def test_fetch(test_db, conf_path, betamax):  # noqa
     st = FeedStorage()
     st.add(**test_sample)
 
@@ -150,7 +150,7 @@ def test_fetch(test_db, conf_path):  # noqa
     assert feed2exec.plugins.echo.output.called == ('test_udd', )
 
 
-def test_fetch_parallel(test_db, conf_path, capfd):  # noqa
+def test_fetch_parallel(test_db, conf_path, capfd, betamax):  # noqa
     fetch_feeds(parallel=True, force=True)
     # can't use feed2exec.feeds.plugins.echo.output.called as it is
     # set in a separate process.
@@ -161,7 +161,7 @@ def test_fetch_parallel(test_db, conf_path, capfd):  # noqa
     assert 'arguments received' in out
 
 
-def test_normalize(test_db, conf_path):  # noqa
+def test_normalize(test_db, conf_path, betamax):  # noqa
     '''black box testing for :func:feeds.normalize_item()'''
     data = parse(fetch(test_udd['url']), test_udd)
     for item in data.entries:

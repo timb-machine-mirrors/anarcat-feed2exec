@@ -27,8 +27,9 @@ import os.path
 
 
 import click
+
 import feed2exec
-from feed2exec.feeds import FeedStorage, fetch_feeds
+from feed2exec.feeds import defaultSessionConfig, FeedStorage, fetch_feeds
 import feed2exec.feeds as feedsmod
 import feed2exec.logging
 
@@ -109,6 +110,7 @@ def rm(name):
               is_flag=True, help='do not call output plugins')
 def fetch(pattern, parallel, jobs, force, catchup):
     parallel = jobs or parallel
+    defaultSessionConfig()
     fetch_feeds(pattern, parallel, force=force, catchup=catchup)
 
 
