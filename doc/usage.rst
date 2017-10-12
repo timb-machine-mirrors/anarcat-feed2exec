@@ -227,4 +227,4 @@ feed, which may lead to database bloat in the long term.
 See also
 --------
 
-:manpage:`feed2imap(1)`, :manpage:`rss2email(1)`
+:manpage:`feed2exec-plugins(1)`, :manpage:`feed2imap(1)`, :manpage:`rss2email(1)`

@@ -425,3 +425,8 @@ which writes the article content instead of the link.
 
 Hopefully that should get you going with most of the plugins you are
 thinking of writing!
+
+See also
+--------
+
+:manpage:`feed2exec(1)`
