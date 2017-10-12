@@ -13,6 +13,7 @@ Contents:
 
    Usage <usage>
    design
+   plugins
    Contribute <contribute>
    changelog
    license
