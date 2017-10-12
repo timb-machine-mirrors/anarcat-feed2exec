@@ -4,19 +4,42 @@ Design
 This is a quick prototype that turned out to be quite usable. The
 design is minimal: some home-made ORM for the feed storage, crude
 parallelism with the ``multiprocessing`` module and a simple plugin
-API using ``importlib``.
+API using ``importlib``, since we do not need discovery. There is some
+code duplication between different parts (e.g. the
+:func:`feed2exec.plugins.output` and :func:`feed2exec.plugins.filter`
+plugin interfaces, the ``maildir`` and ``mbox`` plugins, etc), but
+never more than twice.
 
-The threading design, in particular, may be a little clunky and is
-certainly less tested, which is why it is disabled by default (use
-``--parallel`` to use it). I had multiple design in minds: the current
-one (``multiprocessing.Pool`` and ``pool.apply_async``) vs ``aiohttp``
-(on the ``asyncio`` branch) vs ``pool.map`` (on the ``threadpoolmap``
-branch). The ``aiohttp`` design was very hard to diagnose and debug,
-which made me abandon the whole thing. After reading up on `Curio`_
-and `Trio`_, I'm tempted to give async/await a try again, but that
-would mean completely dropping 2.7 compatibility. The ``pool.map``
-design is just badly adapted, as it would load all the feed's
-datastructure in memory before processing them.
+The threading design may be a little clunky and is certainly less
+tested, which is why it is disabled by default (use ``--parallel`` to
+use it). There are known deadlocks issues with high concurrency
+scenarios (e.g. with ``catchup`` enabled). I had multiple design in
+minds: the current one (``multiprocessing.Pool`` and
+``pool.apply_async``) vs ``aiohttp`` (on the ``asyncio`` branch) vs
+``pool.map`` (on the ``threadpoolmap`` branch). The ``aiohttp`` design
+was very hard to diagnose and debug, which made me abandon the whole
+thing. After reading up on `Curio`_ and `Trio`_, I'm tempted to give
+async/await a try again, but that would mean completely dropping 2.7
+compatibility. The ``pool.map`` design is just badly adapted, as it
+would load all the feed's datastructure in memory before processing
+them.
+
+The test suite is heavily coupled with the `pytest module
+<https://pytest.org/>`_. It also uses the `vcrpy
+<https://pypi.python.org/pypi/vcrpy>`_ module to cache HTTP
+requests. `betamax <https://pypi.python.org/pypi/betamax>`_ was also
+considered but requires a refactoring of *all* requests to use session
+objects. This would have the added benefit of allowing a custom user
+agent, so it is still considered and is a work in progress in the
+`betamax` branch. The current approach on that branch uses a global
+``session`` object which is problematic: a better approach may be to
+encapsulate this in a ``FeedFetcher`` or simply ``Feed`` object, at
+which point we would end up rearchitecturing the whole ``feeds.py``
+file...
+
+More information about known issues and limitations in the
+:doc:`usage` section. Information about plugins and how to write them
+in the :doc:`plugins` document.
 
  .. _Curio: http://curio.readthedocs.io/
  .. _Trio: https://github.com/python-trio/trio
