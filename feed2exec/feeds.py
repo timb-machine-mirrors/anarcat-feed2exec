@@ -195,8 +195,8 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
     ``pattern``.
 
     This will call :func:`logging.warning` for exceptions
-    :exception:`requests.exceptions.Timeout` and
-    :exception:`requests.exceptions.ConnectionError` as they are
+    :class:`requests.exceptions.Timeout` and
+    :class:`requests.exceptions.ConnectionError` as they are
     transient errors and the user may want to ignore those.
 
     Other exceptions raised from :mod:`requests.exceptions` (like
