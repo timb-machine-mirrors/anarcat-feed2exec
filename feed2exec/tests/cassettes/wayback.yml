@@ -1,0 +1,73 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.12.4]
+    method: HEAD
+    uri: https://web.archive.org/save/http://example.com/
+  response:
+    body: {string: ''}
+    headers:
+      Connection: [keep-alive]
+      Content-Encoding: [gzip]
+      Content-Location: ['/web/20171012140156/http://example.com/']
+      Content-Type: [text/html;charset=utf-8]
+      Date: ['Thu, 12 Oct 2017 14:04:04 GMT']
+      Server: [Tengine/2.1.0]
+      Set-Cookie: [JSESSIONID=0918E2FE19B303AD451D744A5CBFD4ED; Path=/; HttpOnly]
+      X-App-Server: [wwwb-app0]
+      X-Archive-Guessed-Charset: [utf-8]
+      X-Archive-Orig-Accept-Ranges: [bytes]
+      X-Archive-Orig-Cache-Control: [max-age=604800]
+      X-Archive-Orig-Connection: [close]
+      X-Archive-Orig-Content-Type: [text/html]
+      X-Archive-Orig-Date: ['Thu, 12 Oct 2017 14:01:56 GMT']
+      X-Archive-Orig-Etag: ['"359670651"']
+      X-Archive-Orig-Expires: ['Thu, 19 Oct 2017 14:01:56 GMT']
+      X-Archive-Orig-Last-Modified: ['Fri, 09 Aug 2013 23:54:35 GMT']
+      X-Archive-Orig-Server: [ECS (rhv/818F)]
+      X-Archive-Orig-Vary: [Accept-Encoding]
+      X-Archive-Orig-X-Cache: [HIT]
+      X-Archive-Playback: ['1']
+      X-Page-Cache: [HIT]
+      X-location: [save]
+      X-ts: ['----']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.12.4]
+    method: HEAD
+    uri: https://web.archive.org/save/http://example.com/404
+  response:
+    body: {string: ''}
+    headers:
+      Connection: [keep-alive]
+      Content-Encoding: [gzip]
+      Content-Location: ['/web/20171012140404/http://example.com/404']
+      Content-Type: [text/html;charset=utf-8]
+      Date: ['Thu, 12 Oct 2017 14:04:04 GMT']
+      Server: [Tengine/2.1.0]
+      Set-Cookie: [JSESSIONID=F8FA59E515E48F8C934E9B00F3B01FF9; Path=/; HttpOnly]
+      X-App-Server: [wwwb-app4]
+      X-Archive-Guessed-Charset: [utf-8]
+      X-Archive-Orig-Accept-Ranges: [bytes]
+      X-Archive-Orig-Cache-Control: [max-age=604800]
+      X-Archive-Orig-Connection: [close]
+      X-Archive-Orig-Content-Type: [text/html]
+      X-Archive-Orig-Date: ['Thu, 12 Oct 2017 14:04:04 GMT']
+      X-Archive-Orig-Expires: ['Thu, 19 Oct 2017 14:04:04 GMT']
+      X-Archive-Orig-Last-Modified: ['Tue, 10 Oct 2017 20:38:26 GMT']
+      X-Archive-Orig-Server: [ECS (rhv/8187)]
+      X-Archive-Orig-Vary: [Accept-Encoding]
+      X-Archive-Orig-X-Cache: [404-HIT]
+      X-Archive-Playback: ['1']
+      X-ts: ['----']
+    status: {code: 404, message: Not Found}
+version: 1

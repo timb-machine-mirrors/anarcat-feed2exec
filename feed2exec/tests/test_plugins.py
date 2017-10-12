@@ -4,6 +4,7 @@ from __future__ import print_function
 from glob import glob
 import datetime
 import email
+import logging
 try:
     import unittest.mock as mock
 except ImportError:
@@ -17,6 +18,8 @@ import re
 import feedparser
 import html2text
 import pytest
+import vcr
+
 
 import feed2exec
 import feed2exec.utils as utils
@@ -168,3 +171,34 @@ def test_filter():
     plugins.filter(feed={'filter': 'feed2exec.plugins.null'}, item=item)
     assert item != copy
     assert p.called is not None
+
+
+@vcr.use_cassette('feed2exec/tests/cassettes/wayback.yml')
+def test_wayback(capfd):
+    handler = logging.handlers.MemoryHandler(0)
+    handler.setLevel('DEBUG')
+    logging.getLogger('').addHandler(handler)
+    item = feedparser.FeedParserDict({'link': 'http://example.com/'})
+    e = plugins.output(feed={'output': 'feed2exec.plugins.wayback'},
+                       item=item)
+    assert e
+    for record in handler.buffer:
+        if 'wayback machine' in record.getMessage():
+            break
+    else:
+        raise AttributeError('no wayback logs generated?')
+    assert record.levelname == 'INFO'
+    assert record.msg == 'URL %s saved to wayback machine: %s'
+    handler.buffer = []
+    item = feedparser.FeedParserDict({'link': 'http://example.com/404'})
+    e = plugins.output(feed={'output': 'feed2exec.plugins.wayback'},
+                       item=item)
+    assert not e
+    for record in handler.buffer:
+        if 'wayback machine' in record.getMessage():
+            break
+    else:
+        raise AttributeError('no wayback logs generated?')
+    assert record.levelname == 'WARNING'
+    assert record.msg == 'wayback machine failed to save URL %s, status %d'
+    handler.buffer = []
