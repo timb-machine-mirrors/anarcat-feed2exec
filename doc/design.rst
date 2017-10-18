@@ -94,7 +94,15 @@ submitting patches.
 
 The test suite also uses the `vcrpy
 <https://pypi.python.org/pypi/vcrpy>`_ module to cache HTTP
-requests. `betamax <https://pypi.python.org/pypi/betamax>`_ was also
+requests. This tool caches HTTP requests locally so the test suite can
+run offline. To add a new network test, you can simply add a new test
+doing requests with the right decorator, and a new recording will be
+added to the source tree. We commit the recordings in git so the test
+suite actually runs offline, so be careful about the content added
+there. Ideally, the license of that content should be documented in
+``debian/copyright``.
+
+`betamax <https://pypi.python.org/pypi/betamax>`_ was also
 considered but requires a refactoring of *all* requests to use session
 objects. This would have the added benefit of allowing a custom user
 agent, so it is still considered and is a work in progress in the
