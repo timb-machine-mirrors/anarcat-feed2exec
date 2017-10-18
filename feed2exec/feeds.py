@@ -296,7 +296,7 @@ def opml_import(opmlfile, storage):
     for child in tree.getiterator():
         if child.tag != 'outline':
             continue
-        if child.attrib.get('type') == 'rss':
+        if child.attrib.get('type') in ('rss', 'atom'):
             logging.debug('found OPML entry: %s', child.attrib)
             try:
                 logging.info('importing element %s <%s>',
