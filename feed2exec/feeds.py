@@ -297,17 +297,21 @@ def opml_import(opmlfile, storage):
         if node.tag != 'outline':
             continue
         logging.debug('found OPML entry: %s', node.attrib)
-        if node.attrib.get('xmlUrl'):
-            try:
-                folder = folders[-1] if folders else None
-                logging.info('importing element %s <%s> in folder %s',
-                             node.attrib['title'], node.attrib['xmlUrl'],
-                             folder)
-                storage.add(node.attrib['title'], node.attrib['xmlUrl'],
-                            folder=folder)
-            except AttributeError:
+        if event == 'start' and node.attrib.get('xmlUrl'):
+            folder = os.path.join(*folders) if folders else None
+            title = node.attrib['title']
+            logging.info('importing element %s <%s> in folder %s',
+                         title, node.attrib['xmlUrl'], folder)
+            if title in storage:
+                if folder:
+                    title = folder + '/' + title
+                    logging.info('feed %s exists, using folder name: %s',
+                                 node.attrib['title'], title)
+            if title in storage:
                 logging.error('feed %s already exists, skipped',
                               node.attrib['title'])
+            else:
+                storage.add(title, node.attrib['xmlUrl'], folder=folder)
         elif node.attrib.get('type') == 'folder':
             if event == 'start':
                 logging.debug('found folder %s', node.attrib.get('text'))
