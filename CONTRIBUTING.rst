@@ -169,13 +169,27 @@ in the online Continuous Integration (CI) system), if the patch is
 incomplete or otherwise does not respect the above guidelines, submit a
 review with "changes requested" with reasoning.
 
+Testing
+-------
+
+Running tests is strongly recommended before filing issues and
+submitting patches. Patches that break tests will not be accepted. We
+also aim to have complete test coverage, so you may be requested to
+submit a test alongside new features or bugfixes. See the
+:ref:`testsuite` section for more information.
+
 Documentation
 -------------
 
 We love documentation!
 
-The documentation mostly in the README file and can be `edited
-online`_ once you register.
+The documentation resides in various `Sphinx
+<http://www.sphinx-doc.org/>`_ documentations and in the README
+file. Those can can be `edited online`_ once you register and changes
+are welcome through the normal patch and merge request system.
+
+Issues found in the documentation are also welcome, see below to file
+issues in our tracker.
 
 Issues and bug reports
 ----------------------
@@ -204,28 +218,6 @@ Issue triage is a useful contribution as well. You can review the
 
 Note that some of those operations are available only to project
 maintainers, see below for the different statuses.
-
-Test suite
-----------
-
-The test suite is in ``feed2exec/tests`` but also as doctest comments
-in some functions imported from the `ecdysis`_ project. You can run
-all the tests with `pytest`_, using, for example::
-
-  pytest feed2exec
-
-This is also hooked into the ``setup.py`` command, so this also works::
-
-  python3 setup.py test
-
-Note that some tests will fail in Python 2, as the code is written and
-tested in Python3. Furthermore, the feed output is taken from an up to
-date (5.2.1) feedparser version, so the tests are marked as expected
-to fail for lower versions. You should, naturally, run tests before
-submitting patches.
-
-.. _pytest: http://pytest.org/
-.. _ecdysis: https://gitlab.com/anarcat/ecdysis
 
 Membership
 ----------

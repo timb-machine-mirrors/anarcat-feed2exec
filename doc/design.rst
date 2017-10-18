@@ -10,22 +10,89 @@ code duplication between different parts (e.g. the
 plugin interfaces, the ``maildir`` and ``mbox`` plugins, etc), but
 never more than twice.
 
+More information about known issues and limitations in the
+:doc:`usage` section. Information about plugins and how to write them
+in the :doc:`plugins` document.
+
+Plugin system
+-------------
+
+Plugins are documented in the :doc:`plugins` section. You can also
+refer to the :ref:`writing-plugins` section if you wish to write a new
+plugin or extend an existing one.
+
+The plugin system uses a simple :mod:`importlib` based architecture
+where plugin are simple Python modules loaded at runtime based on a
+module path provided by the user. This pattern was inspired by a
+`StackOverflow discussion <http://stackoverflow.com/questions/932069/building-a-minimal-plugin-architecture-in-python>`_.
+
+The following options were also considered:
+
+  - `pluggy`_: used by py.test, tox and devpi
+  - `yapsy`_
+  - `PluginBase`_
+  - `plugnplay`_
+  - `click-plugins`_: relevant only to add new commands
+  - `PyPA plugin discovery`_
+
+.. _pluggy: https://github.com/pytest-dev/pluggy
+.. _yapsy: http://yapsy.sourceforge.net/
+.. _PluginBase: http://pluginbase.pocoo.org/
+.. _plugnplay: https://github.com/daltonmatos/plugnplay
+.. _click-plugins: https://github.com/click-contrib/click-plugins
+.. _PyPA plugin discover: https://packaging.python.org/guides/creating-and-discovering-plugins/
+
+Those options were ultimately not used because they add an aditionnal
+dependency and are more complicated than a simple ``import``. We also
+did not need plugin listing or discovery, which greatly simplifies our
+design.
+
+Concurrent processing
+---------------------
+
 The threading design may be a little clunky and is certainly less
 tested, which is why it is disabled by default (use ``--parallel`` to
 use it). There are known deadlocks issues with high concurrency
-scenarios (e.g. with ``catchup`` enabled). I had multiple design in
-minds: the current one (``multiprocessing.Pool`` and
-``pool.apply_async``) vs ``aiohttp`` (on the ``asyncio`` branch) vs
-``pool.map`` (on the ``threadpoolmap`` branch). The ``aiohttp`` design
-was very hard to diagnose and debug, which made me abandon the whole
-thing. After reading up on `Curio`_ and `Trio`_, I'm tempted to give
-async/await a try again, but that would mean completely dropping 2.7
-compatibility. The ``pool.map`` design is just badly adapted, as it
-would load all the feed's datastructure in memory before processing
-them.
+scenarios (e.g. with ``catchup`` enabled).
 
-The test suite is heavily coupled with the `pytest module
-<https://pytest.org/>`_. It also uses the `vcrpy
+I had multiple design in minds: the current one
+(``multiprocessing.Pool`` and ``pool.apply_async``) vs ``aiohttp`` (on
+the ``asyncio`` branch) vs ``pool.map`` (on the ``threadpoolmap``
+branch). The ``aiohttp`` design was very hard to diagnose and debug,
+which made me abandon the whole thing. After reading up on `Curio`_
+and `Trio`_, I'm tempted to give async/await a try again, but that
+would mean completely dropping 2.7 compatibility. The ``pool.map``
+design is just badly adapted, as it would load all the feed's
+datastructure in memory before processing them.
+
+ .. _Curio: http://curio.readthedocs.io/
+ .. _Trio: https://github.com/python-trio/trio
+
+.. _testsuite:
+
+Test suite
+----------
+
+The test suite is in ``feed2exec/tests`` but also as doctest comments
+in some functions imported from the `ecdysis`_ project. You can run
+all the tests with `pytest`_, using, for example::
+
+  pytest-3
+
+This is also hooked into the ``setup.py`` command, so this also works::
+
+  python3 setup.py test
+
+Note that some tests will fail in Python 2, as the code is written and
+tested in Python3. Furthermore, the feed output is taken from an up to
+date (5.2.1) feedparser version, so the tests are marked as expected
+to fail for lower versions. You should, naturally, run tests before
+submitting patches.
+
+.. _pytest: http://pytest.org/
+.. _ecdysis: https://gitlab.com/anarcat/ecdysis
+
+The test suite also uses the `vcrpy
 <https://pypi.python.org/pypi/vcrpy>`_ module to cache HTTP
 requests. `betamax <https://pypi.python.org/pypi/betamax>`_ was also
 considered but requires a refactoring of *all* requests to use session
@@ -36,13 +103,6 @@ agent, so it is still considered and is a work in progress in the
 encapsulate this in a ``FeedFetcher`` or simply ``Feed`` object, at
 which point we would end up rearchitecturing the whole ``feeds.py``
 file...
-
-More information about known issues and limitations in the
-:doc:`usage` section. Information about plugins and how to write them
-in the :doc:`plugins` document.
-
- .. _Curio: http://curio.readthedocs.io/
- .. _Trio: https://github.com/python-trio/trio
 
 Comparison
 ----------

@@ -73,6 +73,8 @@ Wayback
 .. automodule:: feed2exec.plugins.wayback
    :members:
 
+.. _writing-plugins:
+
 Writing new plugins
 -------------------
 
