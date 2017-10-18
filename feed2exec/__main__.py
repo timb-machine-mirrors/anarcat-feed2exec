@@ -107,7 +107,7 @@ def fetch(pattern, parallel, jobs, force, catchup):
 
 
 @click.command(name='import', help='import feed list from OPML file')
-@click.argument('path', type=click.File('r'))
+@click.argument('path', type=click.File('rb'))
 def import_(path):
     st = FeedStorage()
     opml_import(path, st)
