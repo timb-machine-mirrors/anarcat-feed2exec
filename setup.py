@@ -146,8 +146,7 @@ if __name__ == '__main__':
               # we could also build it on the fly, but it's unlikely
               # to change, see also:
               # http://www.digip.org/blog/2011/01/generating-data-files-in-setup.py.html
-              ('/usr/share/bash-completion/completions/',
-               ['completion/feed2exec']),
+              ('share/bash-completion/completions/', ['completion/feed2exec']),
           ],
           classifiers=classifiers,
           )
