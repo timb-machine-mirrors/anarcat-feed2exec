@@ -25,7 +25,7 @@ Vcs-Git: https://gitlab.com/anarcat/feed2exec
 Vcs-Browser: https://gitlab.com/anarcat/feed2exec/tree/master
 
 Package: feed2exec
-Architecture: any
+Architecture: all
 Depends: ${misc:Depends}
        , ${python3:Depends}
 Suggests: feed2exec-doc
