@@ -5,6 +5,7 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 import json
+import re
 
 from click.testing import CliRunner
 import vcr
@@ -129,5 +130,8 @@ def test_planet(tmpdir_factory, static_boundary, capfd):  # noqa
     result = runner.invoke(main, ['--config', str(conf_dir),
                                   'fetch'])
     assert result.exit_code == 0
+    r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
     with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:  # noqa
-        assert expected.read() == conf_dir.join('planet-debian.mbx').read()
+        expected = r.sub('', expected.read())
+        actual = r.sub('', conf_dir.join('planet-debian.mbx').read())
+        assert expected == actual
