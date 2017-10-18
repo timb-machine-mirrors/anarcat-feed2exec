@@ -3,6 +3,8 @@ from collections import defaultdict
 import datetime
 import getpass
 import email
+from email.header import Header
+from email.utils import formataddr
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import logging
@@ -115,7 +117,12 @@ def make_message(feed, item, to_addr=None, cls=email.message.Message):
         params.update(item['author_detail'])
     elif 'author_detail' in feed:
         params.update(feed['author_detail'])
-    msg['From'] = '{name} <{email}>'.format(**params)
+    # pass header as bytes otherwise it gets forcibly encoded, even if
+    # not required. snippet taken from:
+    # http://mg.pov.lt/blog/unicode-emails-in-python.html
+    msg['From'] = formataddr((str(Header(params['name'].encode('utf-8'),
+                                         charset=cs)),
+                              params['email']))
     msg['Subject'] = item.get('title', feed.get('title', u''))
     # workaround feedparser bug:
     # https://github.com/kurtmckee/feedparser/issues/112
