@@ -78,7 +78,7 @@ def fetch(url):
 
     :param str url: the URL to fetch
 
-    :return bytes, tuple: the body of the URL and the modification timestamp
+    :return bytes: the body of the URL
 
     """
     body = ''
@@ -86,10 +86,10 @@ def fetch(url):
         filename = url[len('file://'):]
         logging.info('opening local file %s', filename)
         with open(filename, 'rb') as f:
-            body = f.read().decode('utf-8')
+            body = f.read()
     else:
         logging.info('fetching URL %s', url)
-        body = requests.get(url).text
+        body = requests.get(url).content
     return body
 
 
