@@ -4,15 +4,10 @@ Design
 This is a quick prototype that turned out to be quite usable. The
 design is minimal: some home-made ORM for the feed storage, crude
 parallelism with the ``multiprocessing`` module and a simple plugin
-API using ``importlib``, since we do not need discovery. There is some
-code duplication between different parts (e.g. the
-:func:`feed2exec.plugins.output` and :func:`feed2exec.plugins.filter`
-plugin interfaces, the ``maildir`` and ``mbox`` plugins, etc), but
-never more than twice.
+API using ``importlib``.
 
 More information about known issues and limitations in the
-:doc:`usage` section. Information about plugins and how to write them
-in the :doc:`plugins` document.
+:doc:`usage` document.
 
 Plugin system
 -------------
@@ -46,6 +41,11 @@ Those options were ultimately not used because they add an aditionnal
 dependency and are more complicated than a simple ``import``. We also
 did not need plugin listing or discovery, which greatly simplifies our
 design.
+
+There is some code duplication between different parts (e.g. the
+:func:`feed2exec.plugins.output` and :func:`feed2exec.plugins.filter`
+plugin interfaces, the ``maildir`` and ``mbox`` plugins, etc), but
+never more than twice.
 
 Concurrent processing
 ---------------------
