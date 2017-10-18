@@ -77,5 +77,5 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
         body = path.read()
         if 'Marier' in body:
             break
-    else:
-        assert False, "Francois Marier item not found"
+    else:  # sanity check
+        assert False, "Francois Marier item not found"  # pragma: nocover
