@@ -79,3 +79,28 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
             break
     else:  # sanity check
         assert False, "Francois Marier item not found"  # pragma: nocover
+
+
+def test_opml(tmpdir_factory, static_boundary):  # noqa
+    # XXX: copy-pasted from above
+    conf_dir = tmpdir_factory.mktemp('main')
+    conf_path = conf_dir.join('feed2exec.ini')
+    ConfFeedStorage.path = str(conf_path)
+    runner = CliRunner()
+
+    assert not conf_path.check()
+    result = runner.invoke(main, ['--config', str(conf_dir),
+                                  'import',
+                                  utils.find_test_file('simple.opml')])
+    assert conf_path.check()
+    assert result.exit_code == 0
+    with open(utils.find_test_file('simple.ini')) as p:
+        conf_dir.join('feed2exec.ini').read() == p.read()
+
+    result = runner.invoke(main, ['--config', str(conf_dir),
+                                  'export',
+                                  str(conf_dir.join('opml'))])
+    assert conf_path.check()
+    assert result.exit_code == 0
+    with open(utils.find_test_file('simple.opml')) as p:
+        p.read() == conf_dir.join('opml').read()
