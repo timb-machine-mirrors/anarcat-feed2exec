@@ -1,3 +1,25 @@
+feed2exec (0.8.0) unstable; urgency=medium
+
+  * API changes: feed2exec.feeds.fetch now returns bytes, as documented
+  * bugfixes:
+    * fix crash importing Liferea feed with folders, noticed by pabs
+    * properly encode From headers
+    * fix double-encoding issues in all output plugins
+  * features:
+    * bash completion
+    * add basic opml unit tests
+    * opml folder support: save the parent "folder" element in config if
+      relevant
+    * allow duplicate feed imports by abusing the folder name
+    * expanded test coverage from 89 to 93%
+  * documentation:
+    * expand tests documentation and add plugin design docs
+    * expand on the use of vcr
+    * expand the design document
+    * cross-reference the two manpages
+
+ -- Antoine Beaupré <anarcat@debian.org>  Wed, 18 Oct 2017 14:41:44 -0400
+
 feed2exec (0.7.0) unstable; urgency=medium
 
   * API changes: cache skipped only if plugin returns False, not None
