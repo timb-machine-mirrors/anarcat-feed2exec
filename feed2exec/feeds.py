@@ -292,21 +292,28 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
 
 def opml_import(opmlfile, storage):
     """import a file stream as an OPML feed in the given config storage"""
-    tree = etree.parse(opmlfile)
-    for child in tree.getiterator():
-        if child.tag != 'outline':
+    folders = []
+    for (event, node) in etree.iterparse(opmlfile, ['start', 'end']):
+        if node.tag != 'outline':
             continue
-        if child.attrib.get('type') in ('rss', 'atom'):
-            logging.debug('found OPML entry: %s', child.attrib)
+        logging.debug('found OPML entry: %s', node.attrib)
+        if node.attrib.get('xmlUrl'):
             try:
-                logging.info('importing element %s <%s>',
-                             child.attrib['title'], child.attrib['xmlUrl'])
-                storage.add(child.attrib['title'], child.attrib['xmlUrl'])
+                folder = folders[-1] if folders else None
+                logging.info('importing element %s <%s> in folder %s',
+                             node.attrib['title'], node.attrib['xmlUrl'],
+                             folder)
+                storage.add(node.attrib['title'], node.attrib['xmlUrl'],
+                            folder=folder)
             except AttributeError:
                 logging.error('feed %s already exists, skipped',
-                              child.attrib['title'])
-            except KeyError as e:
-                logging.error('malformed feed: %s', e)
+                              node.attrib['title'])
+        elif node.attrib.get('type') == 'folder':
+            if event == 'start':
+                logging.debug('found folder %s', node.attrib.get('text'))
+                folders.append(node.attrib.get('text'))
+            else:
+                folders.pop()
 
 
 class SqliteStorage(object):
