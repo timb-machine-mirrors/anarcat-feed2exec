@@ -22,20 +22,14 @@ from __future__ import print_function
 
 from datetime import datetime
 import json
-import logging
 import os.path
 
 
 import click
 import feed2exec
-from feed2exec.feeds import FeedStorage, fetch_feeds
+from feed2exec.feeds import FeedStorage, fetch_feeds, opml_import
 import feed2exec.feeds as feedsmod
 import feed2exec.logging
-
-try:
-    from lxml import etree
-except ImportError:  # pragma: nocover
-    import xml.etree.ElementTree as etree
 
 
 @click.group(help=feed2exec.__description__,
@@ -115,22 +109,8 @@ def fetch(pattern, parallel, jobs, force, catchup):
 @click.command(name='import', help='import feed list from OPML file')
 @click.argument('path', type=click.File('r'))
 def import_(path):
-    tree = etree.parse(path)
     st = FeedStorage()
-    for child in tree.getiterator():
-        if child.tag != 'outline':
-            continue
-        if child.attrib.get('type') == 'rss':
-            logging.debug('found OPML entry: %s', child.attrib)
-            try:
-                logging.info('importing element %s <%s>',
-                             child.attrib['title'], child.attrib['xmlUrl'])
-                st.add(child.attrib['title'], child.attrib['xmlUrl'])
-            except AttributeError:
-                logging.error('feed %s already exists, skipped',
-                              child.attrib['title'])
-            except KeyError as e:
-                logging.error('malformed feed: %s', e)
+    opml_import(path, st)
 
 
 @click.command(help='export feeds to an OPML file')

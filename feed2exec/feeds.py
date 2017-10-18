@@ -27,6 +27,10 @@ except ImportError:  # pragma: nocover
     # py2: should never happen as we depend on the newer one in setup.py
     import ConfigParser as configparser
 from collections import OrderedDict, namedtuple
+try:
+    from lxml import etree
+except ImportError:  # pragma: nocover
+    import xml.etree.ElementTree as etree
 import logging
 import multiprocessing
 import os
@@ -284,6 +288,25 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
         pool.close()
         pool.join()
     logging.info('%d feeds processed', i+1)
+
+
+def opml_import(opmlfile, storage):
+    """import a file stream as an OPML feed in the given config storage"""
+    tree = etree.parse(opmlfile)
+    for child in tree.getiterator():
+        if child.tag != 'outline':
+            continue
+        if child.attrib.get('type') == 'rss':
+            logging.debug('found OPML entry: %s', child.attrib)
+            try:
+                logging.info('importing element %s <%s>',
+                             child.attrib['title'], child.attrib['xmlUrl'])
+                storage.add(child.attrib['title'], child.attrib['xmlUrl'])
+            except AttributeError:
+                logging.error('feed %s already exists, skipped',
+                              child.attrib['title'])
+            except KeyError as e:
+                logging.error('malformed feed: %s', e)
 
 
 class SqliteStorage(object):
