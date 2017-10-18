@@ -1,0 +1,8 @@
+_feed2exec_completion() {
+    COMPREPLY=( $( env COMP_WORDS="${COMP_WORDS[*]}" \
+                   COMP_CWORD=$COMP_CWORD \
+                   _FEED2EXEC_COMPLETE=complete $1 ) )
+    return 0
+}
+
+complete -F _feed2exec_completion -o default feed2exec;
