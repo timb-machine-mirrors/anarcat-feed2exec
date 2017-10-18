@@ -118,7 +118,9 @@ def import_(path):
     tree = etree.parse(path)
     st = FeedStorage()
     for child in tree.getiterator():
-        if child.tag == 'outline':
+        if child.tag != 'outline':
+            continue
+        if child.attrib.get('type') == 'rss':
             logging.debug('found OPML entry: %s', child.attrib)
             try:
                 logging.info('importing element %s <%s>',
@@ -127,6 +129,8 @@ def import_(path):
             except AttributeError:
                 logging.error('feed %s already exists, skipped',
                               child.attrib['title'])
+            except KeyError as e:
+                logging.error('malformed feed: %s', e)
 
 
 @click.command(help='export feeds to an OPML file')
