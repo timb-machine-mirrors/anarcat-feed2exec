@@ -1,0 +1,10 @@
+<opml version="1.0">
+  <head>
+    <title>feed2imap RSS feeds</title>
+    <dateModified>2017-08-30 21:11:34.659727</dateModified>
+  </head>
+  <body>
+    <outline title="Ikiwiki recent changes" type="rss" xmlUrl="http://ikiwiki.info/recentchanges/index.rss" />
+    <outline title="Ikiwiki-hosting RecentChanges" type="rss" xmlUrl="http://ikiwiki-hosting.branchable.com/recentchanges/index.rss" />
+  </body>
+</opml>
