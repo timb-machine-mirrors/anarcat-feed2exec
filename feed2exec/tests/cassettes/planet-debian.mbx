@@ -1,3 +1,241 @@
+From planet-debian Thu Oct 19 17:45:29 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Thu, 19 Oct 2017 17:45:29 -0000
+To: to@example.com
+From: planet-debian <to@example.com>
+Subject: Steinar H. Gunderson: Introducing Narabu, part 2: Meet the GPU
+Message-ID: http-blog-sesse-net-blog-tech-2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu-html
+User-Agent: feed2exec (0.8.0)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://blog.sesse.net/blog/tech/2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu.html
+
+--===============testboundary==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+<img src="http://planet.debian.org/heads/sesse.png" width="74" height="85" alt="" align="right" style="float: right;">  <p>Narabu is a new intraframe video codec. You may or may not want to read
+<a href="https://blog.sesse.net/blog/tech/2017-10-18-09-25_introducing_narabu_part_1_introduction">part 1</a>
+first.</p>
+
+<p>The GPU, despite being extremely more flexible than it was fifteen years
+ago, is still a very different beast from your CPU, and not all problems
+map well to it performance-wise. Thus, before designing a codec, it's
+useful to know what our platform looks like.</p>
+
+<p>A GPU has lots of special functionality for graphics (well, duh), but we'll
+be concentrating on the <em>compute shader</em> subset in this context, ie., we
+won't be drawing any polygons. Roughly, a GPU (as I understand it!) is built
+up about as follows:</p>
+
+<p>A GPU contains 1–20 cores; NVIDIA calls them SMs (shader multiprocessors),
+Intel calls them subslices. (Trivia: A typical mid-range Intel GPU contains two cores,
+and thus is designated GT2.) One such core usually runs the same program,
+although on different data; there are exceptions, but typically, if your
+program can't fill an entire core with parallelism, you're wasting energy.
+Each core, in addition to tons (thousands!) of registers, also has some
+“shared memory” (also called “local memory” sometimes, although that term
+is overloaded), typically 32–64 kB, which you can think of in two ways:
+Either as a sort-of explicit L1 cache, or as a way to communicate
+internally on a core. Shared memory is a limited, precious resource in
+many algorithms.</p>
+
+<p>Each core/SM/subslice contains about 8 execution units (Intel
+calls them EUs, NVIDIA/AMD calls them something else) and some memory
+access logic. These multiplex a bunch of threads (say, 32) and run in
+a round-robin-ish fashion. This means that a GPU can handle memory stalls
+much better than a typical CPU, since it has so many streams to pick from;
+even though each thread runs in-order, it can just kick off an operation
+and then go to the next thread while the previous one is working.</p>
+
+<p>Each execution unit has a bunch of ALUs (typically 16) and executes code in a SIMD
+fashion. NVIDIA calls these ALUs “CUDA cores”, AMD calls them “stream
+processors”. Unlike on CPU, this SIMD has full scatter/gather support
+(although sequential access, especially in certain patterns, is <em>much</em> more efficient
+than random access), lane enable/disable so it can work with conditional
+code, etc.. The typically fastest operation is a 32-bit float muladd;
+usually that's single-cycle. GPUs <em>love</em> 32-bit FP code. (In fact, in some
+GPU languages, you won't even have 8-, 16-bit or 64-bit types. This is
+annoying, but not the end of the world.)</p>
+
+<p>The vectorization is not exposed to the user in typical code (GLSL has some
+vector types, but they're usually just broken up into scalars, so that's a
+red herring), although in some programming languages you can get to swizzle
+the SIMD stuff internally to gain advantage of that (there's also schemes for
+broadcasting bits by “voting” etc.). However, it is crucially important to
+performance; if you have divergence within a warp, this means the GPU needs
+to execute both sides of the if. So less divergent code is good.</p>
+
+<p>Such a SIMD group is called a warp by NVIDIA (I don't know if the others have
+names for it). NVIDIA has SIMD/warp width always 32; AMD used to be 64 but
+is now 16. Intel supports 4–32 (the compiler will autoselect based on a bunch of
+factors), although 16 is the most common.</p>
+
+<p>The upshot of all of this is that you need massive amounts of parallelism
+to be able to get useful performance out of a CPU. A rule of thumb is that
+if you could have launched about a thousand threads for your problem on CPU,
+it's a good fit for a GPU, although this is of course just a guideline.</p>
+
+<p>There's a ton of APIs available to write compute shaders. There's CUDA (NVIDIA-only, but the
+dominant player), D3D compute (Windows-only, but multi-vendor),
+OpenCL (multi-vendor, but highly variable implementation quality),
+OpenGL compute shaders (all platforms except macOS, which has too old drivers),
+Metal (Apple-only) and probably some that I forgot. I've chosen to go for
+OpenGL compute shaders since I already use OpenGL shaders a lot, and this
+saves on interop issues. CUDA probably is more mature, but my laptop is
+Intel. :-) No matter which one you choose, the programming model looks very
+roughly like this pseudocode:</p>
+
+<pre>for (size_t workgroup_idx = 0; workgroup_idx &lt; NUM_WORKGROUPS; ++workgroup_idx) {   // in parallel over cores
+        char shared_mem[REQUESTED_SHARED_MEM];  // private for each workgroup
+        for (size_t local_idx = 0; local_idx &lt; WORKGROUP_SIZE; ++local_idx) {  // in parallel on each core
+                main(workgroup_idx, local_idx, shared_mem);
+        }
+}
+</pre>
+
+<p>except in reality, the indices will be split in x/y/z for your convenience
+(you control all six dimensions, of course), and if you haven't asked for too
+much shared memory, the driver can silently make larger workgroups if it
+helps increase parallelity (this is totally transparent to you). main()
+doesn't return anything, but you can do reads and writes as you wish;
+GPUs have large amounts of memory these days, and staggering amounts of
+memory bandwidth.</p>
+
+<p>Now for the bad part: Generally, you will have no debuggers, no way of
+logging and no real profilers (if you're lucky, you can get to know how long
+each compute shader invocation takes, but not what takes time within the
+shader itself). Especially the latter is maddening; the only real recourse
+you have is some timers, and then placing timer probes or trying to comment
+out sections of your code to see if something goes faster. If you don't
+get the answers you're looking for, forget printf—you need to set up a
+separate buffer, write some numbers into it and pull that buffer down to
+the GPU. Profilers are an essential part of optimization, and I had really
+hoped the world would be more mature here by now. Even CUDA doesn't give
+you all that much insight—sometimes I wonder if all of this is because
+GPU drivers and architectures are <em>meant</em> to be shrouded in mystery for
+competitiveness reasons, but I'm honestly not sure.</p>
+
+<p>So that's it for a crash course in GPU architecture. Next time, we'll start
+looking at the Narabu codec itself.</p>
+--===============testboundary==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+http://blog.sesse.net/blog/tech/2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu.html
+
+Narabu is a new intraframe video codec. You may or may not want to read [part
+1][1] first.
+
+   [1]: <https://blog.sesse.net/blog/tech/2017-10-18-09-25_introducing_narabu_part_1_introduction>
+
+The GPU, despite being extremely more flexible than it was fifteen years ago,
+is still a very different beast from your CPU, and not all problems map well
+to it performance-wise. Thus, before designing a codec, it's useful to know
+what our platform looks like.
+
+A GPU has lots of special functionality for graphics (well, duh), but we'll be
+concentrating on the _compute shader_ subset in this context, ie., we won't be
+drawing any polygons. Roughly, a GPU (as I understand it!) is built up about
+as follows:
+
+A GPU contains 1–20 cores; NVIDIA calls them SMs (shader multiprocessors),
+Intel calls them subslices. (Trivia: A typical mid-range Intel GPU contains
+two cores, and thus is designated GT2.) One such core usually runs the same
+program, although on different data; there are exceptions, but typically, if
+your program can't fill an entire core with parallelism, you're wasting
+energy. Each core, in addition to tons (thousands!) of registers, also has
+some “shared memory” (also called “local memory” sometimes, although that term
+is overloaded), typically 32–64 kB, which you can think of in two ways: Either
+as a sort-of explicit L1 cache, or as a way to communicate internally on a
+core. Shared memory is a limited, precious resource in many algorithms.
+
+Each core/SM/subslice contains about 8 execution units (Intel calls them EUs,
+NVIDIA/AMD calls them something else) and some memory access logic. These
+multiplex a bunch of threads (say, 32) and run in a round-robin-ish fashion.
+This means that a GPU can handle memory stalls much better than a typical CPU,
+since it has so many streams to pick from; even though each thread runs in-
+order, it can just kick off an operation and then go to the next thread while
+the previous one is working.
+
+Each execution unit has a bunch of ALUs (typically 16) and executes code in a
+SIMD fashion. NVIDIA calls these ALUs “CUDA cores”, AMD calls them “stream
+processors”. Unlike on CPU, this SIMD has full scatter/gather support
+(although sequential access, especially in certain patterns, is _much_ more
+efficient than random access), lane enable/disable so it can work with
+conditional code, etc.. The typically fastest operation is a 32-bit float
+muladd; usually that's single-cycle. GPUs _love_ 32-bit FP code. (In fact, in
+some GPU languages, you won't even have 8-, 16-bit or 64-bit types. This is
+annoying, but not the end of the world.)
+
+The vectorization is not exposed to the user in typical code (GLSL has some
+vector types, but they're usually just broken up into scalars, so that's a red
+herring), although in some programming languages you can get to swizzle the
+SIMD stuff internally to gain advantage of that (there's also schemes for
+broadcasting bits by “voting” etc.). However, it is crucially important to
+performance; if you have divergence within a warp, this means the GPU needs to
+execute both sides of the if. So less divergent code is good.
+
+Such a SIMD group is called a warp by NVIDIA (I don't know if the others have
+names for it). NVIDIA has SIMD/warp width always 32; AMD used to be 64 but is
+now 16. Intel supports 4–32 (the compiler will autoselect based on a bunch of
+factors), although 16 is the most common.
+
+The upshot of all of this is that you need massive amounts of parallelism to
+be able to get useful performance out of a CPU. A rule of thumb is that if you
+could have launched about a thousand threads for your problem on CPU, it's a
+good fit for a GPU, although this is of course just a guideline.
+
+There's a ton of APIs available to write compute shaders. There's CUDA
+(NVIDIA-only, but the dominant player), D3D compute (Windows-only, but multi-
+vendor), OpenCL (multi-vendor, but highly variable implementation quality),
+OpenGL compute shaders (all platforms except macOS, which has too old
+drivers), Metal (Apple-only) and probably some that I forgot. I've chosen to
+go for OpenGL compute shaders since I already use OpenGL shaders a lot, and
+this saves on interop issues. CUDA probably is more mature, but my laptop is
+Intel. :-) No matter which one you choose, the programming model looks very
+roughly like this pseudocode:
+
+    
+    
+    for (size_t workgroup_idx = 0; workgroup_idx < NUM_WORKGROUPS; ++workgroup_idx) {   // in parallel over cores
+            char shared_mem[REQUESTED_SHARED_MEM];  // private for each workgroup
+            for (size_t local_idx = 0; local_idx < WORKGROUP_SIZE; ++local_idx) {  // in parallel on each core
+                    main(workgroup_idx, local_idx, shared_mem);
+            }
+    }
+    
+
+except in reality, the indices will be split in x/y/z for your convenience
+(you control all six dimensions, of course), and if you haven't asked for too
+much shared memory, the driver can silently make larger workgroups if it helps
+increase parallelity (this is totally transparent to you). main() doesn't
+return anything, but you can do reads and writes as you wish; GPUs have large
+amounts of memory these days, and staggering amounts of memory bandwidth.
+
+Now for the bad part: Generally, you will have no debuggers, no way of logging
+and no real profilers (if you're lucky, you can get to know how long each
+compute shader invocation takes, but not what takes time within the shader
+itself). Especially the latter is maddening; the only real recourse you have
+is some timers, and then placing timer probes or trying to comment out
+sections of your code to see if something goes faster. If you don't get the
+answers you're looking for, forget printf—you need to set up a separate
+buffer, write some numbers into it and pull that buffer down to the GPU.
+Profilers are an essential part of optimization, and I had really hoped the
+world would be more mature here by now. Even CUDA doesn't give you all that
+much insight—sometimes I wonder if all of this is because GPU drivers and
+architectures are _meant_ to be shrouded in mystery for competitiveness
+reasons, but I'm honestly not sure.
+
+So that's it for a crash course in GPU architecture. Next time, we'll start
+looking at the Narabu codec itself.
+
+
+--===============testboundary==--
+
 From planet-debian Thu Oct 19 14:21:14 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
@@ -833,10 +1071,10 @@ Filed under: [Debian][4] [English][5] [Gammu][6]
 
 --===============testboundary==--
 
-From planet-debian Wed Oct 18 08:01:09 2017
+From planet-debian Wed Oct 18 08:25:00 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
-Date: Wed, 18 Oct 2017 08:01:09 -0000
+Date: Wed, 18 Oct 2017 08:25:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steinar H. Gunderson: Introducing Narabu, part 1: Introduction
@@ -9546,75 +9784,6 @@ profit settings.
 
    [15]: <http://dirk.eddelbuettel.com>
    [16]: <http://dirk.eddelbuettel.com/blog/>
-
-
---===============testboundary==--
-
-From planet-debian Tue Oct  3 22:17:02 2017
-Content-Type: multipart/alternative; boundary="===============testboundary=="
-MIME-Version: 1.0
-Date: Tue, 03 Oct 2017 22:17:02 -0000
-To: to@example.com
-From: planet-debian <to@example.com>
-Subject: Christoph Egger: Observations on Catalunya
-Message-ID: https-weblog-siccegge-de-observations_on_catalunya-html
-User-Agent: feed2exec (0.8.0)
-Precedence: list
-Auto-Submitted: auto-generated
-Archive-At: https://weblog.siccegge.de/Observations_on_Catalunya.html
-
---===============testboundary==
-Content-Type: text/html; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-<img src="http://planet.debian.org/heads/christoph.png" width="77" height="100" alt="" align="right" style="float: right;">  <p>Some things I don't really understand reading in German media</p>
-
-<ul>
-<li><p>Suddenly the electoral system becomes a legitimacy problem. While it
-has never been a problem for any of the previous decisions of the
-Catalunyan regional government suddenly a
-<a href="https://en.wikipedia.org/wiki/Catalan_regional_election,_2015">"only 48% of people voted for the government"</a> results in the
-decisions being illegitimate?  This is also a property of many
-governments (<a href="https://en.wikipedia.org/wiki/Greek_legislative_election,_September_2015">Greece</a> and the <a href="https://en.wikipedia.org/wiki/United_States_presidential_election,_2016">US president</a> being obvious
-examples but also the <a href="https://en.wikipedia.org/wiki/German_federal_election,_2002">German Bundestag</a> can have a majority
-government without the majority of votes). Is this just the media
-trying to find something they can blame on "the other side"?</p></li>
-<li><p>How can you ever possibly excuse violence against people peacefully
-and non-violently doing whatever they're doing. Sure this referendum
-was considered illegal (and it may be legitimate to ignore the
-result, or legal prosecution of the initiators) but how can that
-ever possibly be an excuse for half a population peacefully doing
-whatever they are about to do? How can you possibly claim that "both
-sides are to blame" for the violence? "Die Zeit" seems to be the
-only one with an somewhat convincing argument ("Deciding to press on
-despite the obviously happening violence") while "Welt", "Spiegel"
-and "Süddeutsche" all trying to blame the regional government for
-the violence with as much of an argument as asking people to do
-something illegal in a totally peaceful way. Possibly an argument
-for legal consequences, sure -- but for violence?</p></li>
-</ul>
-
-<p>Too bad I didn't keep the links / articles from Sunday night.</p>
---===============testboundary==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-https://weblog.siccegge.de/Observations_on_Catalunya.html
-
-Some things I don't really understand reading in German media
-
-  * Suddenly the electoral system becomes a legitimacy problem. While it has never been a problem for any of the previous decisions of the Catalunyan regional government suddenly a ["only 48% of people voted for the government"][1] results in the decisions being illegitimate? This is also a property of many governments ([Greece][2] and the [US president][3] being obvious examples but also the [German Bundestag][4] can have a majority government without the majority of votes). Is this just the media trying to find something they can blame on "the other side"?
-
-   [1]: <https://en.wikipedia.org/wiki/Catalan_regional_election,_2015>
-   [2]: <https://en.wikipedia.org/wiki/Greek_legislative_election,_September_2015>
-   [3]: <https://en.wikipedia.org/wiki/United_States_presidential_election,_2016>
-   [4]: <https://en.wikipedia.org/wiki/German_federal_election,_2002>
-
-  * How can you ever possibly excuse violence against people peacefully and non-violently doing whatever they're doing. Sure this referendum was considered illegal (and it may be legitimate to ignore the result, or legal prosecution of the initiators) but how can that ever possibly be an excuse for half a population peacefully doing whatever they are about to do? How can you possibly claim that "both sides are to blame" for the violence? "Die Zeit" seems to be the only one with an somewhat convincing argument ("Deciding to press on despite the obviously happening violence") while "Welt", "Spiegel" and "Süddeutsche" all trying to blame the regional government for the violence with as much of an argument as asking people to do something illegal in a totally peaceful way. Possibly an argument for legal consequences, sure -- but for violence?
-
-Too bad I didn't keep the links / articles from Sunday night.
 
 
 --===============testboundary==--

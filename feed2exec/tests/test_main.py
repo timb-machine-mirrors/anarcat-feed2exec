@@ -125,8 +125,8 @@ def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
                                   '--args', 'to@example.com',
                                   '--output', 'feed2exec.plugins.mbox',
                                   '--mailbox', str(conf_dir)])
-    result = runner.invoke(main, ['--config', str(conf_dir),
-                                  'fetch'])
+    result = runner.invoke(main, ['--config', str(conf_dir), 'fetch'],
+                           obj=betamax_session, catch_exceptions=False)
     assert result.exit_code == 0
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
     with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:  # noqa

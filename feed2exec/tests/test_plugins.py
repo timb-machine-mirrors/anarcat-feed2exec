@@ -22,7 +22,7 @@ import pytest
 
 import feed2exec
 import feed2exec.utils as utils
-from feed2exec.feeds import parse, fetch
+from feed2exec.feeds import parse, FeedStorageBase
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import test_sample
@@ -58,7 +58,7 @@ def test_maildir(tmpdir, test_db, static_boundary, betamax):  # noqa
               'output': 'feed2exec.plugins.maildir',
               'mailbox': str(tmpdir.join('Mail')),
               'args': 'to@example.com'}
-    body = fetch(sample['url'])
+    body = FeedStorageBase.fetch_one(sample['url'])
     data = parse(body, sample, lock=LOCK)
     folder = utils.slug(sample['name'])
     for message in tmpdir.join('Mail', folder, 'new').visit():
@@ -95,7 +95,7 @@ This is the body, which should show instead of the above
         assert (expected % feed2exec.__version__) == message.read()
     # test if folder setting works
     sample['folder'] = 'folder-test'
-    body = fetch(sample['url'])
+    body = FeedStorageBase.fetch_one(sample['url'])
     data = parse(body, sample, lock=LOCK)
     for item in data['entries']:
         f = plugins.output(sample, item, lock=LOCK)
@@ -120,7 +120,7 @@ def test_email(tmpdir, test_db, static_boundary, betamax):  # noqa
                 'filter': 'feed2exec.plugins.droptitle',
                 'filter_args': 'Trump',
                 }
-        body = fetch(feed['url'])
+        body = FeedStorageBase.fetch_one(feed['url'])
         parse(body, feed, lock=LOCK)
         p = path[:-3] + 'mbx'
         with open(p) as expected:
@@ -173,8 +173,7 @@ def test_filter():
 
 
 def test_wayback(capfd, betamax):  # noqa
-    import feed2exec.feeds
-    assert feed2exec.feeds.session
+    assert FeedStorageBase.session
     handler = logging.handlers.MemoryHandler(0)
     handler.setLevel('DEBUG')
     logging.getLogger('').addHandler(handler)
