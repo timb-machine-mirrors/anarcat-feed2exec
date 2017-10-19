@@ -13,7 +13,7 @@ except ImportError:  # pragma: nocover
 
 __description__ = 'The programmable feed reader'
 __version__ = version
-__website__ = 'https://anarcat.gitlab.io/feed2exec/'
+__website__ = 'https://feed2exec.readthedocs.io/'
 __prog__ = 'feed2exec'
 __author__ = u'Antoine Beaupré'
 __email__ = 'anarcat@debian.org'

@@ -27,6 +27,10 @@ except ImportError:  # pragma: nocover
     # py2: should never happen as we depend on the newer one in setup.py
     import ConfigParser as configparser
 from collections import OrderedDict, namedtuple
+try:
+    from lxml import etree
+except ImportError:  # pragma: nocover
+    import xml.etree.ElementTree as etree
 import logging
 import multiprocessing
 import os
@@ -98,7 +102,7 @@ def fetch(url):
 
     :param str url: the URL to fetch
 
-    :return bytes, tuple: the body of the URL and the modification timestamp
+    :return bytes: the body of the URL
 
     """
     body = ''
@@ -106,10 +110,10 @@ def fetch(url):
         filename = url[len('file://'):]
         logging.info('opening local file %s', filename)
         with open(filename, 'rb') as f:
-            body = f.read().decode('utf-8')
+            body = f.read()
     else:
         logging.info('fetching URL %s', url)
-        body = session.get(url).text
+        body = session.get(url).content
     return body
 
 
@@ -219,8 +223,8 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
     ``pattern``.
 
     This will call :func:`logging.warning` for exceptions
-    :exception:`requests.exceptions.Timeout` and
-    :exception:`requests.exceptions.ConnectionError` as they are
+    :class:`requests.exceptions.Timeout` and
+    :class:`requests.exceptions.ConnectionError` as they are
     transient errors and the user may want to ignore those.
 
     Other exceptions raised from :mod:`requests.exceptions` (like
@@ -308,6 +312,36 @@ def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
         pool.close()
         pool.join()
     logging.info('%d feeds processed', i+1)
+
+
+def opml_import(opmlfile, storage):
+    """import a file stream as an OPML feed in the given config storage"""
+    folders = []
+    for (event, node) in etree.iterparse(opmlfile, ['start', 'end']):
+        if node.tag != 'outline':
+            continue
+        logging.debug('found OPML entry: %s', node.attrib)
+        if event == 'start' and node.attrib.get('xmlUrl'):
+            folder = os.path.join(*folders) if folders else None
+            title = node.attrib['title']
+            logging.info('importing element %s <%s> in folder %s',
+                         title, node.attrib['xmlUrl'], folder)
+            if title in storage:
+                if folder:
+                    title = folder + '/' + title
+                    logging.info('feed %s exists, using folder name: %s',
+                                 node.attrib['title'], title)
+            if title in storage:
+                logging.error('feed %s already exists, skipped',
+                              node.attrib['title'])
+            else:
+                storage.add(title, node.attrib['xmlUrl'], folder=folder)
+        elif node.attrib.get('type') == 'folder':
+            if event == 'start':
+                logging.debug('found folder %s', node.attrib.get('text'))
+                folders.append(node.attrib.get('text'))
+            else:
+                folders.pop()
 
 
 class SqliteStorage(object):

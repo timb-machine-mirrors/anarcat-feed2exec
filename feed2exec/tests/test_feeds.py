@@ -121,8 +121,8 @@ def test_cache(test_db):  # noqa
         assert item
         if item['guid'] == 'another':
             break
-    else:
-        assert False, 'failed to iterate through storage'
+    else:  # sanity check
+        assert False, 'failed to iterate through storage'  # pragma: nocover
     for item in FeedCacheStorage(feed=test_data['name'], guid='guid'):
         assert 'another' not in item['guid']
     st.remove('guid')

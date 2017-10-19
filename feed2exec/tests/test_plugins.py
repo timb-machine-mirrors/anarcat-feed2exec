@@ -5,9 +5,9 @@ from glob import glob
 import datetime
 import email
 import logging
-try:
+try:  # pragma nocover
     import unittest.mock as mock
-except ImportError:
+except ImportError:  # pragma nocover
     # py2
     import mock
 import os
@@ -185,8 +185,8 @@ def test_wayback(capfd, betamax):  # noqa
     for record in handler.buffer:
         if 'wayback machine' in record.getMessage():
             break
-    else:
-        raise AttributeError('no wayback logs generated?')
+    else:  # sanity check
+        raise AttributeError('no wayback logs generated?')  # pragma: nocover
     assert record.levelname == 'INFO'
     assert record.msg == 'URL %s saved to wayback machine: %s'
     handler.buffer = []
@@ -197,8 +197,8 @@ def test_wayback(capfd, betamax):  # noqa
     for record in handler.buffer:
         if 'wayback machine' in record.getMessage():
             break
-    else:
-        raise AttributeError('no wayback logs generated?')
+    else:  # sanity check
+        raise AttributeError('no wayback logs generated?')  # pragma: nocover
     assert record.levelname == 'WARNING'
     assert record.msg == 'wayback machine failed to save URL %s, status %d'
     handler.buffer = []

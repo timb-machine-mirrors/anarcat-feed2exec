@@ -5,6 +5,7 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 import json
+import re
 
 from click.testing import CliRunner
 
@@ -77,5 +78,58 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
         body = path.read()
         if 'Marier' in body:
             break
-    else:
-        assert False, "Francois Marier item not found"
+    else:  # sanity check
+        assert False, "Francois Marier item not found"  # pragma: nocover
+
+
+def test_opml(tmpdir_factory, static_boundary):  # noqa
+    # XXX: copy-pasted from above
+    conf_dir = tmpdir_factory.mktemp('main')
+    conf_path = conf_dir.join('feed2exec.ini')
+    ConfFeedStorage.path = str(conf_path)
+    runner = CliRunner()
+
+    assert not conf_path.check()
+    result = runner.invoke(main, ['--config', str(conf_dir),
+                                  'import',
+                                  utils.find_test_file('simple.opml')])
+    assert conf_path.check()
+    assert result.exit_code == 0
+    with open(utils.find_test_file('simple.ini')) as p:
+        conf_dir.join('feed2exec.ini').read() == p.read()
+
+    result = runner.invoke(main, ['--config', str(conf_dir),
+                                  'export',
+                                  str(conf_dir.join('opml'))])
+    assert conf_path.check()
+    assert result.exit_code == 0
+    with open(utils.find_test_file('simple.opml')) as p:
+        p.read() == conf_dir.join('opml').read()
+
+
+def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
+    """test i18n feeds for double-encoding
+
+    previously, we would double-encode email bodies and subject, which
+    would break display of any feed item with unicode.
+    """
+    # XXX: copy-pasted from above
+    conf_dir = tmpdir_factory.mktemp('planet')
+    conf_path = conf_dir.join('feed2exec.ini')
+    ConfFeedStorage.path = str(conf_path)
+    runner = CliRunner()
+
+    result = runner.invoke(main, ['--config', str(conf_dir),
+                                  'add', 'planet-debian',
+                                  'http://planet.debian.org/rss20.xml',
+                                  '--args', 'to@example.com',
+                                  '--output', 'feed2exec.plugins.mbox',
+                                  '--mailbox', str(conf_dir)])
+    result = runner.invoke(main, ['--config', str(conf_dir),
+                                  'fetch'])
+    assert result.exit_code == 0
+    r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
+    with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:  # noqa
+        expected = r.sub('', expected.read())
+        actual = r.sub('', conf_dir.join('planet-debian.mbx').read())
+        assert expected == actual

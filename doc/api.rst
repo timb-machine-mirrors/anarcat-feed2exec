@@ -36,9 +36,6 @@ options.
 .. automodule:: feed2exec.__main__
    :members:
 
-.. autofunction:: feed2exec.__main__.main
-
-
 Plugins
 -------
 

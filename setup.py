@@ -138,5 +138,15 @@ if __name__ == '__main__':
               ],
           },
           tests_require=['pytest', 'betamax'],
+          data_files=[
+              # this completion file is generated with:
+              # _FEED2EXEC_COMPLETE=source feed2exec
+              # see http://click.pocoo.org/6/bashcomplete/
+              #
+              # we could also build it on the fly, but it's unlikely
+              # to change, see also:
+              # http://www.digip.org/blog/2011/01/generating-data-files-in-setup.py.html
+              ('share/bash-completion/completions/', ['completion/feed2exec']),
+          ],
           classifiers=classifiers,
           )

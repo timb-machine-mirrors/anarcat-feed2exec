@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<opml version="1.0">
+  <head>
+    <title>Liferea Feed List Export</title>
+  </head>
+  <body>
+    <outline title="software" text="software" description="software" type="folder">
+      <outline title="ikiwiki" text="ikiwiki" description="ikiwiki" type="folder">
+        <outline title="Ikiwiki recent changes" text="Ikiwiki recent changes" description="Ikiwiki recent changes" type="rss" xmlUrl="http://ikiwiki.info/recentchanges/index.rss" htmlUrl="http://ikiwiki.info/recentchanges/"/>
+        <outline title="Ikiwiki-hosting RecentChanges" text="Ikiwiki-hosting RecentChanges" description="Ikiwiki-hosting RecentChanges" type="rss" xmlUrl="http://ikiwiki-hosting.branchable.com/recentchanges/index.rss" htmlUrl="http://ikiwiki-hosting.branchable.com/recentchanges/"/>
+      </outline>
+      <outline title="git-annex recent changes" text="git-annex recent changes" description="git-annex recent changes" type="rss" xmlUrl="http://git-annex.branchable.com/recentchanges/index.rss" htmlUrl="http://git-annex.branchable.com/recentchanges/"/>
+      <outline title="MediaGoblin" text="MediaGoblin" description="MediaGoblin" type="atom" xmlUrl="http://mediagoblin.org/news/index.xml" htmlUrl="http://mediagoblin.org/"/>
+      <outline title="git-annex news feed" text="git-annex news feed" description="git-annex news feed" type="rss" xmlUrl="http://git-annex.branchable.com/users/anarcat/index.rss" htmlUrl="http://git-annex.branchable.com/users/anarcat/"/>
+    </outline>
+    <outline title="cartoon" text="cartoon" description="cartoon" type="folder">
+      <outline title="xkcd.com" text="xkcd.com" description="xkcd.com" type="rss" xmlUrl="http://www.xkcd.com/rss.xml" htmlUrl="http://xkcd.com/"/>
+      <outline title="What If?" text="What If?" description="What If?" type="atom" xmlUrl="http://what-if.xkcd.com/feed.atom" htmlUrl=""/>
+    </outline>
+  </body>
+</opml>

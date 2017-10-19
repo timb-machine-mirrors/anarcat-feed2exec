@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<opml version="1.0">
+  <head>
+    <title>Liferea Feed List Export</title>
+  </head>
+  <body>
+    <outline title="news" text="news" description="news" type="folder">
+      <outline title="slashdot" text="slashdot" description="slashdot" type="rss" xmlUrl="http://rss.slashdot.org/Slashdot/slashdot" htmlUrl="https://slashdot.org/"/>
+    </outline>
+    <outline title="software" text="software" description="software" type="folder">
+      <outline title="debian" text="debian" description="debian" type="folder">
+        <outline title="planet" text="planet" description="planet" type="rss" xmlUrl="http://planet.debian.org/rss20.xml" htmlUrl="http://planet.debian.org/"/>
+      </outline>
+      <outline title="openmoko" text="openmoko" description="openmoko" type="folder">
+        <outline title="planet" text="planet" description="planet" type="rss" xmlUrl="http://planet.openmoko.org/rss20.xml" htmlUrl="http://planet.openmoko.org/"/>
+      </outline>
+    </outline>
+  </body>
+</opml>
