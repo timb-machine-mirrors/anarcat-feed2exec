@@ -8,7 +8,6 @@ import json
 import re
 
 from click.testing import CliRunner
-import vcr
 
 import feed2exec.utils as utils
 from feed2exec.__main__ import main
@@ -108,8 +107,7 @@ def test_opml(tmpdir_factory, static_boundary):  # noqa
         p.read() == conf_dir.join('opml').read()
 
 
-@vcr.use_cassette('feed2exec/tests/cassettes/planet-debian.yml')  # noqa
-def test_planet(tmpdir_factory, static_boundary, capfd):  # noqa
+def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
     """test i18n feeds for double-encoding
 
     previously, we would double-encode email bodies and subject, which
@@ -127,8 +125,8 @@ def test_planet(tmpdir_factory, static_boundary, capfd):  # noqa
                                   '--args', 'to@example.com',
                                   '--output', 'feed2exec.plugins.mbox',
                                   '--mailbox', str(conf_dir)])
-    result = runner.invoke(main, ['--config', str(conf_dir),
-                                  'fetch'])
+    result = runner.invoke(main, ['--config', str(conf_dir), 'fetch'],
+                           obj=betamax_session, catch_exceptions=False)
     assert result.exit_code == 0
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
     with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:  # noqa

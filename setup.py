@@ -137,7 +137,7 @@ if __name__ == '__main__':
                   "pyflakes",
               ],
           },
-          tests_require=['pytest', 'vcrpy'],
+          tests_require=['pytest', 'betamax'],
           data_files=[
               # this completion file is generated with:
               # _FEED2EXEC_COMPLETE=source feed2exec

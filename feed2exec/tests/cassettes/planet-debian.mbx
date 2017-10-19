@@ -1,3 +1,1012 @@
+From planet-debian Thu Oct 19 17:45:29 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Thu, 19 Oct 2017 17:45:29 -0000
+To: to@example.com
+From: planet-debian <to@example.com>
+Subject: Steinar H. Gunderson: Introducing Narabu, part 2: Meet the GPU
+Message-ID: http-blog-sesse-net-blog-tech-2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu-html
+User-Agent: feed2exec (0.8.0)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://blog.sesse.net/blog/tech/2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu.html
+
+--===============testboundary==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+<img src="http://planet.debian.org/heads/sesse.png" width="74" height="85" alt="" align="right" style="float: right;">  <p>Narabu is a new intraframe video codec. You may or may not want to read
+<a href="https://blog.sesse.net/blog/tech/2017-10-18-09-25_introducing_narabu_part_1_introduction">part 1</a>
+first.</p>
+
+<p>The GPU, despite being extremely more flexible than it was fifteen years
+ago, is still a very different beast from your CPU, and not all problems
+map well to it performance-wise. Thus, before designing a codec, it's
+useful to know what our platform looks like.</p>
+
+<p>A GPU has lots of special functionality for graphics (well, duh), but we'll
+be concentrating on the <em>compute shader</em> subset in this context, ie., we
+won't be drawing any polygons. Roughly, a GPU (as I understand it!) is built
+up about as follows:</p>
+
+<p>A GPU contains 1–20 cores; NVIDIA calls them SMs (shader multiprocessors),
+Intel calls them subslices. (Trivia: A typical mid-range Intel GPU contains two cores,
+and thus is designated GT2.) One such core usually runs the same program,
+although on different data; there are exceptions, but typically, if your
+program can't fill an entire core with parallelism, you're wasting energy.
+Each core, in addition to tons (thousands!) of registers, also has some
+“shared memory” (also called “local memory” sometimes, although that term
+is overloaded), typically 32–64 kB, which you can think of in two ways:
+Either as a sort-of explicit L1 cache, or as a way to communicate
+internally on a core. Shared memory is a limited, precious resource in
+many algorithms.</p>
+
+<p>Each core/SM/subslice contains about 8 execution units (Intel
+calls them EUs, NVIDIA/AMD calls them something else) and some memory
+access logic. These multiplex a bunch of threads (say, 32) and run in
+a round-robin-ish fashion. This means that a GPU can handle memory stalls
+much better than a typical CPU, since it has so many streams to pick from;
+even though each thread runs in-order, it can just kick off an operation
+and then go to the next thread while the previous one is working.</p>
+
+<p>Each execution unit has a bunch of ALUs (typically 16) and executes code in a SIMD
+fashion. NVIDIA calls these ALUs “CUDA cores”, AMD calls them “stream
+processors”. Unlike on CPU, this SIMD has full scatter/gather support
+(although sequential access, especially in certain patterns, is <em>much</em> more efficient
+than random access), lane enable/disable so it can work with conditional
+code, etc.. The typically fastest operation is a 32-bit float muladd;
+usually that's single-cycle. GPUs <em>love</em> 32-bit FP code. (In fact, in some
+GPU languages, you won't even have 8-, 16-bit or 64-bit types. This is
+annoying, but not the end of the world.)</p>
+
+<p>The vectorization is not exposed to the user in typical code (GLSL has some
+vector types, but they're usually just broken up into scalars, so that's a
+red herring), although in some programming languages you can get to swizzle
+the SIMD stuff internally to gain advantage of that (there's also schemes for
+broadcasting bits by “voting” etc.). However, it is crucially important to
+performance; if you have divergence within a warp, this means the GPU needs
+to execute both sides of the if. So less divergent code is good.</p>
+
+<p>Such a SIMD group is called a warp by NVIDIA (I don't know if the others have
+names for it). NVIDIA has SIMD/warp width always 32; AMD used to be 64 but
+is now 16. Intel supports 4–32 (the compiler will autoselect based on a bunch of
+factors), although 16 is the most common.</p>
+
+<p>The upshot of all of this is that you need massive amounts of parallelism
+to be able to get useful performance out of a CPU. A rule of thumb is that
+if you could have launched about a thousand threads for your problem on CPU,
+it's a good fit for a GPU, although this is of course just a guideline.</p>
+
+<p>There's a ton of APIs available to write compute shaders. There's CUDA (NVIDIA-only, but the
+dominant player), D3D compute (Windows-only, but multi-vendor),
+OpenCL (multi-vendor, but highly variable implementation quality),
+OpenGL compute shaders (all platforms except macOS, which has too old drivers),
+Metal (Apple-only) and probably some that I forgot. I've chosen to go for
+OpenGL compute shaders since I already use OpenGL shaders a lot, and this
+saves on interop issues. CUDA probably is more mature, but my laptop is
+Intel. :-) No matter which one you choose, the programming model looks very
+roughly like this pseudocode:</p>
+
+<pre>for (size_t workgroup_idx = 0; workgroup_idx &lt; NUM_WORKGROUPS; ++workgroup_idx) {   // in parallel over cores
+        char shared_mem[REQUESTED_SHARED_MEM];  // private for each workgroup
+        for (size_t local_idx = 0; local_idx &lt; WORKGROUP_SIZE; ++local_idx) {  // in parallel on each core
+                main(workgroup_idx, local_idx, shared_mem);
+        }
+}
+</pre>
+
+<p>except in reality, the indices will be split in x/y/z for your convenience
+(you control all six dimensions, of course), and if you haven't asked for too
+much shared memory, the driver can silently make larger workgroups if it
+helps increase parallelity (this is totally transparent to you). main()
+doesn't return anything, but you can do reads and writes as you wish;
+GPUs have large amounts of memory these days, and staggering amounts of
+memory bandwidth.</p>
+
+<p>Now for the bad part: Generally, you will have no debuggers, no way of
+logging and no real profilers (if you're lucky, you can get to know how long
+each compute shader invocation takes, but not what takes time within the
+shader itself). Especially the latter is maddening; the only real recourse
+you have is some timers, and then placing timer probes or trying to comment
+out sections of your code to see if something goes faster. If you don't
+get the answers you're looking for, forget printf—you need to set up a
+separate buffer, write some numbers into it and pull that buffer down to
+the GPU. Profilers are an essential part of optimization, and I had really
+hoped the world would be more mature here by now. Even CUDA doesn't give
+you all that much insight—sometimes I wonder if all of this is because
+GPU drivers and architectures are <em>meant</em> to be shrouded in mystery for
+competitiveness reasons, but I'm honestly not sure.</p>
+
+<p>So that's it for a crash course in GPU architecture. Next time, we'll start
+looking at the Narabu codec itself.</p>
+--===============testboundary==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+http://blog.sesse.net/blog/tech/2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu.html
+
+Narabu is a new intraframe video codec. You may or may not want to read [part
+1][1] first.
+
+   [1]: <https://blog.sesse.net/blog/tech/2017-10-18-09-25_introducing_narabu_part_1_introduction>
+
+The GPU, despite being extremely more flexible than it was fifteen years ago,
+is still a very different beast from your CPU, and not all problems map well
+to it performance-wise. Thus, before designing a codec, it's useful to know
+what our platform looks like.
+
+A GPU has lots of special functionality for graphics (well, duh), but we'll be
+concentrating on the _compute shader_ subset in this context, ie., we won't be
+drawing any polygons. Roughly, a GPU (as I understand it!) is built up about
+as follows:
+
+A GPU contains 1–20 cores; NVIDIA calls them SMs (shader multiprocessors),
+Intel calls them subslices. (Trivia: A typical mid-range Intel GPU contains
+two cores, and thus is designated GT2.) One such core usually runs the same
+program, although on different data; there are exceptions, but typically, if
+your program can't fill an entire core with parallelism, you're wasting
+energy. Each core, in addition to tons (thousands!) of registers, also has
+some “shared memory” (also called “local memory” sometimes, although that term
+is overloaded), typically 32–64 kB, which you can think of in two ways: Either
+as a sort-of explicit L1 cache, or as a way to communicate internally on a
+core. Shared memory is a limited, precious resource in many algorithms.
+
+Each core/SM/subslice contains about 8 execution units (Intel calls them EUs,
+NVIDIA/AMD calls them something else) and some memory access logic. These
+multiplex a bunch of threads (say, 32) and run in a round-robin-ish fashion.
+This means that a GPU can handle memory stalls much better than a typical CPU,
+since it has so many streams to pick from; even though each thread runs in-
+order, it can just kick off an operation and then go to the next thread while
+the previous one is working.
+
+Each execution unit has a bunch of ALUs (typically 16) and executes code in a
+SIMD fashion. NVIDIA calls these ALUs “CUDA cores”, AMD calls them “stream
+processors”. Unlike on CPU, this SIMD has full scatter/gather support
+(although sequential access, especially in certain patterns, is _much_ more
+efficient than random access), lane enable/disable so it can work with
+conditional code, etc.. The typically fastest operation is a 32-bit float
+muladd; usually that's single-cycle. GPUs _love_ 32-bit FP code. (In fact, in
+some GPU languages, you won't even have 8-, 16-bit or 64-bit types. This is
+annoying, but not the end of the world.)
+
+The vectorization is not exposed to the user in typical code (GLSL has some
+vector types, but they're usually just broken up into scalars, so that's a red
+herring), although in some programming languages you can get to swizzle the
+SIMD stuff internally to gain advantage of that (there's also schemes for
+broadcasting bits by “voting” etc.). However, it is crucially important to
+performance; if you have divergence within a warp, this means the GPU needs to
+execute both sides of the if. So less divergent code is good.
+
+Such a SIMD group is called a warp by NVIDIA (I don't know if the others have
+names for it). NVIDIA has SIMD/warp width always 32; AMD used to be 64 but is
+now 16. Intel supports 4–32 (the compiler will autoselect based on a bunch of
+factors), although 16 is the most common.
+
+The upshot of all of this is that you need massive amounts of parallelism to
+be able to get useful performance out of a CPU. A rule of thumb is that if you
+could have launched about a thousand threads for your problem on CPU, it's a
+good fit for a GPU, although this is of course just a guideline.
+
+There's a ton of APIs available to write compute shaders. There's CUDA
+(NVIDIA-only, but the dominant player), D3D compute (Windows-only, but multi-
+vendor), OpenCL (multi-vendor, but highly variable implementation quality),
+OpenGL compute shaders (all platforms except macOS, which has too old
+drivers), Metal (Apple-only) and probably some that I forgot. I've chosen to
+go for OpenGL compute shaders since I already use OpenGL shaders a lot, and
+this saves on interop issues. CUDA probably is more mature, but my laptop is
+Intel. :-) No matter which one you choose, the programming model looks very
+roughly like this pseudocode:
+
+    
+    
+    for (size_t workgroup_idx = 0; workgroup_idx < NUM_WORKGROUPS; ++workgroup_idx) {   // in parallel over cores
+            char shared_mem[REQUESTED_SHARED_MEM];  // private for each workgroup
+            for (size_t local_idx = 0; local_idx < WORKGROUP_SIZE; ++local_idx) {  // in parallel on each core
+                    main(workgroup_idx, local_idx, shared_mem);
+            }
+    }
+    
+
+except in reality, the indices will be split in x/y/z for your convenience
+(you control all six dimensions, of course), and if you haven't asked for too
+much shared memory, the driver can silently make larger workgroups if it helps
+increase parallelity (this is totally transparent to you). main() doesn't
+return anything, but you can do reads and writes as you wish; GPUs have large
+amounts of memory these days, and staggering amounts of memory bandwidth.
+
+Now for the bad part: Generally, you will have no debuggers, no way of logging
+and no real profilers (if you're lucky, you can get to know how long each
+compute shader invocation takes, but not what takes time within the shader
+itself). Especially the latter is maddening; the only real recourse you have
+is some timers, and then placing timer probes or trying to comment out
+sections of your code to see if something goes faster. If you don't get the
+answers you're looking for, forget printf—you need to set up a separate
+buffer, write some numbers into it and pull that buffer down to the GPU.
+Profilers are an essential part of optimization, and I had really hoped the
+world would be more mature here by now. Even CUDA doesn't give you all that
+much insight—sometimes I wonder if all of this is because GPU drivers and
+architectures are _meant_ to be shrouded in mystery for competitiveness
+reasons, but I'm honestly not sure.
+
+So that's it for a crash course in GPU architecture. Next time, we'll start
+looking at the Narabu codec itself.
+
+
+--===============testboundary==--
+
+From planet-debian Thu Oct 19 14:21:14 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Thu, 19 Oct 2017 14:21:14 -0000
+To: to@example.com
+From: planet-debian <to@example.com>
+Subject: Norbert Preining: Analysing Debian packages with Neo4j
+Message-ID: https-www-preining-info-blog-p-6831
+User-Agent: feed2exec (0.8.0)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: https://www.preining.info/blog/2017/10/analysing-debian-packages-with-neo4j/
+
+--===============testboundary==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+<img src="http://planet.debian.org/heads/preining.png" width="65" height="85" alt="" align="right" style="float: right;">  <p>I just finished the presentation at the <a href="https://www.meetup.com/Neo4j-Online-Meetup/">Neo4j Online Meetup</a> on getting the Debian <a href="https://wiki.debian.org/UltimateDebianDatabase">UDD</a> into a <a href="https://neo4j.com/">Neo4j</a> graph database. Besides the usual technical quibbles it did work out quite well.</p>
+<p><img alt="" class="aligncenter size-full wp-image-6832" height="498" src="https://www.preining.info/blog/wp-content/uploads/2017/10/neo4j-debian-talk.png" width="796" /></p>
+<p>The code for pulling the data from the UDD, as well as converting and importing it into Neo4j is available on <a href="https://github.com/norbusan/debian-graph">Github Debian-Graph</a>. The slides are also available on Github: <a href="https://github.com/norbusan/debian-graph/blob/master/slides/preining-debian-packages-neo4j.pdf">preining-debian-packages-neo4j.pdf</a>.</p>
+<p>There are still some things I want to implement, time permitting, because it would be a great tool for better integration for Debian. In any case, graph databases are lots of fun to play around.</p>
+--===============testboundary==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+https://www.preining.info/blog/2017/10/analysing-debian-packages-with-neo4j/
+
+I just finished the presentation at the [Neo4j Online Meetup][1] on getting
+the Debian [UDD][2] into a [Neo4j][3] graph database. Besides the usual
+technical quibbles it did work out quite well.
+
+   [1]: <https://www.meetup.com/Neo4j-Online-Meetup/>
+   [2]: <https://wiki.debian.org/UltimateDebianDatabase>
+   [3]: <https://neo4j.com/>
+
+The code for pulling the data from the UDD, as well as converting and
+importing it into Neo4j is available on [Github Debian-Graph][4]. The slides
+are also available on Github: [preining-debian-packages-neo4j.pdf][5].
+
+   [4]: <https://github.com/norbusan/debian-graph>
+   [5]: <https://github.com/norbusan/debian-graph/blob/master/slides/preining-debian-packages-neo4j.pdf>
+
+There are still some things I want to implement, time permitting, because it
+would be a great tool for better integration for Debian. In any case, graph
+databases are lots of fun to play around.
+
+
+--===============testboundary==--
+
+From planet-debian Thu Oct 19 08:33:31 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Thu, 19 Oct 2017 08:33:31 -0000
+To: to@example.com
+From: planet-debian <to@example.com>
+Subject: Daniel Pocock: FOSDEM 2018 Real-Time Communications Call for Participation
+Message-ID: https-danielpocock-com-341-at-https-danielpocock-com
+User-Agent: feed2exec (0.8.0)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: https://danielpocock.com/fosdem-2018-rtc-cfp
+
+--===============testboundary==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+<img src="http://planet.debian.org/heads/pocock.png" width="65" height="85" alt="" align="right" style="float: right;">  <div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even"><p><a href="https://fosdem.org">FOSDEM</a> is one of the world's premier meetings of free software developers, with over five thousand people attending each year.  FOSDEM 2018 takes place 3-4 February 2018 in Brussels, Belgium.</p>
+<p>This email contains information about:</p>
+<ul><li>Real-Time communications dev-room and lounge,</li>
+<li>speaking opportunities,</li>
+<li>volunteering in the dev-room and lounge,</li>
+<li>related events around FOSDEM, including the XMPP summit,</li>
+<li>social events (the legendary FOSDEM Beer Night and Saturday night dinners provide endless networking opportunities),</li>
+<li>the Planet aggregation sites for RTC blogs</li>
+</ul><h2>Call for participation - Real Time Communications (RTC)</h2>
+<p>The Real-Time dev-room and Real-Time lounge is about all things involving real-time communication, including: XMPP, SIP, WebRTC, telephony, mobile VoIP, codecs, peer-to-peer, privacy and encryption.  The dev-room is a successor to the previous XMPP and telephony dev-rooms.  We are looking for speakers for the dev-room and volunteers and participants for the tables in the Real-Time lounge.</p>
+<p>The dev-room is only on Sunday, 4 February 2018.  The lounge will be present for both days.</p>
+<p>To discuss the dev-room and lounge, please join the FSFE-sponsored <a href="https://lists.fsfe.org/mailman/listinfo/free-rtc">Free RTC mailing list</a>.</p>
+<p>To be kept aware of major developments in Free RTC, without being on the discussion list, please join the <a href="http://lists.freertc.org/mailman/listinfo/announce">Free-RTC Announce list</a>.</p>
+<h3>Speaking opportunities</h3>
+<p>Note: if you used FOSDEM Pentabarf before, please use the same account/username</p>
+<p>Real-Time Communications dev-room: deadline 23:59 UTC on 30 November.  Please use the Pentabarf system to submit a talk proposal for the dev-room.  On the "General" tab, please look for the "Track" option and choose "Real Time Communications devroom".  <a href="https://penta.fosdem.org/submission/FOSDEM18/">Link to talk submission</a>.</p>
+<p>Other dev-rooms and lightning talks: some speakers may find their topic is in the scope of more than one dev-room.  It is encouraged to apply to more than one dev-room and also consider proposing a lightning talk, but please be kind enough to tell us if you do this by filling out the notes in the form.</p>
+<p>You can find the full list of dev-rooms <a href="https://www.fosdem.org/2018/schedule/tracks/">on this page</a> and apply for a lightning talk at <a href="https://fosdem.org/submit">https://fosdem.org/submit</a></p>
+<p>Main track: the deadline for main track presentations is 23:59 UTC 3 November.  Leading developers in the Real-Time Communications field are encouraged to consider <a href="https://fosdem.org/submit">submitting a presentation to the main track</a>.</p>
+<h3>First-time speaking?</h3>
+<p>FOSDEM dev-rooms are a welcoming environment for people who have never given a talk before.  Please feel free to contact the dev-room administrators personally if you would like to ask any questions about it.</p>
+<h3>Submission guidelines</h3>
+<p>The Pentabarf system will ask for many of the essential details.  Please remember to re-use your account from previous years if you have one.</p>
+<p>In the "Submission notes", please tell us about:</p>
+<ul><li>the purpose of your talk</li>
+<li>any other talk applications (dev-rooms, lightning talks, main track)</li>
+<li>availability constraints and special needs</li>
+</ul><p>You can use HTML and links in your bio, abstract and description.</p>
+<p>If you maintain a blog, please consider providing us with the URL of a feed with posts tagged for your RTC-related work.</p>
+<p>We will be looking for relevance to the conference and dev-room themes, presentations aimed at developers of free and open source software about RTC-related topics.</p>
+<p>Please feel free to suggest a duration between 20 minutes and 55 minutes but note that the final decision on talk durations will be made by the dev-room administrators based on the received proposals.  As the two previous dev-rooms have been combined into one, we may decide to give shorter slots than in previous years so that more speakers can participate.</p>
+<p>Please note FOSDEM aims to record and live-stream all talks.  The CC-BY license is used.</p>
+<h2>Volunteers needed</h2>
+<p>To make the dev-room and lounge run successfully, we are looking for volunteers:</p>
+<ul><li>FOSDEM provides video recording equipment and live streaming, volunteers are needed to assist in this</li>
+<li>organizing one or more restaurant bookings (dependending upon number of participants) for the evening of Saturday, 4 February</li>
+<li>participation in the Real-Time lounge</li>
+<li>helping attract sponsorship funds for the dev-room to pay for the Saturday night dinner and any other expenses</li>
+<li>circulating this Call for Participation (<a href="https://lists.fosdem.org/pipermail/fosdem/2017-October/002636.html">text version</a>) to other mailing lists</li>
+</ul><h2>Related events - XMPP and RTC summits</h2>
+<p>The XMPP Standards Foundation (XSF) has traditionally held a summit in the days before FOSDEM.  There is discussion about a similar summit taking place on 2 February 2018.  <a href="http://wiki.xmpp.org/web/Summit_22">XMPP Summit web site</a> - please join the <a href="http://mail.jabber.org/mailman/listinfo/summit">mailing list</a> for details.</p>
+<h2>Social events and dinners</h2>
+<p>The traditional FOSDEM beer night occurs on Friday, 2 February.</p>
+<p>On Saturday night, there are usually dinners associated with each of the dev-rooms.  Most restaurants in Brussels are not so large so these dinners have space constraints and reservations are essential.  Please subscribe to the <a href="https://lists.fsfe.org/mailman/listinfo/free-rtc">Free-RTC mailing list</a> for further details about the Saturday night dinner options and how you can register for a seat.</p>
+<h2>Spread the word and discuss</h2>
+<p>If you know of any mailing lists where this CfP would be relevant, please forward this email (<a href="https://lists.fosdem.org/pipermail/fosdem/2016-October/002481.html">text version</a>). If this dev-room excites you, please blog or microblog about it, especially if you are submitting a talk.</p>
+<p>If you regularly blog about RTC topics, please send details about your blog to the planet site administrators:</p>
+<table><tbody><tr><th></th>
+<th>Planet site</th>
+<th>Admin contact</th>
+</tr><tr><th>All projects</th>
+<td><a href="http://planet.freertc.org">Free-RTC Planet (http://planet.freertc.org)</a></td>
+<td><a href="mailto:planet@freertc.org">contact planet@freertc.org</a></td>
+</tr><tr><th>XMPP</th>
+<td><a href="http://planet.jabber.org">Planet Jabber (http://planet.jabber.org)</a></td>
+<td><a href="mailto:ralphm@ik.nu">contact ralphm@ik.nu</a></td>
+</tr><tr><th>SIP</th>
+<td><a href="http://planet.sip5060.net">Planet SIP (http://planet.sip5060.net)</a></td>
+<td><a href="mailto:planet@sip5060.net">contact planet@sip5060.net</a></td>
+</tr><tr><th>SIP (Español)</th>
+<td><a href="http://planet.sip5060.net/es/">Planet SIP-es (http://planet.sip5060.net/es/)</a></td>
+<td><a href="mailto:planet@sip5060.net">contact planet@sip5060.net</a></td>
+</tr></tbody></table><p>Please also link to the Planet sites from your own blog or web site as this helps everybody in the free real-time communications community.</p>
+<h2>Contact</h2>
+<p>For any private queries, contact us directly using the address <a href="mailto:fosdem-rtc-admin@freertc.org">fosdem-rtc-admin@freertc.org</a> and for any other queries please ask on the <a href="https://lists.fsfe.org/mailman/listinfo/free-rtc">Free-RTC mailing list</a>.</p>
+<p>The dev-room administration team:</p>
+<ul><li><a href="http://code.saghul.net/">Saúl Ibarra Corretgé</a> (<a href="mailto:saghul@gmail.com">email</a>)</li>
+<li><a href="https://iain.learmonth.me/">Iain R. Learmonth</a> (<a href="mailto:irl@debian.org">email</a>)</li>
+<li><a href="https://ralphm.net/blog/">Ralph Meijer</a> (<a href="mailto:ralphm@ik.nu">email</a>)</li>
+<li><a href="http://blog.miconda.eu/">Daniel-Constantin Mierla</a> (<a href="mailto:miconda@gmail.com">email</a>)</li>
+<li><a href="https://danielpocock.com">Daniel Pocock</a> (<a href="mailto:daniel@pocock.pro">email</a>)</li>
+</ul></div></div></div>
+--===============testboundary==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+https://danielpocock.com/fosdem-2018-rtc-cfp
+
+[FOSDEM][1] is one of the world's premier meetings of free software
+developers, with over five thousand people attending each year. FOSDEM 2018
+takes place 3-4 February 2018 in Brussels, Belgium.
+
+   [1]: <https://fosdem.org>
+
+This email contains information about:
+
+  * Real-Time communications dev-room and lounge,
+  * speaking opportunities,
+  * volunteering in the dev-room and lounge,
+  * related events around FOSDEM, including the XMPP summit,
+  * social events (the legendary FOSDEM Beer Night and Saturday night dinners provide endless networking opportunities),
+  * the Planet aggregation sites for RTC blogs
+
+## Call for participation - Real Time Communications (RTC)
+
+The Real-Time dev-room and Real-Time lounge is about all things involving
+real-time communication, including: XMPP, SIP, WebRTC, telephony, mobile VoIP,
+codecs, peer-to-peer, privacy and encryption. The dev-room is a successor to
+the previous XMPP and telephony dev-rooms. We are looking for speakers for the
+dev-room and volunteers and participants for the tables in the Real-Time
+lounge.
+
+The dev-room is only on Sunday, 4 February 2018. The lounge will be present
+for both days.
+
+To discuss the dev-room and lounge, please join the FSFE-sponsored [Free RTC
+mailing list][2].
+
+   [2]: <https://lists.fsfe.org/mailman/listinfo/free-rtc>
+
+To be kept aware of major developments in Free RTC, without being on the
+discussion list, please join the [Free-RTC Announce list][3].
+
+   [3]: <http://lists.freertc.org/mailman/listinfo/announce>
+
+### Speaking opportunities
+
+Note: if you used FOSDEM Pentabarf before, please use the same
+account/username
+
+Real-Time Communications dev-room: deadline 23:59 UTC on 30 November. Please
+use the Pentabarf system to submit a talk proposal for the dev-room. On the
+"General" tab, please look for the "Track" option and choose "Real Time
+Communications devroom". [Link to talk submission][4].
+
+   [4]: <https://penta.fosdem.org/submission/FOSDEM18/>
+
+Other dev-rooms and lightning talks: some speakers may find their topic is in
+the scope of more than one dev-room. It is encouraged to apply to more than
+one dev-room and also consider proposing a lightning talk, but please be kind
+enough to tell us if you do this by filling out the notes in the form.
+
+You can find the full list of dev-rooms [on this page][5] and apply for a
+lightning talk at <https://fosdem.org/submit>
+
+   [5]: <https://www.fosdem.org/2018/schedule/tracks/>
+
+Main track: the deadline for main track presentations is 23:59 UTC 3 November.
+Leading developers in the Real-Time Communications field are encouraged to
+consider [submitting a presentation to the main track][6].
+
+   [6]: <https://fosdem.org/submit>
+
+### First-time speaking?
+
+FOSDEM dev-rooms are a welcoming environment for people who have never given a
+talk before. Please feel free to contact the dev-room administrators
+personally if you would like to ask any questions about it.
+
+### Submission guidelines
+
+The Pentabarf system will ask for many of the essential details. Please
+remember to re-use your account from previous years if you have one.
+
+In the "Submission notes", please tell us about:
+
+  * the purpose of your talk
+  * any other talk applications (dev-rooms, lightning talks, main track)
+  * availability constraints and special needs
+
+You can use HTML and links in your bio, abstract and description.
+
+If you maintain a blog, please consider providing us with the URL of a feed
+with posts tagged for your RTC-related work.
+
+We will be looking for relevance to the conference and dev-room themes,
+presentations aimed at developers of free and open source software about RTC-
+related topics.
+
+Please feel free to suggest a duration between 20 minutes and 55 minutes but
+note that the final decision on talk durations will be made by the dev-room
+administrators based on the received proposals. As the two previous dev-rooms
+have been combined into one, we may decide to give shorter slots than in
+previous years so that more speakers can participate.
+
+Please note FOSDEM aims to record and live-stream all talks. The CC-BY license
+is used.
+
+## Volunteers needed
+
+To make the dev-room and lounge run successfully, we are looking for
+volunteers:
+
+  * FOSDEM provides video recording equipment and live streaming, volunteers are needed to assist in this
+  * organizing one or more restaurant bookings (dependending upon number of participants) for the evening of Saturday, 4 February
+  * participation in the Real-Time lounge
+  * helping attract sponsorship funds for the dev-room to pay for the Saturday night dinner and any other expenses
+  * circulating this Call for Participation ([text version][7]) to other mailing lists
+
+   [7]: <https://lists.fosdem.org/pipermail/fosdem/2017-October/002636.html>
+
+## Related events - XMPP and RTC summits
+
+The XMPP Standards Foundation (XSF) has traditionally held a summit in the
+days before FOSDEM. There is discussion about a similar summit taking place on
+2 February 2018. [XMPP Summit web site][8] \- please join the [mailing
+list][9] for details.
+
+   [8]: <http://wiki.xmpp.org/web/Summit_22>
+   [9]: <http://mail.jabber.org/mailman/listinfo/summit>
+
+## Social events and dinners
+
+The traditional FOSDEM beer night occurs on Friday, 2 February.
+
+On Saturday night, there are usually dinners associated with each of the dev-
+rooms. Most restaurants in Brussels are not so large so these dinners have
+space constraints and reservations are essential. Please subscribe to the
+[Free-RTC mailing list][10] for further details about the Saturday night
+dinner options and how you can register for a seat.
+
+   [10]: <https://lists.fsfe.org/mailman/listinfo/free-rtc>
+
+## Spread the word and discuss
+
+If you know of any mailing lists where this CfP would be relevant, please
+forward this email ([text version][11]). If this dev-room excites you, please
+blog or microblog about it, especially if you are submitting a talk.
+
+   [11]: <https://lists.fosdem.org/pipermail/fosdem/2016-October/002481.html>
+
+If you regularly blog about RTC topics, please send details about your blog to
+the planet site administrators:
+
+| Planet site | Admin contact  
+---|---|---  
+All projects | [Free-RTC Planet (http://planet.freertc.org)][12] | [contact
+planet@freertc.org][13]  
+XMPP | [Planet Jabber (http://planet.jabber.org)][14] | [contact
+ralphm@ik.nu][15]  
+SIP | [Planet SIP (http://planet.sip5060.net)][16] | [contact
+planet@sip5060.net][17]  
+SIP (Español) | [Planet SIP-es (http://planet.sip5060.net/es/)][18] | [contact
+planet@sip5060.net][17]  
+  
+   [12]: <http://planet.freertc.org>
+   [13]: <mailto:planet@freertc.org>
+   [14]: <http://planet.jabber.org>
+   [15]: <mailto:ralphm@ik.nu>
+   [16]: <http://planet.sip5060.net>
+   [17]: <mailto:planet@sip5060.net>
+   [18]: <http://planet.sip5060.net/es/>
+
+Please also link to the Planet sites from your own blog or web site as this
+helps everybody in the free real-time communications community.
+
+## Contact
+
+For any private queries, contact us directly using the address [fosdem-rtc-
+admin@freertc.org][19] and for any other queries please ask on the [Free-RTC
+mailing list][20].
+
+   [19]: <mailto:fosdem-rtc-admin@freertc.org>
+   [20]: <https://lists.fsfe.org/mailman/listinfo/free-rtc>
+
+The dev-room administration team:
+
+  * [Saúl Ibarra Corretgé][21] ([email][22])
+  * [Iain R. Learmonth][23] ([email][24])
+  * [Ralph Meijer][25] ([email][26])
+  * [Daniel-Constantin Mierla][27] ([email][28])
+  * [Daniel Pocock][29] ([email][30])
+
+   [21]: <http://code.saghul.net/>
+   [22]: <mailto:saghul@gmail.com>
+   [23]: <https://iain.learmonth.me/>
+   [24]: <mailto:irl@debian.org>
+   [25]: <https://ralphm.net/blog/>
+   [26]: <mailto:ralphm@ik.nu>
+   [27]: <http://blog.miconda.eu/>
+   [28]: <mailto:miconda@gmail.com>
+   [29]: <https://danielpocock.com>
+   [30]: <mailto:daniel@pocock.pro>
+
+
+--===============testboundary==--
+
+From planet-debian Wed Oct 18 19:31:14 2017
+Content-Type: multipart/alternative; boundary="===============testboundary=="
+MIME-Version: 1.0
+Date: Wed, 18 Oct 2017 19:31:14 -0000
+To: to@example.com
+From: planet-debian <to@example.com>
+Subject: Joey Hess: extending Scuttlebutt with Annah
+Message-ID: http-joeyh-name-blog-entry-extending_scuttlebutt_with_annah
+User-Agent: feed2exec (0.8.0)
+Precedence: list
+Auto-Submitted: auto-generated
+Archive-At: http://joeyh.name/blog/entry/extending_Scuttlebutt_with_Annah/
+
+--===============testboundary==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+<img src="http://planet.debian.org/heads/joeyh2.png" width="84" height="75" alt="" align="right" style="float: right;">  <p>This post has it all. Flotillas of sailboats, peer-to-peer wikis, games,
+and de-frogging. But, I need to start by talking about some tech you may not
+have heard of yet...</p>
+
+<ul>
+<li><p><a href="https://www.scuttlebutt.nz/">Scuttlebutt</a> is way for friends to share feeds
+of content-addressed messages, peer-to-peer. Most Scuttlebutt clients
+currently look something like facebook, but there are also github clones,
+chess games, etc. Many private encrypted conversations going on.
+All entirely decentralized.<br />
+(My scuttlebutt feed can be viewed <a href="https://viewer.scuttlebot.io/@BCM6DHYJvWzwWi1lFl2tjDXjaqyZAEmJH5ZONSpXhtc=.ed25519">here</a>)</p></li>
+<li><p><a href="https://hackage.haskell.org/package/annah">Annah</a> is a purely
+functional, strongly typed language. Its design allows individual atoms
+of the language to be put in content-addressed storage, right down to
+data types. So the value <code>True</code> and a hash of the definition of what
+<code>True</code> is can both be treated the same by Annah's compiler.<br />
+(Not to be confused with my sister, Anna, or part of the Debian Installer
+with the same name that I wrote long ago.)</p></li>
+</ul>
+
+
+<p>So, how could these be combined together, and what might the result look
+like?</p>
+
+<p>Well, I could start by posting a Scuttlebutt message that <a href="http://sigil.place/prelude/annah/1.0/Bool/True">defines what
+True is</a>. And another
+Scuttlebutt message defining
+<a href="http://sigil.place/prelude/annah/1.0/Bool/False">False</a>. And then,
+another Scuttlebutt message to
+<a href="http://sigil.place/prelude/annah/1.0/Bool/and">define the AND function</a>,
+which would link to my messages for <code>True</code> and <code>False</code>. Continue this until
+I've built up enough Annah code to write some almost useful programs.</p>
+
+<p>Annah can't do any IO on its own (though it can model IO similarly to how
+Haskell does), so for programs to be actually useful, there needs to be
+Scuttlebutt client support. The way typing works in Annah, a program's type
+can be expressed as a Scuttlebutt link. So a Scuttlebutt client that wants
+to run Annah programs of a particular type can pick out programs that link
+to that type, and will know what type of data the program consumes and
+produces.</p>
+
+<p>Here are a few ideas of what could be built, with fairly simple client-side
+support for different types of Annah programs...</p>
+
+<ul>
+<li><p><strong>Shared dashboards.</strong>
+<a href="https://viewer.scuttlebot.io/%25WPDqs%2FYnkPgjpGJrx36%2FoXgPHnmy6Ket29K4jMyVHyQ%3D.sha256">Boats in a flotilla are communicating via Scuttlebutt</a>,
+and want to share a map of their planned courses. Coders collaborating
+via Scuttlebutt want to see an overview of the state of their project.</p>
+
+<p>For this, the Scuttlebutt client needs a way to run a selected Annah
+program of type <code>Dashboard</code>, and display its output like a Scuttlebutt
+message, in a dashboard window. The dashboard message gets updated
+whenever other Scuttlebutt messages come in. The Annah program picks out
+the messages it's interested in, and generates the dashboard message.</p>
+
+<p>So, send a message updating your boat's position, and everyone sees it
+update on the map. Send a message with updated weather forecasts as
+they're received, and everyone can see the storm developing.
+Send another message updating a waypoint to avoid the storm,
+and steady as you go...</p>
+
+<p>The coders, meanwhile, probably tweak their dashboard's code every day.
+As they add git-ssb repos, they make the dashboard display an
+overview of their bugs. They get CI systems hooked in and feeding
+messages to Scuttlebutt, and make the dashboard go green or red. They
+make the dashboard A-B test itself to pick the right shade of red.
+And so on...</p>
+
+<p>The dashboard program is stored in Scuttlebutt so everyone is on the same
+page, and the most recent version of it posted by a team member gets
+used. (Just have the old version of the program notice when there's a
+newer version, and run that one..)</p>
+
+<p>(Also could be used in disaster response scenarios, where the data
+and visualization tools get built up on the fly in response to local needs,
+and are shared peer-to-peer in areas without internet.)</p></li>
+<li><p><strong>Smart hyperlinks.</strong> When a hyperlink in a Scuttlebutt message points to a
+Annah program, optionally with some Annah data, clicking on it can
+run the program and display the messages that the program generates.</p>
+
+<p>This is the most basic way a Scuttlebutt client could support Annah
+programs, and it could be used for tons of stuff. A few examples:</p>
+
+<ul>
+<li><strong>Hiding spoilers.</strong>
+Click on the link and it'll display a spoiler about a book/movie.</li>
+<li><strong>A link to whatever I was talking about one year ago today.</strong>
+That opens different messages as time goes by. Put it in your Scuttlebutt
+profile or something. (Requires a way for Annah to get the current
+date, which it normally has no way of accessing.)</li>
+<li><strong>Choose your own adventure or twine style games.</strong>
+Click on the link and the program starts the game, displaying
+links to choose between, and so on.</li>
+<li><strong>Links to custom views.</strong>
+For example, a link could lead to a combination of messages from
+several different, related channels. Or could filter messages in some
+way.</li>
+</ul>
+</li>
+<li><p><strong>Collaborative filtering.</strong> Suppose I don't want to see
+frog-related memes in my Scuttlebutt client. I can write a
+Annah program that calculates a message's frogginess, and outputs a
+<code>Filtered Message</code>. It can leave a message unchanged, or filter it out,
+or perhaps minimize its display. I publish the Annah program on my feed,
+and tell my Scuttlebutt client to filter all messages through it before
+displaying them to me.</p>
+
+<p>I published the program in my Scuttlebutt feed, and so my friends
+can use it too. They can build other filtering functions for other
+stuff (such an an excess of orange in photos), and integrate my
+frog filter into their filter program by simply composing the two.</p>
+
+<p>If I like their filter, I can switch my client to using it. Or not.
+Filtering is thus subjective, like Scuttlebutt, and the subjectivity is
+expressed by picking the filter you want to use, or developing a
+better one.</p></li>
+<li><p><strong>Wiki pages.</strong> Scuttlebutt is built on immutable append-only logs; it
+doesn't have editable wiki pages. But they can be built on top using
+Annah.</p>
+
+<p>A smart link to a wiki page is a reference to the Annah program
+that renders it. Of course being a wiki, there will be more smart
+links on the wiki page going to other wiki pages, and so on.</p>
+
+<p>The wiki page includes a smart link to edit it. The editor needs basic
+form support in the Scuttlebutt client; when the edited wiki page is
+posted, the Annah program diffs it against the previous version and
+generates an <code>Edit</code> which gets posted to the user's feed. Rendering the
+page is just a matter of finding the <code>Edit</code> messages for it from
+people who are allowed to edit it, and combining them.</p>
+
+<p>Anyone can fork a wiki page by posting an <code>Edit</code> to their feed. And can
+then post a smart link to their fork of the page.</p>
+
+<p>And anyone can merge other forks into their wiki page (this posts a
+control message that makes the Annah program implementing the wiki accept
+those forks' <code>Edit</code> messages). Or grant other users permission to edit
+the wiki page (another control message). Or grant other users
+permissions to grant other users permissions.</p>
+
+<p>There are lots of different ways you might want your wiki to work.
+No one wiki implementation, but lots of Annah programs. Others
+can interact with your wiki using the program you picked, or fork it and
+even switch the program used. Subjectivity again.</p></li>
+<li><p><strong>User-defined board games.</strong> The Scuttlebutt client finds
+Scuttlebutt messages containing Annah programs of type <code>Game</code>,
+and generates a tab with a list of available games.</p>
+
+<p>The players of a particular game all experience the same game interface,
+because the code for it is part of their shared Scuttlebutt message pool,
+and the code to use gets agreed on at the start of a game.</p>
+
+<p>To play a game, the Scuttlebutt client runs the Annah program, which
+generates a description of the current contents of the game board.</p>
+
+<p>So, for chess, use Annah to define a <code>ChessMove</code> data type,
+and the Annah program takes the feeds of the two players, looks
+for messages containing a <code>ChessMove</code>, and builds up a description
+of the chess board.</p>
+
+<p>As well as the pieces on the game board, the game board description
+includes Annah functions that get called when the user moves a
+game piece. That generates a new <code>ChessMove</code> which gets recorded
+in the user's Scuttlebutt feed.</p>
+
+<p>This could support a wide variety of board games. If you don't mind the
+possibility that your opponent might cheat by peeking at the random seed,
+even games involving things like random card shuffles and dice rolls
+could be built. Also there can be games like Core Wars where the gamers
+themselves write Annah programs to run inside the game.</p>
+
+<p>Variants of games can be developed by modifying and reusing game
+programs. For example, timed chess is just the chess program
+with an added check on move time, and time clock display.</p></li>
+<li><p><strong>Decentralized chat bots.</strong> Chat bots are all the rage (or were a few
+months ago, tech fads move fast), but in a decentralized system like
+Scuttlebutt, a bot running on a server somewhere would be a ugly point
+of centralization. Instead, write a Annah program for the bot.</p>
+
+<p>To launch the bot, publish a message in your own personal Scuttlebutt
+feed that contains the bot's program, and a nonce.</p>
+
+<p>The user's Scuttlebutt client takes care of the rest. It looks for messages
+with bot programs, and runs the bot's program. This generates or updates
+a Scuttlebutt message feed for the bot.</p>
+
+<p>The bot's program signs the messages in its feed using a private key
+that's generated by combining the user's public key, and the bot's nonce.
+So, the bot has one feed per user it talks to, with deterministic
+content, which avoids a problem with forking a Scuttlebutt feed.</p>
+
+<p>The bot-generated messages can be stored in the Scuttlebutt database like any
+other messages and replicated around. The bot appears as if it were a
+Scuttlebutt user. But you can have conversations with it while you're
+offline.</p>
+
+<p>(The careful reader may have noticed that deeply private messages sent to
+the bot can be decrypted by anyone! This bot thing is probably a bad idea
+really, but maybe the bot fad is over anyway. We can only hope. It's
+important that there be at least one bad idea in this list..)</p></li>
+</ul>
+
+
+<p>This kind of extensibility in a peer-to-peer system is exciting! With these
+new systems, we can consider lessons from the world wide web and replicate
+some of the good parts, while avoiding the bad. Javascript has been both
+good and bad for the web. The extensibility is great, and yet it's a
+neverending security and privacy nightmare, and it ties web pages ever more
+tightly to programs hidden away on servers. I believe that Annah combined
+with Scuttlebutt will comprehensively avoid those problems. Shall we build it?</p>
+
+<hr />
+
+<p>This exploration was sponsored by Jake Vosloo on
+<a href="https://patreon.com/joeyh">Patreon</a>.</p>
+--===============testboundary==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+http://joeyh.name/blog/entry/extending_Scuttlebutt_with_Annah/
+
+This post has it all. Flotillas of sailboats, peer-to-peer wikis, games, and
+de-frogging. But, I need to start by talking about some tech you may not have
+heard of yet...
+
+  * [Scuttlebutt][1] is way for friends to share feeds of content-addressed messages, peer-to-peer. Most Scuttlebutt clients currently look something like facebook, but there are also github clones, chess games, etc. Many private encrypted conversations going on. All entirely decentralized.  
+(My scuttlebutt feed can be viewed [here][2])
+
+   [1]: <https://www.scuttlebutt.nz/>
+   [2]: <https://viewer.scuttlebot.io/@BCM6DHYJvWzwWi1lFl2tjDXjaqyZAEmJH5ZONSpXhtc=.ed25519>
+
+  * [Annah][3] is a purely functional, strongly typed language. Its design allows individual atoms of the language to be put in content-addressed storage, right down to data types. So the value `True` and a hash of the definition of what `True` is can both be treated the same by Annah's compiler.  
+(Not to be confused with my sister, Anna, or part of the Debian Installer with
+the same name that I wrote long ago.)
+
+   [3]: <https://hackage.haskell.org/package/annah>
+
+So, how could these be combined together, and what might the result look like?
+
+Well, I could start by posting a Scuttlebutt message that [defines what True
+is][4]. And another Scuttlebutt message defining [False][5]. And then, another
+Scuttlebutt message to [define the AND function][6], which would link to my
+messages for `True` and `False`. Continue this until I've built up enough
+Annah code to write some almost useful programs.
+
+   [4]: <http://sigil.place/prelude/annah/1.0/Bool/True>
+   [5]: <http://sigil.place/prelude/annah/1.0/Bool/False>
+   [6]: <http://sigil.place/prelude/annah/1.0/Bool/and>
+
+Annah can't do any IO on its own (though it can model IO similarly to how
+Haskell does), so for programs to be actually useful, there needs to be
+Scuttlebutt client support. The way typing works in Annah, a program's type
+can be expressed as a Scuttlebutt link. So a Scuttlebutt client that wants to
+run Annah programs of a particular type can pick out programs that link to
+that type, and will know what type of data the program consumes and produces.
+
+Here are a few ideas of what could be built, with fairly simple client-side
+support for different types of Annah programs...
+
+  * **Shared dashboards.** [Boats in a flotilla are communicating via Scuttlebutt][7], and want to share a map of their planned courses. Coders collaborating via Scuttlebutt want to see an overview of the state of their project.
+
+   [7]: <https://viewer.scuttlebot.io/%25WPDqs%2FYnkPgjpGJrx36%2FoXgPHnmy6Ket29K4jMyVHyQ%3D.sha256>
+
+For this, the Scuttlebutt client needs a way to run a selected Annah program
+of type `Dashboard`, and display its output like a Scuttlebutt message, in a
+dashboard window. The dashboard message gets updated whenever other
+Scuttlebutt messages come in. The Annah program picks out the messages it's
+interested in, and generates the dashboard message.
+
+So, send a message updating your boat's position, and everyone sees it update
+on the map. Send a message with updated weather forecasts as they're received,
+and everyone can see the storm developing. Send another message updating a
+waypoint to avoid the storm, and steady as you go...
+
+The coders, meanwhile, probably tweak their dashboard's code every day. As
+they add git-ssb repos, they make the dashboard display an overview of their
+bugs. They get CI systems hooked in and feeding messages to Scuttlebutt, and
+make the dashboard go green or red. They make the dashboard A-B test itself to
+pick the right shade of red. And so on...
+
+The dashboard program is stored in Scuttlebutt so everyone is on the same
+page, and the most recent version of it posted by a team member gets used.
+(Just have the old version of the program notice when there's a newer version,
+and run that one..)
+
+(Also could be used in disaster response scenarios, where the data and
+visualization tools get built up on the fly in response to local needs, and
+are shared peer-to-peer in areas without internet.)
+
+  * **Smart hyperlinks.** When a hyperlink in a Scuttlebutt message points to a Annah program, optionally with some Annah data, clicking on it can run the program and display the messages that the program generates.
+
+This is the most basic way a Scuttlebutt client could support Annah programs,
+and it could be used for tons of stuff. A few examples:
+
+    * **Hiding spoilers.** Click on the link and it'll display a spoiler about a book/movie.
+    * **A link to whatever I was talking about one year ago today.** That opens different messages as time goes by. Put it in your Scuttlebutt profile or something. (Requires a way for Annah to get the current date, which it normally has no way of accessing.)
+    * **Choose your own adventure or twine style games.** Click on the link and the program starts the game, displaying links to choose between, and so on.
+    * **Links to custom views.** For example, a link could lead to a combination of messages from several different, related channels. Or could filter messages in some way.
+  * **Collaborative filtering.** Suppose I don't want to see frog-related memes in my Scuttlebutt client. I can write a Annah program that calculates a message's frogginess, and outputs a `Filtered Message`. It can leave a message unchanged, or filter it out, or perhaps minimize its display. I publish the Annah program on my feed, and tell my Scuttlebutt client to filter all messages through it before displaying them to me.
+
+I published the program in my Scuttlebutt feed, and so my friends can use it
+too. They can build other filtering functions for other stuff (such an an
+excess of orange in photos), and integrate my frog filter into their filter
+program by simply composing the two.
+
+If I like their filter, I can switch my client to using it. Or not. Filtering
+is thus subjective, like Scuttlebutt, and the subjectivity is expressed by
+picking the filter you want to use, or developing a better one.
+
+  * **Wiki pages.** Scuttlebutt is built on immutable append-only logs; it doesn't have editable wiki pages. But they can be built on top using Annah.
+
+A smart link to a wiki page is a reference to the Annah program that renders
+it. Of course being a wiki, there will be more smart links on the wiki page
+going to other wiki pages, and so on.
+
+The wiki page includes a smart link to edit it. The editor needs basic form
+support in the Scuttlebutt client; when the edited wiki page is posted, the
+Annah program diffs it against the previous version and generates an `Edit`
+which gets posted to the user's feed. Rendering the page is just a matter of
+finding the `Edit` messages for it from people who are allowed to edit it, and
+combining them.
+
+Anyone can fork a wiki page by posting an `Edit` to their feed. And can then
+post a smart link to their fork of the page.
+
+And anyone can merge other forks into their wiki page (this posts a control
+message that makes the Annah program implementing the wiki accept those forks'
+`Edit` messages). Or grant other users permission to edit the wiki page
+(another control message). Or grant other users permissions to grant other
+users permissions.
+
+There are lots of different ways you might want your wiki to work. No one wiki
+implementation, but lots of Annah programs. Others can interact with your wiki
+using the program you picked, or fork it and even switch the program used.
+Subjectivity again.
+
+  * **User-defined board games.** The Scuttlebutt client finds Scuttlebutt messages containing Annah programs of type `Game`, and generates a tab with a list of available games.
+
+The players of a particular game all experience the same game interface,
+because the code for it is part of their shared Scuttlebutt message pool, and
+the code to use gets agreed on at the start of a game.
+
+To play a game, the Scuttlebutt client runs the Annah program, which generates
+a description of the current contents of the game board.
+
+So, for chess, use Annah to define a `ChessMove` data type, and the Annah
+program takes the feeds of the two players, looks for messages containing a
+`ChessMove`, and builds up a description of the chess board.
+
+As well as the pieces on the game board, the game board description includes
+Annah functions that get called when the user moves a game piece. That
+generates a new `ChessMove` which gets recorded in the user's Scuttlebutt
+feed.
+
+This could support a wide variety of board games. If you don't mind the
+possibility that your opponent might cheat by peeking at the random seed, even
+games involving things like random card shuffles and dice rolls could be
+built. Also there can be games like Core Wars where the gamers themselves
+write Annah programs to run inside the game.
+
+Variants of games can be developed by modifying and reusing game programs. For
+example, timed chess is just the chess program with an added check on move
+time, and time clock display.
+
+  * **Decentralized chat bots.** Chat bots are all the rage (or were a few months ago, tech fads move fast), but in a decentralized system like Scuttlebutt, a bot running on a server somewhere would be a ugly point of centralization. Instead, write a Annah program for the bot.
+
+To launch the bot, publish a message in your own personal Scuttlebutt feed
+that contains the bot's program, and a nonce.
+
+The user's Scuttlebutt client takes care of the rest. It looks for messages
+with bot programs, and runs the bot's program. This generates or updates a
+Scuttlebutt message feed for the bot.
+
+The bot's program signs the messages in its feed using a private key that's
+generated by combining the user's public key, and the bot's nonce. So, the bot
+has one feed per user it talks to, with deterministic content, which avoids a
+problem with forking a Scuttlebutt feed.
+
+The bot-generated messages can be stored in the Scuttlebutt database like any
+other messages and replicated around. The bot appears as if it were a
+Scuttlebutt user. But you can have conversations with it while you're offline.
+
+(The careful reader may have noticed that deeply private messages sent to the
+bot can be decrypted by anyone! This bot thing is probably a bad idea really,
+but maybe the bot fad is over anyway. We can only hope. It's important that
+there be at least one bad idea in this list..)
+
+This kind of extensibility in a peer-to-peer system is exciting! With these
+new systems, we can consider lessons from the world wide web and replicate
+some of the good parts, while avoiding the bad. Javascript has been both good
+and bad for the web. The extensibility is great, and yet it's a neverending
+security and privacy nightmare, and it ties web pages ever more tightly to
+programs hidden away on servers. I believe that Annah combined with
+Scuttlebutt will comprehensively avoid those problems. Shall we build it?
+
+* * *
+
+This exploration was sponsored by Jake Vosloo on [Patreon][8].
+
+   [8]: <https://patreon.com/joeyh>
+
+
+--===============testboundary==--
+
 From planet-debian Wed Oct 18 10:00:19 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
@@ -6,7 +1015,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Gammu 1.38.5
 Message-ID: https-blog-cihar-com-archives-2017-10-18-gammu-1385-utm_source-rss2
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://blog.cihar.com/archives/2017/10/18/gammu-1385/?utm_source=rss2
@@ -62,15 +1071,15 @@ Filed under: [Debian][4] [English][5] [Gammu][6]
 
 --===============testboundary==--
 
-From planet-debian Wed Oct 18 08:01:09 2017
+From planet-debian Wed Oct 18 08:25:00 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
-Date: Wed, 18 Oct 2017 08:01:09 -0000
+Date: Wed, 18 Oct 2017 08:25:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steinar H. Gunderson: Introducing Narabu, part 1: Introduction
 Message-ID: http-blog-sesse-net-blog-tech-2017-10-18-09-25_introducing_narabu_part_1_introduction-html
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://blog.sesse.net/blog/tech/2017-10-18-09-25_introducing_narabu_part_1_introduction.html
@@ -250,7 +1259,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Kobo firmware 4.6.9995 mega update (KSM, nickel patch, ssh, fonts)
 Message-ID: https-www-preining-info-blog-p-6827
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://www.preining.info/blog/2017/10/kobo-firmware-4-6-9995-mega-update-ksm-nickel-patch-ssh-fonts/
@@ -568,7 +1577,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Sune Vuorela: KDE still makes Qt
 Message-ID: http-pusling-com-blog-p-448
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://pusling.com/blog/?p=448
@@ -616,7 +1625,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Reproducible builds folks: Reproducible Builds: Weekly report #129
 Message-ID: https-reproducible-alioth-debian-org-blog-posts-129
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://reproducible.alioth.debian.org/blog/posts/129/
@@ -1033,7 +2042,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Jonathan Dowland: Electric Dreams
 Message-ID: http-jmtd-net-log-electric_dreams
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://jmtd.net/log/electric_dreams/
@@ -1189,7 +2198,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Russ Allbery: Bundle haul
 Message-ID: https-www-eyrie-org-eagle-journal-2017-10-002-html
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://www.eyrie.org/~eagle/journal/2017-10/002.html
@@ -1483,7 +2492,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Japanese TeX User Meeting 2017
 Message-ID: https-www-preining-info-blog-p-6823
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://www.preining.info/blog/2017/10/japanese-tex-user-meeting-2017/
@@ -1598,7 +2607,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Fran=C3=A7ois_Marier=3A_Checking_Your_Passwords_Against_the_Have_I_Been_Pwned_List?=
 Message-ID: http-feeding-cloud-geek-nz-posts-checking-your-passwords-against-hibp
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://feeding.cloud.geek.nz/posts/checking-your-passwords-against-hibp/
@@ -1681,7 +2690,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Gustavo Noronha Silva: Who knew we still had low-hanging fruits?
 Message-ID: https-blog-kov-eti-br-p-402
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://blog.kov.eti.br/2017/10/who-knew-we-still-had-low-hanging-fruits/
@@ -1808,7 +2817,7 @@ To: to@example.com
 From: Yves-Alexis <corsac@debian.org>
 Subject: Yves-Alexis Perez: OpenPGP smartcard transition (part 1.5)
 Message-ID: http-www-corsac-net-rub-blog-post-1589
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://www.corsac.net/?rub=blog&post=1589
@@ -1860,7 +2869,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: No more no surprises
 Message-ID: https-iain-learmonth-me-blog-2017-2017w421
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://iain.learmonth.me/blog/2017/2017w421/
@@ -1993,7 +3002,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Russ Allbery: Free software log (September 2017)
 Message-ID: https-www-eyrie-org-eagle-journal-2017-10-001-html
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://www.eyrie.org/~eagle/journal/2017-10/001.html
@@ -2239,7 +3248,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Fixing vim in Debian
 Message-ID: https-www-preining-info-blog-p-6814
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://www.preining.info/blog/2017/10/fixing-vim-in-debian/
@@ -2353,7 +3362,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Free Software Efforts (2017W41)
 Message-ID: https-iain-learmonth-me-blog-2017-2017w41
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://iain.learmonth.me/blog/2017/2017w41/
@@ -2606,7 +3615,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: TeX Live Manager: JSON output
 Message-ID: https-www-preining-info-blog-p-6806
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://www.preining.info/blog/2017/10/tex-live-manager-json-output/
@@ -2818,7 +3827,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Lior Kaplan: Debian Installer git repository
 Message-ID: http-liorkaplan-wordpress-com-p-620
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://liorkaplan.wordpress.com/2017/10/15/debian-installer-git-repository/
@@ -2884,7 +3893,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Petter Reinholdtsen: A one-way wall on the border?
 Message-ID: http-people-skolelinux-org-pere-blog-a_one_way_wall_on_the_border_-html
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://people.skolelinux.org/pere/blog/A_one_way_wall_on_the_border_.html
@@ -2931,150 +3940,6 @@ in the inside from getting out?
 
 --===============testboundary==--
 
-From planet-debian Sat Oct 14 05:29:18 2017
-Content-Type: multipart/alternative; boundary="===============testboundary=="
-MIME-Version: 1.0
-Date: Sat, 14 Oct 2017 05:29:18 -0000
-To: to@example.com
-From: planet-debian <to@example.com>
-Subject: Norbert Preining: ScalaFX: ListView with CellFactory
-Message-ID: https-www-preining-info-blog-p-6798
-User-Agent: feed2exec (0.7.0)
-Precedence: list
-Auto-Submitted: auto-generated
-Archive-At: https://www.preining.info/blog/2017/10/scalafx-listview-with-cellfactory/
-
---===============testboundary==
-Content-Type: text/html; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-<img src="http://planet.debian.org/heads/preining.png" width="65" height="85" alt="" align="right" style="float: right;">  <p>I had a bit hard time to get <a href="http://www.scalafx.org/">ScalaFX</a> to display a list of items in a scrollable space, and each item can be clicked. I use this in <a href="https://github.com/TeX-Live/tlcockpit">TLCockpit</a> to display the list of documentation files in a <a href="http://tug.org/texlive">TeX Live</a> package, and open it directly from the application. Unfortunately there is not a huge amount of examples using ScalaFX out there in the web, so it took me a bit. My first try was using a <tt>VBox</tt> with various <tt>Label</tt>s in there, but this is not scrollable.</p>
-<p><img alt="" class="aligncenter size-full wp-image-6796" height="450" src="https://www.preining.info/blog/wp-content/uploads/2017/10/learning-scala.jpg" width="800" /></p>
-<p>In other areas I have used <tt><a href="http://www.scalafx.org/api/8.0/index.html#scalafx.scene.control.TreeTableView">TreeTableView</a></tt>, so in this case using <tt><a href="http://www.scalafx.org/api/8.0/index.html#scalafx.scene.control.ListView">ListView</a></tt> should be fine. What I finally came up is the following code:</p>
-<pre lang="scala">import scalafx.application.JFXApp
-import scalafx.application.JFXApp.PrimaryStage
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Orientation
-import scalafx.scene.control.{ListCell, ListView}
-import scalafx.scene.input.MouseEvent
-import scalafx.scene.{Cursor, Scene}
-import scalafx.scene.paint.Color
-import scalafx.Includes._
-
-object ApplicationMain extends JFXApp {
-
-  val SomeStrings: Seq[String] = Seq("Hello", "World", "Enjoy")
-
-  stage = new PrimaryStage {
-    title = "ListViewExample"
-    scene = new Scene {
-      root = {
-        new ListView[String] {
-          orientation = Orientation.Vertical
-          cellFactory = {
-            p =&gt; {
-              val cell = new ListCell[String]
-              cell.textFill = Color.Blue
-              cell.cursor = Cursor.Hand
-              cell.item.onChange { (_, _, str) =&gt; cell.text = str }
-              cell.onMouseClicked = { me: MouseEvent =&gt; println("Do something with " + cell.text.value) }
-              cell
-            }
-          }
-          items = ObservableBuffer(SomeStrings)
-        }
-      }
-    }
-  }
-}
-</pre>
-<p>Some comments to the code, at least as far I understand it:</p>
-<ul>
-<li>line 9: Importing <tt>scalafx.Includes._</tt> seems to simplify some things, in particular the event handler routines can be written more straight forward.</li>
-<li>line 20: Many more properties can be set here, for example the preferred height and max height, both of which I am using.</li>
-<li>line 23: In my case a <tt>ListCell</tt> was enough for my needs (changing color, cursor, and allowing for mouse clicks), but if one needs something more complicated here it is bst to create an arbitrary object and asign it to the <tt>graphic</tt> field.</li>
-<li>line 26: The essential part to actually fill the cells is the routine <tt>cell.item.onChange</tt>, which takes three arguments of which the last is the new value. It is used to update the cell text.</li>
-<li>line 31: Last but not least one needs to assign some <tt>Observable</tt> to the <tt>items</tt>, in this case I use <tt>ObservableBuffer</tt> around the lost of strings.</li>
-</ul>
-<p>Once managed, it doesn’t look so complicated, but took me some time.</p>
---===============testboundary==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-https://www.preining.info/blog/2017/10/scalafx-listview-with-cellfactory/
-
-I had a bit hard time to get [ScalaFX][1] to display a list of items in a
-scrollable space, and each item can be clicked. I use this in [TLCockpit][2]
-to display the list of documentation files in a [TeX Live][3] package, and
-open it directly from the application. Unfortunately there is not a huge
-amount of examples using ScalaFX out there in the web, so it took me a bit. My
-first try was using a `VBox` with various `Label`s in there, but this is not
-scrollable.
-
-   [1]: <http://www.scalafx.org/>
-   [2]: <https://github.com/TeX-Live/tlcockpit>
-   [3]: <http://tug.org/texlive>
-
-In other areas I have used `[TreeTableView][4]`, so in this case using
-`[ListView][5]` should be fine. What I finally came up is the following code:
-
-    
-       [4]: <http://www.scalafx.org/api/8.0/index.html#scalafx.scene.control.TreeTableView>
-   [5]: <http://www.scalafx.org/api/8.0/index.html#scalafx.scene.control.ListView>
-
-    import scalafx.application.JFXApp
-    import scalafx.application.JFXApp.PrimaryStage
-    import scalafx.collections.ObservableBuffer
-    import scalafx.geometry.Orientation
-    import scalafx.scene.control.{ListCell, ListView}
-    import scalafx.scene.input.MouseEvent
-    import scalafx.scene.{Cursor, Scene}
-    import scalafx.scene.paint.Color
-    import scalafx.Includes._
-    
-    object ApplicationMain extends JFXApp {
-    
-      val SomeStrings: Seq[String] = Seq("Hello", "World", "Enjoy")
-    
-      stage = new PrimaryStage {
-        title = "ListViewExample"
-        scene = new Scene {
-          root = {
-            new ListView[String] {
-              orientation = Orientation.Vertical
-              cellFactory = {
-                p => {
-                  val cell = new ListCell[String]
-                  cell.textFill = Color.Blue
-                  cell.cursor = Cursor.Hand
-                  cell.item.onChange { (_, _, str) => cell.text = str }
-                  cell.onMouseClicked = { me: MouseEvent => println("Do something with " + cell.text.value) }
-                  cell
-                }
-              }
-              items = ObservableBuffer(SomeStrings)
-            }
-          }
-        }
-      }
-    }
-    
-
-Some comments to the code, at least as far I understand it:
-
-  * line 9: Importing `scalafx.Includes._` seems to simplify some things, in particular the event handler routines can be written more straight forward.
-  * line 20: Many more properties can be set here, for example the preferred height and max height, both of which I am using.
-  * line 23: In my case a `ListCell` was enough for my needs (changing color, cursor, and allowing for mouse clicks), but if one needs something more complicated here it is bst to create an arbitrary object and asign it to the `graphic` field.
-  * line 26: The essential part to actually fill the cells is the routine `cell.item.onChange`, which takes three arguments of which the last is the new value. It is used to update the cell text.
-  * line 31: Last but not least one needs to assign some `Observable` to the `items`, in this case I use `ObservableBuffer` around the lost of strings.
-
-Once managed, it doesn’t look so complicated, but took me some time.
-
-
---===============testboundary==--
-
 From planet-debian Fri Oct 13 18:47:36 2017
 Content-Type: multipart/alternative; boundary="===============testboundary=="
 MIME-Version: 1.0
@@ -3083,7 +3948,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Alex Muntada: My Free Software Activities in Jul-Sep 2017
 Message-ID: http-log-alexm-org-p-487
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://log.alexm.org/2017/10/13/my-free-software-ativities-in-jul-sep-2017/
@@ -3195,7 +4060,7 @@ To: to@example.com
 From: =?utf-8?q?Lisandro_Dami=C3=A1n_Nicanor_P=C3=A9rez_Meyer?= <noreply@blogger.com>
 Subject: =?utf-8?q?Lisandro_Dami=C3=A1n_Nicanor_P=C3=A9rez_Meyer=3A_Qt_4_and_5_and_OpenSSL1=2E0_removal?=
 Message-ID: tag-blogger-com-1999-blog-6357172297737057475-post-4876329106387979395
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://perezmeyer.blogspot.com/2017/10/qt-4-and-5-and-oepnssl10-removal.html
@@ -3255,7 +4120,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Weblate 2.17
 Message-ID: https-blog-cihar-com-archives-2017-10-13-weblate-217-utm_source-rss2
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://blog.cihar.com/archives/2017/10/13/weblate-217/?utm_source=rss2
@@ -3386,7 +4251,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Shirish_Agarwal=3A_I_need_to_speak_up_now_X_=E2=80=93_Economics?=
 Message-ID: http-flossexperiences-wordpress-com-p-4100
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://flossexperiences.wordpress.com/2017/10/13/i-need-to-speak-up-now-x-economics/
@@ -3789,7 +4654,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Using Trezor to store cryptocurencies
 Message-ID: https-blog-cihar-com-archives-2017-10-13-using-trezor-store-cryptocurencies-utm_source-rss2
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://blog.cihar.com/archives/2017/10/13/using-trezor-store-cryptocurencies/?utm_source=rss2
@@ -3865,7 +4730,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Dirk Eddelbuettel: GitHub Streak: Round Four
 Message-ID: http-dirk-eddelbuettel-com-blog-2017-10-12-github_oct2016_oct2017
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://dirk.eddelbuettel.com/blog/2017/10/12#github_oct2016_oct2017
@@ -3960,7 +4825,7 @@ To: to@example.com
 From: Joachim Breitner <mail@joachim-breitner.de>
 Subject: Joachim Breitner: Isabelle functions: Always total, sometimes undefined
 Message-ID: http-www-joachim-breitner-de-blog-732-isabelle_functions__always_total-2c_sometimes_undefined
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://www.joachim-breitner.de/blog/732-Isabelle_functions__Always_total%2C_sometimes_undefined
@@ -4518,7 +5383,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Dirk Eddelbuettel: RcppArmadillo 0.8.100.1.0
 Message-ID: http-dirk-eddelbuettel-com-blog-2017-10-11-rcpparmadillo_0-8-100-1-0
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://dirk.eddelbuettel.com/blog/2017/10/11#rcpparmadillo_0.8.100.1.0
@@ -4694,7 +5559,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steve Kemp: A busy week or two
 Message-ID: https-blog-steve-fi-a_busy_week_or_two-html
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://blog.steve.fi/a_busy_week_or_two.html
@@ -4815,7 +5680,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: New projects on Hosted Weblate
 Message-ID: https-blog-cihar-com-archives-2017-10-11-new-projects-hosted-weblate-utm_source-rss2
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://blog.cihar.com/archives/2017/10/11/new-projects-hosted-weblate/?utm_source=rss2
@@ -4914,7 +5779,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Carl Chenet: The Slack Threat
 Message-ID: https-carlchenet-com-p-5230
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://carlchenet.com/the-slack-threat/
@@ -5228,7 +6093,7 @@ To: to@example.com
 From: Yves-Alexis <corsac@debian.org>
 Subject: Yves-Alexis Perez: OpenPGP smartcard transition (part 1)
 Message-ID: http-www-corsac-net-rub-blog-post-1588
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://www.corsac.net/?rub=blog&post=1588
@@ -5397,7 +6262,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Better access control in Weblate
 Message-ID: https-blog-cihar-com-archives-2017-10-09-better-access-control-weblate-utm_source-rss2
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://blog.cihar.com/archives/2017/10/09/better-access-control-weblate/?utm_source=rss2
@@ -5470,7 +6335,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Automatic Updates
 Message-ID: https-iain-learmonth-me-blog-2017-2017w412
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://iain.learmonth.me/blog/2017/2017w412/
@@ -5659,7 +6524,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Jamie McClelland: Docker in Debian
 Message-ID: http-current-workingdirectory-net-posts-2017-docker-in-debian
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://current.workingdirectory.net/posts/2017/docker-in-debian/
@@ -5865,7 +6730,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Lars Wirzenius: Debian and the GDPR
 Message-ID: http-blog-liw-fi-posts-2017-10-10-debian_and_the_gdpr
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://blog.liw.fi/posts/2017/10/10/debian_and_the_gdpr/
@@ -5984,7 +6849,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Reproducible builds folks: Reproducible Builds: Weekly report #128
 Message-ID: https-reproducible-alioth-debian-org-blog-posts-128
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://reproducible.alioth.debian.org/blog/posts/128/
@@ -6345,7 +7210,7 @@ To: to@example.com
 From: Vincent Fourmond <noreply@blogger.com>
 Subject: Vincent Fourmond: Define a function with inline Ruby code in QSoas
 Message-ID: tag-blogger-com-1999-blog-3019054489127059271-post-241025559998196415
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://vince-debian.blogspot.com/2017/10/define-function-with-inline-ruby-code.html
@@ -6498,7 +7363,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Markus Koschany: My Free Software Activities in September 2017
 Message-ID: https-gambaru-de-blog-p-10232
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://gambaru.de/blog/2017/10/10/my-free-software-activities-in-september-2017/
@@ -6652,7 +7517,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Ben Hutchings: Debian LTS work, September 2017
 Message-ID: https-www-decadent-org-uk-ben-blog-2017-10-09-debian-lts-work-september-2017
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://www.decadent.org.uk/ben/blog/debian-lts-work-september-2017.html
@@ -6701,7 +7566,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Antonio Terceiro: pristine-tar updates
 Message-ID: http-softwarelivre-org-terceiro-blog-pristine-tar-updates
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://softwarelivre.org/terceiro/blog/pristine-tar-updates
@@ -6882,7 +7747,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Petter Reinholdtsen: Generating 3D prints in Debian using Cura and Slic3r(-prusa)
 Message-ID: http-people-skolelinux-org-pere-blog-generating_3d_prints_in_debian_using_cura_and_slic3r__prusa_-html
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://people.skolelinux.org/pere/blog/Generating_3D_prints_in_Debian_using_Cura_and_Slic3r__prusa_.html
@@ -6982,7 +7847,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Gunnar Wolf: Achievement unlocked - Made with Creative Commons translated to Spanish! (Thanks, @xattack!)
 Message-ID: http-gwolf-org-4113-at-http-gwolf-org
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://gwolf.org/node/4113
@@ -7101,7 +7966,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Free Software Efforts (2017W40)
 Message-ID: https-iain-learmonth-me-blog-2017-2017w40
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://iain.learmonth.me/blog/2017/2017w40/
@@ -7266,7 +8131,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michael Stapelberg: Debian stretch on the Raspberry Pi 3 (update)
 Message-ID: https-people-debian-org-stapelberg-2017-10-08-raspberry-pi-3
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://people.debian.org/~stapelberg//2017/10/08/raspberry-pi-3.html
@@ -7394,7 +8259,7 @@ To: to@example.com
 From: Joachim Breitner <mail@joachim-breitner.de>
 Subject: Joachim Breitner: e.g. in TeX
 Message-ID: http-www-joachim-breitner-de-blog-731-e_g__in_tex
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://www.joachim-breitner.de/blog/731-e_g__in_TeX
@@ -7513,7 +8378,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Daniel Pocock: A step change in managing your calendar, without social media
 Message-ID: https-danielpocock-com-340-at-https-danielpocock-com
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://danielpocock.com/a-step-change-in-your-calendar
@@ -7643,7 +8508,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Ricardo Mones: Cannot enable. Maybe the USB cable is bad?
 Message-ID: https-mones-livejournal-com-116050-html
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://mones.livejournal.com/116050.html
@@ -7747,7 +8612,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Tor Relays on Twitter
 Message-ID: https-iain-learmonth-me-blog-2017-2017w407
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://iain.learmonth.me/blog/2017/2017w407/
@@ -7920,7 +8785,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Thomas Lange: FAI 5.4 enters the embedded world
 Message-ID: http-blog-fai-project-org-posts-fai-5-4
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://blog.fai-project.org/posts/fai-5.4/
@@ -7985,7 +8850,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Chris Lamb: python-gfshare: Secret sharing in Python
 Message-ID: https-chris-lamb-co-uk-posts-python-gfshare-secret-sharing-in-python
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://chris-lamb.co.uk/posts/python-gfshare-secret-sharing-in-python
@@ -8096,7 +8961,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Scarlett Clark: KDE at #UbuntuRally in New York! KDE Applications snaps!
 Message-ID: http-scarlettgatelyclark-com-p-450
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://scarlettgatelyclark.com/2017/kde-at-ubunturally-in-new-york-kde-applications-snaps/
@@ -8151,7 +9016,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Rapha&#235;l Hertzog: My Free Software Activities in September 2017
 Message-ID: https-raphaelhertzog-com-p-3636
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://raphaelhertzog.com/2017/10/06/my-free-software-activities-in-september-2017/
@@ -8278,7 +9143,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Ross Gammon: My FOSS activities for August & September 2017
 Message-ID: http-rossgammon68-wordpress-com-p-1652
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://rossgammon68.wordpress.com/2017/10/05/my-foss-activities-for-august-september-2017/
@@ -8383,7 +9248,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Wouter Verhelst: Patching Firefox
 Message-ID: https-grep-be-blog-en-computer-code-patching_firefox
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://grep.be/blog//en/computer/code/Patching_Firefox/
@@ -8561,7 +9426,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steve Kemp: Tracking aircraft in real-time, via software-defined-radio
 Message-ID: https-blog-steve-fi-tracking_aircraft_in_real_time__via_software_defined_radio-html
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: https://blog.steve.fi/tracking_aircraft_in_real_time__via_software_defined_radio.html
@@ -8768,7 +9633,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Daniel Silverstone: F/LOSS (in)activity, September 2017
 Message-ID: http-blog-digital-scurf-org-posts-floss-activity-2017-09
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://blog.digital-scurf.org/posts/floss-activity-2017-09/
@@ -8835,7 +9700,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Dirk Eddelbuettel: RProtoBuf 0.4.11
 Message-ID: http-dirk-eddelbuettel-com-blog-2017-10-03-rprotobuf_0-4-11
-User-Agent: feed2exec (0.7.0)
+User-Agent: feed2exec (0.8.0)
 Precedence: list
 Auto-Submitted: auto-generated
 Archive-At: http://dirk.eddelbuettel.com/blog/2017/10/03#rprotobuf_0.4.11
@@ -8919,774 +9784,6 @@ profit settings.
 
    [15]: <http://dirk.eddelbuettel.com>
    [16]: <http://dirk.eddelbuettel.com/blog/>
-
-
---===============testboundary==--
-
-From planet-debian Tue Oct  3 22:17:02 2017
-Content-Type: multipart/alternative; boundary="===============testboundary=="
-MIME-Version: 1.0
-Date: Tue, 03 Oct 2017 22:17:02 -0000
-To: to@example.com
-From: planet-debian <to@example.com>
-Subject: Christoph Egger: Observations on Catalunya
-Message-ID: https-weblog-siccegge-de-observations_on_catalunya-html
-User-Agent: feed2exec (0.7.0)
-Precedence: list
-Auto-Submitted: auto-generated
-Archive-At: https://weblog.siccegge.de/Observations_on_Catalunya.html
-
---===============testboundary==
-Content-Type: text/html; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-<img src="http://planet.debian.org/heads/christoph.png" width="77" height="100" alt="" align="right" style="float: right;">  <p>Some things I don't really understand reading in German media</p>
-
-<ul>
-<li><p>Suddenly the electoral system becomes a legitimacy problem. While it
-has never been a problem for any of the previous decisions of the
-Catalunyan regional government suddenly a
-<a href="https://en.wikipedia.org/wiki/Catalan_regional_election,_2015">"only 48% of people voted for the government"</a> results in the
-decisions being illegitimate?  This is also a property of many
-governments (<a href="https://en.wikipedia.org/wiki/Greek_legislative_election,_September_2015">Greece</a> and the <a href="https://en.wikipedia.org/wiki/United_States_presidential_election,_2016">US president</a> being obvious
-examples but also the <a href="https://en.wikipedia.org/wiki/German_federal_election,_2002">German Bundestag</a> can have a majority
-government without the majority of votes). Is this just the media
-trying to find something they can blame on "the other side"?</p></li>
-<li><p>How can you ever possibly excuse violence against people peacefully
-and non-violently doing whatever they're doing. Sure this referendum
-was considered illegal (and it may be legitimate to ignore the
-result, or legal prosecution of the initiators) but how can that
-ever possibly be an excuse for half a population peacefully doing
-whatever they are about to do? How can you possibly claim that "both
-sides are to blame" for the violence? "Die Zeit" seems to be the
-only one with an somewhat convincing argument ("Deciding to press on
-despite the obviously happening violence") while "Welt", "Spiegel"
-and "Süddeutsche" all trying to blame the regional government for
-the violence with as much of an argument as asking people to do
-something illegal in a totally peaceful way. Possibly an argument
-for legal consequences, sure -- but for violence?</p></li>
-</ul>
-
-<p>Too bad I didn't keep the links / articles from Sunday night.</p>
---===============testboundary==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-https://weblog.siccegge.de/Observations_on_Catalunya.html
-
-Some things I don't really understand reading in German media
-
-  * Suddenly the electoral system becomes a legitimacy problem. While it has never been a problem for any of the previous decisions of the Catalunyan regional government suddenly a ["only 48% of people voted for the government"][1] results in the decisions being illegitimate? This is also a property of many governments ([Greece][2] and the [US president][3] being obvious examples but also the [German Bundestag][4] can have a majority government without the majority of votes). Is this just the media trying to find something they can blame on "the other side"?
-
-   [1]: <https://en.wikipedia.org/wiki/Catalan_regional_election,_2015>
-   [2]: <https://en.wikipedia.org/wiki/Greek_legislative_election,_September_2015>
-   [3]: <https://en.wikipedia.org/wiki/United_States_presidential_election,_2016>
-   [4]: <https://en.wikipedia.org/wiki/German_federal_election,_2002>
-
-  * How can you ever possibly excuse violence against people peacefully and non-violently doing whatever they're doing. Sure this referendum was considered illegal (and it may be legitimate to ignore the result, or legal prosecution of the initiators) but how can that ever possibly be an excuse for half a population peacefully doing whatever they are about to do? How can you possibly claim that "both sides are to blame" for the violence? "Die Zeit" seems to be the only one with an somewhat convincing argument ("Deciding to press on despite the obviously happening violence") while "Welt", "Spiegel" and "Süddeutsche" all trying to blame the regional government for the violence with as much of an argument as asking people to do something illegal in a totally peaceful way. Possibly an argument for legal consequences, sure -- but for violence?
-
-Too bad I didn't keep the links / articles from Sunday night.
-
-
---===============testboundary==--
-
-From planet-debian Tue Oct  3 18:15:32 2017
-Content-Type: multipart/alternative; boundary="===============testboundary=="
-MIME-Version: 1.0
-Date: Tue, 03 Oct 2017 18:15:32 -0000
-To: to@example.com
-From: planet-debian <to@example.com>
-Subject: Reproducible builds folks: Reproducible Builds: Weekly report #127
-Message-ID: https-reproducible-alioth-debian-org-blog-posts-127
-User-Agent: feed2exec (0.7.0)
-Precedence: list
-Auto-Submitted: auto-generated
-Archive-At: https://reproducible.alioth.debian.org/blog/posts/127/
-
---===============testboundary==
-Content-Type: text/html; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-<p>Here's what happened in the <a href="https://reproducible-builds.org">Reproducible
-Builds</a> effort between Sunday September 24 and
-Saturday September 30 2017:</p>
-
-<h2>Development and fixes in key packages</h2>
-
-<p>Kai Harries did an <a href="https://github.com/KaiHa/nix-debian/">initial packaging of the Nix package manager for
-Debian</a>. You can track his progress in
-<a href="https://bugs.debian.org/877019">#877019</a>.</p>
-
-<p>Uploads in Debian:</p>
-
-<ul>
-<li>Chris Lamb:
-
-<ul>
-<li><a href="https://tracker.debian.org/pkg/shadow">shadow</a>/1:4.5-1 fixing <a href="https://bugs.debian.org/857803">#857803</a>.</li>
-</ul>
-</li>
-<li>Holger Levsen:
-
-<ul>
-<li><a href="https://tracker.debian.org/pkg/font-uralic">font-uralic</a>/0.0.20040829-6 fixing <a href="https://bugs.debian.org/854362">#854362</a>. (NMU)</li>
-<li><a href="https://tracker.debian.org/pkg/mpack">mpack</a>/1.6-8.2 fixing <a href="https://bugs.debian.org/777376">#777376</a>. (NMU)</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>Packages reviewed and fixed, and bugs filed</h2>
-
-<p>Patches sent upstream:</p>
-
-<ul>
-<li>Bernhard M. Wiedemann:
-
-<ul>
-<li><a href="https://github.com/numpy/numpy/pull/9780">python-numpy</a> build timestamp;
-merged</li>
-<li><a href="https://github.com/marshmallow-code/marshmallow/pull/679">python-marshmallow</a>
-build timestamp; merged</li>
-<li><a href="https://github.com/astropy/astropy-helpers/pull/341">python-astropy-helpers</a>
-build timestamp; merged</li>
-<li><a href="https://sourceforge.net/p/oprofile/oprofile/merge-requests/1/">oprofile</a>
-build timestamp</li>
-<li><a href="https://github.com/heimdal/heimdal/pull/336">libheimdal</a> build timestamp,
-hostname, username; upstream exploring alternative fixes</li>
-<li><a href="https://github.com/openSUSE/post-build-checks/pull/13">openSUSE/Qt</a> hash
-table seed</li>
-<li><a href="https://git.kolab.org/T2642">libkolabxml/xsd</a> ASLR memory location
-differences; no patch</li>
-</ul>
-</li>
-</ul>
-
-
-<p>Reproducible bugs (with patches) filed in Debian:</p>
-
-<ul>
-<li>Chris Lamb:
-
-<ul>
-<li><a href="https://bugs.debian.org/877375">#877375</a> filed against <a href="https://tracker.debian.org/pkg/polygen">polygen</a>.</li>
-<li><a href="https://bugs.debian.org/877381">#877381</a> filed against <a href="https://tracker.debian.org/pkg/plr">plr</a>.</li>
-<li><a href="https://bugs.debian.org/877384">#877384</a> filed against <a href="https://tracker.debian.org/pkg/rcs">rcs</a>.</li>
-</ul>
-</li>
-<li>Daniel Schepler:
-
-<ul>
-<li><a href="https://bugs.debian.org/876672">#876672</a> filed against <a href="https://tracker.debian.org/pkg/e2fsprogs">e2fsprogs</a>.</li>
-</ul>
-</li>
-<li>Vagrant Cascadian:
-
-<ul>
-<li><a href="https://bugs.debian.org/876657">#876657</a> filed against <a href="https://tracker.debian.org/pkg/device-tree-compiler">device-tree-compiler</a> and
-uploaded 1.4.4-1 with the patch applied.</li>
-</ul>
-</li>
-</ul>
-
-
-<p>QA bugs filed in Debian:</p>
-
-<ul>
-<li>Adrian Bunk:
-
-<ul>
-<li><a href="https://bugs.debian.org/876641">#876641</a> filed against <a href="https://tracker.debian.org/pkg/pcb">pcb</a>.</li>
-<li><a href="https://bugs.debian.org/876685">#876685</a> filed against <a href="https://tracker.debian.org/pkg/mssh">mssh</a>.</li>
-<li><a href="https://bugs.debian.org/876776">#876776</a> filed against <a href="https://tracker.debian.org/pkg/fityk">fityk</a>.</li>
-<li><a href="https://bugs.debian.org/876845">#876845</a> filed against <a href="https://tracker.debian.org/pkg/webkit2-sharp">webkit2-sharp</a>.</li>
-<li><a href="https://bugs.debian.org/876870">#876870</a> filed against <a href="https://tracker.debian.org/pkg/apertium-en-es">apertium-en-es</a>.</li>
-<li><a href="https://bugs.debian.org/877021">#877021</a> filed against <a href="https://tracker.debian.org/pkg/breathe">breathe</a>.</li>
-<li><a href="https://bugs.debian.org/877031">#877031</a> filed against <a href="https://tracker.debian.org/pkg/sextractor">sextractor</a>.</li>
-<li><a href="https://bugs.debian.org/877054">#877054</a> filed against <a href="https://tracker.debian.org/pkg/hypre">hypre</a>.</li>
-<li><a href="https://bugs.debian.org/877063">#877063</a> filed against <a href="https://tracker.debian.org/pkg/libitpp">libitpp</a>.</li>
-<li><a href="https://bugs.debian.org/877065">#877065</a> filed against <a href="https://tracker.debian.org/pkg/alglib">alglib</a>.</li>
-<li><a href="https://bugs.debian.org/877211">#877211</a> filed against <a href="https://tracker.debian.org/pkg/ipmiutil">ipmiutil</a>.</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>Reviews of unreproducible packages</h2>
-
-<p>103 package reviews have been added, 153 have been updated and 78 have been
-removed in this week, adding to our knowledge about <a href="https://tests.reproducible-builds.org/debian/index_issues.html">identified
-issues</a>.</p>
-
-<h2>Weekly QA work</h2>
-
-<p>During our reproducibility testing, FTBFS bugs have been detected and reported
-by:</p>
-
-<ul>
-<li>Adrian Bunk (177)</li>
-<li>Andreas Beckmann (2)</li>
-<li>Daniel Schepler (1)</li>
-</ul>
-
-
-<h2>diffoscope development</h2>
-
-<p>Mattia Rizzolo <a href="https://tracker.debian.org/news/875425">uploaded</a>
-version <code>87</code> to stretch-backports.</p>
-
-<ul>
-<li>Holger Levsen:
-
-<ul>
-<li>Bump standards version to 4.1.1, no changes needed.</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>strip-nondeterminism development</h2>
-
-<ul>
-<li>Holger Levsen:
-
-<ul>
-<li>Bump Standards-Version to 4.1.1, no changes needed.</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>reprotest development</h2>
-
-<ul>
-<li>Ximin Luo:
-
-<ul>
-<li>New features:
-
-<ul>
-<li>Add a <code>--env-build</code> option for testing different env vars. (In-progress,
-requires the <code>python-rstr</code> package awaiting entry into Debian.)</li>
-<li>Add a <code>--source-pattern</code> option to restrict copying of <code>source_root</code>.</li>
-</ul>
-</li>
-<li>Usability improvements:
-
-<ul>
-<li>Improve error messages in some common scenarios.</li>
-<li>Output hashes after a successful <code>--auto-build</code>.</li>
-<li>Print a warning message if we reproduced successfully but didn't vary
-everything.</li>
-<li>Update examples in documentation.</li>
-</ul>
-</li>
-<li>Have <code>dpkg-source</code> extract to different build dir iff varying the
-build-path.</li>
-<li>Pass <code>--debug</code> to diffoscope if verbosity &gt;= 2.</li>
-<li>Pass <code>--exclude-directory-metadata</code> to diffoscope(1) by default.</li>
-<li>Much refactoring to support the other work and several minor bug fixes.</li>
-</ul>
-</li>
-<li>Holger Levsen:
-
-<ul>
-<li>Bump standards version to 4.1.1, no changes needed.</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>tests.reproducible-builds.org</h2>
-
-<ul>
-<li>Holger Levsen:
-
-<ul>
-<li>Fix scheduler to not send empty scheduling notifications in the rare cases nothing has been scheduled.</li>
-<li>Fix colors in 'amount of packages build each day on $ARCH' graphs.</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>reproducible-website development</h2>
-
-<ul>
-<li>Holger Levsen:
-
-<ul>
-<li>Fix up HTML syntax</li>
-<li>Announce that RWS3 will happen at Betahaus, Berlin</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>Misc.</h2>
-
-<p>This week's edition was written by Ximin Luo, Bernhard M. Wiedemann, Holger
-Levsen and Chris Lamb &amp; reviewed by a bunch of Reproducible Builds folks on IRC
-&amp; the mailing lists.</p>
---===============testboundary==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-https://reproducible.alioth.debian.org/blog/posts/127/
-
-Here's what happened in the [Reproducible Builds][1] effort between Sunday
-September 24 and Saturday September 30 2017:
-
-   [1]: <https://reproducible-builds.org>
-
-## Development and fixes in key packages
-
-Kai Harries did an [initial packaging of the Nix package manager for
-Debian][2]. You can track his progress in [#877019][3].
-
-   [2]: <https://github.com/KaiHa/nix-debian/>
-   [3]: <https://bugs.debian.org/877019>
-
-Uploads in Debian:
-
-  * Chris Lamb: 
-    * [shadow][4]/1:4.5-1 fixing [#857803][5].
-  * Holger Levsen: 
-    * [font-uralic][6]/0.0.20040829-6 fixing [#854362][7]. (NMU)
-    * [mpack][8]/1.6-8.2 fixing [#777376][9]. (NMU)
-
-   [4]: <https://tracker.debian.org/pkg/shadow>
-   [5]: <https://bugs.debian.org/857803>
-   [6]: <https://tracker.debian.org/pkg/font-uralic>
-   [7]: <https://bugs.debian.org/854362>
-   [8]: <https://tracker.debian.org/pkg/mpack>
-   [9]: <https://bugs.debian.org/777376>
-
-## Packages reviewed and fixed, and bugs filed
-
-Patches sent upstream:
-
-  * Bernhard M. Wiedemann: 
-    * [python-numpy][10] build timestamp; merged
-    * [python-marshmallow][11] build timestamp; merged
-    * [python-astropy-helpers][12] build timestamp; merged
-    * [oprofile][13] build timestamp
-    * [libheimdal][14] build timestamp, hostname, username; upstream exploring alternative fixes
-    * [openSUSE/Qt][15] hash table seed
-    * [libkolabxml/xsd][16] ASLR memory location differences; no patch
-
-   [10]: <https://github.com/numpy/numpy/pull/9780>
-   [11]: <https://github.com/marshmallow-code/marshmallow/pull/679>
-   [12]: <https://github.com/astropy/astropy-helpers/pull/341>
-   [13]: <https://sourceforge.net/p/oprofile/oprofile/merge-requests/1/>
-   [14]: <https://github.com/heimdal/heimdal/pull/336>
-   [15]: <https://github.com/openSUSE/post-build-checks/pull/13>
-   [16]: <https://git.kolab.org/T2642>
-
-Reproducible bugs (with patches) filed in Debian:
-
-  * Chris Lamb: 
-    * [#877375][17] filed against [polygen][18].
-    * [#877381][19] filed against [plr][20].
-    * [#877384][21] filed against [rcs][22].
-  * Daniel Schepler: 
-    * [#876672][23] filed against [e2fsprogs][24].
-  * Vagrant Cascadian: 
-    * [#876657][25] filed against [device-tree-compiler][26] and uploaded 1.4.4-1 with the patch applied.
-
-   [17]: <https://bugs.debian.org/877375>
-   [18]: <https://tracker.debian.org/pkg/polygen>
-   [19]: <https://bugs.debian.org/877381>
-   [20]: <https://tracker.debian.org/pkg/plr>
-   [21]: <https://bugs.debian.org/877384>
-   [22]: <https://tracker.debian.org/pkg/rcs>
-   [23]: <https://bugs.debian.org/876672>
-   [24]: <https://tracker.debian.org/pkg/e2fsprogs>
-   [25]: <https://bugs.debian.org/876657>
-   [26]: <https://tracker.debian.org/pkg/device-tree-compiler>
-
-QA bugs filed in Debian:
-
-  * Adrian Bunk: 
-    * [#876641][27] filed against [pcb][28].
-    * [#876685][29] filed against [mssh][30].
-    * [#876776][31] filed against [fityk][32].
-    * [#876845][33] filed against [webkit2-sharp][34].
-    * [#876870][35] filed against [apertium-en-es][36].
-    * [#877021][37] filed against [breathe][38].
-    * [#877031][39] filed against [sextractor][40].
-    * [#877054][41] filed against [hypre][42].
-    * [#877063][43] filed against [libitpp][44].
-    * [#877065][45] filed against [alglib][46].
-    * [#877211][47] filed against [ipmiutil][48].
-
-   [27]: <https://bugs.debian.org/876641>
-   [28]: <https://tracker.debian.org/pkg/pcb>
-   [29]: <https://bugs.debian.org/876685>
-   [30]: <https://tracker.debian.org/pkg/mssh>
-   [31]: <https://bugs.debian.org/876776>
-   [32]: <https://tracker.debian.org/pkg/fityk>
-   [33]: <https://bugs.debian.org/876845>
-   [34]: <https://tracker.debian.org/pkg/webkit2-sharp>
-   [35]: <https://bugs.debian.org/876870>
-   [36]: <https://tracker.debian.org/pkg/apertium-en-es>
-   [37]: <https://bugs.debian.org/877021>
-   [38]: <https://tracker.debian.org/pkg/breathe>
-   [39]: <https://bugs.debian.org/877031>
-   [40]: <https://tracker.debian.org/pkg/sextractor>
-   [41]: <https://bugs.debian.org/877054>
-   [42]: <https://tracker.debian.org/pkg/hypre>
-   [43]: <https://bugs.debian.org/877063>
-   [44]: <https://tracker.debian.org/pkg/libitpp>
-   [45]: <https://bugs.debian.org/877065>
-   [46]: <https://tracker.debian.org/pkg/alglib>
-   [47]: <https://bugs.debian.org/877211>
-   [48]: <https://tracker.debian.org/pkg/ipmiutil>
-
-## Reviews of unreproducible packages
-
-103 package reviews have been added, 153 have been updated and 78 have been
-removed in this week, adding to our knowledge about [identified issues][49].
-
-   [49]: <https://tests.reproducible-builds.org/debian/index_issues.html>
-
-## Weekly QA work
-
-During our reproducibility testing, FTBFS bugs have been detected and reported
-by:
-
-  * Adrian Bunk (177)
-  * Andreas Beckmann (2)
-  * Daniel Schepler (1)
-
-## diffoscope development
-
-Mattia Rizzolo [uploaded][50] version `87` to stretch-backports.
-
-   [50]: <https://tracker.debian.org/news/875425>
-
-  * Holger Levsen: 
-    * Bump standards version to 4.1.1, no changes needed.
-
-## strip-nondeterminism development
-
-  * Holger Levsen: 
-    * Bump Standards-Version to 4.1.1, no changes needed.
-
-## reprotest development
-
-  * Ximin Luo: 
-    * New features: 
-      * Add a `--env-build` option for testing different env vars. (In-progress, requires the `python-rstr` package awaiting entry into Debian.)
-      * Add a `--source-pattern` option to restrict copying of `source_root`.
-    * Usability improvements: 
-      * Improve error messages in some common scenarios.
-      * Output hashes after a successful `--auto-build`.
-      * Print a warning message if we reproduced successfully but didn't vary everything.
-      * Update examples in documentation.
-    * Have `dpkg-source` extract to different build dir iff varying the build-path.
-    * Pass `--debug` to diffoscope if verbosity >= 2.
-    * Pass `--exclude-directory-metadata` to diffoscope(1) by default.
-    * Much refactoring to support the other work and several minor bug fixes.
-  * Holger Levsen: 
-    * Bump standards version to 4.1.1, no changes needed.
-
-## tests.reproducible-builds.org
-
-  * Holger Levsen: 
-    * Fix scheduler to not send empty scheduling notifications in the rare cases nothing has been scheduled.
-    * Fix colors in 'amount of packages build each day on $ARCH' graphs.
-
-## reproducible-website development
-
-  * Holger Levsen: 
-    * Fix up HTML syntax
-    * Announce that RWS3 will happen at Betahaus, Berlin
-
-## Misc.
-
-This week's edition was written by Ximin Luo, Bernhard M. Wiedemann, Holger
-Levsen and Chris Lamb & reviewed by a bunch of Reproducible Builds folks on
-IRC & the mailing lists.
-
-
---===============testboundary==--
-
-From planet-debian Tue Oct  3 16:40:10 2017
-Content-Type: multipart/alternative; boundary="===============testboundary=="
-MIME-Version: 1.0
-Date: Tue, 03 Oct 2017 16:40:10 -0000
-To: to@example.com
-From: planet-debian <to@example.com>
-Subject: Christoph Egger: Another Xor (CSAW 2017)
-Message-ID: https-weblog-siccegge-de-another_xor__csaw_2017_-html
-User-Agent: feed2exec (0.7.0)
-Precedence: list
-Auto-Submitted: auto-generated
-Archive-At: https://weblog.siccegge.de/Another_Xor__CSAW_2017_.html
-
---===============testboundary==
-Content-Type: text/html; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-<img src="http://planet.debian.org/heads/christoph.png" width="77" height="100" alt="" align="right" style="float: right;">  <p>A short while ago, <a href="https://faust.ninja/">FAUST</a> participated in this year's
-<a href="https://ctf.csaw.io/">CSAW qualification</a> and -- as usual -- I was working on the Crypto
-challenges again. The first puzzle I worked on was called "Another
-Xor" -- and, while there are quite some <a href="https://ctftime.org/task/4650">write ups already</a> our
-solution was somewhat different (maybe even the <em>intended</em> solution
-given how nice things worked out) and certainly interesting.</p>
-
-<p>The challenge provides a cipher-text. It's essentially a stream cipher
-with <code>key</code> repeated to generate the key stream. The plain-text was
-<code>plain</code> + <code>key</code> + <code>checksum</code>.</p>
-
-<pre><code>p = this is a plaintextThis is the keyfa5d46a2a2dcdeb83e0241ee2c0437f7
-k = This is the keyThis is the keyThis is the keyThis is the keyThis i
-</code></pre>
-
-<h2>Key length</h2>
-
-<p>Our first step was figuring out the key length. Let's assume for now
-the key was <code>This is the key</code>. Notice that the key is also part of
-the plain-text and we know something about its location -- it ends at
-32 characters from the back. If we only take a look at the encrypted
-key it should have the following structure:</p>
-
-<pre><code>p' = This is the key
-k' = he keyThis is t
-</code></pre>
-
-<p>The thing to notice here is that every character in the Key appears
-both in the plain-text and key stream sequence. And the cipher-text is
-the XOR (⊕) of both. Therefore XOR over the cipher-text sequence
-encrypting the key should equal 0 (⊕(p') ⊕ ⊕(k') = 0). So remove the
-last 32 characters and find all suffixes that result in a XOR
-of 0. Fortunately there is exactly one such suffix (there could be
-multiple) and therefore we know the key size: 67.</p>
-
-<p>To put it in code, this basically is the function we implemented for this:</p>
-
-<pre><code><span class="synStatement">def</span> <span class="synIdentifier">calculate</span>(ciphertextcandidate):
-    accumulator = <span class="synConstant">0</span>
-    <span class="synStatement">for</span> char <span class="synStatement">in</span> ciphertextcandidate:
-        accumulator = accumulator ^ char
-</code></pre>
-
-<p>Which, for the matching plain-text and key-stream fragments is equal (due to the XOR encryption) to</p>
-
-<pre><code><span class="synStatement">def</span> <span class="synIdentifier">calculate</span>(plainfragment, keyfragment):
-    accumulator = <span class="synConstant">0</span>
-    <span class="synStatement">for</span> i <span class="synStatement">in</span> <span class="synIdentifier">range</span>(<span class="synIdentifier">len</span>(plainfragment):
-        accumulator = accumulator ^ (plainfragment[i] ^ keyfragment[i])
-</code></pre>
-
-<p>Now XOR lets us nicely reorder this to</p>
-
-<pre><code><span class="synStatement">def</span> <span class="synIdentifier">calculate</span>(plainfragment, keyfragment):
-    accumulator = <span class="synConstant">0</span>
-    <span class="synStatement">for</span> i <span class="synStatement">in</span> <span class="synIdentifier">range</span>(<span class="synIdentifier">len</span>(plainfragment):
-        accumulator = accumulator ^ (plainfragment[i] ^
-                                     keyfragment[(i + <span class="synConstant">6</span>) % <span class="synIdentifier">len</span>(plainfragment)])
-</code></pre>
-
-<p>And, as <code>plainfragment[i]</code> and
-<code>keyfragment[(i + 6) % len(plainfragment)]</code> are equal for the
-plain-text range encoding the key this becomes</p>
-
-<pre><code><span class="synStatement">def</span> <span class="synIdentifier">calculate</span>(plainfragment, keyfragment):
-    accumulator = <span class="synConstant">0</span>
-    <span class="synStatement">for</span> i <span class="synStatement">in</span> <span class="synIdentifier">range</span>(<span class="synIdentifier">len</span>(plainfragment):
-        accumulator = accumulator ^ <span class="synConstant">0</span>
-</code></pre>
-
-<p>Or simply <code>0</code> if the guess of the cipher-text range is correct.</p>
-
-<h2>Key recovery</h2>
-
-<p>Now the nice thing to notice is that the length of the key (67) is a
-prime (and 38, the plain-text length, is a generator). As a result, we
-only need to guess one byte of the key:</p>
-
-<p>Assume you know one byte of the key (and the position). Now you can
-use that one byte of the key to decrypt the next byte of the key
-(using the area where the key is part of the plain-text). Due to the
-primeness of the key length this allows recovery of the full key.</p>
-
-<p>Finally you can either print all 256 options and look for the one that
-looks reasonable or you can verify the md5sum which will give you the
-one valid solution, <code>flag{sti11_us3_da_x0r_for_my_s3cratz}</code>.</p>
-
-<h2>Code</h2>
-
-<pre><code>
-cipher = b<span class="synConstant">"'L</span><span class="synSpecial">\x10\x12\x1a\x01\x00</span><span class="synConstant">I[P-U</span><span class="synSpecial">\x1c</span><span class="synConstant">U</span><span class="synSpecial">\x7f\x0b\x08</span><span class="synConstant">3X]</span><span class="synSpecial">\x1b</span><span class="synConstant">'</span><span class="synSpecial">\x03\x0b</span><span class="synConstant">R(</span><span class="synSpecial">\x04\r</span><span class="synConstant">7SI</span><span class="synSpecial">\n\x1c\x02</span><span class="synConstant">T</span><span class="synSpecial">\x15\x05\x15</span><span class="synConstant">%EQ</span><span class="synSpecial">\x18\x00\x19\x11</span><span class="synConstant">SJ</span><span class="synSpecial">\x00</span><span class="synConstant">RV</span><span class="synSpecial">\n\x14</span><span class="synConstant">YO</span><span class="synSpecial">\x0b\x1e</span><span class="synConstant">I</span><span class="synSpecial">\n\x01\x0c</span><span class="synConstant">E</span><span class="synSpecial">\x14</span><span class="synConstant">A</span><span class="synSpecial">\x1e\x07\x00\x14</span><span class="synConstant">aZ</span><span class="synSpecial">\x18\x1b\x02</span><span class="synConstant">R</span><span class="synSpecial">\x1b</span><span class="synConstant">X</span><span class="synSpecial">\x03\x05\x17\x00\x02\x07</span><span class="synConstant">K</span><span class="synSpecial">\n\x1a</span><span class="synConstant">LAM</span><span class="synSpecial">\x1f\x1d\x17\x1d\x00\x15\x1b\x1d\x0f</span><span class="synConstant">H</span><span class="synSpecial">\x0e</span><span class="synConstant">I</span><span class="synSpecial">\x1e\x02</span><span class="synConstant">I</span><span class="synSpecial">\x01\x0c\x15\x00</span><span class="synConstant">P</span><span class="synSpecial">\x11\\</span><span class="synConstant">PXPCB</span><span class="synSpecial">\x03</span><span class="synConstant">B</span><span class="synSpecial">\x13</span><span class="synConstant">TBL</span><span class="synSpecial">\x11</span><span class="synConstant">PC</span><span class="synSpecial">\x0b</span><span class="synConstant">^</span><span class="synSpecial">\t</span><span class="synConstant">M</span><span class="synSpecial">\x14</span><span class="synConstant">IW</span><span class="synSpecial">\x08\r</span><span class="synConstant">DD%FC"</span>
-
-<span class="synStatement">def</span> <span class="synIdentifier">keycover</span>(guess):
-    key = <span class="synIdentifier">dict</span>()
-    pos = <span class="synConstant">38</span>
-    key[<span class="synConstant">38</span>] = guess
-
-    <span class="synStatement">for</span> i <span class="synStatement">in</span> <span class="synIdentifier">range</span>(<span class="synConstant">67</span>):
-        newpos = (pos % <span class="synConstant">67</span>) + <span class="synConstant">38</span>
-        key[newpos] = xor(cipher[pos:], key[pos])
-        pos = newpos
-
-    <span class="synStatement">try</span>:
-        <span class="synStatement">return</span> b<span class="synConstant">''</span>.join([ key[i] <span class="synStatement">for</span> i <span class="synStatement">in</span> <span class="synIdentifier">range</span>(<span class="synConstant">38</span>, <span class="synConstant">105</span>, <span class="synConstant">1</span>) ])
-    <span class="synStatement">except</span>:
-        <span class="synStatement">return</span> b<span class="synConstant">'test'</span>
-
-<span class="synStatement">for</span> guess <span class="synStatement">in</span> <span class="synIdentifier">range</span>(<span class="synConstant">256</span>):
-    keycand = keycover(<span class="synIdentifier">bytes</span>([guess]))
-
-    plaincand = xor(cipher, repeat(keycand, <span class="synIdentifier">len</span>(cipher)))
-
-    <span class="synStatement">if</span> md5(plaincand[:-<span class="synConstant">32</span>]).hexdigest().encode() == plaincand[-<span class="synConstant">32</span>:]:
-        <span class="synIdentifier">print</span>(keycand, plaincand)
-</code></pre>
---===============testboundary==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-https://weblog.siccegge.de/Another_Xor__CSAW_2017_.html
-
-A short while ago, [FAUST][1] participated in this year's [CSAW
-qualification][2] and -- as usual -- I was working on the Crypto challenges
-again. The first puzzle I worked on was called "Another Xor" -- and, while
-there are quite some [write ups already][3] our solution was somewhat
-different (maybe even the _intended_ solution given how nice things worked
-out) and certainly interesting.
-
-   [1]: <https://faust.ninja/>
-   [2]: <https://ctf.csaw.io/>
-   [3]: <https://ctftime.org/task/4650>
-
-The challenge provides a cipher-text. It's essentially a stream cipher with
-`key` repeated to generate the key stream. The plain-text was `plain` \+ `key`
-\+ `checksum`.
-
-    
-    
-    p = this is a plaintextThis is the keyfa5d46a2a2dcdeb83e0241ee2c0437f7
-    k = This is the keyThis is the keyThis is the keyThis is the keyThis i
-    
-
-## Key length
-
-Our first step was figuring out the key length. Let's assume for now the key
-was `This is the key`. Notice that the key is also part of the plain-text and
-we know something about its location -- it ends at 32 characters from the
-back. If we only take a look at the encrypted key it should have the following
-structure:
-
-    
-    
-    p' = This is the key
-    k' = he keyThis is t
-    
-
-The thing to notice here is that every character in the Key appears both in
-the plain-text and key stream sequence. And the cipher-text is the XOR (⊕) of
-both. Therefore XOR over the cipher-text sequence encrypting the key should
-equal 0 (⊕(p') ⊕ ⊕(k') = 0). So remove the last 32 characters and find all
-suffixes that result in a XOR of 0. Fortunately there is exactly one such
-suffix (there could be multiple) and therefore we know the key size: 67.
-
-To put it in code, this basically is the function we implemented for this:
-
-    
-    
-    def calculate(ciphertextcandidate):
-        accumulator = 0
-        for char in ciphertextcandidate:
-            accumulator = accumulator ^ char
-    
-
-Which, for the matching plain-text and key-stream fragments is equal (due to
-the XOR encryption) to
-
-    
-    
-    def calculate(plainfragment, keyfragment):
-        accumulator = 0
-        for i in range(len(plainfragment):
-            accumulator = accumulator ^ (plainfragment[i] ^ keyfragment[i])
-    
-
-Now XOR lets us nicely reorder this to
-
-    
-    
-    def calculate(plainfragment, keyfragment):
-        accumulator = 0
-        for i in range(len(plainfragment):
-            accumulator = accumulator ^ (plainfragment[i] ^
-                                         keyfragment[(i + 6) % len(plainfragment)])
-    
-
-And, as `plainfragment[i]` and `keyfragment[(i + 6) % len(plainfragment)]` are
-equal for the plain-text range encoding the key this becomes
-
-    
-    
-    def calculate(plainfragment, keyfragment):
-        accumulator = 0
-        for i in range(len(plainfragment):
-            accumulator = accumulator ^ 0
-    
-
-Or simply `0` if the guess of the cipher-text range is correct.
-
-## Key recovery
-
-Now the nice thing to notice is that the length of the key (67) is a prime
-(and 38, the plain-text length, is a generator). As a result, we only need to
-guess one byte of the key:
-
-Assume you know one byte of the key (and the position). Now you can use that
-one byte of the key to decrypt the next byte of the key (using the area where
-the key is part of the plain-text). Due to the primeness of the key length
-this allows recovery of the full key.
-
-Finally you can either print all 256 options and look for the one that looks
-reasonable or you can verify the md5sum which will give you the one valid
-solution, `flag{sti11_us3_da_x0r_for_my_s3cratz}`.
-
-## Code
-
-    
-    
-    cipher = b"'L\x10\x12\x1a\x01\x00I[P-U\x1cU\x7f\x0b\x083X]\x1b'\x03\x0bR(\x04\r7SI\n\x1c\x02T\x15\x05\x15%EQ\x18\x00\x19\x11SJ\x00RV\n\x14YO\x0b\x1eI\n\x01\x0cE\x14A\x1e\x07\x00\x14aZ\x18\x1b\x02R\x1bX\x03\x05\x17\x00\x02\x07K\n\x1aLAM\x1f\x1d\x17\x1d\x00\x15\x1b\x1d\x0fH\x0eI\x1e\x02I\x01\x0c\x15\x00P\x11\\PXPCB\x03B\x13TBL\x11PC\x0b^\tM\x14IW\x08\rDD%FC"
-    
-    def keycover(guess):
-        key = dict()
-        pos = 38
-        key[38] = guess
-    
-        for i in range(67):
-            newpos = (pos % 67) + 38
-            key[newpos] = xor(cipher[pos:], key[pos])
-            pos = newpos
-    
-        try:
-            return b''.join([ key[i] for i in range(38, 105, 1) ])
-        except:
-            return b'test'
-    
-    for guess in range(256):
-        keycand = keycover(bytes([guess]))
-    
-        plaincand = xor(cipher, repeat(keycand, len(cipher)))
-    
-        if md5(plaincand[:-32]).hexdigest().encode() == plaincand[-32:]:
-            print(keycand, plaincand)
-    
 
 
 --===============testboundary==--

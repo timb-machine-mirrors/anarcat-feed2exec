@@ -92,25 +92,34 @@ submitting patches.
 .. _pytest: http://pytest.org/
 .. _ecdysis: https://gitlab.com/anarcat/ecdysis
 
-The test suite also uses the `vcrpy
-<https://pypi.python.org/pypi/vcrpy>`_ module to cache HTTP
-requests. This tool caches HTTP requests locally so the test suite can
-run offline. To add a new network test, you can simply add a new test
-doing requests with the right decorator, and a new recording will be
-added to the source tree. We commit the recordings in git so the test
-suite actually runs offline, so be careful about the content added
-there. Ideally, the license of that content should be documented in
-``debian/copyright``.
+The test suite also uses the `betamax`_ module to cache HTTP requests
+locally so the test suite can run offline. If a new test requires
+networking, you can simply add a new test doing requests with the
+right fixture (:func:`feed2exec.tests.fixtures.betamax`), and a new
+recording will be added to the source tree. Note that you can also use
+the normal :func:`betamax_session` fixture provided upstream if you
+are going to do standalone HTTP request (not going through the
+feed2exec libraries). If a new test is added in an *existing* test,
+you may need to configure `recording
+<https://betamax.readthedocs.io/en/latest/record_modes.html>`_ (in
+``feed2exec/tests/conftest.py``) to ``new_episodes``::
 
-`betamax <https://pypi.python.org/pypi/betamax>`_ was also
-considered but requires a refactoring of *all* requests to use session
-objects. This would have the added benefit of allowing a custom user
-agent, so it is still considered and is a work in progress in the
-`betamax` branch. The current approach on that branch uses a global
-``session`` object which is problematic: a better approach may be to
-encapsulate this in a ``FeedFetcher`` or simply ``Feed`` object, at
-which point we would end up rearchitecturing the whole ``feeds.py``
-file...
+    config.default_cassette_options['record_mode'] = 'none'
+
+We commit the recordings in git so the test suite actually runs
+offline, so be careful about the content added there. Ideally, the
+license of that content should be documented in ``debian/copyright``.
+
+`vcr`_ was first used for tests since it was simpler and didn't
+require using a global :mod:`requests.session.Session` object. But in
+the end betamax seems better maintained and more flexible: it supports
+pytest fixtures, for example, and multiple cassette storage (including
+vcr backwards compatibility). Configuration is also easier, done in
+``feed2exec/tests/conftest.py``. Using a session also allows us to use
+a custom user agent.
+
+.. _vcrpy: https://pypi.python.org/pypi/vcrpy
+.. _betamax: https://pypi.python.org/pypi/betamax
 
 Comparison
 ----------

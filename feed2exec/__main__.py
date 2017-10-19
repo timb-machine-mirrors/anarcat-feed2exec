@@ -26,8 +26,10 @@ import os.path
 
 
 import click
+import requests
+
 import feed2exec
-from feed2exec.feeds import FeedStorage, fetch_feeds, opml_import
+from feed2exec.feeds import (FeedStorage, opml_import)
 import feed2exec.feeds as feedsmod
 import feed2exec.logging
 
@@ -94,6 +96,7 @@ def rm(name):
 
 
 @click.command(help='fetch and process all feeds')
+@click.pass_obj
 @click.option('--pattern', help='only fetch feeds matchin name or URL')
 @click.option('--parallel', help='start jobs in parallel', is_flag=True)
 @click.option('--jobs', '-j', help='start N jobs in parallel',
@@ -101,9 +104,12 @@ def rm(name):
 @click.option('--force', '-f', is_flag=True, help='do not check cache')
 @click.option('--catchup', '-n',
               is_flag=True, help='do not call output plugins')
-def fetch(pattern, parallel, jobs, force, catchup):
+def fetch(obj, pattern, parallel, jobs, force, catchup):
+    # used for unit testing
+    if obj and type(obj) is requests.sessions.Session:
+        feedsmod.FeedStorageBase.session = obj
     parallel = jobs or parallel
-    fetch_feeds(pattern, parallel, force=force, catchup=catchup)
+    FeedStorage(pattern=pattern).fetch(parallel, force=force, catchup=catchup)
 
 
 @click.command(name='import', help='import feed list from OPML file')

@@ -2,6 +2,8 @@ import logging
 
 import requests
 
+from feed2exec.feeds import FeedStorageBase
+
 
 WAYBACK_URL = 'https://web.archive.org'
 
@@ -20,8 +22,10 @@ def output(*args, item=None, **kwargs):
     The above will save the Image of the day updates to the wayback
     machine.
     """
+    session = FeedStorageBase.session
+
     if item and item.get('link'):
-        res = requests.head('%s/save/%s' % (WAYBACK_URL, item.get('link')))
+        res = session.head('%s/save/%s' % (WAYBACK_URL, item.get('link')))
         res.headers['status_code'] = res.status_code
         archive_location = WAYBACK_URL + res.headers['Content-Location']
         if res.status_code == requests.codes.ok:

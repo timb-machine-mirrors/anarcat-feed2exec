@@ -18,19 +18,18 @@ import re
 import feedparser
 import html2text
 import pytest
-import vcr
 
 
 import feed2exec
 import feed2exec.utils as utils
-from feed2exec.feeds import parse, fetch
+from feed2exec.feeds import parse, FeedStorageBase
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import test_sample
-from feed2exec.tests.fixtures import (test_db, static_boundary)  # noqa
+from feed2exec.tests.fixtures import (test_db, static_boundary, betamax)  # noqa
 
 
-def test_maildir(tmpdir, test_db, static_boundary):  # noqa
+def test_maildir(tmpdir, test_db, static_boundary, betamax):  # noqa
     global LOCK
     LOCK = mock.MagicMock()
 
@@ -59,7 +58,7 @@ def test_maildir(tmpdir, test_db, static_boundary):  # noqa
               'output': 'feed2exec.plugins.maildir',
               'mailbox': str(tmpdir.join('Mail')),
               'args': 'to@example.com'}
-    body = fetch(sample['url'])
+    body = FeedStorageBase.fetch_one(sample['url'])
     data = parse(body, sample, lock=LOCK)
     folder = utils.slug(sample['name'])
     for message in tmpdir.join('Mail', folder, 'new').visit():
@@ -96,7 +95,7 @@ This is the body, which should show instead of the above
         assert (expected % feed2exec.__version__) == message.read()
     # test if folder setting works
     sample['folder'] = 'folder-test'
-    body = fetch(sample['url'])
+    body = FeedStorageBase.fetch_one(sample['url'])
     data = parse(body, sample, lock=LOCK)
     for item in data['entries']:
         f = plugins.output(sample, item, lock=LOCK)
@@ -106,7 +105,7 @@ This is the body, which should show instead of the above
 
 @pytest.mark.xfail(condition=parse_version(feedparser.__version__) < parse_version('5.2.1'), reason="older feedparser version do not sort <img> tags, install feedparser 5.2.1 or later")  # noqa
 @pytest.mark.xfail(condition=html2text.__version__ < (2017, 10, 4), reason="older html2text output varies, install version 2017.10.4 or later")  # noqa
-def test_email(tmpdir, test_db, static_boundary):  # noqa
+def test_email(tmpdir, test_db, static_boundary, betamax):  # noqa
     global LOCK
     LOCK = mock.MagicMock()
 
@@ -121,7 +120,7 @@ def test_email(tmpdir, test_db, static_boundary):  # noqa
                 'filter': 'feed2exec.plugins.droptitle',
                 'filter_args': 'Trump',
                 }
-        body = fetch(feed['url'])
+        body = FeedStorageBase.fetch_one(feed['url'])
         parse(body, feed, lock=LOCK)
         p = path[:-3] + 'mbx'
         with open(p) as expected:
@@ -173,8 +172,8 @@ def test_filter():
     assert p.called is not None
 
 
-@vcr.use_cassette('feed2exec/tests/cassettes/wayback.yml')
-def test_wayback(capfd):
+def test_wayback(capfd, betamax):  # noqa
+    assert FeedStorageBase.session
     handler = logging.handlers.MemoryHandler(0)
     handler.setLevel('DEBUG')
     logging.getLogger('').addHandler(handler)

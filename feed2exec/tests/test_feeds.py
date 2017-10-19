@@ -20,10 +20,10 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 from feed2exec.feeds import (FeedStorage, ConfFeedStorage,
-                             FeedCacheStorage, fetch_feeds, fetch, parse)
+                             FeedCacheStorage, FeedStorageBase, parse)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
-from feed2exec.tests.fixtures import (test_db, conf_path)  # noqa
+from feed2exec.tests.fixtures import (test_db, conf_path, betamax)  # noqa
 import pytest
 
 test_data = {'url': 'file:///dev/null',
@@ -75,23 +75,23 @@ def test_add(test_db, conf_path):  # noqa
     assert test_data['name'] not in st, 'remove works'
 
 
-def test_settings(test_db, conf_path):  # noqa
+def test_settings(test_db, conf_path, betamax):  # noqa
     st = FeedStorage()
     assert len(list(st)) == 0
     st.add(**test_params)
     assert len(list(st)) == 1
     st.set(test_params['name'], 'catchup', 'True')
     st.remove_option(test_params['name'], 'filter')
-    fetch_feeds()
+    st.fetch()
     assert not feed2exec.plugins.echo.output.called
 
     st.set(test_params['name'], 'filter', test_params['filter'])
-    fetch_feeds()
+    st.fetch()
     assert feed2exec.plugins.echo.output.called
     feed2exec.plugins.echo.output.called = False
 
     st.set(test_params['name'], 'pause', 'True')
-    fetch_feeds()
+    st.fetch()
     assert not feed2exec.plugins.echo.output.called
 
     st.remove(test_params['name'])
@@ -129,11 +129,11 @@ def test_cache(test_db):  # noqa
     assert 'guid' not in st
 
 
-def test_fetch(test_db, conf_path):  # noqa
+def test_fetch(test_db, conf_path, betamax):  # noqa
     st = FeedStorage()
     st.add(**test_sample)
 
-    fetch_feeds()
+    st.fetch()
     cache = FeedCacheStorage(feed=test_sample['name'])
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
     assert feed2exec.plugins.echo.output.called
@@ -141,39 +141,40 @@ def test_fetch(test_db, conf_path):  # noqa
     st.add(**test_nasa)
     feed2exec.plugins.echo.output.called = False
     assert not feed2exec.plugins.echo.output.called
-    fetch_feeds()
+    st.fetch()
     assert feed2exec.plugins.echo.output.called == ('test_nasa', )
     feed2exec.plugins.echo.output.called = False
     assert not feed2exec.plugins.echo.output.called
     st.add(**test_udd)
-    fetch_feeds()
+    st.fetch()
     assert feed2exec.plugins.echo.output.called == ('test_udd', )
 
 
-def test_fetch_parallel(test_db, conf_path, capfd):  # noqa
-    fetch_feeds(parallel=True, force=True)
+def test_fetch_parallel(test_db, conf_path, capfd, betamax):  # noqa
+    st = FeedStorage()
+    st.fetch(parallel=True, force=True)
     # can't use feed2exec.feeds.plugins.echo.output.called as it is
     # set in a separate process.
     out, err = capfd.readouterr()
     assert 'arguments received' in out
-    fetch_feeds(parallel=2, force=True)
+    st.fetch(parallel=2, force=True)
     out, err = capfd.readouterr()
     assert 'arguments received' in out
 
 
-def test_normalize(test_db, conf_path):  # noqa
+def test_normalize(test_db, conf_path, betamax):  # noqa
     '''black box testing for :func:feeds.normalize_item()'''
-    data = parse(fetch(test_udd['url']), test_udd)
+    data = parse(FeedStorageBase.fetch_one(test_udd['url']), test_udd)
     for item in data.entries:
         assert item.get('id')
-    data = parse(fetch(test_restic['url']), test_restic)
+    data = parse(FeedStorageBase.fetch_one(test_restic['url']), test_restic)
     for item in data.entries:
         assert item.get('link').startswith('file://')
         assert 'restic.atom' not in item.get('link')
         # also test the "github filter"
         assert item.get('summary')
         assert item.get('link') in item.get('summary')
-    data = parse(fetch(test_dates['url']), test_dates)
+    data = parse(FeedStorageBase.fetch_one(test_dates['url']), test_dates)
     for item in data['entries']:
         assert item.get('updated_parsed')
 

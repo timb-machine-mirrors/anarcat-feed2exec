@@ -66,33 +66,6 @@ def default_config_dir():
     return os.path.join(home_config, feed2exec.__prog__)
 
 
-def fetch(url):
-    """fetch the given URL
-
-    this is a simple wrapper around the :mod:`requests` module.
-
-    exceptions should be handled by the caller.
-
-    :todo: this could be moved to a plugin so it can be overridden,
-           but so far I haven't found a use case for this.
-
-    :param str url: the URL to fetch
-
-    :return bytes: the body of the URL
-
-    """
-    body = ''
-    if url.startswith('file://'):
-        filename = url[len('file://'):]
-        logging.info('opening local file %s', filename)
-        with open(filename, 'rb') as f:
-            body = f.read()
-    else:
-        logging.info('fetching URL %s', url)
-        body = requests.get(url).content
-    return body
-
-
 def normalize_item(feed=None, item=None):
     """normalize feeds a little more than what feedparser provides.
 
@@ -191,105 +164,6 @@ def parse(body, feed, lock=None, force=False):
     return data
 
 
-def fetch_feeds(pattern=None, parallel=False, force=False, catchup=False):
-    """main entry point for the feed fetch routines.
-
-    this iterates through all feeds configured in the
-    :class:`feed2exec.feeds.FeedStorage` that match the given
-    ``pattern``.
-
-    This will call :func:`logging.warning` for exceptions
-    :class:`requests.exceptions.Timeout` and
-    :class:`requests.exceptions.ConnectionError` as they are
-    transient errors and the user may want to ignore those.
-
-    Other exceptions raised from :mod:`requests.exceptions` (like
-    TooManyRedirects or HTTPError but basically any other exception)
-    may be a configuration error or a more permanent failure so will
-    be signaled with :func:`logging.error`.
-
-    :param str pattern: restrict operations to feeds named
-                        ``pattern``. passed to
-                        :class:`feed2exec.feeds.FeedStorage` as is
-
-    :param bool parallel: parse feeds in parallel, using
-                          :mod:`multiprocessing`
-
-    :param bool force: force plugin execution even if entry was
-                       already seen. passed to
-                       :class:`feed2exec.feeds.parse` as is
-
-    :param bool catchup: disables the output plugin by setting the
-                         ``output`` field to None in the ``feed``
-                         argument passed to
-                         :func:`feed2exec.feeds.parse`, used to
-                         catchup on feed entries without firing
-                         plugins.
-    """
-    logging.debug('looking for feeds %s', pattern)
-    st = FeedStorage(pattern=pattern)
-    if parallel:
-        l = multiprocessing.Lock()
-        processes = None
-        if isinstance(parallel, int):
-            processes = parallel
-
-        def init_global_lock(l):
-            """setup a global lock across pool threads
-
-            this is necessary because Lock objects are not serializable so we
-            can't pass them as arguments. An alternative pattern is to have a
-            `Manager` process and use IPC for locking.
-
-            cargo-culted from this `stackoverflow answer
-            <https://stackoverflow.com/a/25558333/1174784>`_
-            """
-            global LOCK
-            LOCK = l
-
-        pool = multiprocessing.Pool(processes=processes,
-                                    initializer=init_global_lock,
-                                    initargs=(l,))
-    results = []
-    i = -1
-    for i, feed in enumerate(st):
-        logging.debug('found feed in DB: %s', dict(feed))
-        if feed.get('pause'):
-            logging.info('feed %s is paused, skipping', feed['name'])
-            continue
-        try:
-            body = fetch(feed['url'])
-        except (requests.exceptions.Timeout,
-                requests.exceptions.ConnectionError) as e:
-            # XXX: we should count those and warn after a few
-            # occurrences
-            logging.warning('timeout while fetching feed %s at %s: %s',
-                            feed['name'], feed['url'], e)
-            continue
-        except requests.exceptions.RequestException as e:
-            logging.error('exception while fetching feed %s at %s: %s',
-                          feed['name'], feed['url'], e)
-            continue
-        if catchup or feed.get('catchup'):
-            logging.info('catching up on feed %s (output plugin disabled)',
-                         feed['name'])
-            feed['output'] = None
-        if parallel:
-            # if this fails silently, use plain apply() to see errors
-            results.append(pool.apply_async(parse,
-                                            (body, dict(feed), None, force)))
-        else:
-            global LOCK
-            LOCK = None
-            parse(body=body, feed=dict(feed), force=force)
-    if parallel:
-        for result in results:
-            result.get()
-        pool.close()
-        pool.join()
-    logging.info('%d feeds processed', i+1)
-
-
 def opml_import(opmlfile, storage):
     """import a file stream as an OPML feed in the given config storage"""
     folders = []
@@ -345,7 +219,167 @@ class SqliteStorage(object):
             self.conn.commit()
 
 
-class ConfFeedStorage(configparser.RawConfigParser):
+class FeedStorageBase(object):
+    #: class :class:`request.Session` object that can be used by plugins
+    #: to make HTTP requests. initialized in main() or the test suite.
+    session = None
+
+    @classmethod
+    def defaultSessionConfig(cls, existing_session=None):
+        """instantiate the session
+
+        mostly sets up the user agent with the program name and version
+
+        :param object existing_session: an existing session to use to
+                                        override the base session
+        """
+        if existing_session is None:
+            cls.session = requests.Session()
+        else:
+            cls.session = existing_session
+        cls.session.headers.update({'User-Agent': '%s/%s'
+                                    % (feed2exec.__prog__,
+                                       feed2exec.__version__)})
+        return cls.session
+
+    def fetch(self, parallel=False, force=False, catchup=False):
+        """main entry point for the feed fetch routines.
+
+        this iterates through all feeds configured in the
+        :class:`feed2exec.feeds.FeedStorage` that match the given
+        ``pattern``.
+
+        This will call :func:`logging.warning` for exceptions
+        :class:`requests.exceptions.Timeout` and
+        :class:`requests.exceptions.ConnectionError` as they are
+        transient errors and the user may want to ignore those.
+
+        Other exceptions raised from :mod:`requests.exceptions` (like
+        TooManyRedirects or HTTPError but basically any other exception)
+        may be a configuration error or a more permanent failure so will
+        be signaled with :func:`logging.error`.
+
+        :param str pattern: restrict operations to feeds named
+                            ``pattern``. passed to
+                            :class:`feed2exec.feeds.FeedStorage` as is
+
+        :param bool parallel: parse feeds in parallel, using
+                              :mod:`multiprocessing`
+
+        :param bool force: force plugin execution even if entry was
+                           already seen. passed to
+                           :class:`feed2exec.feeds.parse` as is
+
+        :param bool catchup: disables the output plugin by setting the
+                             ``output`` field to None in the ``feed``
+                             argument passed to
+                             :func:`feed2exec.feeds.parse`, used to
+                             catchup on feed entries without firing
+                             plugins.
+        """
+        logging.debug('looking for feeds %s', self.pattern)
+        if parallel:
+            l = multiprocessing.Lock()
+            processes = None
+            if isinstance(parallel, int):
+                processes = parallel
+
+            def init_global_lock(l):
+                """setup a global lock across pool threads
+
+                this is necessary because Lock objects are not
+                serializable so we can't pass them as arguments. An
+                alternative pattern is to have a `Manager` process and
+                use IPC for locking.
+
+                cargo-culted from this `stackoverflow answer
+                <https://stackoverflow.com/a/25558333/1174784>`_
+
+                """
+                global LOCK
+                LOCK = l
+
+            pool = multiprocessing.Pool(processes=processes,
+                                        initializer=init_global_lock,
+                                        initargs=(l,))
+        results = []
+        i = -1
+        for i, feed in enumerate(self):
+            logging.debug('found feed in DB: %s', dict(feed))
+            if feed.get('pause'):
+                logging.info('feed %s is paused, skipping', feed['name'])
+                continue
+            try:
+                body = self.fetch_one(feed['url'])
+            except (requests.exceptions.Timeout,
+                    requests.exceptions.ConnectionError) as e:
+                # XXX: we should count those and warn after a few
+                # occurrences
+                logging.warning('timeout while fetching feed %s at %s: %s',
+                                feed['name'], feed['url'], e)
+                continue
+            except requests.exceptions.RequestException as e:
+                logging.error('exception while fetching feed %s at %s: %s',
+                              feed['name'], feed['url'], e)
+                continue
+            if catchup or feed.get('catchup'):
+                logging.info('catching up on feed %s (output plugin disabled)',
+                             feed['name'])
+                feed['output'] = None
+            if parallel:
+                # if this fails silently, use plain apply() to see errors
+                results.append(pool.apply_async(parse,
+                                                (body, dict(feed),
+                                                 None, force)))
+            else:
+                global LOCK
+                LOCK = None
+                parse(body=body, feed=dict(feed), force=force)
+        if parallel:
+            for result in results:
+                result.get()
+            pool.close()
+            pool.join()
+        logging.info('%d feeds processed', i+1)
+
+    @classmethod
+    def fetch_one(cls, url):
+        """fetch the given URL
+
+        this is a simple wrapper around the :mod:`requests` module.
+
+        exceptions should be handled by the caller.
+
+        :todo: this could be moved to a plugin so it can be overridden,
+               but so far I haven't found a use case for this.
+
+        :todo: this is basically a stub for
+               requests.Session().get.content. we could completely get
+               rid of this with the `file:// transport adapter
+               <https://pypi.python.org/pypi/requests-file>`_ but that
+               is `not available in Debian
+               <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=879125>`_
+
+        :param str url: the URL to fetch
+
+        :return bytes: the body of the URL
+
+        """
+        if cls.session is None:
+            cls.defaultSessionConfig()
+        body = ''
+        if url.startswith('file://'):
+            filename = url[len('file://'):]
+            logging.info('opening local file %s', filename)
+            with open(filename, 'rb') as f:
+                body = f.read()
+        else:
+            logging.info('fetching URL %s', url)
+            body = cls.session.get(url).content
+        return body
+
+
+class ConfFeedStorage(configparser.RawConfigParser, FeedStorageBase):
     """Feed configuration stored in a config file.
 
     This derives from :class:`configparser.RawConfigParser` and uses
