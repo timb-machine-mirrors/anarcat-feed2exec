@@ -29,4 +29,6 @@ def static_boundary(monkeypatch):
 @pytest.mark.usefixtures('betamax_session')
 def betamax(betamax_session):
     assert betamax_session
-    return FeedStorageBase.defaultSessionConfig(betamax_session)
+    FeedStorageBase.sessionConfig(betamax_session)
+    FeedStorageBase._session = betamax_session
+    return betamax_session

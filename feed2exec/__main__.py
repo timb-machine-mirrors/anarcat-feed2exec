@@ -105,11 +105,12 @@ def rm(name):
 @click.option('--catchup', '-n',
               is_flag=True, help='do not call output plugins')
 def fetch(obj, pattern, parallel, jobs, force, catchup):
+    st = FeedStorage(pattern=pattern)
     # used for unit testing
     if obj and type(obj) is requests.sessions.Session:
-        feedsmod.FeedStorageBase.session = obj
+        st.session = obj
     parallel = jobs or parallel
-    FeedStorage(pattern=pattern).fetch(parallel, force=force, catchup=catchup)
+    st.fetch(parallel, force=force, catchup=catchup)
 
 
 @click.command(name='import', help='import feed list from OPML file')

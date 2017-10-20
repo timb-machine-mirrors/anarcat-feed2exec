@@ -22,7 +22,7 @@ def output(*args, item=None, **kwargs):
     The above will save the Image of the day updates to the wayback
     machine.
     """
-    session = FeedStorageBase.session
+    session = FeedStorageBase._session
 
     if item and item.get('link'):
         res = session.head('%s/save/%s' % (WAYBACK_URL, item.get('link')))

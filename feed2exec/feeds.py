@@ -223,26 +223,54 @@ class SqliteStorage(object):
 class FeedStorageBase(object):
     #: class :class:`request.Session` object that can be used by plugins
     #: to make HTTP requests. initialized in main() or the test suite.
-    session = None
+    _session = None
 
-    @classmethod
-    def defaultSessionConfig(cls, existing_session=None):
-        """instantiate the session
+    @property
+    def session(self):
+        """the session property
 
-        mostly sets up the user agent with the program name and version
+        will initialize this to an preconfigured Session if not set
+        yet. note that this won't work with the class-level parameter,
+        as it requires a "self", so there are two options to set the
+        session:
 
-        :param object existing_session: an existing session to use to
-                                        override the base session
+         1. work on an intialized FeedStorage object, or;
+
+         2. explicitly set FeedStorageBase._session manually - do not
+            forget to also configure it with
+            func:`feed2exec.feeds.FeedStorageBase.sessionConfig`
         """
-        if existing_session is None:
-            cls.session = requests.Session()
-        else:
-            cls.session = existing_session
-        cls.session.headers.update({'User-Agent': '%s/%s'
-                                    % (feed2exec.__prog__,
-                                       feed2exec.__version__)})
-        cls.session.mount('file://', requests_file.FileAdapter())
-        return cls.session
+        if self._session is None:
+            self.session = requests.Session()
+        return self._session
+
+    @session.setter
+    def session(self, value):
+        """set the session to the given value
+
+        will configure the session appropriately with sessionConfig
+
+        we could also use a @classproperty here, see `this discussion
+        <https://stackoverflow.com/a/7864317/1174784>`_
+        """
+        FeedStorageBase.sessionConfig(value)
+        self._session = value
+
+    @staticmethod
+    def sessionConfig(session):
+        """our custom session configuration
+
+        we change the user agent and set the file:// hanlder. extra
+        configuration may be performed in the future and will override
+        your changes.
+
+        this can be used to configure sessions used externally, for
+        example by plugins.
+        """
+        session.headers.update({'User-Agent': '%s/%s'
+                                % (feed2exec.__prog__,
+                                   feed2exec.__version__)})
+        session.mount('file://', requests_file.FileAdapter())
 
     def fetch(self, parallel=False, force=False, catchup=False):
         """main entry point for the feed fetch routines.
@@ -311,8 +339,6 @@ class FeedStorageBase(object):
             if feed.get('pause'):
                 logging.info('feed %s is paused, skipping', feed['name'])
                 continue
-            if not self.session:
-                self.defaultSessionConfig()
             try:
                 body = self.session.get(feed['url']).content
             except (requests.exceptions.Timeout,
