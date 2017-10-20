@@ -58,7 +58,7 @@ def test_maildir(tmpdir, test_db, static_boundary, betamax):  # noqa
               'output': 'feed2exec.plugins.maildir',
               'mailbox': str(tmpdir.join('Mail')),
               'args': 'to@example.com'}
-    body = FeedStorageBase.fetch_one(sample['url'])
+    body = betamax.get(sample['url']).content
     data = parse(body, sample, lock=LOCK)
     folder = utils.slug(sample['name'])
     for message in tmpdir.join('Mail', folder, 'new').visit():
@@ -95,7 +95,7 @@ This is the body, which should show instead of the above
         assert (expected % feed2exec.__version__) == message.read()
     # test if folder setting works
     sample['folder'] = 'folder-test'
-    body = FeedStorageBase.fetch_one(sample['url'])
+    body = betamax.get(sample['url']).content
     data = parse(body, sample, lock=LOCK)
     for item in data['entries']:
         f = plugins.output(sample, item, lock=LOCK)
@@ -120,7 +120,7 @@ def test_email(tmpdir, test_db, static_boundary, betamax):  # noqa
                 'filter': 'feed2exec.plugins.droptitle',
                 'filter_args': 'Trump',
                 }
-        body = FeedStorageBase.fetch_one(feed['url'])
+        body = betamax.get(feed['url']).content
         parse(body, feed, lock=LOCK)
         p = path[:-3] + 'mbx'
         with open(p) as expected:

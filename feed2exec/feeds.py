@@ -47,6 +47,7 @@ import feed2exec.plugins as plugins
 import feed2exec.utils as utils
 import feedparser
 import requests
+import requests_file
 import sqlite3
 
 
@@ -240,6 +241,7 @@ class FeedStorageBase(object):
         cls.session.headers.update({'User-Agent': '%s/%s'
                                     % (feed2exec.__prog__,
                                        feed2exec.__version__)})
+        cls.session.mount('file://', requests_file.FileAdapter())
         return cls.session
 
     def fetch(self, parallel=False, force=False, catchup=False):
@@ -309,8 +311,10 @@ class FeedStorageBase(object):
             if feed.get('pause'):
                 logging.info('feed %s is paused, skipping', feed['name'])
                 continue
+            if not self.session:
+                self.defaultSessionConfig()
             try:
-                body = self.fetch_one(feed['url'])
+                body = self.session.get(feed['url']).content
             except (requests.exceptions.Timeout,
                     requests.exceptions.ConnectionError) as e:
                 # XXX: we should count those and warn after a few
@@ -341,42 +345,6 @@ class FeedStorageBase(object):
             pool.close()
             pool.join()
         logging.info('%d feeds processed', i+1)
-
-    @classmethod
-    def fetch_one(cls, url):
-        """fetch the given URL
-
-        this is a simple wrapper around the :mod:`requests` module.
-
-        exceptions should be handled by the caller.
-
-        :todo: this could be moved to a plugin so it can be overridden,
-               but so far I haven't found a use case for this.
-
-        :todo: this is basically a stub for
-               requests.Session().get.content. we could completely get
-               rid of this with the `file:// transport adapter
-               <https://pypi.python.org/pypi/requests-file>`_ but that
-               is `not available in Debian
-               <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=879125>`_
-
-        :param str url: the URL to fetch
-
-        :return bytes: the body of the URL
-
-        """
-        if cls.session is None:
-            cls.defaultSessionConfig()
-        body = ''
-        if url.startswith('file://'):
-            filename = url[len('file://'):]
-            logging.info('opening local file %s', filename)
-            with open(filename, 'rb') as f:
-                body = f.read()
-        else:
-            logging.info('fetching URL %s', url)
-            body = cls.session.get(url).content
-        return body
 
 
 class ConfFeedStorage(configparser.RawConfigParser, FeedStorageBase):

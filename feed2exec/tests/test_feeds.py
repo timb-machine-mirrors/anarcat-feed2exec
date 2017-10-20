@@ -20,7 +20,7 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 from feed2exec.feeds import (FeedStorage, ConfFeedStorage,
-                             FeedCacheStorage, FeedStorageBase, parse)
+                             FeedCacheStorage, parse)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
 from feed2exec.tests.fixtures import (test_db, conf_path, betamax)  # noqa
@@ -164,17 +164,17 @@ def test_fetch_parallel(test_db, conf_path, capfd, betamax):  # noqa
 
 def test_normalize(test_db, conf_path, betamax):  # noqa
     '''black box testing for :func:feeds.normalize_item()'''
-    data = parse(FeedStorageBase.fetch_one(test_udd['url']), test_udd)
+    data = parse(betamax.get(test_udd['url']).content, test_udd)
     for item in data.entries:
         assert item.get('id')
-    data = parse(FeedStorageBase.fetch_one(test_restic['url']), test_restic)
+    data = parse(betamax.get(test_restic['url']).content, test_restic)
     for item in data.entries:
         assert item.get('link').startswith('file://')
         assert 'restic.atom' not in item.get('link')
         # also test the "github filter"
         assert item.get('summary')
         assert item.get('link') in item.get('summary')
-    data = parse(FeedStorageBase.fetch_one(test_dates['url']), test_dates)
+    data = parse(betamax.get(test_dates['url']).content, test_dates)
     for item in data['entries']:
         assert item.get('updated_parsed')
 

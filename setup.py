@@ -57,6 +57,7 @@ requires = [
     "feedparser",
     "html2text",
     "requests",
+    "requests-file",
     "unidecode",
 ]
 

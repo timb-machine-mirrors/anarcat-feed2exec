@@ -17,6 +17,7 @@ Build-Depends: debhelper (>= 10)
              , python3-feedparser
              , python3-html2text
              , python3-requests
+             , python3-requests-file
              , python3-unidecode
 X-Python-3-Version: >= 3.5
 Standards-Version: 4.1.0
