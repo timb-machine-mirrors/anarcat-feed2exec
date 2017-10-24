@@ -165,36 +165,6 @@ def parse(body, feed, lock=None, force=False):
     return data
 
 
-def opml_import(opmlfile, storage):
-    """import a file stream as an OPML feed in the given config storage"""
-    folders = []
-    for (event, node) in etree.iterparse(opmlfile, ['start', 'end']):
-        if node.tag != 'outline':
-            continue
-        logging.debug('found OPML entry: %s', node.attrib)
-        if event == 'start' and node.attrib.get('xmlUrl'):
-            folder = os.path.join(*folders) if folders else None
-            title = node.attrib['title']
-            logging.info('importing element %s <%s> in folder %s',
-                         title, node.attrib['xmlUrl'], folder)
-            if title in storage:
-                if folder:
-                    title = folder + '/' + title
-                    logging.info('feed %s exists, using folder name: %s',
-                                 node.attrib['title'], title)
-            if title in storage:
-                logging.error('feed %s already exists, skipped',
-                              node.attrib['title'])
-            else:
-                storage.add(title, node.attrib['xmlUrl'], folder=folder)
-        elif node.attrib.get('type') == 'folder':
-            if event == 'start':
-                logging.debug('found folder %s', node.attrib.get('text'))
-                folders.append(node.attrib.get('text'))
-            else:
-                folders.pop()
-
-
 class SqliteStorage(object):
     sql = None
     record = None
@@ -467,12 +437,41 @@ class ConfFeedStorage(configparser.RawConfigParser):
 
 
 class FeedStorage(ConfFeedStorage, FeedFetcher):
-    """Feed storage used.
+    """Feed storage class, will derive from the actual storage and fetcher
+    in use.
 
     An alias to :class:`feed2exec.feeds.ConfFeedStorage`, but can be
-    overridden by plugins
+    overridden by plugins.
     """
-    pass
+
+    def opml_import(self, opmlfile):
+        """import a file stream as an OPML feed in the feed storage"""
+        folders = []
+        for (event, node) in etree.iterparse(opmlfile, ['start', 'end']):
+            if node.tag != 'outline':
+                continue
+            logging.debug('found OPML entry: %s', node.attrib)
+            if event == 'start' and node.attrib.get('xmlUrl'):
+                folder = os.path.join(*folders) if folders else None
+                title = node.attrib['title']
+                logging.info('importing element %s <%s> in folder %s',
+                             title, node.attrib['xmlUrl'], folder)
+                if title in self:
+                    if folder:
+                        title = folder + '/' + title
+                        logging.info('feed %s exists, using folder name: %s',
+                                     node.attrib['title'], title)
+                if title in self:
+                    logging.error('feed %s already exists, skipped',
+                                  node.attrib['title'])
+                else:
+                    self.add(title, node.attrib['xmlUrl'], folder=folder)
+            elif node.attrib.get('type') == 'folder':
+                if event == 'start':
+                    logging.debug('found folder %s', node.attrib.get('text'))
+                    folders.append(node.attrib.get('text'))
+                else:
+                    folders.pop()
 
 
 class FeedCacheStorage(SqliteStorage):

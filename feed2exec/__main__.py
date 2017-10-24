@@ -29,7 +29,7 @@ import click
 import requests
 
 import feed2exec
-from feed2exec.feeds import (FeedStorage, opml_import)
+from feed2exec.feeds import (FeedStorage)
 import feed2exec.feeds as feedsmod
 import feed2exec.logging
 
@@ -116,8 +116,7 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
 @click.command(name='import', help='import feed list from OPML file')
 @click.argument('path', type=click.File('rb'))
 def import_(path):
-    st = FeedStorage()
-    opml_import(path, st)
+    FeedStorage().opml_import(path)
 
 
 @click.command(help='export feeds to an OPML file')
