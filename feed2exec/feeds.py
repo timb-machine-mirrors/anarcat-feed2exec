@@ -240,12 +240,12 @@ class FeedFetcher(object):
         """
         logging.debug('looking for feeds %s', self.pattern)
         if parallel:
-            l = multiprocessing.Lock()
+            lock = multiprocessing.Lock()
             processes = None
             if isinstance(parallel, int):
                 processes = parallel
 
-            def init_global_lock(l):
+            def init_global_lock(lock):
                 """setup a global lock across pool threads
 
                 this is necessary because Lock objects are not
@@ -258,11 +258,11 @@ class FeedFetcher(object):
 
                 """
                 global LOCK
-                LOCK = l
+                LOCK = lock
 
             pool = multiprocessing.Pool(processes=processes,
                                         initializer=init_global_lock,
-                                        initargs=(l,))
+                                        initargs=(lock,))
         results = []
         i = -1
         for i, feed in enumerate(self):
