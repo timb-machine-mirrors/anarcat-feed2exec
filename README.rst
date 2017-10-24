@@ -20,6 +20,14 @@ arbitrary folders.
    :alt: coverage report
    :target: https://gitlab.com/anarcat/feed2exec/commits/master
 
+.. image:: https://badges.debian.net/badges/debian/stable/feed2exec/version.svg
+   :alt: feed2exec version in stable
+   :target: https://packages.debian.org/stable/feed2exec
+
+.. image:: https://badges.debian.net/badges/debian/unstable/feed2exec/version.svg
+   :alt: feed2exec version in unstable
+   :target: https://packages.debian.org/unstable/feed2exec
+
 .. marker-examples
 
 Examples
