@@ -12,6 +12,10 @@ arbitrary folders.
 .. _feedparser: https://pypi.python.org/pypi/feedparser
 .. _Maildir: https://en.wikipedia.org/wiki/Maildir
 
+.. image:: https://img.shields.io/pypi/l/feed2exec.svg
+   :alt: AGPLv3 licensed
+   :target: https://gitlab.com/anarcat/feed2exec/blob/master/LICENSE.rst
+
 .. image:: https://gitlab.com/anarcat/feed2exec/badges/master/pipeline.svg
    :alt: pipeline status
    :target: https://gitlab.com/anarcat/feed2exec/commits/master
@@ -19,6 +23,10 @@ arbitrary folders.
 .. image:: https://gitlab.com/anarcat/feed2exec/badges/master/coverage.svg
    :alt: coverage report
    :target: https://gitlab.com/anarcat/feed2exec/commits/master
+
+.. image:: https://img.shields.io/pypi/v/feed2exec.svg
+   :alt: feed2exec version on PyPI
+   :target: https://pypi.python.org/pypi/feed2exec
 
 .. image:: https://badges.debian.net/badges/debian/stable/feed2exec/version.svg
    :alt: feed2exec version in stable
