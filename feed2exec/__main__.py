@@ -20,7 +20,6 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-from datetime import datetime
 import json
 import os.path
 
@@ -122,24 +121,7 @@ def import_(path):
 @click.command(help='export feeds to an OPML file')
 @click.argument('path', type=click.File('wb'))
 def export(path):
-    xml_tmpl = u'''<opml version="1.0">
-  <head>
-    <title>{title}</title>
-    <dateModified>{date}</dateModified>
-  </head>
-  <body>
-{body}</body>
-</opml>'''
-    outline_tmpl = u'<outline title="{name}" type="rss" xmlUrl="{url}" />'
-    st = FeedStorage()
-    body = u''
-    for feed in st:
-        if feed:
-            body += outline_tmpl.format(**feed) + "\n"
-    output = xml_tmpl.format(title=u'feed2exec RSS feeds',
-                             date=datetime.now(),
-                             body=body)
-    path.write(output.encode('utf-8'))
+    FeedStorage().opml_export(path)
 
 
 main.add_command(add)

@@ -27,6 +27,7 @@ except ImportError:  # pragma: nocover
     # py2: should never happen as we depend on the newer one in setup.py
     import ConfigParser as configparser
 from collections import OrderedDict, namedtuple
+from datetime import datetime
 try:
     from lxml import etree
 except ImportError:  # pragma: nocover
@@ -472,6 +473,25 @@ class FeedStorage(ConfFeedStorage, FeedFetcher):
                     folders.append(node.attrib.get('text'))
                 else:
                     folders.pop()
+
+    def opml_export(self, path):
+        xml_tmpl = u'''<opml version="1.0">
+      <head>
+        <title>{title}</title>
+        <dateModified>{date}</dateModified>
+      </head>
+      <body>
+    {body}</body>
+    </opml>'''
+        outline_tmpl = u'<outline title="{name}" type="rss" xmlUrl="{url}" />'
+        body = u''
+        for feed in self:
+            if feed:
+                body += outline_tmpl.format(**feed) + "\n"
+        output = xml_tmpl.format(title=u'feed2exec RSS feeds',
+                                 date=datetime.now(),
+                                 body=body)
+        path.write(output.encode('utf-8'))
 
 
 class FeedCacheStorage(SqliteStorage):
