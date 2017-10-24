@@ -21,7 +21,6 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 import json
-import os.path
 
 
 import click
@@ -46,12 +45,14 @@ import feed2exec.logging
               help='show debugging information (loglevel: DEBUG)')
 @click.option('--syslog', help='send LEVEL logs to syslog', metavar='LEVEL',
               type=click.Choice(feed2exec.logging.levels))
-@click.option('--config', default=feed2exec.feeds.default_config_dir(),
-              help='use given directory instead of default')
+@click.option('--config', default=feedsmod.ConfFeedStorage.path,
+              show_default=True, help='use a different config file')
+@click.option('--database', default=feedsmod.SqliteStorage.path,
+              show_default=True, help='use a different database')
 @click.pass_context
-def main(ctx, loglevel, syslog, config):
-    feedsmod.SqliteStorage.path = os.path.join(config, 'feed2exec.db')
-    feedsmod.ConfFeedStorage.path = os.path.join(config, 'feed2exec.ini')
+def main(ctx, loglevel, syslog, config, database):
+    feedsmod.SqliteStorage.path = database
+    feedsmod.ConfFeedStorage.path = config
     feed2exec.logging.advancedConfig(level=loglevel, syslog=syslog,
                                      logFormat='%(messageq)s')
 

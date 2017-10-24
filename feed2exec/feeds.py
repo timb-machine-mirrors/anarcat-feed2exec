@@ -50,22 +50,7 @@ import feedparser
 import requests
 import requests_file
 import sqlite3
-
-
-def default_config_dir():
-    """the default configuration directory
-
-    this is conforming to the `XDG base directory specification
-    <https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>`_
-
-    ..todo:: this more or less conforms: the feed database is also
-             stored in this directory, whereas the database may be
-             better stored in XDG_CACHE_HOME or XDG_RUNTIME_DIR.
-    """
-
-    home_config = os.environ.get('XDG_CONFIG_HOME',
-                                 os.path.join('~', '.config'))
-    return os.path.join(home_config, feed2exec.__prog__)
+from xdg.BaseDirectory import load_first_config, xdg_cache_home
 
 
 def normalize_item(feed=None, item=None):
@@ -335,7 +320,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
     """
 
     #: default ConfFeedStorage path
-    path = os.path.join(default_config_dir(), 'feed2exec.ini')
+    path = load_first_config(feed2exec.__prog__ + '.ini')
 
     def __init__(self, pattern=None):
         self.pattern = pattern
@@ -473,7 +458,7 @@ class SqliteStorage(object):
     sql = None
     record = None
     conn = None
-    path = None
+    path = os.path.join(xdg_cache_home, 'feed2exec.db')
     cache = {}
 
     def __init__(self):

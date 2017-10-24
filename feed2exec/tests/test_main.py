@@ -25,38 +25,45 @@ def test_usage():
 def test_basics(tmpdir_factory, static_boundary):  # noqa
     conf_dir = tmpdir_factory.mktemp('main')
     conf_path = conf_dir.join('feed2exec.ini')
+    db_path = conf_dir.join('feed2exec.db')
     ConfFeedStorage.path = str(conf_path)
     runner = CliRunner()
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'add',
                                   '--output', 'feed2exec.plugins.echo',
                                   test_sample['name'],
                                   test_sample['url']])
     assert conf_dir.join('feed2exec.ini').check()
     assert result.exit_code == 0
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'add',
                                   test_sample['name'],
                                   test_sample['url']])
     assert result.exit_code == 2
     assert 'already exists' in result.output
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'ls'])
     assert result.exit_code == 0
     del test_sample['args']
     assert result.output.strip() == json.dumps(test_sample,
                                                indent=2,
                                                sort_keys=True)
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'rm', test_sample['name']])
     assert result.exit_code == 0
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'ls'])
     assert result.exit_code == 0
     assert result.output == ""
 
     maildir = conf_dir.join('maildir')
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'add',
                                   '--mailbox', str(maildir),
                                   test_nasa['name'],
@@ -65,12 +72,14 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
     assert result.exit_code == 0
 
     test_path = utils.find_test_file('planet-debian.xml')
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'add', 'planet-debian',
                                   'file://' + test_path,
                                   '--args', 'to@example.com',
                                   '--mailbox', str(maildir)])
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'fetch'])
     assert result.exit_code == 0
     assert maildir.check()
@@ -86,11 +95,13 @@ def test_opml(tmpdir_factory, static_boundary):  # noqa
     # XXX: copy-pasted from above
     conf_dir = tmpdir_factory.mktemp('main')
     conf_path = conf_dir.join('feed2exec.ini')
+    db_path = conf_dir.join('feed2exc.db')
     ConfFeedStorage.path = str(conf_path)
     runner = CliRunner()
 
     assert not conf_path.check()
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'import',
                                   utils.find_test_file('simple.opml')])
     assert conf_path.check()
@@ -98,7 +109,8 @@ def test_opml(tmpdir_factory, static_boundary):  # noqa
     with open(utils.find_test_file('simple.ini')) as p:
         conf_dir.join('feed2exec.ini').read() == p.read()
 
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'export',
                                   str(conf_dir.join('opml'))])
     assert conf_path.check()
@@ -116,16 +128,20 @@ def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
     # XXX: copy-pasted from above
     conf_dir = tmpdir_factory.mktemp('planet')
     conf_path = conf_dir.join('feed2exec.ini')
+    db_path = conf_dir.join('feed2exec.db')
     ConfFeedStorage.path = str(conf_path)
     runner = CliRunner()
 
-    result = runner.invoke(main, ['--config', str(conf_dir),
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
                                   'add', 'planet-debian',
                                   'http://planet.debian.org/rss20.xml',
                                   '--args', 'to@example.com',
                                   '--output', 'feed2exec.plugins.mbox',
                                   '--mailbox', str(conf_dir)])
-    result = runner.invoke(main, ['--config', str(conf_dir), 'fetch'],
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
+                                  'fetch'],
                            obj=betamax_session, catch_exceptions=False)
     assert result.exit_code == 0
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)

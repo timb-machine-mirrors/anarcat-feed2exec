@@ -14,7 +14,7 @@ def test_db(tmpdir_factory):
 
 @pytest.fixture(scope='session')
 def conf_path(tmpdir_factory):
-    path = tmpdir_factory.mktemp('feed2exec').join('feed2exex.ini')
+    path = tmpdir_factory.mktemp('config').join('feed2exex.ini')
     ConfFeedStorage.path = str(path)
     return path
 

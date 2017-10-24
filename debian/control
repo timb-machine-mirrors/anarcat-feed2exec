@@ -19,6 +19,7 @@ Build-Depends: debhelper (>= 10)
              , python3-requests
              , python3-requests-file
              , python3-unidecode
+             , python3-xdg
 X-Python-3-Version: >= 3.5
 Standards-Version: 4.1.0
 Homepage: https://gitlab.com/anarcat/feed2exec

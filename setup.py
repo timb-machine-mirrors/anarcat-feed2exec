@@ -56,6 +56,7 @@ requires = [
     "click",
     "feedparser",
     "html2text",
+    "pyxdg",
     "requests",
     "requests-file",
     "unidecode",
