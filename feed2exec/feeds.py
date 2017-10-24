@@ -270,6 +270,7 @@ class FeedFetcher(object):
             if feed.get('pause'):
                 logging.info('feed %s is paused, skipping', feed['name'])
                 continue
+            logging.info('fetching feed %s', feed['url'])
             try:
                 body = self.session.get(feed['url']).content
             except (requests.exceptions.Timeout,
