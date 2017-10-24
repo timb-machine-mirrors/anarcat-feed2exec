@@ -1,7 +1,7 @@
 import pytest
 
 from feed2exec.feeds import (SqliteStorage, ConfFeedStorage,
-                             FeedStorageBase)
+                             FeedFetcher)
 import feed2exec.plugins.maildir
 
 
@@ -29,6 +29,6 @@ def static_boundary(monkeypatch):
 @pytest.mark.usefixtures('betamax_session')
 def betamax(betamax_session):
     assert betamax_session
-    FeedStorageBase.sessionConfig(betamax_session)
-    FeedStorageBase._session = betamax_session
+    FeedFetcher.sessionConfig(betamax_session)
+    FeedFetcher._session = betamax_session
     return betamax_session

@@ -220,7 +220,7 @@ class SqliteStorage(object):
             self.conn.commit()
 
 
-class FeedStorageBase(object):
+class FeedFetcher(object):
     #: class :class:`request.Session` object that can be used by plugins
     #: to make HTTP requests. initialized in main() or the test suite.
     _session = None
@@ -236,9 +236,9 @@ class FeedStorageBase(object):
 
          1. work on an intialized FeedStorage object, or;
 
-         2. explicitly set FeedStorageBase._session manually - do not
+         2. explicitly set FeedFetcher._session manually - do not
             forget to also configure it with
-            func:`feed2exec.feeds.FeedStorageBase.sessionConfig`
+            func:`feed2exec.feeds.FeedFetcher.sessionConfig`
         """
         if self._session is None:
             self.session = requests.Session()
@@ -253,7 +253,7 @@ class FeedStorageBase(object):
         we could also use a @classproperty here, see `this discussion
         <https://stackoverflow.com/a/7864317/1174784>`_
         """
-        FeedStorageBase.sessionConfig(value)
+        FeedFetcher.sessionConfig(value)
         self._session = value
 
     @staticmethod
@@ -373,7 +373,7 @@ class FeedStorageBase(object):
         logging.info('%d feeds processed', i+1)
 
 
-class ConfFeedStorage(configparser.RawConfigParser, FeedStorageBase):
+class ConfFeedStorage(configparser.RawConfigParser):
     """Feed configuration stored in a config file.
 
     This derives from :class:`configparser.RawConfigParser` and uses
@@ -466,12 +466,13 @@ class ConfFeedStorage(configparser.RawConfigParser, FeedStorageBase):
                 yield d
 
 
-#: Feed storage used.
-#:
-#: An alias to
-#: :class:`feed2exec.feeds.ConfFeedStorage`, but can be overridden by
-#: plugins
-FeedStorage = ConfFeedStorage
+class FeedStorage(ConfFeedStorage, FeedFetcher):
+    """Feed storage used.
+
+    An alias to :class:`feed2exec.feeds.ConfFeedStorage`, but can be
+    overridden by plugins
+    """
+    pass
 
 
 class FeedCacheStorage(SqliteStorage):

@@ -22,7 +22,7 @@ import pytest
 
 import feed2exec
 import feed2exec.utils as utils
-from feed2exec.feeds import parse, FeedStorageBase
+from feed2exec.feeds import parse, FeedFetcher
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import test_sample
@@ -173,7 +173,7 @@ def test_filter():
 
 
 def test_wayback(capfd, betamax):  # noqa
-    assert FeedStorageBase.session
+    assert FeedFetcher.session
     handler = logging.handlers.MemoryHandler(0)
     handler.setLevel('DEBUG')
     logging.getLogger('').addHandler(handler)
