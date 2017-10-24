@@ -166,31 +166,6 @@ def parse(body, feed, lock=None, force=False):
     return data
 
 
-class SqliteStorage(object):
-    sql = None
-    record = None
-    conn = None
-    path = None
-    cache = {}
-
-    def __init__(self):
-        self.path = os.path.expanduser(SqliteStorage.path)
-        assert self.path
-        utils.make_dirs_helper(os.path.dirname(self.path))
-        if self.path not in SqliteStorage.cache:
-            logging.info('connecting to database at %s', self.path)
-            conn = sqlite3.connect(self.path)
-            try:
-                conn.set_trace_callback(logging.debug)
-            except AttributeError:  # pragma: nocover
-                logging.debug('no logging support in sqlite')
-            SqliteStorage.cache[self.path] = conn
-        self.conn = SqliteStorage.cache[self.path]
-        if self.sql:
-            self.conn.execute(self.sql)
-            self.conn.commit()
-
-
 class FeedFetcher(object):
     #: class :class:`request.Session` object that can be used by plugins
     #: to make HTTP requests. initialized in main() or the test suite.
@@ -492,6 +467,31 @@ class FeedStorage(ConfFeedStorage, FeedFetcher):
                                  date=datetime.now(),
                                  body=body)
         path.write(output.encode('utf-8'))
+
+
+class SqliteStorage(object):
+    sql = None
+    record = None
+    conn = None
+    path = None
+    cache = {}
+
+    def __init__(self):
+        self.path = os.path.expanduser(SqliteStorage.path)
+        assert self.path
+        utils.make_dirs_helper(os.path.dirname(self.path))
+        if self.path not in SqliteStorage.cache:
+            logging.info('connecting to database at %s', self.path)
+            conn = sqlite3.connect(self.path)
+            try:
+                conn.set_trace_callback(logging.debug)
+            except AttributeError:  # pragma: nocover
+                logging.debug('no logging support in sqlite')
+            SqliteStorage.cache[self.path] = conn
+        self.conn = SqliteStorage.cache[self.path]
+        if self.sql:
+            self.conn.execute(self.sql)
+            self.conn.commit()
 
 
 class FeedCacheStorage(SqliteStorage):
