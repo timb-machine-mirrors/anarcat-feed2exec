@@ -1,3 +1,23 @@
+feed2exec (0.9.0) unstable; urgency=medium
+
+  * API changes:
+    * config file moved from ~/.config/feed2exec/feed2exec.ini to
+      ~/.config/feed2exec.ini. move it by hand to keep feed2exec working
+    * database cache moved from ~/.config/feed2exec/feed2exec.db to
+      ~/.cache/feed2exec.db. move by hand to keep feed2exec working or
+      regenerate with `feed2exec fetch --catchup`
+    * use sessions everywhere and betamax for all queries
+    * refactor feeds storage to remove global
+    * completely rework class hierarchy
+    * use requests-file instead of custom file:// handler
+    * new dependencies: pyxdg and requests-file
+  * bugfixes:
+    * package should be arch: all, like other python packages, not any
+  * features:
+    * use a custom user agent
+
+ -- Antoine Beaupré <anarcat@debian.org>  Thu, 19 Oct 2017 15:48:19 -0400
+
 feed2exec (0.8.0) unstable; urgency=medium
 
   * API changes: feed2exec.feeds.fetch now returns bytes, as documented
