@@ -152,27 +152,31 @@ def parse(body, feed, lock=None, force=False):
 
 
 class FeedFetcher(object):
+    """a feed fetcher can be used to fetch multiple feeds.
+
+    it is an abstract class that should be derived using another
+    storage class that can be iterated open.
+
+    on intialization, a new :class:`requests.Session` object is
+    created to be used across all requests. therefore, as long as a
+    first FeedFetcher() object was created, FeedFetcher._session can
+    be used by plugins.
+    """
+
     #: class :class:`request.Session` object that can be used by plugins
-    #: to make HTTP requests. initialized in main() or the test suite.
+    #: to make HTTP requests. initialized in __init__() or in test suite
     _session = None
+
+    def __init__(self):
+        # reuse class level session
+        if FeedFetcher._session is None:
+            FeedFetcher._session = self.session = requests.Session()
+        else:
+            self._session = FeedFetcher._session
 
     @property
     def session(self):
-        """the session property
-
-        will initialize this to an preconfigured Session if not set
-        yet. note that this won't work with the class-level parameter,
-        as it requires a "self", so there are two options to set the
-        session:
-
-         1. work on an intialized FeedStorage object, or;
-
-         2. explicitly set FeedFetcher._session manually - do not
-            forget to also configure it with
-            func:`feed2exec.feeds.FeedFetcher.sessionConfig`
-        """
-        if self._session is None:
-            self.session = requests.Session()
+        """the session property"""
         return self._session
 
     @session.setter
