@@ -410,6 +410,14 @@ class FeedStorage(ConfFeedStorage, FeedFetcher):
     overridden by plugins.
     """
 
+    def __init__(self, *args, **kwargs):
+        """need to explicitly call FeedFetcher's constructor, otherwise the
+        ConfFeedStorage one get selected because of the
+        arguments...
+        """
+        super().__init__(*args, **kwargs)
+        FeedFetcher.__init__(self)
+
     def opml_import(self, opmlfile):
         """import a file stream as an OPML feed in the feed storage"""
         folders = []
