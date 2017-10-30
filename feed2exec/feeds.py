@@ -66,7 +66,7 @@ class Feed(feedparser.FeedParserDict):
     unless otherwise noted.
     """
     locked_keys = ('output', 'args', 'filter', 'filter_args',
-                   'folder', 'mailbox', 'url')
+                   'folder', 'mailbox', 'url', 'name', 'pause', 'catchup')
 
     def __init__(self, name, *args, **kwargs):
         super().__init__(*args, **kwargs)
