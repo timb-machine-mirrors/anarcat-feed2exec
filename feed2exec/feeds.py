@@ -65,6 +65,8 @@ class Feed(feedparser.FeedParserDict):
     For all intents and purposes, this can be considered like a dict()
     unless otherwise noted.
     """
+    locked_keys = ('output', 'args', 'filter', 'filter_args',
+                   'folder', 'mailbox', 'url')
 
     def __init__(self, name, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -141,8 +143,10 @@ class Feed(feedparser.FeedParserDict):
             lock = LOCK
         logging.info('parsing feed %s (%d bytes)', self['url'], len(body))
         data = feedparser.parse(body)
-        # add metadata from the feed
-        self.update(data['feed'])
+        # add metadata from the feed without overriding user config
+        for (key, val) in data['feed'].items():
+            if key not in self and key not in Feed.locked_keys:
+                self[key] = val
         # logging.debug('parsed structure %s',
         #               json.dumps(data, indent=2, sort_keys=True,
         #                          default=safe_serial))
@@ -201,6 +205,9 @@ class ConfFeedStorage(configparser.RawConfigParser):
         if self.has_section(name):
             raise AttributeError('key %s already exists' % name)
         d = OrderedDict()
+        # when a new element is added here, it must be added to the
+        # Feed.locked_keys config to keep parsed feed elements from
+        # overriding potentially secure-sensitive settings
         d['url'] = url
         if output is not None:
             d['output'] = output
