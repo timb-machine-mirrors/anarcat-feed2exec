@@ -53,102 +53,118 @@ import sqlite3
 from xdg.BaseDirectory import load_first_config, xdg_cache_home
 
 
-def normalize_item(feed=None, item=None):
-    """normalize feeds a little more than what feedparser provides.
+class Feed(feedparser.FeedParserDict):
+    """basic data structure representing a RSS or Atom feed.
 
-    we do the following operation:
+    it derives from the base :class:`feedparser.FeedParserDict` but
+    forces the element to have a ``name``, which is the unique name
+    for that feed in the :class:`feed2exec.feeds.FeedManager`. We also
+    add convenience functions to parse (in parallel) and normalize
+    feed items.
 
-     1. add more defaults to item dates (`issue #113
-        <https://github.com/kurtmckee/feedparser/issues/113>`_):
-
-        * created_parsed of the item
-        * updated_parsed of the feed
-
-     2. missing GUID in some feeds (`issue #112
-        <https://github.com/kurtmckee/feedparser/issues/112>`_)
-
-     3. link normalization fails on some feeds, particilarly GitHub,
-        where feeds are /foo instead of https://github.com/foo.
-        unreported for now.
+    For all intents and purposes, this can be considered like a dict()
+    unless otherwise noted.
     """
-    # 1. add more defaults (issue #113)
-    item['updated_parsed'] = item.get('updated_parsed', item.get('created_parsed', feed.get('updated_parsed', False)))  # noqa
-    assert item.get('updated_parsed') is not None
 
-    # 2. add UID if missing (issue #112)
-    if not item.get('id'):
-        item['id'] = item.get('title')
+    def __init__(self, name, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self['name'] = name
 
-    # 3. not completely absolute links
-    scheme, netloc, *rest = urlparse.urlsplit(item.get('link'))
-    if not scheme:
-        # take missing scheme/host from feed URL
-        scheme, netloc, *_ = urlparse.urlsplit(feed.get('url', ''))
-        item['link'] = urlparse.urlunsplit((scheme, netloc, *rest))
+    def normalize(self, item=None):
+        """normalize feeds a little more than what feedparser provides.
 
+        we do the following operation:
 
-def parse(body, feed, lock=None, force=False):
-    """parse the body of the feed
+         1. add more defaults to item dates (`issue #113
+            <https://github.com/kurtmckee/feedparser/issues/113>`_):
 
-    this parses the given body using :mod:`feedparser` and calls the
-    plugins configured in the ``feed`` (using
-    :func:`feed2exec.plugins.output` and
-    :func:`feed2exec.plugins.filter`). updates the cache with the
-    found items if the ``output`` plugin succeeds (returns True) and
-    if the ``filter`` plugin doesn't set the ``skip`` element in the
-    feed item.
+            * created_parsed of the item
+            * updated_parsed of the feed
 
-    :todo: this could be moved to a plugin, but then we'd need to take
-           out the cache checking logic, which would remove most of
-           the code here...
+         2. missing GUID in some feeds (`issue #112
+            <https://github.com/kurtmckee/feedparser/issues/112>`_)
 
-    :param bytes body: the body of the feed, as returned by :func:fetch
+         3. link normalization fails on some feeds, particilarly GitHub,
+            where feeds are /foo instead of https://github.com/foo.
+            unreported for now.
+        """
+        # 1. add more defaults (issue #113)
+        item['updated_parsed'] = item.get('updated_parsed', item.get('created_parsed', self.get('updated_parsed', False)))  # noqa
+        assert item.get('updated_parsed') is not None
 
-    :param dict feed: a feed object used to pass to plugins and debugging
+        # 2. add UID if missing (issue #112)
+        if not item.get('id'):
+            item['id'] = item.get('title')
 
-    :param object lock: a :class:`multiprocessing.Lock` object
-                        previously initialized. if None, the global
-                        `LOCK` variable will be used: this is used in
-                        the test suite to avoid having to pass locks
-                        all the way through the API. this lock is in
-                        turn passed to plugin calls.
+        # 3. not completely absolute links
+        scheme, netloc, *rest = urlparse.urlsplit(item.get('link'))
+        if not scheme:
+            # take missing scheme/host from feed URL
+            scheme, netloc, *_ = urlparse.urlsplit(self.get('url', ''))
+            item['link'] = urlparse.urlunsplit((scheme, netloc, *rest))
 
-    :param bool force: force plugin execution even if entry was
-                       already seen. passed to
-                       :class:`feed2exec.feeds.parse` as is
+    def parse(self, body, lock=None, force=False):
+        """parse the body of the feed
 
-    :return dict: the parsed data
+        this parses the given body using :mod:`feedparser` and calls the
+        plugins configured in the ``feed`` (using
+        :func:`feed2exec.plugins.output` and
+        :func:`feed2exec.plugins.filter`). updates the cache with the
+        found items if the ``output`` plugin succeeds (returns True) and
+        if the ``filter`` plugin doesn't set the ``skip`` element in the
+        feed item.
 
-    """
-    global LOCK
-    if lock is None:
-        lock = LOCK
-    logging.info('parsing feed %s (%d bytes)', feed['url'], len(body))
-    data = feedparser.parse(body)
-    # logging.debug('parsed structure %s',
-    #               json.dumps(data, indent=2, sort_keys=True,
-    #                          default=safe_serial))
-    cache = FeedCacheStorage(feed=feed['name'])
-    for item in data['entries']:
-        params = feed.copy()
-        params.update(data['feed'])
-        normalize_item(feed=params, item=item)
-        plugins.filter(feed=feed, item=item, lock=lock)
-        if item.get('skip'):
-            logging.info('item %s of feed %s filtered out',
-                         item.get('title'), feed.get('name'))
-            continue
-        guid = item['id']
-        if guid in cache and not force:
-            logging.debug('item %s already seen', guid)
-        else:
-            logging.debug('new item %s <%s>', guid, item['link'])
-            if plugins.output(feed, item, lock=lock) is not False and not force:  # noqa
-                cache.add(guid)
-    # massage result for multiprocessing module
-    if data['bozo']:
-        data['bozo_exception'] = str(data['bozo_exception'])
-    return data
+        :todo: this could be moved to a plugin, but then we'd need to take
+               out the cache checking logic, which would remove most of
+               the code here...
+
+        :param bytes body: the body of the feed, as returned by :func:fetch
+
+        :param dict self: a feed object used to pass to plugins and debugging
+
+        :param object lock: a :class:`multiprocessing.Lock` object
+                            previously initialized. if None, the global
+                            `LOCK` variable will be used: this is used in
+                            the test suite to avoid having to pass locks
+                            all the way through the API. this lock is in
+                            turn passed to plugin calls.
+
+        :param bool force: force plugin execution even if entry was
+                           already seen. passed to
+                           :class:`feed2exec.feeds.parse` as is
+
+        :return dict: the parsed data
+
+        """
+        global LOCK
+        if lock is None:
+            lock = LOCK
+        logging.info('parsing feed %s (%d bytes)', self['url'], len(body))
+        data = feedparser.parse(body)
+        # add metadata from the feed
+        self.update(data['feed'])
+        # logging.debug('parsed structure %s',
+        #               json.dumps(data, indent=2, sort_keys=True,
+        #                          default=safe_serial))
+        cache = FeedCacheStorage(feed=self['name'])
+        for item in data['entries']:
+            self.normalize(item=item)
+            plugins.filter(feed=self, item=item, lock=lock)
+            if item.get('skip'):
+                logging.info('item %s of feed %s filtered out',
+                             item.get('title'), self.get('name'))
+                continue
+            guid = item['id']
+            if guid in cache and not force:
+                logging.debug('item %s already seen', guid)
+            else:
+                logging.debug('new item %s <%s>', guid, item['link'])
+                if plugins.output(self, item, lock=lock) is not False and not force:  # noqa
+                    cache.add(guid)
+        # massage result for multiprocessing module
+        if data['bozo']:
+            data['bozo_exception'] = str(data['bozo_exception'])
+        return data
 
 
 class ConfFeedStorage(configparser.RawConfigParser):
@@ -239,9 +255,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
         """override iterator to allow for pattern matching"""
         for name in self.sections():
             if self.pattern is None or self.pattern in name:
-                d = dict(self[name])
-                d.update({'name': name})
-                yield d
+                yield Feed(name=name, **self[name])
 
 
 class FeedManager(ConfFeedStorage):
@@ -391,13 +405,12 @@ class FeedManager(ConfFeedStorage):
                 feed['output'] = None
             if parallel:
                 # if this fails silently, use plain apply() to see errors
-                results.append(pool.apply_async(parse,
-                                                (body, dict(feed),
-                                                 None, force)))
+                results.append(pool.apply_async(feed.parse,
+                                                (body, None, force)))
             else:
                 global LOCK
                 LOCK = None
-                parse(body=body, feed=dict(feed), force=force)
+                feed.parse(body=body, force=force)
         if parallel:
             for result in results:
                 result.get()

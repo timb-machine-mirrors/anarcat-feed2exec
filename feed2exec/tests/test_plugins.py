@@ -22,7 +22,7 @@ import pytest
 
 import feed2exec
 import feed2exec.utils as utils
-from feed2exec.feeds import parse, FeedManager
+from feed2exec.feeds import Feed, FeedManager
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 from feed2exec.tests.test_feeds import test_sample
@@ -52,14 +52,14 @@ def test_maildir(tmpdir, test_db, static_boundary, betamax):  # noqa
     with pytest.raises(email.errors.HeaderParseError):
         maildir_plugin.output(to_addr='nobody@example.com',
                               feed=feed, item=item, lock=LOCK)
-    sample = {'name': 'maildir test',
-              'url': test_sample['url'],
-              'email': 'from@example.com',
-              'output': 'feed2exec.plugins.maildir',
-              'mailbox': str(tmpdir.join('Mail')),
-              'args': 'to@example.com'}
+    sample = Feed('maildir test',
+                  {'url': test_sample['url'],
+                   'email': 'from@example.com',
+                   'output': 'feed2exec.plugins.maildir',
+                   'mailbox': str(tmpdir.join('Mail')),
+                   'args': 'to@example.com'})
     body = betamax.get(sample['url']).content
-    data = parse(body, sample, lock=LOCK)
+    data = sample.parse(body, lock=LOCK)
     folder = utils.slug(sample['name'])
     for message in tmpdir.join('Mail', folder, 'new').visit():
         expected = '''Content-Type: multipart/alternative; boundary="===============testboundary=="
@@ -96,7 +96,7 @@ This is the body, which should show instead of the above
     # test if folder setting works
     sample['folder'] = 'folder-test'
     body = betamax.get(sample['url']).content
-    data = parse(body, sample, lock=LOCK)
+    data = sample.parse(body, lock=LOCK)
     for item in data['entries']:
         f = plugins.output(sample, item, lock=LOCK)
         message = tmpdir.join('Mail', 'folder-test', 'new', f.key)
@@ -111,17 +111,16 @@ def test_email(tmpdir, test_db, static_boundary, betamax):  # noqa
 
     testdir = utils.find_test_file('.')
     for path in glob(os.path.join(testdir, '*.xml')):
-        feed = {'url': 'file://' + path,
-                'name': os.path.basename(path)[:-4],
-                'output': 'feed2exec.plugins.mbox',
-                'mailbox': str(tmpdir.join('Mail')),
-                'email': 'from@example.com',
-                'args': 'to@example.com',
-                'filter': 'feed2exec.plugins.droptitle',
-                'filter_args': 'Trump',
-                }
+        feed = Feed(os.path.basename(path)[:-4],
+                    {'url': 'file://' + path,
+                     'output': 'feed2exec.plugins.mbox',
+                     'mailbox': str(tmpdir.join('Mail')),
+                     'email': 'from@example.com',
+                     'args': 'to@example.com',
+                     'filter': 'feed2exec.plugins.droptitle',
+                     'filter_args': 'Trump'})
         body = betamax.get(feed['url']).content
-        parse(body, feed, lock=LOCK)
+        feed.parse(body, lock=LOCK)
         p = path[:-3] + 'mbx'
         with open(p) as expected:
             folder = utils.slug(feed['name']) + '.mbx'
