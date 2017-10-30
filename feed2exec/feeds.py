@@ -151,164 +151,6 @@ def parse(body, feed, lock=None, force=False):
     return data
 
 
-class FeedFetcher(object):
-    """a feed fetcher can be used to fetch multiple feeds.
-
-    it is an abstract class that should be derived using another
-    storage class that can be iterated open.
-
-    on intialization, a new :class:`requests.Session` object is
-    created to be used across all requests. therefore, as long as a
-    first FeedFetcher() object was created, FeedFetcher._session can
-    be used by plugins.
-    """
-
-    #: class :class:`request.Session` object that can be used by plugins
-    #: to make HTTP requests. initialized in __init__() or in test suite
-    _session = None
-
-    def __init__(self):
-        # reuse class level session
-        if FeedFetcher._session is None:
-            FeedFetcher._session = self.session = requests.Session()
-        else:
-            self._session = FeedFetcher._session
-
-    @property
-    def session(self):
-        """the session property"""
-        return self._session
-
-    @session.setter
-    def session(self, value):
-        """set the session to the given value
-
-        will configure the session appropriately with sessionConfig
-
-        we could also use a @classproperty here, see `this discussion
-        <https://stackoverflow.com/a/7864317/1174784>`_
-        """
-        FeedFetcher.sessionConfig(value)
-        self._session = value
-
-    @staticmethod
-    def sessionConfig(session):
-        """our custom session configuration
-
-        we change the user agent and set the file:// hanlder. extra
-        configuration may be performed in the future and will override
-        your changes.
-
-        this can be used to configure sessions used externally, for
-        example by plugins.
-        """
-        session.headers.update({'User-Agent': '%s/%s'
-                                % (feed2exec.__prog__,
-                                   feed2exec.__version__)})
-        session.mount('file://', requests_file.FileAdapter())
-
-    def fetch(self, parallel=False, force=False, catchup=False):
-        """main entry point for the feed fetch routines.
-
-        this iterates through all feeds configured in the
-        :class:`feed2exec.feeds.FeedStorage` that match the given
-        ``pattern``.
-
-        This will call :func:`logging.warning` for exceptions
-        :class:`requests.exceptions.Timeout` and
-        :class:`requests.exceptions.ConnectionError` as they are
-        transient errors and the user may want to ignore those.
-
-        Other exceptions raised from :mod:`requests.exceptions` (like
-        TooManyRedirects or HTTPError but basically any other exception)
-        may be a configuration error or a more permanent failure so will
-        be signaled with :func:`logging.error`.
-
-        :param str pattern: restrict operations to feeds named
-                            ``pattern``. passed to
-                            :class:`feed2exec.feeds.FeedStorage` as is
-
-        :param bool parallel: parse feeds in parallel, using
-                              :mod:`multiprocessing`
-
-        :param bool force: force plugin execution even if entry was
-                           already seen. passed to
-                           :class:`feed2exec.feeds.parse` as is
-
-        :param bool catchup: disables the output plugin by setting the
-                             ``output`` field to None in the ``feed``
-                             argument passed to
-                             :func:`feed2exec.feeds.parse`, used to
-                             catchup on feed entries without firing
-                             plugins.
-        """
-        logging.debug('looking for feeds %s', self.pattern)
-        if parallel:
-            lock = multiprocessing.Lock()
-            processes = None
-            if isinstance(parallel, int):
-                processes = parallel
-
-            def init_global_lock(lock):
-                """setup a global lock across pool threads
-
-                this is necessary because Lock objects are not
-                serializable so we can't pass them as arguments. An
-                alternative pattern is to have a `Manager` process and
-                use IPC for locking.
-
-                cargo-culted from this `stackoverflow answer
-                <https://stackoverflow.com/a/25558333/1174784>`_
-
-                """
-                global LOCK
-                LOCK = lock
-
-            pool = multiprocessing.Pool(processes=processes,
-                                        initializer=init_global_lock,
-                                        initargs=(lock,))
-        results = []
-        i = -1
-        for i, feed in enumerate(self):
-            logging.debug('found feed in DB: %s', dict(feed))
-            if feed.get('pause'):
-                logging.info('feed %s is paused, skipping', feed['name'])
-                continue
-            logging.info('fetching feed %s', feed['url'])
-            try:
-                body = self.session.get(feed['url']).content
-            except (requests.exceptions.Timeout,
-                    requests.exceptions.ConnectionError) as e:
-                # XXX: we should count those and warn after a few
-                # occurrences
-                logging.warning('timeout while fetching feed %s at %s: %s',
-                                feed['name'], feed['url'], e)
-                continue
-            except requests.exceptions.RequestException as e:
-                logging.error('exception while fetching feed %s at %s: %s',
-                              feed['name'], feed['url'], e)
-                continue
-            if catchup or feed.get('catchup'):
-                logging.info('catching up on feed %s (output plugin disabled)',
-                             feed['name'])
-                feed['output'] = None
-            if parallel:
-                # if this fails silently, use plain apply() to see errors
-                results.append(pool.apply_async(parse,
-                                                (body, dict(feed),
-                                                 None, force)))
-            else:
-                global LOCK
-                LOCK = None
-                parse(body=body, feed=dict(feed), force=force)
-        if parallel:
-            for result in results:
-                result.get()
-            pool.close()
-            pool.join()
-        logging.info('%d feeds processed', i+1)
-
-
 class ConfFeedStorage(configparser.RawConfigParser):
     """Feed configuration stored in a config file.
 
@@ -402,21 +244,166 @@ class ConfFeedStorage(configparser.RawConfigParser):
                 yield d
 
 
-class FeedStorage(ConfFeedStorage, FeedFetcher):
-    """Feed storage class, will derive from the actual storage and fetcher
-    in use.
+class FeedManager(ConfFeedStorage):
+    """a feed manager fetches and stores feeds.
 
-    An alias to :class:`feed2exec.feeds.ConfFeedStorage`, but can be
-    overridden by plugins.
+    on intialization, a new :class:`requests.Session` object is
+    created to be used across all requests. therefore, as long as a
+    first FeedManager() object was created, FeedManager._session can
+    be used by plugins.
+
+    this is a "controller" in a "model-view-controller" pattern. it
+    derives the "model" (:class:`feed2exec.feeds.ConfFeedStorage`) for
+    simplicity's sake, and there is no real "view" (except maybe
+    `__main__`).
     """
 
-    def __init__(self, *args, **kwargs):
-        """need to explicitly call FeedFetcher's constructor, otherwise the
-        ConfFeedStorage one get selected because of the
-        arguments...
+    #: class :class:`request.Session` object that can be used by plugins
+    #: to make HTTP requests. initialized in __init__() or in test suite
+    _session = None
+
+    def __init__(self, pattern=None):
+        # reuse class level session
+        if FeedManager._session is None:
+            FeedManager._session = self.session = requests.Session()
+        else:
+            self._session = FeedManager._session
+        super().__init__(pattern)
+
+    @property
+    def session(self):
+        """the session property"""
+        return self._session
+
+    @session.setter
+    def session(self, value):
+        """set the session to the given value
+
+        will configure the session appropriately with sessionConfig
+
+        we could also use a @classproperty here, see `this discussion
+        <https://stackoverflow.com/a/7864317/1174784>`_
         """
-        super().__init__(*args, **kwargs)
-        FeedFetcher.__init__(self)
+        FeedManager.sessionConfig(value)
+        self._session = value
+
+    @staticmethod
+    def sessionConfig(session):
+        """our custom session configuration
+
+        we change the user agent and set the file:// hanlder. extra
+        configuration may be performed in the future and will override
+        your changes.
+
+        this can be used to configure sessions used externally, for
+        example by plugins.
+        """
+        session.headers.update({'User-Agent': '%s/%s'
+                                % (feed2exec.__prog__,
+                                   feed2exec.__version__)})
+        session.mount('file://', requests_file.FileAdapter())
+
+    def fetch(self, parallel=False, force=False, catchup=False):
+        """main entry point for the feed fetch routines.
+
+        this iterates through all feeds configured in the parent
+        :class:`feed2exec.feeds.ConfFeedStorage` that match the given
+        ``pattern``.
+
+        This will call :func:`logging.warning` for exceptions
+        :class:`requests.exceptions.Timeout` and
+        :class:`requests.exceptions.ConnectionError` as they are
+        transient errors and the user may want to ignore those.
+
+        Other exceptions raised from :mod:`requests.exceptions` (like
+        TooManyRedirects or HTTPError but basically any other exception)
+        may be a configuration error or a more permanent failure so will
+        be signaled with :func:`logging.error`.
+
+        :param str pattern: restrict operations to feeds named
+                            ``pattern``. passed to parent
+                            :class:`feed2exec.feeds.ConfFeedStorage`
+                            as is
+
+        :param bool parallel: parse feeds in parallel, using
+                              :mod:`multiprocessing`
+
+        :param bool force: force plugin execution even if entry was
+                           already seen. passed to
+                           :class:`feed2exec.feeds.parse` as is
+
+        :param bool catchup: disables the output plugin by setting the
+                             ``output`` field to None in the ``feed``
+                             argument passed to
+                             :func:`feed2exec.feeds.parse`, used to
+                             catchup on feed entries without firing
+                             plugins.
+        """
+        logging.debug('looking for feeds %s', self.pattern)
+        if parallel:
+            lock = multiprocessing.Lock()
+            processes = None
+            if isinstance(parallel, int):
+                processes = parallel
+
+            def init_global_lock(lock):
+                """setup a global lock across pool threads
+
+                this is necessary because Lock objects are not
+                serializable so we can't pass them as arguments. An
+                alternative pattern is to have a `Manager` process and
+                use IPC for locking.
+
+                cargo-culted from this `stackoverflow answer
+                <https://stackoverflow.com/a/25558333/1174784>`_
+
+                """
+                global LOCK
+                LOCK = lock
+
+            pool = multiprocessing.Pool(processes=processes,
+                                        initializer=init_global_lock,
+                                        initargs=(lock,))
+        results = []
+        i = -1
+        for i, feed in enumerate(self):
+            logging.debug('found feed in DB: %s', dict(feed))
+            if feed.get('pause'):
+                logging.info('feed %s is paused, skipping', feed['name'])
+                continue
+            logging.info('fetching feed %s', feed['url'])
+            try:
+                body = self.session.get(feed['url']).content
+            except (requests.exceptions.Timeout,
+                    requests.exceptions.ConnectionError) as e:
+                # XXX: we should count those and warn after a few
+                # occurrences
+                logging.warning('timeout while fetching feed %s at %s: %s',
+                                feed['name'], feed['url'], e)
+                continue
+            except requests.exceptions.RequestException as e:
+                logging.error('exception while fetching feed %s at %s: %s',
+                              feed['name'], feed['url'], e)
+                continue
+            if catchup or feed.get('catchup'):
+                logging.info('catching up on feed %s (output plugin disabled)',
+                             feed['name'])
+                feed['output'] = None
+            if parallel:
+                # if this fails silently, use plain apply() to see errors
+                results.append(pool.apply_async(parse,
+                                                (body, dict(feed),
+                                                 None, force)))
+            else:
+                global LOCK
+                LOCK = None
+                parse(body=body, feed=dict(feed), force=force)
+        if parallel:
+            for result in results:
+                result.get()
+            pool.close()
+            pool.join()
+        logging.info('%d feeds processed', i+1)
 
     def opml_import(self, opmlfile):
         """import a file stream as an OPML feed in the feed storage"""

@@ -19,7 +19,7 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-from feed2exec.feeds import (FeedStorage, ConfFeedStorage,
+from feed2exec.feeds import (FeedManager, ConfFeedStorage,
                              FeedCacheStorage, parse)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
@@ -63,7 +63,7 @@ test_params = {'url': 'file://%s' % utils.find_test_file('sample.xml'),
 
 
 def test_add(test_db, conf_path):  # noqa
-    st = FeedStorage()
+    st = FeedManager()
     assert test_data['name'] not in st, 'this is supposed to be empty'
     st.add(**test_data)
     assert test_data['name'] in st, 'contains works'
@@ -76,7 +76,7 @@ def test_add(test_db, conf_path):  # noqa
 
 
 def test_settings(test_db, conf_path, betamax):  # noqa
-    st = FeedStorage()
+    st = FeedManager()
     assert len(list(st)) == 0
     st.add(**test_params)
     assert len(list(st)) == 1
@@ -98,14 +98,14 @@ def test_settings(test_db, conf_path, betamax):  # noqa
 
 
 def test_pattern(test_db, conf_path):  # noqa
-    st = FeedStorage()
+    st = FeedManager()
     st.add(**test_data)
     assert test_data['name'] in st, 'previous test should have ran'
     st.add(**test_data2)
     assert test_data2['name'] in st, 'second add works'
-    feeds = list(FeedStorage(pattern='test2'))
+    feeds = list(FeedManager(pattern='test2'))
     assert len(feeds) == 1, 'find only one item'
-    feeds = list(FeedStorage(pattern='test'))
+    feeds = list(FeedManager(pattern='test'))
     assert len(feeds) == 2, 'find two items'
 
 
@@ -130,7 +130,7 @@ def test_cache(test_db):  # noqa
 
 
 def test_fetch(test_db, conf_path, betamax):  # noqa
-    st = FeedStorage()
+    st = FeedManager()
     st.add(**test_sample)
 
     st.fetch()
@@ -151,7 +151,7 @@ def test_fetch(test_db, conf_path, betamax):  # noqa
 
 
 def test_fetch_parallel(test_db, conf_path, capfd, betamax):  # noqa
-    st = FeedStorage()
+    st = FeedManager()
     st.fetch(parallel=True, force=True)
     # can't use feed2exec.feeds.plugins.echo.output.called as it is
     # set in a separate process.

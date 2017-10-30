@@ -27,7 +27,7 @@ import click
 import requests
 
 import feed2exec
-from feed2exec.feeds import (FeedStorage)
+from feed2exec.feeds import (FeedManager)
 import feed2exec.feeds as feedsmod
 import feed2exec.logging
 
@@ -71,7 +71,7 @@ def main(ctx, loglevel, syslog, config, database):
 @click.option('--folder', help="subfolder to store email into")
 @click.option('--mailbox', help="basic mailbox to store email into")
 def add(name, url, output, args, filter, filter_args, folder, mailbox):
-    st = FeedStorage()
+    st = FeedManager()
     try:
         st.add(name=name, url=url, output=output, args=args,
                filter=filter, filter_args=filter_args,
@@ -82,7 +82,7 @@ def add(name, url, output, args, filter, filter_args, folder, mailbox):
 
 @click.command(help='list configured feeds')
 def ls():
-    st = FeedStorage()
+    st = FeedManager()
     for feed in st:
         if feed:
             print(json.dumps(feed, indent=2, sort_keys=True))
@@ -91,7 +91,7 @@ def ls():
 @click.command(help='remove a feed from the configuration')
 @click.argument('name')
 def rm(name):
-    st = FeedStorage()
+    st = FeedManager()
     st.remove(name)
 
 
@@ -105,7 +105,7 @@ def rm(name):
 @click.option('--catchup', '-n',
               is_flag=True, help='do not call output plugins')
 def fetch(obj, pattern, parallel, jobs, force, catchup):
-    st = FeedStorage(pattern=pattern)
+    st = FeedManager(pattern=pattern)
     # used for unit testing
     if obj and type(obj) is requests.sessions.Session:
         st.session = obj
@@ -116,13 +116,13 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
 @click.command(name='import', help='import feed list from OPML file')
 @click.argument('path', type=click.File('rb'))
 def import_(path):
-    FeedStorage().opml_import(path)
+    FeedManager().opml_import(path)
 
 
 @click.command(help='export feeds to an OPML file')
 @click.argument('path', type=click.File('wb'))
 def export(path):
-    FeedStorage().opml_export(path)
+    FeedManager().opml_export(path)
 
 
 main.add_command(add)
