@@ -19,7 +19,7 @@ from feed2exec.tests.fixtures import static_boundary  # noqa
 def test_usage():
     runner = CliRunner()
     result = runner.invoke(main, ['--help'])
-    assert result.exit_code == 0
+    assert 0 == result.exit_code
 
 
 def test_basics(tmpdir_factory, static_boundary):  # noqa
@@ -35,31 +35,30 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
                                   test_sample['name'],
                                   test_sample['url']])
     assert conf_dir.join('feed2exec.ini').check()
-    assert result.exit_code == 0
+    assert 0 == result.exit_code
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'add',
                                   test_sample['name'],
                                   test_sample['url']])
-    assert result.exit_code == 2
+    assert 2 == result.exit_code
     assert 'already exists' in result.output
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'ls'])
-    assert result.exit_code == 0
+    assert 0 == result.exit_code
     del test_sample['args']
-    assert result.output.strip() == json.dumps(test_sample,
-                                               indent=2,
-                                               sort_keys=True)
+    expected = json.dumps(test_sample, indent=2, sort_keys=True)
+    assert expected == result.output.strip()
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'rm', test_sample['name']])
-    assert result.exit_code == 0
+    assert 0 == result.exit_code
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'ls'])
-    assert result.exit_code == 0
-    assert result.output == ""
+    assert 0 == result.exit_code
+    assert "" == result.output
 
     maildir = conf_dir.join('maildir')
     result = runner.invoke(main, ['--config', str(conf_path),
@@ -69,7 +68,7 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
                                   test_nasa['name'],
                                   test_nasa['url']])
     assert conf_dir.join('feed2exec.ini').check()
-    assert result.exit_code == 0
+    assert 0 == result.exit_code
 
     test_path = utils.find_test_file('planet-debian.xml')
     result = runner.invoke(main, ['--config', str(conf_path),
@@ -81,7 +80,7 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'fetch'])
-    assert result.exit_code == 0
+    assert 0 == result.exit_code
     assert maildir.check()
     for path in maildir.join('planet-debian').join('new').visit():
         body = path.read()
@@ -105,7 +104,7 @@ def test_opml(tmpdir_factory, static_boundary):  # noqa
                                   'import',
                                   utils.find_test_file('simple.opml')])
     assert conf_path.check()
-    assert result.exit_code == 0
+    assert 0 == result.exit_code
     with open(utils.find_test_file('simple.ini')) as p:
         conf_dir.join('feed2exec.ini').read() == p.read()
 
@@ -114,7 +113,7 @@ def test_opml(tmpdir_factory, static_boundary):  # noqa
                                   'export',
                                   str(conf_dir.join('opml'))])
     assert conf_path.check()
-    assert result.exit_code == 0
+    assert 0 == result.exit_code
     with open(utils.find_test_file('simple.opml')) as p:
         p.read() == conf_dir.join('opml').read()
 
@@ -143,7 +142,7 @@ def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
                                   '--database', str(db_path),
                                   'fetch'],
                            obj=betamax_session, catch_exceptions=False)
-    assert result.exit_code == 0
+    assert 0 == result.exit_code
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
     with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:  # noqa
         expected = r.sub('', expected.read())

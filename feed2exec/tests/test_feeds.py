@@ -71,16 +71,16 @@ def test_add(test_db, conf_path):  # noqa
     with pytest.raises(AttributeError):
         st.add(**test_data)
     for r in st:
-        assert r['name'] == test_data['name'], 'iterator works'
+        assert test_data['name'] == r['name'], 'iterator works'
     st.remove(test_data['name'])
     assert test_data['name'] not in st, 'remove works'
 
 
 def test_settings(test_db, conf_path, betamax):  # noqa
     st = FeedManager()
-    assert len(list(st)) == 0
+    assert 0 == len(list(st))
     st.add(**test_params)
-    assert len(list(st)) == 1
+    assert 1 == len(list(st))
     st.set(test_params['name'], 'catchup', 'True')
     st.remove_option(test_params['name'], 'filter')
     st.fetch()
@@ -105,9 +105,9 @@ def test_pattern(test_db, conf_path):  # noqa
     st.add(**test_data2)
     assert test_data2['name'] in st, 'second add works'
     feeds = list(FeedManager(pattern='test2'))
-    assert len(feeds) == 1, 'find only one item'
+    assert 1 == len(feeds), 'find only one item'
     feeds = list(FeedManager(pattern='test'))
-    assert len(feeds) == 2, 'find two items'
+    assert 2 == len(feeds), 'find two items'
 
 
 def test_cache(test_db):  # noqa
@@ -120,7 +120,7 @@ def test_cache(test_db):  # noqa
     st.add('another')
     for item in tmp:
         assert item
-        if item['guid'] == 'another':
+        if 'another' == item['guid']:
             break
     else:  # sanity check
         assert False, 'failed to iterate through storage'  # pragma: nocover
@@ -143,12 +143,12 @@ def test_fetch(test_db, conf_path, betamax):  # noqa
     feed2exec.plugins.echo.output.called = False
     assert not feed2exec.plugins.echo.output.called
     st.fetch()
-    assert feed2exec.plugins.echo.output.called == ('test_nasa', )
+    assert ('test_nasa', ) == feed2exec.plugins.echo.output.called
     feed2exec.plugins.echo.output.called = False
     assert not feed2exec.plugins.echo.output.called
     st.add(**test_udd)
     st.fetch()
-    assert feed2exec.plugins.echo.output.called == ('test_udd', )
+    assert ('test_udd', ) == feed2exec.plugins.echo.output.called
 
 
 def test_fetch_parallel(test_db, conf_path, capfd, betamax):  # noqa
@@ -185,14 +185,15 @@ def test_config(conf_path):  # noqa
     conf = ConfFeedStorage()
     conf.add(**test_sample)
     assert conf_path.check()
-    assert conf_path.read() == '''[sample]
+    expected = '''[sample]
 url = %s
 output = feed2exec.plugins.echo
 args = 1 2 3 4
 
 ''' % test_sample['url']
+    assert expected == conf_path.read()
     assert 'sample' in conf
     for feed in conf:
         assert type(feed) is feed2exec.feeds.Feed
     conf.remove('sample')
-    assert conf_path.read() == ''
+    assert '' == conf_path.read()

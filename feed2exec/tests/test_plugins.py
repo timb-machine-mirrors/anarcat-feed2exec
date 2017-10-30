@@ -128,7 +128,7 @@ def test_email(tmpdir, test_db, static_boundary, betamax):  # noqa
             actual = r.sub('', tmpdir.join('Mail', folder).read())
             expect = r.sub('', expected.read())
             assert actual
-            assert actual == expect
+            assert expect == actual
     assert path
 
 
@@ -139,7 +139,7 @@ def test_echo(capfd):
                        item=item)
     assert e.called
     out, err = capfd.readouterr()
-    assert out == """arguments received: ('foo', 'bar')\n"""
+    assert """arguments received: ('foo', 'bar')\n""" == out
 
 
 def test_error():
@@ -154,20 +154,20 @@ def test_exec(capfd):
                              'args': 'seq 1'},
                        item={})
     out, err = capfd.readouterr()
-    assert out == "1\n"
-    assert e == 0
+    assert "1\n" == out
+    assert 0 == e
 
 
 def test_filter():
     item = {'title': 'test'}
-    copy = item.copy()
+    expected = item.copy()
     p = plugins.filter(feed={'filter': 'feed2exec.plugins.echo'}, item=item)
-    assert item == copy
+    assert expected == item
     assert p
     assert p.called is not None
     item = {'title': 'test'}
     plugins.filter(feed={'filter': 'feed2exec.plugins.null'}, item=item)
-    assert item != copy
+    assert expected != item
     assert p.called is not None
 
 
@@ -185,8 +185,8 @@ def test_wayback(capfd, betamax):  # noqa
             break
     else:  # sanity check
         raise AttributeError('no wayback logs generated?')  # pragma: nocover
-    assert record.levelname == 'INFO'
-    assert record.msg == 'URL %s saved to wayback machine: %s'
+    assert 'INFO' == record.levelname
+    assert 'URL %s saved to wayback machine: %s' == record.msg
     handler.buffer = []
     item = feedparser.FeedParserDict({'link': 'http://example.com/404'})
     e = plugins.output(feed={'output': 'feed2exec.plugins.wayback'},
@@ -197,6 +197,6 @@ def test_wayback(capfd, betamax):  # noqa
             break
     else:  # sanity check
         raise AttributeError('no wayback logs generated?')  # pragma: nocover
-    assert record.levelname == 'WARNING'
-    assert record.msg == 'wayback machine failed to save URL %s, status %d'
+    assert 'WARNING' == record.levelname
+    assert 'wayback machine failed to save URL %s, status %d' == record.msg
     handler.buffer = []
