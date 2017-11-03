@@ -14,6 +14,7 @@ import os
 import os.path
 from pkg_resources import parse_version
 import re
+import subprocess
 
 import feedparser
 import html2text
@@ -25,7 +26,8 @@ import feed2exec.utils as utils
 from feed2exec.feeds import Feed, FeedManager
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
-from feed2exec.tests.test_feeds import test_sample
+import feed2exec.plugins.transmission as transmission_plugin
+from feed2exec.tests.test_feeds import test_sample, test_params
 from feed2exec.tests.fixtures import (test_db, static_boundary, betamax)  # noqa
 
 
@@ -200,3 +202,26 @@ def test_wayback(capfd, betamax):  # noqa
     assert 'WARNING' == record.levelname
     assert 'wayback machine failed to save URL %s, status %d' == record.msg
     handler.buffer = []
+
+
+def test_transmission(monkeypatch):
+    capture = []
+
+    def fake_call(*args, **kwargs):
+        capture.append(*args)
+
+    monkeypatch.setattr(subprocess, 'check_call', fake_call)
+    item = {'summary': 'body',
+            'title': 'Evil/../../../etc/password',
+            'link': 'http://example.com/',
+            'published_parsed': datetime.datetime.now()}
+    transmission_plugin.output(hostname='example.com',
+                               feed=test_sample, item=item)
+    assert [['transmission-remote', 'example.com',
+             '-a', 'http://example.com/']] == capture
+    capture = []
+    transmission_plugin.output(hostname='example.com',
+                               feed=test_params, item=item)
+    assert [['transmission-remote', 'example.com',
+             '-a', 'http://example.com/',
+             '-w', 'test-folder/Evil.etc.password']] == capture

@@ -67,6 +67,12 @@ Null
 .. automodule:: feed2exec.plugins.null
    :members:
 
+Transmission
+~~~~~~~~~~~~
+
+.. automodule:: feed2exec.plugins.transmission
+   :members:
+
 Wayback
 ~~~~~~~
 

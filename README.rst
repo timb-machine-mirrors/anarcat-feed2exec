@@ -58,7 +58,7 @@ This creates the equivalent of this configuration file in ``~/.config/feed2exec/
 
 Send new feed items to Transmission::
 
-  feed2exec add "Example torrent list" http://example.com/torrents/feed --output feed2exec.plugins.exec --args 'transmission-remote marcos.anarc.at -a '{item.link}' -w /srv/incoming'
+  feed2exec add "Example torrent list" http://example.com/torrents/feed --output feed2exec.plugins.transmission --folder /srv/incoming
 
 Send new feed items to Mastodon, using the `toot`_ commandline
 client::
