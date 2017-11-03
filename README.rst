@@ -63,12 +63,12 @@ Send new feed items to Transmission::
 Send new feed items to Mastodon, using the `toot`_ commandline
 client::
 
-  feed2exec add "My torrent" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'toot post "{item.title} {item.link}"'
+  feed2exec add "My site" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'toot post "{item.title} {item.link}"'
 
 Send new feed items to Twitter, using the tweet commandline client
 from `python-twitter`_::
 
-  feed2exec add "My torrent" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'tweet "{item.title:40s} {item.link:100s}"'
+  feed2exec add "My site on twitter" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'tweet "{item.title:40s} {item.link:100s}"'
 
 Show feed contents::
 
