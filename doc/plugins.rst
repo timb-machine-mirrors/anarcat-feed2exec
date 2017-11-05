@@ -3,8 +3,8 @@ Plugins
 
 This is a quick overview of the available plugins.
 
-Core plugins
-------------
+Output plugins
+--------------
 
 Archive
 ~~~~~~~
@@ -12,23 +12,10 @@ Archive
 .. automodule:: feed2exec.plugins.archive
    :members:
 
-Droptitle
-~~~~~~~~~
-
-.. automodule:: feed2exec.plugins.droptitle
-   :members:
-
-
 Echo
 ~~~~
 
 .. automodule:: feed2exec.plugins.echo
-   :members:
-
-Emptysummary
-~~~~~~~~~~~~
-
-.. automodule:: feed2exec.plugins.emptysummary
    :members:
 
 Error
@@ -41,12 +28,6 @@ Exec
 ~~~~
 
 .. automodule:: feed2exec.plugins.exec
-   :members:
-
-Html2text
-~~~~~~~~~
-
-.. automodule:: feed2exec.plugins.html2text
    :members:
 
 Maildir
@@ -77,6 +58,28 @@ Wayback
 ~~~~~~~
 
 .. automodule:: feed2exec.plugins.wayback
+   :members:
+
+Filter plugins
+--------------
+
+Droptitle
+~~~~~~~~~
+
+.. automodule:: feed2exec.plugins.droptitle
+   :members:
+
+
+Emptysummary
+~~~~~~~~~~~~
+
+.. automodule:: feed2exec.plugins.emptysummary
+   :members:
+
+Html2text
+~~~~~~~~~
+
+.. automodule:: feed2exec.plugins.html2text
    :members:
 
 .. _writing-plugins:
