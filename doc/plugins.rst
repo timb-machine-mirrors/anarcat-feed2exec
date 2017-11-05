@@ -261,6 +261,9 @@ there are numerous examples of this in the sample configuration
 file. For more complex things, however, it may be easier to actually
 write this as a Python.
 
+Basic arguments
++++++++++++++++
+
 For our example, we'll write an archival plugin which writes each new
 entry to a file hierarchy. First, we start with the same simple
 function signature as filters, except we name it output::
@@ -320,6 +323,9 @@ We can try to see what happens when we call it::
   http://www.nasa.gov/press-release/nasa-announces-cassini-end-of-mission-media-activities
   1 feeds processed
 
+Sanitizing contents
++++++++++++++++++++
+
 Good. Those are the URLs we want to save to disk. Let's start by just
 writing those to a file. We will also use a simple `slug` function to
 make a filesystem-safe name from the feed title and save those files
@@ -374,6 +380,9 @@ just chose this directory because it was a safe place to write but
 it's not a persistent directory. Best make that configurable, which is
 where plugin arguments come in.
 
+User configuration
+++++++++++++++++++
+
 You see that ``*args`` parameter? That comes straight from the
 configuration file. So you could set the path in the configuration
 file, like this::
@@ -397,16 +406,12 @@ this::
       # [...]
       # rest of the function unchanged
 
+Making HTTP requests
+++++++++++++++++++++
+
 And now obviously, we only saved the link itself, not the link
 *content*. For that we need some help from the :mod:`requests`
-module. At that point, you will have re-written the `archive` module,
-which looks like this:
-
-.. include:: ../feed2exec/plugins/archive.py
-   :literal:
-   :code: python
-
-The key additions here are::
+module, and do something like this::
 
   # fetch the URL in memory
   result = requests.get(item.get('link'))
@@ -415,21 +420,56 @@ The key additions here are::
                       item.get('link'), result.status_code)
       # make sure we retry next time
       return False
+  # open the file
+  with open(path, 'w') as archive:
+      # write the response
+      archive.write(result.text)
 
-which fetches the URL in memory and checks for errors.
+This will save the actual link content (``result.text``) to the
+file. The important statement here is::
 
-.. note:: Notice how we ``return False`` here: this makes the plugin
-          system avoid adding the item to the cache, so it is retried
-          on the next run. If the plugin returns ``True`` or nothing
-          (``None``), the plugin is considered to have succeeded and
-          the entry is added to the cache. That logic is defined in
-          :func:`feed2exec.feeds.parse`.
+  # fetch the URL in memory
+  result = requests.get(item.get('link'))
 
-The other change in the final plugin is simply::
+which fetches the URL in memory and checks for errors. The other
+change in the final plugin is simply::
 
   archive.write(result.text)
 
 which writes the article content instead of the link.
+
+Plugin return values
+++++++++++++++++++++
+
+Notice how we ``return False`` here: this makes the plugin system
+avoid adding the item to the cache, so it is retried on the next
+run. If the plugin returns ``True`` or nothing (``None``), the plugin
+is considered to have succeeded and the entry is added to the
+cache. That logic is defined in :func:`feed2exec.feeds.parse`.
+
+Catchup
++++++++
+
+A final thing that is missing that is critical in all plugins is
+to respect the ``catchup`` setting. It is propagated up from the
+commandline or configuration all the way down to plugins, through the
+``feed`` parameters. How you handle it varies from plugin to plugin,
+but the basic idea is to give feedback (when verbose) of activity when
+the plugin is run *but* to not actually *do* anything. In our case, we
+simply return success, right before we fetch the URL::
+
+  if feed.get('catchup'):
+      return True
+  # fetch the URL in memory
+  result = requests.get(item.get('link'))
+
+Notice how we still fetch the actual feed content but stop before
+doing any permanent operation. That is the spirit of the "catchup"
+operation: we not only skip "write" operation, but also any operation
+which could slow down the "catchup": fetching stuff over the network
+takes time and while it can be considered a "readonly" operation as
+far as the local machine is concerned, we are effectively *writing* to
+the network so that operation shouldn't occur.
 
 Hopefully that should get you going with most of the plugins you are
 thinking of writing!
