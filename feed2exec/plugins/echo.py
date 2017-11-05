@@ -1,3 +1,6 @@
+import shlex
+
+
 class output(object):
     """
     This plugin outputs, to standard output, the arguments it receives. It
@@ -10,7 +13,7 @@ class output(object):
     called = None
 
     def __init__(self, *args, feed=None, **kwargs):
-        print("arguments received: %s" % str(args))
+        print(" ".join([shlex.quote(x) for x in args]))
         if not feed.get('catchup'):
             output.called = args
 

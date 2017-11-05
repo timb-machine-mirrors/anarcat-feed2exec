@@ -104,7 +104,7 @@ def test_parse(tmpdir_factory):
     assert 0 == result.exit_code
     assert not conf_path.check()
     assert db_path.check()
-    assert """arguments received: ('foo', 'bar')\n""" == result.output
+    assert "foo bar\n" == result.output
 
 
 def test_opml(tmpdir_factory, static_boundary):  # noqa

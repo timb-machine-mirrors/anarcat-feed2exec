@@ -149,7 +149,7 @@ def test_echo(capfd):
                        item=item)
     assert e.called
     out, err = capfd.readouterr()
-    assert """arguments received: ('foo', 'bar')\n""" == out
+    assert "foo bar\n" == out
 
 
 def test_error():

@@ -94,7 +94,7 @@ def test_settings(test_db, conf_path, capfd, betamax):  # noqa
     st.set(test_params['name'], 'pause', 'False')
     assert not feed2exec.plugins.echo.output.called, "catchup works"
     out, err = capfd.readouterr()
-    assert 'arguments received' in out, "... but still calls the plugin"
+    assert '1 2 3 4' in out, "... but still calls the plugin"
 
     st.remove_option(test_params['name'], 'filter')
     st.remove_option(test_params['name'], 'output')
@@ -163,10 +163,10 @@ def test_fetch_parallel(test_db, conf_path, capfd, betamax):  # noqa
     # can't use feed2exec.feeds.plugins.echo.output.called as it is
     # set in a separate process.
     out, err = capfd.readouterr()
-    assert 'arguments received' in out
+    assert '1 2 3 4' in out
     st.fetch(parallel=2, force=True)
     out, err = capfd.readouterr()
-    assert 'arguments received' in out
+    assert '1 2 3 4' in out
 
 
 def test_normalize(test_db, conf_path, betamax):  # noqa
