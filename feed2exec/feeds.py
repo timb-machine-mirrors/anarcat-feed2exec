@@ -207,7 +207,7 @@ class Feed(feedparser.FeedParserDict):
                              item.get('title'), self.get('name'))
                 continue
             guid = item['id']
-            if guid in cache and not force:
+            if not force and guid in cache:
                 logging.debug('item %s already seen', guid)
             else:
                 logging.debug('new item %s <%s>', guid, item['link'])
