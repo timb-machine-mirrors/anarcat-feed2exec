@@ -38,6 +38,8 @@ def output(*args, feed=None, item=None, **kwargs):
         # otherwise, we try to stay silent if all goes well
         logging.info('saving feed item %s to %s from %s',
                      item.get('title'), path, item.get('link'))
+        if feed.get('catchup'):
+            return True
         # fetch the URL in memory
         result = requests.get(item.get('link'))
         if result.status_code != requests.codes.ok:
@@ -45,8 +47,6 @@ def output(*args, feed=None, item=None, **kwargs):
                             item.get('link'), result.status_code)
             # make sure we retry next time
             return False
-        if feed.get('catchup'):
-            return True
         # open the file
         with open(path, 'w') as archive:
             # write the response
