@@ -76,24 +76,30 @@ def test_add(test_db, conf_path):  # noqa
     assert test_data['name'] not in st, 'remove works'
 
 
-def test_settings(test_db, conf_path, betamax):  # noqa
+def test_settings(test_db, conf_path, capfd, betamax):  # noqa
     st = FeedManager()
-    assert 0 == len(list(st))
+    assert 0 == len(list(st)), "no params set yet"
     st.add(**test_params)
-    assert 1 == len(list(st))
-    st.set(test_params['name'], 'catchup', 'True')
-    st.remove_option(test_params['name'], 'filter')
-    st.fetch()
-    assert not feed2exec.plugins.echo.output.called
-
-    st.set(test_params['name'], 'filter', test_params['filter'])
-    st.fetch()
-    assert feed2exec.plugins.echo.output.called
+    assert 1 == len(list(st)), "params properly added"
     feed2exec.plugins.echo.output.called = False
+    st.fetch()
+    assert feed2exec.plugins.echo.output.called, "plugins get called correctly"
 
+    feed2exec.plugins.echo.output.called = False
     st.set(test_params['name'], 'pause', 'True')
     st.fetch()
-    assert not feed2exec.plugins.echo.output.called
+    assert not feed2exec.plugins.echo.output.called, "pause works"
+
+    st.set(test_params['name'], 'catchup', 'True')
+    st.set(test_params['name'], 'pause', 'False')
+    assert not feed2exec.plugins.echo.output.called, "catchup works"
+    out, err = capfd.readouterr()
+    assert 'arguments received' in out, "... but still calls the plugin"
+
+    st.remove_option(test_params['name'], 'filter')
+    st.remove_option(test_params['name'], 'output')
+    st.fetch()
+    assert not feed2exec.plugins.echo.output.called, "removing plugins work"
 
     st.remove(test_params['name'])
 

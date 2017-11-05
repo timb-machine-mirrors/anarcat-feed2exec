@@ -48,8 +48,9 @@ def output(hostname='localhost', *args,
         command += ['-w', path]
     else:
         path = 'default path'
-    logging.debug("transmission plugin calling command %s", command)
-    subprocess.check_call(command)
+    if not feed.get('catchup'):
+        logging.debug("transmission plugin calling command %s", command)
+        subprocess.check_call(command)
     logging.info('added torrent "%s" to %s: %s',
                  item.get('title'), path,
                  html2text_filter.parse(item.get('summary')))

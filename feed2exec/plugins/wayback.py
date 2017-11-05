@@ -22,7 +22,11 @@ def output(*args, feed=None, item=None, **kwargs):
     """
 
     if item and item.get('link'):
-        res = feed.session.head('%s/save/%s' % (WAYBACK_URL, item.get('link')))
+        wayback_url = '%s/save/%s' % (WAYBACK_URL, item.get('link'))
+        if feed.get('catchup'):
+            logging.info('skipping wayback machine save to %s', wayback_url)
+            return True
+        res = feed.session.head(wayback_url)
         res.headers['status_code'] = res.status_code
         archive_location = WAYBACK_URL + res.headers['Content-Location']
         if res.status_code == requests.codes.ok:

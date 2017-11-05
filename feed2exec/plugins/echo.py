@@ -9,9 +9,10 @@ class output(object):
 
     called = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, feed=None, **kwargs):
         print("arguments received: %s" % str(args))
-        output.called = args
+        if not feed.get('catchup'):
+            output.called = args
 
 
 #: This filter just keeps the feed unmodified. It is just there for testing

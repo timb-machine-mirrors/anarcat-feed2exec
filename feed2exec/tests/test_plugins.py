@@ -104,6 +104,13 @@ This is the body, which should show instead of the above
         message = tmpdir.join('Mail', 'folder-test', 'new', f.key)
         assert message.check()
 
+    tmpdir.join('Mail', 'inbox').remove()
+    feed['catchup'] = True
+    f = maildir_plugin.output(to_addr='nobody@example.com',
+                              feed=feed, item=item, lock=LOCK)
+    message = tmpdir.join('Mail', 'inbox', 'new', f.key)
+    assert not message.check()
+
 
 @pytest.mark.xfail(condition=parse_version(feedparser.__version__) < parse_version('5.2.1'), reason="older feedparser version do not sort <img> tags, install feedparser 5.2.1 or later")  # noqa
 @pytest.mark.xfail(condition=html2text.__version__ < (2017, 10, 4), reason="older html2text output varies, install version 2017.10.4 or later")  # noqa
@@ -158,6 +165,12 @@ def test_exec(capfd):
     out, err = capfd.readouterr()
     assert "1\n" == out
     assert 0 == e
+    e = plugins.output(feed={'output': 'feed2exec.plugins.exec',
+                             'args': 'seq 1', 'catchup': 'True'},
+                       item={})
+    out, err = capfd.readouterr()
+    assert "" == out
+    assert e
 
 
 def test_filter():
@@ -202,6 +215,22 @@ def test_wayback(capfd, betamax):  # noqa
     assert 'wayback machine failed to save URL %s, status %d' == record.msg
     handler.buffer = []
 
+    called = False
+
+    def fake(*args, **kwargs):
+        nonlocal called
+        called = True
+        return mock.MagicMock()
+
+    betamax.head = fake
+    item = feedparser.FeedParserDict({'link': 'http://example.com/'})
+    e = plugins.output(feed=feed, item=item)
+    assert called
+    feed['catchup'] = True
+    called = False
+    e = plugins.output(feed=feed, item=item)
+    assert not called
+
 
 def test_transmission(monkeypatch):
     capture = []
@@ -224,3 +253,8 @@ def test_transmission(monkeypatch):
     assert [['transmission-remote', 'example.com',
              '-a', 'http://example.com/',
              '-w', 'test-folder/Evil.etc.password']] == capture
+    test_params['catchup'] = True
+    capture = []
+    transmission_plugin.output(hostname='example.com',
+                               feed=test_params, item=item)
+    assert [] == capture

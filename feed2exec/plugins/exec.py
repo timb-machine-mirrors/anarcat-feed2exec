@@ -2,7 +2,7 @@ import logging
 import subprocess
 
 
-def output(command, *args, **kwargs):
+def output(command, *args, feed=None, **kwargs):
     """The exec plugin is the ultimate security disaster. It simply
     executes whatever you feed it without any sort of sanitization. It
     does avoid to call to the shell and executes the command directly,
@@ -36,4 +36,6 @@ def output(command, *args, **kwargs):
     feed item links to the given directory.
     """
     logging.info('calling command: %s', [command] + list(args))
+    if feed.get('catchup'):
+        return True
     return subprocess.check_call([command] + list(args))

@@ -34,7 +34,6 @@ class output(object):
         msg.set_from(utils.slug(feed.get('name', 'MAILER-DAEMON')),
                      time.gmtime(timestamp))
         prefix = os.path.expanduser(feed.get('mailbox', '~/Mail'))
-        utils.make_dirs_helper(prefix)
         folder = os.path.basename(os.path.abspath(utils.slug(feed.get('name'))))  # noqa
         # allow user to override our folder
         folder = feed.get('folder', folder + '.mbx')
@@ -42,9 +41,13 @@ class output(object):
         logging.debug('established folder path %s', path)
         if lock:
             lock.acquire()
-        maildir = mailbox.mbox(path, create=True)
-        self.key = maildir.add(msg)
-        maildir.flush()
+        if feed.get('catchup'):
+            self.key = path
+        else:
+            utils.make_dirs_helper(prefix)
+            maildir = mailbox.mbox(path, create=True)
+            self.key = maildir.add(msg)
+            maildir.flush()
         if lock:
             lock.release()
         guid = item.get('guid', item.get('link', '???'))

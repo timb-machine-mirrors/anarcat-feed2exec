@@ -45,6 +45,8 @@ def output(*args, feed=None, item=None, **kwargs):
                             item.get('link'), result.status_code)
             # make sure we retry next time
             return False
+        if feed.get('catchup'):
+            return True
         # open the file
         with open(path, 'w') as archive:
             # write the response

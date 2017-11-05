@@ -40,7 +40,6 @@ class output(object):
                                       cls=mailbox.MaildirMessage)
         msg.set_date(timestamp)
         prefix = os.path.expanduser(feed.get('mailbox', '~/Maildir'))
-        utils.make_dirs_helper(prefix)
         folder = os.path.basename(os.path.abspath(utils.slug(feed.get('name'))))  # noqa
         # allow user to override our folder
         folder = feed.get('folder', folder)
@@ -48,9 +47,13 @@ class output(object):
         logging.debug('established folder path %s', path)
         if lock:
             lock.acquire()
-        maildir = mailbox.Maildir(path, create=True)
-        self.key = maildir.add(msg)
-        maildir.flush()
+        if feed.get('catchup'):
+            self.key = ''
+        else:
+            utils.make_dirs_helper(prefix)
+            maildir = mailbox.Maildir(path, create=True)
+            self.key = maildir.add(msg)
+            maildir.flush()
         if lock:
             lock.release()
         guid = item.get('guid', item.get('link', '???'))

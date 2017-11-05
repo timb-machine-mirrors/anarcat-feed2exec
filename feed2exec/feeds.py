@@ -416,10 +416,11 @@ class FeedManager(ConfFeedStorage):
             body = feed.fetch()
             if body is None:
                 continue
-            if catchup or feed.get('catchup'):
+            if catchup:
+                feed['catchup'] = catchup
+            if feed.get('catchup'):
                 logging.info('catching up on feed %s (output plugin disabled)',
                              feed['name'])
-                feed['output'] = None
             if parallel:
                 # if this fails silently, use plain apply() to see errors
                 results.append(pool.apply_async(feed.parse,
