@@ -27,7 +27,7 @@ import click
 import requests
 
 import feed2exec
-from feed2exec.feeds import (FeedManager)
+from feed2exec.feeds import (FeedManager, Feed)
 import feed2exec.feeds as feedsmod
 import feed2exec.logging
 
@@ -108,7 +108,7 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
     st = FeedManager(pattern=pattern)
     # used for unit testing
     if obj and type(obj) is requests.sessions.Session:
-        st.session = obj
+        Feed._session = obj
     parallel = jobs or parallel
     st.fetch(parallel, force=force, catchup=catchup)
 

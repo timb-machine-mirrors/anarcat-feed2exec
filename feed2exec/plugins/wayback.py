@@ -2,13 +2,11 @@ import logging
 
 import requests
 
-from feed2exec.feeds import FeedManager
-
 
 WAYBACK_URL = 'https://web.archive.org'
 
 
-def output(*args, item=None, **kwargs):
+def output(*args, feed=None, item=None, **kwargs):
     """This plugin saves the feed items `link` element to the wayback
     machine. It will retry URLs that fail, so it may be necessary to
     manually catchup feeds if they have broken `link` fields.
@@ -22,10 +20,9 @@ def output(*args, item=None, **kwargs):
     The above will save the Image of the day updates to the wayback
     machine.
     """
-    session = FeedManager._session
 
     if item and item.get('link'):
-        res = session.head('%s/save/%s' % (WAYBACK_URL, item.get('link')))
+        res = feed.session.head('%s/save/%s' % (WAYBACK_URL, item.get('link')))
         res.headers['status_code'] = res.status_code
         archive_location = WAYBACK_URL + res.headers['Content-Location']
         if res.status_code == requests.codes.ok:

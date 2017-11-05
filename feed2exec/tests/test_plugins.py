@@ -23,7 +23,7 @@ import pytest
 
 import feed2exec
 import feed2exec.utils as utils
-from feed2exec.feeds import Feed, FeedManager
+from feed2exec.feeds import Feed
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 import feed2exec.plugins.transmission as transmission_plugin
@@ -174,13 +174,13 @@ def test_filter():
 
 
 def test_wayback(capfd, betamax):  # noqa
-    assert FeedManager.session
+    assert Feed.session
     handler = logging.handlers.MemoryHandler(0)
     handler.setLevel('DEBUG')
     logging.getLogger('').addHandler(handler)
+    feed = Feed('wayback test', {'output': 'feed2exec.plugins.wayback'})
     item = feedparser.FeedParserDict({'link': 'http://example.com/'})
-    e = plugins.output(feed={'output': 'feed2exec.plugins.wayback'},
-                       item=item)
+    e = plugins.output(feed=feed, item=item)
     assert e
     for record in handler.buffer:
         if 'wayback machine' in record.getMessage():
@@ -191,8 +191,7 @@ def test_wayback(capfd, betamax):  # noqa
     assert 'URL %s saved to wayback machine: %s' == record.msg
     handler.buffer = []
     item = feedparser.FeedParserDict({'link': 'http://example.com/404'})
-    e = plugins.output(feed={'output': 'feed2exec.plugins.wayback'},
-                       item=item)
+    e = plugins.output(feed=feed, item=item)
     assert not e
     for record in handler.buffer:
         if 'wayback machine' in record.getMessage():
