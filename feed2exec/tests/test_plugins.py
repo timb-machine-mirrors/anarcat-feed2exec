@@ -217,6 +217,11 @@ def test_wayback(capfd, betamax):  # noqa
     assert 'wayback machine failed to save URL %s, status %d' == record.msg
     handler.buffer = []
 
+    item = feedparser.FeedParserDict({'link':
+                                      'https://anarc.at/wikiicons/email.png'})
+    e = plugins.output(feed=feed, item=item)
+    assert e
+
     called = False
 
     def fake(*args, **kwargs):
