@@ -82,6 +82,12 @@ Html2text
 .. automodule:: feed2exec.plugins.html2text
    :members:
 
+Ikiwiki Recentchanges
+~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: feed2exec.plugins.ikiwiki_recentchanges
+   :members:
+
 .. _writing-plugins:
 
 Writing new plugins
