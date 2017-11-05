@@ -1,3 +1,32 @@
+feed2exec (0.10.0) unstable; urgency=medium
+
+  * bugfies:
+    * security: avoid possible config setting override, see 2a49300 for
+      details
+    * follow redirections in wayback machine
+    * remove useless db query when forcing
+  * features
+    * add transmission plugin, to write torrents to specific folders
+      safely
+    * add ikiwiki recentchanges filter: fixes recent changes summaries to
+      fetch links properly
+    * add linkchecker examples: allows users to check their publications
+      for broken links
+    * add shortcut parse command: allows running a single feed with a
+      temporary configuration
+    * make echo plugin a little more useful by *only* showing the passed
+      arguments
+  * documentation:
+    * document catchup properly
+    * add missing documentation about some add parameters in manpage
+  * massive API refactoring:
+    * plugins are now responsible for handling the "catchup" setting
+    * FeedStorage is gone, replaced with a FeedManager
+    * add a Feed object which has the parse/fetch functions and holds the
+      session singleton
+
+ -- Antoine Beaupré <anarcat@debian.org>  Sun, 05 Nov 2017 15:38:26 -0500
+
 feed2exec (0.9.0) unstable; urgency=medium
 
   * API changes:
