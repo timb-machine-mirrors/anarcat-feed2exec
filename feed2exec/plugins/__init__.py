@@ -74,12 +74,21 @@ def output(feed, item, lock=None):
                  appropriately.
 
     The feed and items are also passed to the plugin as keyword
-    arguments.
+    arguments. Plugins should especially respect the ``catchup``
+    argument that, when set, forbids plugins to do any permanent
+    activity. For example, plugins MUST NOT run commands, write files,
+    or make network requests. In general, "catchup mode" should be
+    *fast*: it allows users to quickly catchup with new feeds without
+    firing plugins, but it should *also* allow users to test
+    configurations so plugins SHOULD give information to the user
+    about what would have been done by the plugin without ``catchup``.
 
     :param dict feed: the feed metadata
     :param dict item: the updated item
     :return object: the loaded plugin
 
+    .. note:: more information about plugin design is in the
+              :ref:`writing-plugins` document.
     """
 
     if feed.get('args'):
