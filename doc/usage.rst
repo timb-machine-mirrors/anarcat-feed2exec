@@ -62,7 +62,10 @@ Commands
 
  * add::
 
-     add [--output PLUGIN [--args ARG [ARG [...]]] [--filter PLUGIN] NAME URL
+     add NAME URL
+         [--output PLUGIN [--args ARG [ARG [...]]]
+         [--filter PLUGIN] [--filter_args ARG [ARG [...]]]
+         [--mailbox PATH] [--folder PATH]
 
    The add command adds the given feed ``NAME`` that will be fetched
    from the provided ``URL``.
@@ -77,6 +80,7 @@ Commands
                         parameters using, for example ``{title}``
        --filter PLUGIN  filter feed items through the PLUGIN filter
                         plugin
+       --filter_args A  arguments passed to the filter plugin
        --mailbox PATH   folder to store email into, defaults to
                         ``~/Maildir``.
        --folder PATH    subfolder to store the email into
