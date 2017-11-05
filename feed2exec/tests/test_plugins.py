@@ -5,6 +5,7 @@ from glob import glob
 import datetime
 import email
 import logging
+import logging.handlers
 try:  # pragma nocover
     import unittest.mock as mock
 except ImportError:  # pragma nocover
@@ -191,6 +192,7 @@ def test_wayback(capfd, betamax):  # noqa
     handler = logging.handlers.MemoryHandler(0)
     handler.setLevel('DEBUG')
     logging.getLogger('').addHandler(handler)
+    logging.getLogger('').setLevel('DEBUG')
     feed = Feed('wayback test', {'output': 'feed2exec.plugins.wayback'})
     item = feedparser.FeedParserDict({'link': 'http://example.com/'})
     e = plugins.output(feed=feed, item=item)
