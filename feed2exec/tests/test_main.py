@@ -90,6 +90,23 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
         assert False, "Francois Marier item not found"  # pragma: nocover
 
 
+def test_parse(tmpdir_factory):
+    conf_dir = tmpdir_factory.mktemp('parse')
+    conf_path = conf_dir.join('feed2exec.ini')
+    db_path = conf_dir.join('feed2exec.db')
+    runner = CliRunner()
+    result = runner.invoke(main, ['--config', str(conf_path),
+                                  '--database', str(db_path),
+                                  'parse',
+                                  '--output', 'feed2exec.plugins.echo',
+                                  '--args', 'foo bar',
+                                  test_sample['url']])
+    assert 0 == result.exit_code
+    assert not conf_path.check()
+    assert db_path.check()
+    assert """arguments received: ('foo', 'bar')\n""" == result.output
+
+
 def test_opml(tmpdir_factory, static_boundary):  # noqa
     # XXX: copy-pasted from above
     conf_dir = tmpdir_factory.mktemp('main')

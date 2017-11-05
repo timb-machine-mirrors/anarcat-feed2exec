@@ -30,6 +30,7 @@ import feed2exec
 from feed2exec.feeds import (FeedManager, Feed)
 import feed2exec.feeds as feedsmod
 import feed2exec.logging
+from feed2exec.utils import slug
 
 
 @click.group(help=feed2exec.__description__,
@@ -113,6 +114,24 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
     st.fetch(parallel, force=force, catchup=catchup)
 
 
+@click.command(help='fetch and parse a single feed')
+@click.argument('url')
+@click.option('--output', metavar='PLUGIN', show_default=True,
+              default='feed2exec.plugins.maildir',
+              help="output plugin to call on new items")
+@click.option('--args', metavar='ARGS',
+              help="output plugin arguments, with parameter substitution")
+@click.option('--filter', help="filter plugin to call to process items")
+@click.option('--filter_args',
+              help="filter plugin arguments, also with parameter substitution")
+@click.option('--folder', help="subfolder to store email into")
+@click.option('--mailbox', help="basic mailbox to store email into")
+def parse(url, **kwargs):
+    kwargs.update({'url': url})
+    feed = Feed(slug(url), kwargs)
+    feed.parse(feed.fetch(), lock=False, force=True)
+
+
 @click.command(name='import', help='import feed list from OPML file')
 @click.argument('path', type=click.File('rb'))
 def import_(path):
@@ -131,6 +150,7 @@ main.add_command(rm)
 main.add_command(fetch)
 main.add_command(import_)
 main.add_command(export)
+main.add_command(parse)
 
 
 if __name__ == '__main__':

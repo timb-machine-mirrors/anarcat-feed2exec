@@ -30,6 +30,19 @@ Options
 Commands
 --------
 
+ * parse::
+
+     parse URL
+         [--output PLUGIN [--args ARG [ARG [...]]]
+         [--filter PLUGIN] [--filter_args ARG [ARG [...]]]
+         [--mailbox PATH] [--folder PATH]
+
+   The parse command loads and parses a single feed, without touching
+   the database. This is similar to calling `add` then `fetch` on a
+   single feed, but the feed is not kept in the configuration. This is
+   designed to make quick tests with a new feed. The arguments are the
+   same as the `add` command.
+
  * fetch::
 
      fetch [--parallel | -p | --jobs N | -j N] [--force | -f] [pattern]
