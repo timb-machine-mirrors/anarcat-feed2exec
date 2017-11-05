@@ -412,6 +412,9 @@ class FeedManager(ConfFeedStorage):
         i = -1
         for i, feed in enumerate(self):
             logging.debug('found feed in DB: %s', dict(feed))
+            # XXX: this is dirty. iterator/getters/??? should return
+            # the right thing? or will that break an eventual editor?
+            # maybe autocommit is a bad idea in the first place..
             feed = Feed(feed['name'], feed)
             body = feed.fetch()
             if body is None:
