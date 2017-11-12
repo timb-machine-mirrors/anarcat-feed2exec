@@ -267,7 +267,8 @@ def test_transmission(monkeypatch):
                                feed=test_params, item=item)
     assert [] == capture
 
-def test_archive(tmpdir, betamax):
+
+def test_archive(tmpdir, betamax):  # noqa
     dest = tmpdir.join('archive')
     feed = Feed('test archive', test_sample)
     item = feedparser.FeedParserDict({'link': 'http://example.com/',
