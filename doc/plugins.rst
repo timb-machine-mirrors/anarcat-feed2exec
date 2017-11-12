@@ -122,6 +122,14 @@ regroup your multiple plugins in a package, see the `module
 documentation <https://docs.python.org/3/tutorial/modules.html>`_ for
 more information about this concept in Python.
 
+.. note:: There is a rudimentary plugin resolution process that looks
+          for plugins first in the `feed2exec.plugins` namespace but
+          then globally. This is done in
+          :func:`feed2exec.plugins.resolve`, called from the ``add``
+          and ``parse`` commands. This means that the absolute path is
+          expected to be used in the configuration file and
+          internally.
+
 You are welcome to distribute plugins separately or send them as merge
 requests, see :doc:`contribute` for more information on how to
 participate in this project. We of course welcome contributions to

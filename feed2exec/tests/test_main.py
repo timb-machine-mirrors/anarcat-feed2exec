@@ -64,10 +64,12 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'add',
+                                  '--output', 'maildir',
                                   '--mailbox', str(maildir),
                                   test_nasa['name'],
                                   test_nasa['url']])
     assert conf_dir.join('feed2exec.ini').check()
+    assert 'feed2exec.plugins.maildir' in conf_dir.join('feed2exec.ini').read()
     assert 0 == result.exit_code
 
     test_path = utils.find_test_file('planet-debian.xml')

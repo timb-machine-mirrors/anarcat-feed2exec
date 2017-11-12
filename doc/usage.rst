@@ -71,10 +71,12 @@ Commands
    from the provided ``URL``.
 
        --output PLUGIN  use PLUGIN as an output module. defaults to
-                        ``feed2exec.plugins.maildir`` to store in a
-                        mailbox. use ``feed2exec.plugins.null`` to
-                        just fetch the feed without fetching
-                        anything.
+                        ``maildir`` to store in a mailbox. use
+                        ``null`` to just fetch the feed without
+                        fetching anything. Modules are searched in the
+                        `feed2exec.plugins` package unless the name
+                        contains a dot in which case the whole Python
+                        search path is used.
        --args ARGS      pass arguments ARGS to the output
                         module. supports interpolation of feed
                         parameters using, for example ``{title}``

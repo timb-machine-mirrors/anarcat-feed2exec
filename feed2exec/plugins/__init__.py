@@ -134,3 +134,32 @@ def filter(feed, item, lock=None):
         except Exception as e:
             logging.exception("plugin generated exception: %s, ignoring", e)
             return None
+
+
+def resolve(plugin):
+    """resolve a short plugin name to a loadable plugin path
+
+    Some parts of feed2exec allow shorter plugin names. For example,
+    on the commandline, users can pass `maildir` instead of
+    `feed2exec.plugins.maildir`.
+
+    Plugin resolution works like this:
+
+     1. search for the module in the `feed2exec.plugins` namespace
+
+     2. if that fails, consider the module to be an absolute path
+    """
+
+    if plugin is None:
+        return None
+    try:
+        full_plugin = 'feed2exec.plugins.' + plugin
+        importlib.import_module(full_plugin)
+        plugin = full_plugin
+    except ImportError:
+        try:
+            importlib.import_module(plugin)
+        except ImportError:
+            logging.warning('cannot find plugin %s, ignored', plugin)
+            plugin = None
+    return plugin

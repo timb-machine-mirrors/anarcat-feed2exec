@@ -30,6 +30,7 @@ import feed2exec
 from feed2exec.feeds import (FeedManager, Feed)
 import feed2exec.feeds as feedsmod
 import feed2exec.logging
+import feed2exec.plugins as plugins
 from feed2exec.utils import slug
 
 
@@ -62,7 +63,7 @@ def main(ctx, loglevel, syslog, config, database):
 @click.argument('name')
 @click.argument('url')
 @click.option('--output', metavar='PLUGIN', show_default=True,
-              default='feed2exec.plugins.maildir',
+              default='maildir',
               help="output plugin to call on new items")
 @click.option('--args', metavar='ARGS',
               help="output plugin arguments, with parameter substitution")
@@ -74,8 +75,9 @@ def main(ctx, loglevel, syslog, config, database):
 def add(name, url, output, args, filter, filter_args, folder, mailbox):
     st = FeedManager()
     try:
-        st.add(name=name, url=url, output=output, args=args,
-               filter=filter, filter_args=filter_args,
+        st.add(name=name, url=url,
+               output=plugins.resolve(output), args=args,
+               filter=plugins.resolve(filter), filter_args=filter_args,
                folder=folder, mailbox=mailbox)
     except AttributeError as e:
         raise click.BadParameter('feed %s already exists' % name)
@@ -117,7 +119,7 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
 @click.command(help='fetch and parse a single feed')
 @click.argument('url')
 @click.option('--output', metavar='PLUGIN', show_default=True,
-              default='feed2exec.plugins.maildir',
+              default='maildir',
               help="output plugin to call on new items")
 @click.option('--args', metavar='ARGS',
               help="output plugin arguments, with parameter substitution")
@@ -128,6 +130,8 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
 @click.option('--mailbox', help="basic mailbox to store email into")
 def parse(url, **kwargs):
     kwargs.update({'url': url})
+    for plugin in ('output', 'filter'):
+        kwargs[plugin] = plugins.resolve(kwargs[plugin])
     feed = Feed(slug(url), kwargs)
     feed.parse(feed.fetch(), lock=False, force=True)
 

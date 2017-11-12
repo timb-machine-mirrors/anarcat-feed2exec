@@ -43,7 +43,7 @@ Examples
 
 Simple run with no side effects::
 
-  feed2exec parse https://www.nasa.gov/rss/dyn/breaking_news.rss --output feed2exec.plugins.echo --args '{item.title'}
+  feed2exec parse https://www.nasa.gov/rss/dyn/breaking_news.rss --output echo --args '{item.title'}
 
 Saving feed items to a Maildir folder::
 
@@ -62,21 +62,21 @@ This creates the equivalent of this configuration file in ``~/.config/feed2exec/
 
 Send new feed items to Transmission::
 
-  feed2exec add "Example torrent list" http://example.com/torrents/feed --output feed2exec.plugins.transmission --folder /srv/incoming
+  feed2exec add "Example torrent list" http://example.com/torrents/feed --output transmission --folder /srv/incoming
 
 Send new feed items to Mastodon, using the `toot`_ commandline
 client::
 
-  feed2exec add "My site" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'toot post "{item.title} {item.link}"'
+  feed2exec add "My site" http://example.com/blog/feed --output exec --args 'toot post "{item.title} {item.link}"'
 
 Send new feed items to Twitter, using the tweet commandline client
 from `python-twitter`_::
 
-  feed2exec add "My site on twitter" http://example.com/blog/feed --output feed2exec.plugins.exec --args 'tweet "{item.title:40s} {item.link:100s}"'
+  feed2exec add "My site on twitter" http://example.com/blog/feed --output exec --args 'tweet "{item.title:40s} {item.link:100s}"'
 
 Show feed contents::
 
-  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --output feed2exec.plugins.echo --args "{item.title} {item.link}"
+  feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --output echo --args "{item.title} {item.link}"
   feed2exec fetch
 
 .. _toot: https://github.com/ihabunek/toot/
