@@ -1,7 +1,7 @@
 import logging
 import os.path
 import requests
-from feed2exec.utils import slug
+from feed2exec.utils import slug, make_dirs_helper
 
 
 #: default archive directory
@@ -30,6 +30,7 @@ def output(*args, feed=None, item=None, **kwargs):
     path = slug(item.get('title', 'no-name'))
     # take the archive dir from the user or use the default
     archive_dir = ' '.join(args) if args else DEFAULT_ARCHIVE_DIR
+    make_dirs_helper(archive_dir)
     # put the file in the archive directory
     path = os.path.join(archive_dir, path)
     # only operate on items that actually have a link
