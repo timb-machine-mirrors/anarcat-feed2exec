@@ -43,7 +43,7 @@ def output(*args, feed=None, item=None, **kwargs):
         if feed.get('catchup'):
             return True
         # fetch the URL in memory
-        result = requests.get(item.get('link'))
+        result = feed.session.get(item.get('link'))
         if result.status_code != requests.codes.ok:
             logging.warning('failed to fetch link %s: %s',
                             item.get('link'), result.status_code)
