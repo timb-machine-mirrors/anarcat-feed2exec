@@ -491,6 +491,194 @@ the network so that operation shouldn't occur.
 Hopefully that should get you going with most of the plugins you are
 thinking of writing!
 
+.. _writing-tests:
+
+Writing tests
+~~~~~~~~~~~~~
+
+Writing tests is essential in ensuring that the code will stay
+maintainable in the future. It allows for easy refactoring and can
+find bugs that manual testing may not, especially when you get
+complete coverage (although that is no garantee either).
+
+We'll take our `archive` plugin as an example. The first step is to
+edit the ``tests/test/test_plugins.py`` file, where other plugins are
+tests as well. We start by creating a function named ``test_archive``
+so that `Pytest <https://pytest.org/>`_, our test bed, will find
+it::
+
+  def test_archive(tmpdir, betamax):  # noqa
+      pass
+
+Notice the two arguments named ``tmpdir`` and ``betamax``. Both
+of those are `fixtures
+<https://docs.pytest.org/en/latest/fixture.html>`_, a pytest concept
+that allows to simulate an environment. In particular, the ``tmpdir``
+fixture, shipped with pytest, allows you to easily manage (and
+automatically remove) temporary directories. The ``betamax`` fixtures
+is a uses the `betamax <https://betamax.readthedocs.io/>`_ module to
+record then replay HTTP requests.
+
+Then we need to do something. We need to create a feed and a feed item
+that we can then send into the plugin. We could also directly parse an
+existing feed and indeed some plugins do exactly that. But our plugin
+is simple and we can afford to skip full feed parsing and just
+synthesize what we need::
+
+      feed = Feed('test archive', test_sample)
+      item = feedparser.FeedParserDict({'link': 'http://example.com/',
+                                       'title': 'example site'})
+
+This creates a new feed based on the ``test_sample`` feed. This is
+necessary so that the ``session`` is properly re-initialized in the
+feed item (otherwise the ``betamax`` fixture will not work). Then it
+creates a fake feed entry simply with one link and a title. Then we
+can call our plugin, and verify that it saves the file as we
+expected. The test for the most common case looks like this::
+
+    def test_archive(tmpdir, betamax):  # noqa
+        dest = tmpdir.join('archive')
+        feed = Feed('test archive', test_sample)
+        item = feedparser.FeedParserDict({'link': 'http://example.com/',
+                                          'title': 'example site'})
+        assert archive_plugin.output(str(dest), feed=feed, item=item)
+        assert dest.join('example-site').check()
+
+Then we can try to run this with ``pytest-3``::
+
+  [1084]anarcat@curie:feed2exec$ pytest-3
+  =============================== test session starts ===============================
+  platform linux -- Python 3.5.3, pytest-3.0.6, py-1.4.32, pluggy-0.4.0
+  rootdir: /home/anarcat/src/feed2exec, inifile: setup.cfg
+  plugins: profiling-1.2.11, cov-2.4.0, betamax-0.8.0
+  collected 26 items 
+  
+  feed2exec/utils.py ..
+  feed2exec/plugins/transmission.py .
+  feed2exec/tests/test_feeds.py ........
+  feed2exec/tests/test_main.py .....
+  feed2exec/tests/test_opml.py .
+  feed2exec/tests/test_plugins.py .........
+  
+  ----------- coverage: platform linux, python 3.5.3-final-0 -----------
+  Name                                         Stmts   Miss  Cover
+  ----------------------------------------------------------------
+  feed2exec/__init__.py                           12      0   100%
+  feed2exec/__main__.py                           87      1    99%
+  feed2exec/_version.py                            1      0   100%
+  feed2exec/email.py                              81      7    91%
+  feed2exec/feeds.py                             243      8    97%
+  feed2exec/logging.py                            31     11    65%
+  feed2exec/plugins/__init__.py                   47      6    87%
+  feed2exec/plugins/archive.py                    23      5    78%
+  feed2exec/plugins/droptitle.py                   2      0   100%
+  feed2exec/plugins/echo.py                        8      0   100%
+  feed2exec/plugins/emptysummary.py                5      0   100%
+  feed2exec/plugins/error.py                       2      0   100%
+  feed2exec/plugins/exec.py                        7      0   100%
+  feed2exec/plugins/html2text.py                  20      4    80%
+  feed2exec/plugins/ikiwiki_recentchanges.py       9      5    44%
+  feed2exec/plugins/maildir.py                    28      0   100%
+  feed2exec/plugins/mbox.py                       29      1    97%
+  feed2exec/plugins/null.py                        5      1    80%
+  feed2exec/plugins/transmission.py               20      0   100%
+  feed2exec/plugins/wayback.py                    20      0   100%
+  feed2exec/tests/__init__.py                      0      0   100%
+  feed2exec/tests/conftest.py                      3      0   100%
+  feed2exec/tests/fixtures.py                     19      0   100%
+  feed2exec/tests/test_feeds.py                  124      0   100%
+  feed2exec/tests/test_main.py                    90      0   100%
+  feed2exec/tests/test_opml.py                    17      0   100%
+  feed2exec/tests/test_plugins.py                162      0   100%
+  feed2exec/utils.py                              41     12    71%
+  ----------------------------------------------------------------
+  TOTAL                                         1136     61    95%
+  
+  
+  =========================== 26 passed in 10.83 seconds ============================  
+
+Notice the test coverage: we only have 78% test coverage for our
+plugin. This means that some branches of the code were not executed at
+all! Let's see if we can improve that. Looking at the code, I see
+there are some conditionals for error handling. So let's simulate an
+error, and make sure that we don't create a file on error::
+
+      dest.remove()
+      item = feedparser.FeedParserDict({'link': 'http://example.com/404',
+                                      'title': 'example site'})
+      assert not archive_plugin.output(str(dest), feed=feed, item=item)
+      assert not dest.join('example-site').check()
+
+There. Let's see the effect on the test coverage::
+
+  [1085]anarcat@curie:feed2exec2$ pytest-3 feed2exec/tests/test_plugins.py::test_archive
+  =============================== test session starts ===============================
+  platform linux -- Python 3.5.3, pytest-3.0.6, py-1.4.32, pluggy-0.4.0
+  rootdir: /home/anarcat/src/feed2exec, inifile: setup.cfg
+  plugins: profiling-1.2.11, cov-2.4.0, betamax-0.8.0
+  collected 10 items 
+  
+  feed2exec/tests/test_plugins.py .
+  
+  ----------- coverage: platform linux, python 3.5.3-final-0 -----------
+  Name                                         Stmts   Miss  Cover
+  ----------------------------------------------------------------
+  feed2exec/__init__.py                           12      0   100%
+  feed2exec/__main__.py                           87     87     0%
+  feed2exec/_version.py                            1      0   100%
+  feed2exec/email.py                              81     64    21%
+  feed2exec/feeds.py                             243    172    29%
+  feed2exec/logging.py                            31     31     0%
+  feed2exec/plugins/__init__.py                   47     38    19%
+  feed2exec/plugins/archive.py                    23      3    87%
+  feed2exec/plugins/droptitle.py                   2      2     0%
+  feed2exec/plugins/echo.py                        8      3    62%
+  feed2exec/plugins/emptysummary.py                5      5     0%
+  feed2exec/plugins/error.py                       2      2     0%
+  feed2exec/plugins/exec.py                        7      7     0%
+  feed2exec/plugins/html2text.py                  20     13    35%
+  feed2exec/plugins/ikiwiki_recentchanges.py       9      9     0%
+  feed2exec/plugins/maildir.py                    28     19    32%
+  feed2exec/plugins/mbox.py                       29     29     0%
+  feed2exec/plugins/null.py                        5      5     0%
+  feed2exec/plugins/transmission.py               20     12    40%
+  feed2exec/plugins/wayback.py                    20     20     0%
+  feed2exec/tests/__init__.py                      0      0   100%
+  feed2exec/tests/conftest.py                      3      0   100%
+  feed2exec/tests/fixtures.py                     19      6    68%
+  feed2exec/tests/test_feeds.py                  124    101    19%
+  feed2exec/tests/test_main.py                    90     90     0%
+  feed2exec/tests/test_opml.py                    17     17     0%
+  feed2exec/tests/test_plugins.py                166    123    26%
+  feed2exec/utils.py                              41     16    61%
+  ----------------------------------------------------------------
+  TOTAL                                         1140    874    23%
+  
+  
+============================ 1 passed in 2.46 seconds
+=============================
+
+Much better! Only 3 lines left to cover!
+
+.. note:: Notice how I explicitly provided a path to my test. This is
+          entirely optional. You can just run ``pytest-3`` and it will
+          run the whole test suite: this method is just faster. Notice
+          also how the coverage ratio is very low: this is normal; we
+          are testing, after all, only *one* plugin here.
+
+The only branches left to test in the code is the other possible error
+("no link in the feed") and to test the "catchup" mode. You can see
+this in the actual ``test_plugins.py`` file distributed with this
+documentation.
+
+.. note:: If you discover a bug associated with a single feed, you can
+          use the betamax session and the
+          :func:`feed2exec.feeds.Feed.parse()` function to manually
+          parse a feed and fire your plugin. This is how email
+          functionality is tested: see the
+          :func:`feed2exec.tests.test_plugins.test_email` function for
+          an example.
+
 See also
 --------
 

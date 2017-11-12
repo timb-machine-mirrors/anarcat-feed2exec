@@ -86,8 +86,9 @@ This is also hooked into the ``setup.py`` command, so this also works::
 Note that some tests will fail in Python 2, as the code is written and
 tested in Python3. Furthermore, the feed output is taken from an up to
 date (5.2.1) feedparser version, so the tests are marked as expected
-to fail for lower versions. You should, naturally, run tests before
-submitting patches.
+to fail for lower versions. You should, naturally, run and write tests
+before submitting patches. See the :ref:`writing-tests` section for
+more information about how to write tests.
 
 .. _pytest: http://pytest.org/
 .. _ecdysis: https://gitlab.com/anarcat/ecdysis
