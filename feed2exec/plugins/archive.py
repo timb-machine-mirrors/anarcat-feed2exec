@@ -36,8 +36,9 @@ def output(*args, feed=None, item=None, **kwargs):
     if item.get('link'):
         # tell the user what's going on, if verbose
         # otherwise, we try to stay silent if all goes well
-        logging.info('saving feed item %s to %s from %s',
-                     item.get('title'), path, item.get('link'))
+        logging.info('saving feed item %s to %s from %s%s',
+                     item.get('title'), path, item.get('link'),
+                     feed.get('catchup', '') and ' (simulated)')
         if feed.get('catchup'):
             return True
         # fetch the URL in memory

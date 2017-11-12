@@ -57,5 +57,6 @@ class output(object):
         if lock:
             lock.release()
         guid = item.get('guid', item.get('link', '???'))
-        logging.info('saved item %s to %s',
-                     guid, os.path.join(path, 'new', self.key))
+        logging.info('saved item %s to %s%s',
+                     guid, os.path.join(path, 'new', self.key),
+                     feed.get('catchup', '') and ' (simulated)')

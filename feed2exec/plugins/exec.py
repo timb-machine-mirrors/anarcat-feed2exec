@@ -35,7 +35,8 @@ def output(command, *args, feed=None, **kwargs):
     The above is the equivalent of the archive plugin: it will save
     feed item links to the given directory.
     """
-    logging.info('calling command: %s', [command] + list(args))
+    logging.info('calling command: %s%s', [command] + list(args),
+                 feed.get('catchup', '') and ' (simulated)')
     if feed.get('catchup'):
         return True
     return subprocess.check_call([command] + list(args))

@@ -23,8 +23,9 @@ def output(*args, feed=None, item=None, **kwargs):
 
     if item and item.get('link'):
         wayback_url = '%s/save/%s' % (WAYBACK_URL, item.get('link'))
+        logging.debug('saving URL %s to wayback machine %s',
+                      item.get('link'), wayback_url)
         if feed.get('catchup'):
-            logging.info('skipping wayback machine save to %s', wayback_url)
             return True
         res = feed.session.head(wayback_url, allow_redirects=True)
         res.headers['status_code'] = res.status_code

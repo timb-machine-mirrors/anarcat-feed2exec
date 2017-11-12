@@ -190,7 +190,7 @@ def test_filter():
 def test_wayback(capfd, betamax):  # noqa
     assert Feed.session
     handler = logging.handlers.MemoryHandler(0)
-    handler.setLevel('DEBUG')
+    handler.setLevel('INFO')
     logging.getLogger('').addHandler(handler)
     logging.getLogger('').setLevel('DEBUG')
     feed = Feed('wayback test', {'output': 'feed2exec.plugins.wayback'})

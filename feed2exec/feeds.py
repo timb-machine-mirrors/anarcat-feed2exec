@@ -421,9 +421,6 @@ class FeedManager(ConfFeedStorage):
                 continue
             if catchup:
                 feed['catchup'] = catchup
-            if feed.get('catchup'):
-                logging.info('catching up on feed %s (output plugin disabled)',
-                             feed['name'])
             if parallel:
                 # if this fails silently, use plain apply() to see errors
                 results.append(pool.apply_async(feed.parse,

@@ -48,10 +48,12 @@ def output(hostname='localhost', *args,
         command += ['-w', path]
     else:
         path = 'default path'
-    if not feed.get('catchup'):
-        logging.debug("transmission plugin calling command %s", command)
-        subprocess.check_call(command)
-    logging.info('added torrent "%s" to %s: %s',
+    logging.info('adding torrent "%s" to %s: %s%s',
                  item.get('title'), path,
-                 html2text_filter.parse(item.get('summary')))
+                 html2text_filter.parse(item.get('summary')),
+                 feed.get('catchup', '') and ' (simulated)')
+    logging.debug("calling command %s%s", command,
+                  feed.get('catchup', '') and ' (simulated)')
+    if not feed.get('catchup'):
+        subprocess.check_call(command)
     return True
