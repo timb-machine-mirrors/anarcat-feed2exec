@@ -28,6 +28,7 @@ from feed2exec.feeds import Feed
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 import feed2exec.plugins.transmission as transmission_plugin
+import feed2exec.plugins.archive as archive_plugin
 from feed2exec.tests.test_feeds import test_sample, test_params
 from feed2exec.tests.fixtures import (test_db, static_boundary, betamax)  # noqa
 
@@ -265,3 +266,25 @@ def test_transmission(monkeypatch):
     transmission_plugin.output(hostname='example.com',
                                feed=test_params, item=item)
     assert [] == capture
+
+def test_archive(tmpdir, betamax):
+    dest = tmpdir.join('archive')
+    feed = Feed('test archive', test_sample)
+    item = feedparser.FeedParserDict({'link': 'http://example.com/',
+                                      'title': 'example site'})
+    assert archive_plugin.output(str(dest), feed=feed, item=item)
+    assert dest.join('example-site').check()
+    dest.remove()
+    item = feedparser.FeedParserDict({'link': 'http://example.com/404',
+                                      'title': 'example site'})
+    assert not archive_plugin.output(str(dest), feed=feed, item=item)
+    assert not dest.join('example-site').check()
+    # no link
+    item = feedparser.FeedParserDict({'title': 'example site'})
+    assert archive_plugin.output(str(dest), feed=feed, item=item)
+    assert not dest.join('example-site').check()
+    feed['catchup'] = True
+    item = feedparser.FeedParserDict({'link': 'http://example.com/',
+                                      'title': 'example site'})
+    assert archive_plugin.output(str(dest), feed=feed, item=item)
+    assert not dest.join('example-site').check()
