@@ -83,6 +83,11 @@ This is also hooked into the ``setup.py`` command, so this also works::
 
   python3 setup.py test
 
+Enabling the `catchlog`_ plugin will also enable logging in the test
+suite which will help diagnostics.
+
+.. _catchlog: https://pypi.python.org/pypi/pytest-catchlog/
+
 Note that some tests will fail in Python 2, as the code is written and
 tested in Python3. Furthermore, the feed output is taken from an up to
 date (5.2.1) feedparser version, so the tests are marked as expected
