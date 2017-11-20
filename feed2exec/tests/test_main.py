@@ -6,14 +6,15 @@ from __future__ import print_function
 
 import json
 import re
+import py
 
 from click.testing import CliRunner
 
 import feed2exec.utils as utils
+from feed2exec.feeds import SqliteStorage
 from feed2exec.__main__ import main
-from feed2exec.tests.test_feeds import (ConfFeedStorage, test_sample,
-                                        test_nasa)
-from feed2exec.tests.fixtures import static_boundary  # noqa
+from feed2exec.tests.test_feeds import (test_sample, test_nasa)
+from feed2exec.tests.fixtures import (conf_path, db_path, static_boundary)  # noqa
 
 
 def test_usage():
@@ -22,11 +23,7 @@ def test_usage():
     assert 0 == result.exit_code
 
 
-def test_basics(tmpdir_factory, static_boundary):  # noqa
-    conf_dir = tmpdir_factory.mktemp('main')
-    conf_path = conf_dir.join('feed2exec.ini')
-    db_path = conf_dir.join('feed2exec.db')
-    ConfFeedStorage.path = str(conf_path)
+def test_basics(tmpdir_factory, conf_path, db_path, static_boundary):  # noqa
     runner = CliRunner()
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
@@ -34,7 +31,7 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
                                   '--output', 'feed2exec.plugins.echo',
                                   test_sample['name'],
                                   test_sample['url']])
-    assert conf_dir.join('feed2exec.ini').check()
+    assert conf_path.check()
     assert 0 == result.exit_code
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
@@ -60,7 +57,7 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
     assert 0 == result.exit_code
     assert "" == result.output
 
-    maildir = conf_dir.join('maildir')
+    maildir = tmpdir_factory.mktemp('maildir')
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'add',
@@ -68,8 +65,8 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
                                   '--mailbox', str(maildir),
                                   test_nasa['name'],
                                   test_nasa['url']])
-    assert conf_dir.join('feed2exec.ini').check()
-    assert 'feed2exec.plugins.maildir' in conf_dir.join('feed2exec.ini').read()
+    assert conf_path.check()
+    assert 'feed2exec.plugins.maildir' in conf_path.read()
     assert 0 == result.exit_code
 
     test_path = utils.find_test_file('planet-debian.xml')
@@ -92,11 +89,9 @@ def test_basics(tmpdir_factory, static_boundary):  # noqa
         assert False, "Francois Marier item not found"  # pragma: nocover
 
 
-def test_parse(tmpdir_factory):
-    conf_dir = tmpdir_factory.mktemp('parse')
-    conf_path = conf_dir.join('feed2exec.ini')
-    db_path = conf_dir.join('feed2exec.db')
+def test_parse(tmpdir_factory, conf_path, db_path):  # noqa
     runner = CliRunner()
+    conf_path.remove()
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'parse',
@@ -109,12 +104,7 @@ def test_parse(tmpdir_factory):
     assert "foo bar\n" == result.output
 
 
-def test_opml(tmpdir_factory, static_boundary):  # noqa
-    # XXX: copy-pasted from above
-    conf_dir = tmpdir_factory.mktemp('main')
-    conf_path = conf_dir.join('feed2exec.ini')
-    db_path = conf_dir.join('feed2exc.db')
-    ConfFeedStorage.path = str(conf_path)
+def test_opml(tmpdir_factory, conf_path, db_path):  # noqa
     runner = CliRunner()
 
     assert not conf_path.check()
@@ -125,29 +115,33 @@ def test_opml(tmpdir_factory, static_boundary):  # noqa
     assert conf_path.check()
     assert 0 == result.exit_code
     with open(utils.find_test_file('simple.ini')) as p:
-        conf_dir.join('feed2exec.ini').read() == p.read()
+        conf_path.read() == p.read()
 
+    opml_path = tmpdir_factory.mktemp('ompl').join('simple.opml')
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'export',
-                                  str(conf_dir.join('opml'))])
+                                  str(opml_path)])
     assert conf_path.check()
     assert 0 == result.exit_code
     with open(utils.find_test_file('simple.opml')) as p:
-        p.read() == conf_dir.join('opml').read()
+        p.read() == opml_path.read()
 
 
-def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
+def test_planet(tmpdir_factory, static_boundary, betamax_session, conf_path, db_path):  # noqa
     """test i18n feeds for double-encoding
 
     previously, we would double-encode email bodies and subject, which
     would break display of any feed item with unicode.
     """
-    # XXX: copy-pasted from above
-    conf_dir = tmpdir_factory.mktemp('planet')
-    conf_path = conf_dir.join('feed2exec.ini')
-    db_path = conf_dir.join('feed2exec.db')
-    ConfFeedStorage.path = str(conf_path)
+    mbox_dir = tmpdir_factory.mktemp('planet').join('Mail')
+    try:
+        conf_path.remove()
+        db_path.remove()
+        del SqliteStorage.cache[str(db_path)]
+    except py.error.ENOENT:
+        # running this single test, ignore
+        pass
     runner = CliRunner()
 
     result = runner.invoke(main, ['--config', str(conf_path),
@@ -156,7 +150,7 @@ def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
                                   'http://planet.debian.org/rss20.xml',
                                   '--args', 'to@example.com',
                                   '--output', 'feed2exec.plugins.mbox',
-                                  '--mailbox', str(conf_dir)])
+                                  '--mailbox', str(mbox_dir)])
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'fetch'],
@@ -165,5 +159,5 @@ def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
     with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:  # noqa
         expected = r.sub('', expected.read())
-        actual = r.sub('', conf_dir.join('planet-debian.mbx').read())
+        actual = r.sub('', mbox_dir.join('planet-debian.mbx').read())
         assert expected == actual
