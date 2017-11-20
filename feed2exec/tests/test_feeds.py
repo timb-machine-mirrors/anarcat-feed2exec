@@ -23,7 +23,6 @@ from feed2exec.feeds import (FeedManager, ConfFeedStorage,
                              FeedCacheStorage, Feed)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
-from feed2exec.tests.fixtures import (db_path, conf_path, betamax)  # noqa
 import pytest
 
 test_data = Feed('test',
@@ -63,7 +62,7 @@ test_params = Feed('params',
                     'args': '1 2 3 4'})
 
 
-def test_add(db_path, conf_path):  # noqa
+def test_add(db_path, conf_path):
     st = FeedManager()
     assert test_data['name'] not in st, 'this is supposed to be empty'
     st.add(**test_data)
@@ -76,7 +75,7 @@ def test_add(db_path, conf_path):  # noqa
     assert test_data['name'] not in st, 'remove works'
 
 
-def test_settings(db_path, conf_path, capfd, betamax):  # noqa
+def test_settings(db_path, conf_path, capfd, betamax):
     st = FeedManager()
     assert 0 == len(list(st)), "no params set yet"
     st.add(**test_params)
@@ -104,7 +103,7 @@ def test_settings(db_path, conf_path, capfd, betamax):  # noqa
     st.remove(test_params['name'])
 
 
-def test_pattern(db_path, conf_path):  # noqa
+def test_pattern(db_path, conf_path):
     st = FeedManager()
     st.add(**test_data)
     assert test_data['name'] in st, 'previous test should have ran'
@@ -116,7 +115,7 @@ def test_pattern(db_path, conf_path):  # noqa
     assert 2 == len(feeds), 'find two items'
 
 
-def test_cache(db_path):  # noqa
+def test_cache(db_path):
     st = FeedCacheStorage(feed=test_data['name'])
     assert 'guid' not in st
     st.add('guid')
@@ -136,7 +135,7 @@ def test_cache(db_path):  # noqa
     assert 'guid' not in st
 
 
-def test_fetch(db_path, conf_path, betamax):  # noqa
+def test_fetch(db_path, conf_path, betamax):
     st = FeedManager()
     st.add(**test_sample)
 
@@ -157,7 +156,7 @@ def test_fetch(db_path, conf_path, betamax):  # noqa
     assert ('test_udd', ) == feed2exec.plugins.echo.output.called
 
 
-def test_fetch_parallel(db_path, conf_path, capfd, betamax):  # noqa
+def test_fetch_parallel(db_path, conf_path, capfd, betamax):
     st = FeedManager()
     st.fetch(parallel=True, force=True)
     # can't use feed2exec.feeds.plugins.echo.output.called as it is
@@ -169,7 +168,7 @@ def test_fetch_parallel(db_path, conf_path, capfd, betamax):  # noqa
     assert '1 2 3 4' in out
 
 
-def test_normalize(db_path, conf_path, betamax):  # noqa
+def test_normalize(db_path, conf_path, betamax):
     '''black box testing for :func:feeds.normalize_item()'''
     data = test_udd.parse(betamax.get(test_udd['url']).content)
     for item in data.entries:
@@ -186,7 +185,7 @@ def test_normalize(db_path, conf_path, betamax):  # noqa
         assert item.get('updated_parsed')
 
 
-def test_config(conf_path):  # noqa
+def test_config(conf_path):
     conf_path.remove()
     conf = ConfFeedStorage()
     conf.add(**test_sample)

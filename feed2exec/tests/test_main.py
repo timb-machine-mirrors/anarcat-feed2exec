@@ -14,7 +14,6 @@ import feed2exec.utils as utils
 from feed2exec.feeds import SqliteStorage
 from feed2exec.__main__ import main
 from feed2exec.tests.test_feeds import (test_sample, test_nasa)
-from feed2exec.tests.fixtures import (conf_path, db_path, static_boundary)  # noqa
 
 
 def test_usage():
@@ -23,7 +22,7 @@ def test_usage():
     assert 0 == result.exit_code
 
 
-def test_basics(tmpdir_factory, conf_path, db_path, static_boundary):  # noqa
+def test_basics(tmpdir_factory, conf_path, db_path, static_boundary):
     runner = CliRunner()
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
@@ -89,7 +88,7 @@ def test_basics(tmpdir_factory, conf_path, db_path, static_boundary):  # noqa
         assert False, "Francois Marier item not found"  # pragma: nocover
 
 
-def test_parse(tmpdir_factory, conf_path, db_path):  # noqa
+def test_parse(tmpdir_factory, conf_path, db_path):
     runner = CliRunner()
     conf_path.remove()
     result = runner.invoke(main, ['--config', str(conf_path),
@@ -104,7 +103,7 @@ def test_parse(tmpdir_factory, conf_path, db_path):  # noqa
     assert "foo bar\n" == result.output
 
 
-def test_opml(tmpdir_factory, conf_path, db_path):  # noqa
+def test_opml(tmpdir_factory, conf_path, db_path):
     runner = CliRunner()
 
     assert not conf_path.check()
@@ -128,7 +127,7 @@ def test_opml(tmpdir_factory, conf_path, db_path):  # noqa
         p.read() == opml_path.read()
 
 
-def test_planet(tmpdir_factory, static_boundary, betamax_session, conf_path, db_path):  # noqa
+def test_planet(tmpdir_factory, static_boundary, betamax_session, conf_path, db_path):
     """test i18n feeds for double-encoding
 
     previously, we would double-encode email bodies and subject, which
@@ -157,7 +156,7 @@ def test_planet(tmpdir_factory, static_boundary, betamax_session, conf_path, db_
                            obj=betamax_session, catch_exceptions=False)
     assert 0 == result.exit_code
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
-    with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:  # noqa
+    with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:
         expected = r.sub('', expected.read())
         actual = r.sub('', mbox_dir.join('planet-debian.mbx').read())
         assert expected == actual
