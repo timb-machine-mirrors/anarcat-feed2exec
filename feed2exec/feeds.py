@@ -50,7 +50,7 @@ import feedparser
 import requests
 import requests_file
 import sqlite3
-from xdg.BaseDirectory import load_first_config, xdg_cache_home
+import xdg.BaseDirectory as xdg_base_dirs
 
 
 class Feed(feedparser.FeedParserDict):
@@ -269,7 +269,8 @@ class ConfFeedStorage(configparser.RawConfigParser):
     """
 
     #: default ConfFeedStorage path
-    path = load_first_config(feed2exec.__prog__ + '.ini')
+    path = xdg_base_dirs.load_first_config(feed2exec.__prog__ + '.ini') or \
+        os.path.join(xdg_base_dirs.xdg_config_home, feed2exec.__prog__ + '.ini')
 
     def __init__(self, pattern=None):
         self.pattern = pattern
@@ -489,7 +490,7 @@ class SqliteStorage(object):
     sql = None
     record = None
     conn = None
-    path = os.path.join(xdg_cache_home, 'feed2exec.db')
+    path = os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
     cache = {}
 
     def __init__(self):
