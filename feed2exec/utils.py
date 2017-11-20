@@ -63,6 +63,8 @@ def make_dirs_helper(path):
     True
     >>> make_dirs_helper(p.join(d, 'foo'))
     False
+    >>> make_dirs_helper('')
+    False
     >>> make_dirs_helper(p.join('/dev/null', 'foo')) # doctest: +ELLIPSIS
     Traceback (most recent call last):
         ...
@@ -71,6 +73,8 @@ def make_dirs_helper(path):
     >>> os.rmdir(d)
     >>>
     """
+    if not path:
+        return False
     try:
         os.makedirs(path)
         return True

@@ -88,6 +88,27 @@ def test_basics(tmpdir_factory, conf_path, db_path, static_boundary):  # noqa
         assert False, "Francois Marier item not found"  # pragma: nocover
 
 
+def test_relative_conf(tmpdir):
+    '''this checks if specifying a config/db without a relative or
+    absolute directory works. in older versions of
+    utils.make_dirs_helper, this would crash.
+    '''
+    runner = CliRunner()
+    with tmpdir.as_cwd():
+        result = runner.invoke(main, ['--config', 'test.ini',
+                                      'add',
+                                      test_sample['name'],
+                                      test_sample['url']])
+        assert 0 == result.exit_code
+        result = runner.invoke(main, ['--config', 'test.ini',
+                                      '--database', 'test.db',
+                                      'fetch', '--catchup'], catch_exceptions=False)
+        assert 0 == result.exit_code
+    assert tmpdir.join('test.ini').check()
+    assert tmpdir.join('test.db').check()
+    assert 0 == result.exit_code
+
+
 def test_parse(tmpdir_factory, conf_path, db_path):  # noqa
     runner = CliRunner()
     conf_path.remove()
