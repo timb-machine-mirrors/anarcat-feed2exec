@@ -80,7 +80,7 @@ def make_dirs_helper(path):
         return False
 
 
-def find_test_file(name):
+def find_test_file(name='.'):
     """need to be updated from ecdysis"""
     localpath = os.path.join(os.path.dirname(__file__), 'tests', 'files', name)
     try:

@@ -7,7 +7,7 @@ from feed2exec.feeds import (FeedManager)
 from feed2exec.tests.fixtures import (test_db, conf_path)  # noqa
 import feed2exec.utils as utils
 
-testdir = utils.find_test_file('.')
+testdir = utils.find_test_file()
 
 
 @pytest.mark.parametrize("opmlpath", glob(os.path.join(testdir, '*.opml')))  # noqa
