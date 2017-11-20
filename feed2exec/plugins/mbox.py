@@ -51,6 +51,5 @@ class output(object):
         if lock:
             lock.release()
         guid = item.get('guid', item.get('link', '???'))
-        logging.info('saved item %s to %s%s', guid,
-                     os.path.join(folder, self.key),
+        logging.info('saved item %s to %s%s', guid, path,
                      feed.get('catchup', '') and ' (simulated)')
