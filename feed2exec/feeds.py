@@ -445,7 +445,7 @@ class FeedManager(ConfFeedStorage):
             logging.debug('found OPML entry: %s', node.attrib)
             if event == 'start' and node.attrib.get('xmlUrl'):
                 folder = os.path.join(*folders) if folders else None
-                title = node.attrib['title']
+                title = node.attrib.get('title', utils.slug(node.attrib['xmlUrl']))
                 logging.info('importing element %s <%s> in folder %s',
                              title, node.attrib['xmlUrl'], folder)
                 if title in self:
