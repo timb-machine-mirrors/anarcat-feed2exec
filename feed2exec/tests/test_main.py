@@ -6,7 +6,6 @@ from __future__ import print_function
 
 import json
 import re
-import py
 
 from click.testing import CliRunner
 
@@ -104,30 +103,6 @@ def test_parse(tmpdir_factory, conf_path, db_path):  # noqa
     assert "foo bar\n" == result.output
 
 
-def test_opml(tmpdir_factory, conf_path, db_path):  # noqa
-    runner = CliRunner()
-
-    assert not conf_path.check()
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'import',
-                                  utils.find_test_file('simple.opml')])
-    assert conf_path.check()
-    assert 0 == result.exit_code
-    with open(utils.find_test_file('simple.ini')) as p:
-        conf_path.read() == p.read()
-
-    opml_path = tmpdir_factory.mktemp('ompl').join('simple.opml')
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'export',
-                                  str(opml_path)])
-    assert conf_path.check()
-    assert 0 == result.exit_code
-    with open(utils.find_test_file('simple.opml')) as p:
-        p.read() == opml_path.read()
-
-
 def test_planet(tmpdir_factory, static_boundary, betamax_session, conf_path, db_path):  # noqa
     """test i18n feeds for double-encoding
 
@@ -135,13 +110,11 @@ def test_planet(tmpdir_factory, static_boundary, betamax_session, conf_path, db_
     would break display of any feed item with unicode.
     """
     mbox_dir = tmpdir_factory.mktemp('planet').join('Mail')
-    try:
+    if conf_path.check():
         conf_path.remove()
+    if db_path.check():
         db_path.remove()
         del SqliteStorage.cache[str(db_path)]
-    except py.error.ENOENT:
-        # running this single test, ignore
-        pass
     runner = CliRunner()
 
     result = runner.invoke(main, ['--config', str(conf_path),
