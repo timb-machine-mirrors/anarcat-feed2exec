@@ -5,8 +5,8 @@ import feed2exec.plugins.maildir
 
 
 @pytest.fixture(scope='session')
-def test_db(tmpdir_factory):
-    path = tmpdir_factory.mktemp('feed2exec').join('feed2exec.db')
+def db_path(tmpdir_factory):
+    path = tmpdir_factory.mktemp('db').join('feed2exec.db')
     SqliteStorage.path = str(path)
     return path
 

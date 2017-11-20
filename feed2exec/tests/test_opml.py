@@ -4,14 +4,14 @@ import os.path
 import pytest
 
 from feed2exec.feeds import (FeedManager)
-from feed2exec.tests.fixtures import (test_db, conf_path)  # noqa
+from feed2exec.tests.fixtures import (db_path, conf_path)  # noqa
 import feed2exec.utils as utils
 
 testdir = utils.find_test_file()
 
 
 @pytest.mark.parametrize("opmlpath", glob(os.path.join(testdir, '*.opml')))  # noqa
-def test_import(test_db, conf_path, opmlpath):
+def test_import(db_path, conf_path, opmlpath):
     with open(utils.find_test_file(opmlpath), 'rb') as opmlfile:
         FeedManager().opml_import(opmlfile)
         assert conf_path.check()
