@@ -14,6 +14,47 @@ the :doc:`code`.
  .. _issues: https://gitlab.com/anarcat/feed2exec/issues
  .. _edited online: https://gitlab.com/anarcat/feed2exec/edit/master/README.rst
 
+Documentation
+-------------
+
+We love documentation!
+
+The documentation resides in various `Sphinx
+<http://www.sphinx-doc.org/>`_ documentations and in the README
+file. Those can can be `edited online`_ once you register and changes
+are welcome through the normal patch and merge request system.
+
+Issues found in the documentation are also welcome, see below to file
+issues in our tracker.
+
+Issues and bug reports
+----------------------
+
+We want you to report issuess you find in the software. It is a
+recognized and important part of contributing to this project. All
+issues will be read and replied to politely and
+professionnally. Issues and bug reports should be filed on the `issue
+tracker <issues>`_.
+
+Issue triage
+~~~~~~~~~~~~
+
+Issue triage is a useful contribution as well. You can review the
+`issues`_ in the GitLab project and, for each issue:
+
+-  try to reproduce the issue, if it is not reproducible, label it with
+   ``more-info`` and explain the steps taken to reproduce
+-  if information is missing, label it with ``more-info`` and request
+   specific information
+-  if the feature request is not within the scope of the project or
+   should be refused for other reasons, use the ``wontfix`` label and
+   close the issue
+-  mark feature requests with the ``enhancement`` label, bugs with
+   ``bug``, duplicates with ``duplicate`` and so on...
+
+Note that some of those operations are available only to project
+maintainers, see below for the different statuses.
+
 Patches
 -------
 
@@ -68,47 +109,6 @@ submitting patches. Patches that break tests will not be accepted. We
 also aim to have complete test coverage, so you may be requested to
 submit a test alongside new features or bugfixes. See the
 :ref:`testsuite` section for more information.
-
-Documentation
--------------
-
-We love documentation!
-
-The documentation resides in various `Sphinx
-<http://www.sphinx-doc.org/>`_ documentations and in the README
-file. Those can can be `edited online`_ once you register and changes
-are welcome through the normal patch and merge request system.
-
-Issues found in the documentation are also welcome, see below to file
-issues in our tracker.
-
-Issues and bug reports
-----------------------
-
-We want you to report issuess you find in the software. It is a
-recognized and important part of contributing to this project. All
-issues will be read and replied to politely and
-professionnally. Issues and bug reports should be filed on the `issue
-tracker <issues>`_.
-
-Issue triage
-~~~~~~~~~~~~
-
-Issue triage is a useful contribution as well. You can review the
-`issues`_ in the GitLab project and, for each issue:
-
--  try to reproduce the issue, if it is not reproducible, label it with
-   ``more-info`` and explain the steps taken to reproduce
--  if information is missing, label it with ``more-info`` and request
-   specific information
--  if the feature request is not within the scope of the project or
-   should be refused for other reasons, use the ``wontfix`` label and
-   close the issue
--  mark feature requests with the ``enhancement`` label, bugs with
-   ``bug``, duplicates with ``duplicate`` and so on...
-
-Note that some of those operations are available only to project
-maintainers, see below for the different statuses.
 
 Membership
 ----------
