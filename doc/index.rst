@@ -15,6 +15,7 @@ Contents:
    design
    api
    plugins
+   support
    Contribute <contribute>
    code
    changelog

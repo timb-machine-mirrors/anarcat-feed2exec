@@ -3,9 +3,9 @@ Contact
 
 This program was written by `Antoine Beaupré
 <https://anarc.at/>`_. Please do not send email to maintainers
-privately unless you are looking for paid private consulting or
-support. See :doc:`contribute` for more information about how to
-collaborate on this project.
+privately unless you are looking for paid consulting or support. See
+:doc:`contribute` for more information about how to collaborate on
+this project.
 
 As a special exception, security issues can be reported privately
 using `this contact information <https://anarc.at/contact/>`_, where
