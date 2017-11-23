@@ -1,6 +1,8 @@
 Support
 =======
 
+.. include:: refs.rst.inc
+
 If you have problems or question with this project, there are several
 options at your disposal:
 
@@ -42,15 +44,13 @@ Otherwise, see below for more options to get support.
 Chat
 ----
 
-We are often present in realtime in the ``#feed2exec`` channel of
-the `Freenode network <https://freenode.net/>`_. You can join the channel
-using `this link <ircs://irc.oftc.net/monkeysphere>`_ or `this web
-interface
-<https://webchat.freenode.net/?nick=feed2exec.&channels=feed2exec&prompt=1>`_.
+We are often present in realtime in the |irc_channel| channel of the
+`Freenode network <https://freenode.net/>`_. You can `join the channel
+<irc_>`_ using a normal IRC client or using this `web interface
+<webirc_>`_.
 
 .. raw:: html
-
-         <iframe src="https://webchat.freenode.net/?nick=feed2exec.&channels=feed2exec&prompt=1" width="647" height="400"></iframe>
+   :file: webirc.html
 
 Bug reports
 -----------
@@ -59,16 +59,14 @@ We want you to report bugs you find in this project. It's an important
 part of contributing to a project, and all bug reports will be read and
 replied to politely and professionally.
 
-We are using an `issue tracker <issues>`_ to manage issues, and this
+We are using an `issue tracker <issues_>`_ to manage issues, and this
 is where bug reports should be sent.
-
- .. _issues: https://gitlab.com/anarcat/feed2exec/issues
 
 .. tip:: A few tips on how to make good bug reports:
 
          * Before you report a new bug, review the existing issues in
-           the `online issue tracker`_ to make sure the bug has not
-           already been reported elsewhere.
+           the `online issue tracker <issues_>`_ to make sure the bug
+           has not already been reported elsewhere.
 
          * The first aim of a bug report is to tell the developers
            exactly how to reproduce the failure, so try to reproduce
@@ -89,7 +87,6 @@ is where bug reports should be sent.
          in bug reports, you can read `How to Report Bugs
          Effectively`_ which takes about 30 minutes.
 
-.. _online issue tracker: https://0xacab.org/monkeysphere/monkeysign/issues
 .. _How to Report Bugs Effectively: http://www.chiark.greenend.org.uk/~sgtatham/bugs.html
          
 .. warning:: The output of the ``--debug`` may show information you

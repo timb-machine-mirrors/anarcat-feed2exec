@@ -8,11 +8,7 @@ instructions on how to submit issues, bug reports and patches.
 Before you participate in the community, you should agree to respect
 the :doc:`code`.
 
- .. _GitLab project: https://gitlab.com/anarcat/feed2exec/
- .. _merge requests: https://gitlab.com/anarcat/feed2exec/merge_requests
- .. _tag on Gitlab: https://gitlab.com/anarcat/feed2exec/tags
- .. _issues: https://gitlab.com/anarcat/feed2exec/issues
- .. _edited online: https://gitlab.com/anarcat/feed2exec/edit/master/README.rst
+.. include:: refs.rst.inc
 
 Documentation
 -------------
@@ -34,13 +30,13 @@ We want you to report issuess you find in the software. It is a
 recognized and important part of contributing to this project. All
 issues will be read and replied to politely and
 professionnally. Issues and bug reports should be filed on the `issue
-tracker <issues>`_.
+tracker <issues_>`_.
 
 Issue triage
 ~~~~~~~~~~~~
 
 Issue triage is a useful contribution as well. You can review the
-`issues`_ in the GitLab project and, for each issue:
+`issues`_ in the `project page <project_>`_ and, for each issue:
 
 -  try to reproduce the issue, if it is not reproducible, label it with
    ``more-info`` and explain the steps taken to reproduce
@@ -77,8 +73,8 @@ desired. We otherwise agree with the `Disclosure Guidelines`_ of the
 Patches
 -------
 
-Patches can be submitted through `merge requests`_ on the `GitLab
-project`_.
+Patches can be submitted through `merge requests`_ on the `project
+page <project_>`_.
 
 Some guidelines for patches:
 
@@ -203,4 +199,4 @@ To make a release:
        twine upload dist/*
        dput ../feed2exec*.changes
 
-7. edit the `tag on Gitlab`_ and copy-paste the changelog entry
+7. edit the `tag`_ and copy-paste the changelog entry
