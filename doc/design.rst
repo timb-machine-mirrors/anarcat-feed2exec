@@ -171,7 +171,7 @@ rss2email    ✗     ✗    ✓     ✓     ✓      ✗
 ========= ======= ==== ==== ==== ======== ====
 
  * maildir: writing to `Maildir`_ folders. r2e has a `pull request
-   <r2e-maildir>`_ to implement maildir support, but it's not merged
+   <r2e-maildir_>`_ to implement maildir support, but it's not merged
    at the time of writing
  * IMAP: sending emails to IMAP servers
  * SMTP: delivering emails over the SMTP protocol, with authentication

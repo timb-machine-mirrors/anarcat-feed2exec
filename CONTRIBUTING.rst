@@ -1,6 +1,5 @@
-=====================
- Contributor's guide
-=====================
+Contribution guide
+==================
 
 This document outlines how to contribute to this project. It details
 instructions on how to submit issues, bug reports and patches.
@@ -101,8 +100,7 @@ without the consensus of all administrators of the project.
     Note: Those guidelines were inspired by the `Collective Code
     Construct Contract`_. The document was found to be a little too
     complex and hard to read and wasn't adopted in its entirety. See
-    this `discussion`_
-    for more information.
+    this `discussion`_ for more information.
 
 .. _Collective Code Construct Contract: https://rfc.zeromq.org/spec:42/C4/
 .. _discussion: https://github.com/zeromq/rfc/issues?utf8=%E2%9C%93&q=author%3Aanarcat%20
