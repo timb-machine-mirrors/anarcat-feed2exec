@@ -35,7 +35,7 @@ The following options were also considered:
 .. _PluginBase: http://pluginbase.pocoo.org/
 .. _plugnplay: https://github.com/daltonmatos/plugnplay
 .. _click-plugins: https://github.com/click-contrib/click-plugins
-.. _PyPA plugin discover: https://packaging.python.org/guides/creating-and-discovering-plugins/
+.. _PyPA plugin discovery: https://packaging.python.org/guides/creating-and-discovering-plugins/
 
 Those options were ultimately not used because they add an aditionnal
 dependency and are more complicated than a simple ``import``. We also
@@ -116,7 +116,7 @@ We commit the recordings in git so the test suite actually runs
 offline, so be careful about the content added there. Ideally, the
 license of that content should be documented in ``debian/copyright``.
 
-`vcr`_ was first used for tests since it was simpler and didn't
+`vcrpy`_ was first used for tests since it was simpler and didn't
 require using a global :mod:`requests.session.Session` object. But in
 the end betamax seems better maintained and more flexible: it supports
 pytest fixtures, for example, and multiple cassette storage (including
