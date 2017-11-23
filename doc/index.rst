@@ -16,5 +16,6 @@ Contents:
    api
    plugins
    Contribute <contribute>
+   code
    changelog
    license
