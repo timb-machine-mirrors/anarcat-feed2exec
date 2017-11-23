@@ -82,16 +82,12 @@ is where bug reports should be sent.
            what you mean, and make sure it cannot be misinterpreted.
 
          * Include the output of ``--version`` and ``--debug`` in your
-           bug reports.
+           bug reports. See the :doc:`issue template <issue_template>`
+           for more details about what to include in bug reports.
 
          If you wish to read more about issues regarding communication
          in bug reports, you can read `How to Report Bugs
          Effectively`_ which takes about 30 minutes.
-
-.. no issue template yet:
-
-.. See the :doc:`issue template <issue_template>` for more details
-   about what to include in bug reports.
 
 .. _online issue tracker: https://0xacab.org/monkeysphere/monkeysign/issues
 .. _How to Report Bugs Effectively: http://www.chiark.greenend.org.uk/~sgtatham/bugs.html
