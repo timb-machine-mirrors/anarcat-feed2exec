@@ -655,8 +655,7 @@ There. Let's see the effect on the test coverage::
   TOTAL                                         1140    874    23%
   
   
-============================ 1 passed in 2.46 seconds
-=============================
+  ============================ 1 passed in 2.46 seconds =============================
 
 Much better! Only 3 lines left to cover!
 
