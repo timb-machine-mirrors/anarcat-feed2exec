@@ -19,3 +19,4 @@ Contents:
    code
    changelog
    license
+   contact

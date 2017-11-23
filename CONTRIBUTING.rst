@@ -55,6 +55,25 @@ Issue triage is a useful contribution as well. You can review the
 Note that some of those operations are available only to project
 maintainers, see below for the different statuses.
 
+Security issues
+~~~~~~~~~~~~~~~
+
+Security issues should first be disclosed privately to the project
+maintainers (see :doc:`contact`), which support receiving encrypted
+emails through the usual OpenPGP key discovery mechanisms.
+
+This project cannot currently afford bounties for security issues. We
+would still ask that you coordinate disclosure, giving the project a
+reasonable delay to produce a fix and prepare a release before public
+disclosure.
+
+Public recognition will be given to reporters security issues if
+desired. We otherwise agree with the `Disclosure Guidelines`_ of the
+`HackerOne project`_, at the time of writing.
+
+.. _Disclosure Guidelines: https://www.hackerone.com/disclosure-guidelines
+.. _HackerOne project: https://www.hackerone.com/
+
 Patches
 -------
 
