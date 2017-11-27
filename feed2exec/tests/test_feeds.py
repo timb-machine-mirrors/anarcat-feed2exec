@@ -19,7 +19,7 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-from feed2exec.feeds import (ConfFeedStorage, FeedCacheStorage, Feed)
+from feed2exec.feeds import (FeedConfStorage, FeedCacheStorage, Feed)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
 from feed2exec.tests.fixtures import (feed_manager, betamax)  # noqa
@@ -190,7 +190,7 @@ def test_normalize(feed_manager, betamax):  # noqa
 
 def test_config(tmpdir):  # noqa
     conf_path = tmpdir.join('feed2exec.ini')
-    conf = ConfFeedStorage(str(conf_path))
+    conf = FeedConfStorage(str(conf_path))
     conf.add(**test_sample)
     assert conf_path.check()
     expected = '''[sample]

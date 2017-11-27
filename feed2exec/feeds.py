@@ -235,7 +235,7 @@ class Feed(feedparser.FeedParserDict):
         return body
 
 
-class ConfFeedStorage(configparser.RawConfigParser):
+class FeedConfStorage(configparser.RawConfigParser):
     """Feed configuration stored in a config file.
 
     This derives from :class:`configparser.RawConfigParser` and uses
@@ -255,12 +255,12 @@ class ConfFeedStorage(configparser.RawConfigParser):
             path = self.guess_path()
         self.path = os.path.expanduser(path)
         self.pattern = pattern
-        super(ConfFeedStorage,
+        super(FeedConfStorage,
               self).__init__(dict_type=OrderedDict)
         self.read(self.path)
 
     def __repr__(self):
-        return 'ConfFeedStorage(%s, %s)' % (self.path, self.pattern)
+        return 'FeedConfStorage(%s, %s)' % (self.path, self.pattern)
 
     @classmethod
     def guess_path(cls):
@@ -300,7 +300,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
 
         not thread-safe
         """
-        super(ConfFeedStorage, self).set(section, option, value)
+        super(FeedConfStorage, self).set(section, option, value)
         self.commit()
 
     def remove_option(self, section, option):
@@ -308,7 +308,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
 
         not thread-safe
         """
-        super(ConfFeedStorage, self).remove_option(section, option)
+        super(FeedConfStorage, self).remove_option(section, option)
         self.commit()
 
     def remove(self, name):
@@ -340,14 +340,14 @@ class FeedManager(object):
     """a feed manager fetches and stores feeds.
 
     this is a "controller" in a "model-view-controller" pattern. it
-    derives the "model" (:class:`feed2exec.feeds.ConfFeedStorage`) for
+    derives the "model" (:class:`feed2exec.feeds.FeedConfStorage`) for
     simplicity's sake, and there is no real "view" (except maybe
     `__main__`).
     """
     def __init__(self, conf_path, db_path, pattern=None):
         self.conf_path = conf_path
         self.db_path = db_path
-        self.conf_storage = ConfFeedStorage(self.conf_path, pattern=pattern)
+        self.conf_storage = FeedConfStorage(self.conf_path, pattern=pattern)
 
     def __repr__(self):
         return 'FeedManager(%s, %s, %s)' % (self.conf_path, self.db_path, self.pattern)
@@ -364,13 +364,13 @@ class FeedManager(object):
         """main entry point for the feed fetch routines.
 
         this iterates through all feeds configured in the parent
-        :class:`feed2exec.feeds.ConfFeedStorage` that match the given
+        :class:`feed2exec.feeds.FeedConfStorage` that match the given
         ``pattern``, fetches the feeds and dispatches the parsing,
         which in turn dispatches the plugins.
 
         :param str pattern: restrict operations to feeds named
                             ``pattern``. passed to parent
-                            :class:`feed2exec.feeds.ConfFeedStorage`
+                            :class:`feed2exec.feeds.FeedConfStorage`
                             as is
 
         :param bool parallel: parse feeds in parallel, using

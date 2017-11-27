@@ -26,7 +26,7 @@ import json
 import click
 
 import feed2exec
-from feed2exec.feeds import (FeedManager, ConfFeedStorage, FeedCacheStorage, Feed)
+from feed2exec.feeds import (FeedManager, FeedConfStorage, FeedCacheStorage, Feed)
 import feed2exec.logging
 import feed2exec.plugins as plugins
 from feed2exec.utils import slug
@@ -45,7 +45,7 @@ from feed2exec.utils import slug
               help='show debugging information (loglevel: DEBUG)')
 @click.option('--syslog', help='send LEVEL logs to syslog', metavar='LEVEL',
               type=click.Choice(feed2exec.logging.levels))
-@click.option('--config', default=ConfFeedStorage.guess_path(),
+@click.option('--config', default=FeedConfStorage.guess_path(),
               show_default=True, help='use a different config file')
 @click.option('--database', default=FeedCacheStorage.guess_path(),
               show_default=True, help='use a different database')
