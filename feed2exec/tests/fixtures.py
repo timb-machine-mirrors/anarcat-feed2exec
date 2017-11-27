@@ -1,21 +1,14 @@
 import pytest
 
-from feed2exec.feeds import (SqliteStorage, ConfFeedStorage, Feed)
+from feed2exec.feeds import (FeedManager, Feed)
 import feed2exec.plugins.maildir
 
 
-@pytest.fixture(scope='session')
-def db_path(tmpdir_factory):
-    path = tmpdir_factory.mktemp('db').join('feed2exec.db')
-    SqliteStorage.path = str(path)
-    return path
-
-
-@pytest.fixture(scope='session')
-def conf_path(tmpdir_factory):
-    path = tmpdir_factory.mktemp('config').join('feed2exex.ini')
-    ConfFeedStorage.path = str(path)
-    return path
+@pytest.fixture()
+def feed_manager(tmpdir_factory):
+    conf_path = tmpdir_factory.mktemp('config').join('feed2exex.ini')
+    db_path = tmpdir_factory.mktemp('db').join('feed2exec.db')
+    return FeedManager(str(conf_path), str(db_path))
 
 
 @pytest.fixture(autouse=True)

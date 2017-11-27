@@ -10,10 +10,9 @@ import re
 from click.testing import CliRunner
 
 import feed2exec.utils as utils
-from feed2exec.feeds import SqliteStorage
 from feed2exec.__main__ import main
 from feed2exec.tests.test_feeds import (test_sample, test_nasa)
-from feed2exec.tests.fixtures import (conf_path, db_path, static_boundary)  # noqa
+from feed2exec.tests.fixtures import (static_boundary)  # noqa
 
 
 def test_usage():
@@ -22,8 +21,11 @@ def test_usage():
     assert 0 == result.exit_code
 
 
-def test_basics(tmpdir_factory, conf_path, db_path, static_boundary):  # noqa
+def test_basics(tmpdir_factory, static_boundary):  # noqa
     runner = CliRunner()
+    d = tmpdir_factory.mktemp('basics')
+    conf_path = d.join('feed2exec.ini')
+    db_path = d.join('feed2exec.db')
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'add',
@@ -109,9 +111,11 @@ def test_relative_conf(tmpdir):
     assert 0 == result.exit_code
 
 
-def test_parse(tmpdir_factory, conf_path, db_path):  # noqa
+def test_parse(tmpdir_factory):  # noqa
     runner = CliRunner()
-    conf_path.remove()
+    d = tmpdir_factory.mktemp('parse')
+    conf_path = d.join('feed2exec.ini')
+    db_path = d.join('feed2exec.db')
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'parse',
@@ -124,18 +128,16 @@ def test_parse(tmpdir_factory, conf_path, db_path):  # noqa
     assert "foo bar\n" == result.output
 
 
-def test_planet(tmpdir_factory, static_boundary, betamax_session, conf_path, db_path):  # noqa
+def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
     """test i18n feeds for double-encoding
 
     previously, we would double-encode email bodies and subject, which
     would break display of any feed item with unicode.
     """
-    mbox_dir = tmpdir_factory.mktemp('planet').join('Mail')
-    if conf_path.check():
-        conf_path.remove()
-    if db_path.check():
-        db_path.remove()
-        del SqliteStorage.cache[str(db_path)]
+    d = tmpdir_factory.mktemp('planet')
+    mbox_dir = d.join('Mail')
+    conf_path = d.join('feed2exec.ini')
+    db_path = d.join('feed2exec.db')
     runner = CliRunner()
 
     result = runner.invoke(main, ['--config', str(conf_path),
@@ -148,7 +150,8 @@ def test_planet(tmpdir_factory, static_boundary, betamax_session, conf_path, db_
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'fetch'],
-                           obj=betamax_session, catch_exceptions=False)
+                           obj={'session': betamax_session},
+                           catch_exceptions=False)
     assert 0 == result.exit_code
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
     with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:  # noqa

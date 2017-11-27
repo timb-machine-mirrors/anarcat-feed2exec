@@ -19,11 +19,10 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-from feed2exec.feeds import (FeedManager, ConfFeedStorage,
-                             FeedCacheStorage, Feed)
+from feed2exec.feeds import (ConfFeedStorage, FeedCacheStorage, Feed)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
-from feed2exec.tests.fixtures import (db_path, conf_path, betamax)  # noqa
+from feed2exec.tests.fixtures import (feed_manager, betamax)  # noqa
 import pytest
 
 test_data = Feed('test',
@@ -63,65 +62,65 @@ test_params = Feed('params',
                     'args': '1 2 3 4'})
 
 
-def test_add(db_path, conf_path):  # noqa
-    st = FeedManager()
-    assert test_data['name'] not in st, 'this is supposed to be empty'
-    st.add(**test_data)
-    assert test_data['name'] in st, 'contains works'
+def test_add(feed_manager):  # noqa
+    assert test_data['name'] not in feed_manager.config_storage, 'this is supposed to be empty'
+    feed_manager.config_storage.add(**test_data)
+    assert test_data['name'] in feed_manager.config_storage, 'contains works'
     with pytest.raises(AttributeError):
-        st.add(**test_data)
-    for r in st:
+        feed_manager.config_storage.add(**test_data)
+    for r in feed_manager.config_storage:
         assert test_data['name'] == r['name'], 'iterator works'
-    st.remove(test_data['name'])
-    assert test_data['name'] not in st, 'remove works'
+    feed_manager.config_storage.remove(test_data['name'])
+    assert test_data['name'] not in feed_manager.config_storage, 'remove works'
 
 
-def test_settings(db_path, conf_path, capfd, betamax):  # noqa
-    st = FeedManager()
-    assert 0 == len(list(st)), "no params set yet"
-    st.add(**test_params)
-    assert 1 == len(list(st)), "params properly added"
+def test_settings(feed_manager, capfd, betamax):  # noqa
+    assert 0 == len(list(feed_manager.config_storage)), "no params set yet"
+    feed_manager.config_storage.add(**test_params)
+    assert 1 == len(list(feed_manager.config_storage)), "params properly added"
     feed2exec.plugins.echo.output.called = False
-    st.fetch()
+    feed_manager.fetch()
     assert feed2exec.plugins.echo.output.called, "plugins get called correctly"
 
     feed2exec.plugins.echo.output.called = False
-    st.set(test_params['name'], 'pause', 'True')
-    st.fetch()
+    feed_manager.config_storage.set(test_params['name'], 'pause', 'True')
+    feed_manager.fetch()
     assert not feed2exec.plugins.echo.output.called, "pause works"
 
-    st.set(test_params['name'], 'catchup', 'True')
-    st.set(test_params['name'], 'pause', 'False')
+    feed_manager.config_storage.set(test_params['name'], 'catchup', 'True')
+    feed_manager.config_storage.set(test_params['name'], 'pause', 'False')
     assert not feed2exec.plugins.echo.output.called, "catchup works"
     out, err = capfd.readouterr()
     assert '1 2 3 4' in out, "... but still calls the plugin"
 
-    st.remove_option(test_params['name'], 'filter')
-    st.remove_option(test_params['name'], 'output')
-    st.fetch()
+    feed_manager.config_storage.remove_option(test_params['name'], 'filter')
+    feed_manager.config_storage.remove_option(test_params['name'], 'output')
+    feed_manager.fetch()
     assert not feed2exec.plugins.echo.output.called, "removing plugins work"
 
-    st.remove(test_params['name'])
+    feed_manager.config_storage.remove(test_params['name'])
 
 
-def test_pattern(db_path, conf_path):  # noqa
-    st = FeedManager()
-    st.add(**test_data)
-    assert test_data['name'] in st, 'previous test should have ran'
-    st.add(**test_data2)
-    assert test_data2['name'] in st, 'second add works'
-    feeds = list(FeedManager(pattern='test2'))
+def test_pattern(feed_manager):  # noqa
+    feed_manager.config_storage.add(**test_data)
+    assert test_data['name'] in feed_manager.config_storage, 'previous test should have ran'
+    feed_manager.config_storage.add(**test_data2)
+    assert test_data2['name'] in feed_manager.config_storage, 'second add works'
+    feed_manager.pattern = 'test2'
+    feeds = list(feed_manager.config_storage)
     assert 1 == len(feeds), 'find only one item'
-    feeds = list(FeedManager(pattern='test'))
+    feed_manager.pattern = 'test'
+    feeds = list(feed_manager.config_storage)
     assert 2 == len(feeds), 'find two items'
 
 
-def test_cache(db_path):  # noqa
-    st = FeedCacheStorage(feed=test_data['name'])
+def test_cache(feed_manager):  # noqa
+    db_path = feed_manager.database
+    st = FeedCacheStorage(db_path, feed=test_data['name'])
     assert 'guid' not in st
     st.add('guid')
     assert 'guid' in st
-    tmp = FeedCacheStorage()
+    tmp = FeedCacheStorage(db_path)
     assert 'guid' in tmp
     st.add('another')
     for item in tmp:
@@ -130,51 +129,53 @@ def test_cache(db_path):  # noqa
             break
     else:  # sanity check
         assert False, 'failed to iterate through storage'  # pragma: nocover
-    for item in FeedCacheStorage(feed=test_data['name'], guid='guid'):
+    for item in FeedCacheStorage(db_path, feed=test_data['name'], guid='guid'):
         assert 'another' not in item['guid']
     st.remove('guid')
     assert 'guid' not in st
 
 
-def test_fetch(db_path, conf_path, betamax):  # noqa
-    st = FeedManager()
-    st.add(**test_sample)
+def test_fetch(feed_manager, betamax):  # noqa
+    feed_manager.config_storage.add(**test_sample)
 
-    st.fetch()
-    cache = FeedCacheStorage(feed=test_sample['name'])
-    assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
+    feed2exec.plugins.echo.output.called = False
+    feed_manager.fetch()
+    cache = FeedCacheStorage(feed_manager.database, feed=test_sample['name'])
     assert feed2exec.plugins.echo.output.called
+    assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
 
-    st.add(**test_nasa)
+    feed_manager.config_storage.add(**test_nasa)
     feed2exec.plugins.echo.output.called = False
     assert not feed2exec.plugins.echo.output.called
-    st.fetch()
+    feed_manager.fetch()
     assert ('test_nasa', ) == feed2exec.plugins.echo.output.called
     feed2exec.plugins.echo.output.called = False
     assert not feed2exec.plugins.echo.output.called
-    st.add(**test_udd)
-    st.fetch()
+    feed_manager.config_storage.add(**test_udd)
+    feed_manager.fetch()
     assert ('test_udd', ) == feed2exec.plugins.echo.output.called
 
 
-def test_fetch_parallel(db_path, conf_path, capfd, betamax):  # noqa
-    st = FeedManager()
-    st.fetch(parallel=True, force=True)
+def test_fetch_parallel(feed_manager, capfd, betamax):  # noqa
+    feed_manager.config_storage.add(**test_sample)
+    feed_manager.fetch(parallel=True, force=True)
     # can't use feed2exec.feeds.plugins.echo.output.called as it is
     # set in a separate process.
     out, err = capfd.readouterr()
     assert '1 2 3 4' in out
-    st.fetch(parallel=2, force=True)
+    feed_manager.fetch(parallel=2, force=True)
     out, err = capfd.readouterr()
     assert '1 2 3 4' in out
 
 
-def test_normalize(db_path, conf_path, betamax):  # noqa
+def test_normalize(feed_manager, betamax):  # noqa
     '''black box testing for :func:feeds.normalize_item()'''
     data = test_udd.parse(betamax.get(test_udd['url']).content)
+    data = feed_manager.dispatch(test_udd, data)
     for item in data.entries:
         assert item.get('id')
     data = test_restic.parse(betamax.get(test_restic['url']).content)
+    data = feed_manager.dispatch(test_restic, data)
     for item in data.entries:
         assert item.get('link').startswith('file://')
         assert 'restic.atom' not in item.get('link')
@@ -182,13 +183,14 @@ def test_normalize(db_path, conf_path, betamax):  # noqa
         assert item.get('summary')
         assert item.get('link') in item.get('summary')
     data = test_dates.parse(betamax.get(test_dates['url']).content)
+    data = feed_manager.dispatch(test_dates, data)
     for item in data['entries']:
         assert item.get('updated_parsed')
 
 
-def test_config(conf_path):  # noqa
-    conf_path.remove()
-    conf = ConfFeedStorage()
+def test_config(tmpdir):  # noqa
+    conf_path = tmpdir.join('feed2exec.ini')
+    conf = ConfFeedStorage(str(conf_path))
     conf.add(**test_sample)
     assert conf_path.check()
     expected = '''[sample]

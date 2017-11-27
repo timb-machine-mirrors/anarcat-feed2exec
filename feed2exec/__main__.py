@@ -24,11 +24,9 @@ import json
 
 
 import click
-import requests
 
 import feed2exec
-from feed2exec.feeds import (FeedManager, Feed)
-import feed2exec.feeds as feedsmod
+from feed2exec.feeds import (FeedManager, ConfFeedStorage, FeedCacheStorage, Feed)
 import feed2exec.logging
 import feed2exec.plugins as plugins
 from feed2exec.utils import slug
@@ -47,14 +45,18 @@ from feed2exec.utils import slug
               help='show debugging information (loglevel: DEBUG)')
 @click.option('--syslog', help='send LEVEL logs to syslog', metavar='LEVEL',
               type=click.Choice(feed2exec.logging.levels))
-@click.option('--config', default=feedsmod.ConfFeedStorage.path,
+@click.option('--config', default=ConfFeedStorage.guess_path(),
               show_default=True, help='use a different config file')
-@click.option('--database', default=feedsmod.SqliteStorage.path,
+@click.option('--database', default=FeedCacheStorage.guess_path(),
               show_default=True, help='use a different database')
 @click.pass_context
 def main(ctx, loglevel, syslog, config, database):
-    feedsmod.SqliteStorage.path = database
-    feedsmod.ConfFeedStorage.path = config
+    if ctx.obj is None:
+        ctx.obj = {}
+    ctx.obj['database'] = database
+    ctx.obj['config'] = config
+    # preload for commands who do not need a specific pattern like add/list/rm
+    ctx.obj['feeds'] = FeedManager(config, database)
     feed2exec.logging.advancedConfig(level=loglevel, syslog=syslog,
                                      logFormat='%(messageq)s')
 
@@ -72,30 +74,30 @@ def main(ctx, loglevel, syslog, config, database):
               help="filter plugin arguments, also with parameter substitution")
 @click.option('--folder', help="subfolder to store email into")
 @click.option('--mailbox', help="basic mailbox to store email into")
-def add(name, url, output, args, filter, filter_args, folder, mailbox):
-    st = FeedManager()
+@click.pass_obj
+def add(obj, name, url, output, args, filter, filter_args, folder, mailbox):
     try:
-        st.add(name=name, url=url,
-               output=plugins.resolve(output), args=args,
-               filter=plugins.resolve(filter), filter_args=filter_args,
-               folder=folder, mailbox=mailbox)
+        obj['feeds'].config_storage.add(name=name, url=url,
+                                        output=plugins.resolve(output), args=args,
+                                        filter=plugins.resolve(filter), filter_args=filter_args,
+                                        folder=folder, mailbox=mailbox)
     except AttributeError as e:
         raise click.BadParameter('feed %s already exists' % name)
 
 
 @click.command(help='list configured feeds')
-def ls():
-    st = FeedManager()
-    for feed in st:
+@click.pass_obj
+def ls(obj):
+    for feed in obj['feeds'].config_storage:
         if feed:
             print(json.dumps(feed, indent=2, sort_keys=True))
 
 
 @click.command(help='remove a feed from the configuration')
 @click.argument('name')
-def rm(name):
-    st = FeedManager()
-    st.remove(name)
+@click.pass_obj
+def rm(obj, name):
+    obj['feeds'].config_storage.remove(name)
 
 
 @click.command(help='fetch and process all feeds')
@@ -108,10 +110,10 @@ def rm(name):
 @click.option('--catchup', '-n',
               is_flag=True, help='do not call output plugins')
 def fetch(obj, pattern, parallel, jobs, force, catchup):
-    st = FeedManager(pattern=pattern)
+    st = FeedManager(obj['config'], obj['database'], pattern=pattern)
     # used for unit testing
-    if obj and type(obj) is requests.sessions.Session:
-        Feed._session = obj
+    if obj and obj.get('session'):
+        Feed._session = obj['session']
     parallel = jobs or parallel
     st.fetch(parallel, force=force, catchup=catchup)
 
@@ -128,24 +130,29 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
               help="filter plugin arguments, also with parameter substitution")
 @click.option('--folder', help="subfolder to store email into")
 @click.option('--mailbox', help="basic mailbox to store email into")
-def parse(url, **kwargs):
+@click.pass_obj
+def parse(obj, url, **kwargs):
     kwargs.update({'url': url})
     for plugin in ('output', 'filter'):
         kwargs[plugin] = plugins.resolve(kwargs[plugin])
     feed = Feed(slug(url), kwargs)
-    feed.parse(feed.fetch(), lock=False, force=True)
+    data = feed.parse(feed.fetch())
+    # XXX: i don't like this - we should use a clean environment.
+    obj['feeds'].dispatch(feed, data, lock=False, force=True)
 
 
 @click.command(name='import', help='import feed list from OPML file')
 @click.argument('path', type=click.File('rb'))
-def import_(path):
-    FeedManager().opml_import(path)
+@click.pass_obj
+def import_(obj, path):
+    obj['feeds'].opml_import(path)
 
 
 @click.command(help='export feeds to an OPML file')
 @click.argument('path', type=click.File('wb'))
-def export(path):
-    FeedManager().opml_export(path)
+@click.pass_obj
+def export(obj, path):
+    obj['feeds'].opml_export(path)
 
 
 main.add_command(add)
@@ -167,4 +174,4 @@ if __name__ == '__main__':
 
     cargo-culted from debmans
     '''
-    main(prog_name=feed2exec.__prog__)
+    main(prog_name=feed2exec.__prog__, obj={})

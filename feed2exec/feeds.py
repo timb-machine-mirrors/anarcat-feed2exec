@@ -153,7 +153,7 @@ class Feed(feedparser.FeedParserDict):
             scheme, netloc, *_ = urlparse.urlsplit(self.get('url', ''))
             item['link'] = urlparse.urlunsplit((scheme, netloc, *rest))
 
-    def parse(self, body, lock=None, force=False):
+    def parse(self, body):
         """parse the body of the feed
 
         this parses the given body using :mod:`feedparser` and calls the
@@ -186,9 +186,6 @@ class Feed(feedparser.FeedParserDict):
         :return dict: the parsed data
 
         """
-        global LOCK
-        if lock is None:
-            lock = LOCK
         logging.info('parsing feed %s (%d bytes)', self['url'], len(body))
         data = feedparser.parse(body)
         # add metadata from the feed without overriding user config
@@ -198,21 +195,6 @@ class Feed(feedparser.FeedParserDict):
         # logging.debug('parsed structure %s',
         #               json.dumps(data, indent=2, sort_keys=True,
         #                          default=safe_serial))
-        cache = FeedCacheStorage(feed=self['name'])
-        for item in data['entries']:
-            self.normalize(item=item)
-            plugins.filter(feed=self, item=item, lock=lock)
-            if item.get('skip'):
-                logging.info('item %s of feed %s filtered out',
-                             item.get('title'), self.get('name'))
-                continue
-            guid = item['id']
-            if not force and guid in cache:
-                logging.debug('item %s already seen', guid)
-            else:
-                logging.debug('new item %s <%s>', guid, item['link'])
-                if plugins.output(self, item, lock=lock) is not False and not force:  # noqa
-                    cache.add(guid)
         # massage result for multiprocessing module
         if data['bozo']:
             data['bozo_exception'] = str(data['bozo_exception'])
@@ -268,16 +250,22 @@ class ConfFeedStorage(configparser.RawConfigParser):
     substring provided in the constructor.
     """
 
-    #: default ConfFeedStorage path
-    path = xdg_base_dirs.load_first_config(feed2exec.__prog__ + '.ini') or \
-        os.path.join(xdg_base_dirs.xdg_config_home, feed2exec.__prog__ + '.ini')
-
-    def __init__(self, pattern=None):
+    def __init__(self, path, pattern=None):
+        if path is None:
+            path = self.guess_path()
+        self.path = os.path.expanduser(path)
         self.pattern = pattern
-        self.path = os.path.expanduser(ConfFeedStorage.path)
         super(ConfFeedStorage,
               self).__init__(dict_type=OrderedDict)
         self.read(self.path)
+
+    def __repr__(self):
+        return 'ConfFeedStorage(%s, %s)' % (self.path, self.pattern)
+
+    @classmethod
+    def guess_path(cls):
+        return xdg_base_dirs.load_first_config(feed2exec.__prog__ + '.ini') or \
+            os.path.join(xdg_base_dirs.xdg_config_home, feed2exec.__prog__ + '.ini')
 
     def add(self, name, url, output=None, args=None,
             filter=None, filter_args=None,
@@ -348,7 +336,7 @@ class ConfFeedStorage(configparser.RawConfigParser):
                 yield Feed(name=name, **self[name])
 
 
-class FeedManager(ConfFeedStorage):
+class FeedManager(object):
     """a feed manager fetches and stores feeds.
 
     this is a "controller" in a "model-view-controller" pattern. it
@@ -356,6 +344,21 @@ class FeedManager(ConfFeedStorage):
     simplicity's sake, and there is no real "view" (except maybe
     `__main__`).
     """
+    def __init__(self, config, database, pattern=None):
+        self.config = config
+        self.database = database
+        self.config_storage = ConfFeedStorage(self.config, pattern=pattern)
+
+    def __repr__(self):
+        return 'FeedManager(%s, %s, %s)' % (self.config, self.database, self.pattern)
+
+    @property
+    def pattern(self):
+        return self.config_storage.pattern
+
+    @pattern.setter
+    def pattern(self, val):
+        self.config_storage.pattern = val
 
     def fetch(self, parallel=False, force=False, catchup=False):
         """main entry point for the feed fetch routines.
@@ -384,7 +387,7 @@ class FeedManager(ConfFeedStorage):
                              catchup on feed entries without firing
                              plugins.
         """
-        logging.debug('looking for feeds %s', self.pattern)
+        logging.debug('looking for feeds %s in %s', self.pattern, self.config_storage)
         if parallel:
             lock = multiprocessing.Lock()
             processes = None
@@ -409,9 +412,9 @@ class FeedManager(ConfFeedStorage):
             pool = multiprocessing.Pool(processes=processes,
                                         initializer=init_global_lock,
                                         initargs=(lock,))
-        results = []
+        data_results = []
         i = -1
-        for i, feed in enumerate(self):
+        for i, feed in enumerate(self.config_storage):
             logging.debug('found feed in DB: %s', dict(feed))
             # XXX: this is dirty. iterator/getters/??? should return
             # the right thing? or will that break an eventual editor?
@@ -424,18 +427,45 @@ class FeedManager(ConfFeedStorage):
                 feed['catchup'] = catchup
             if parallel:
                 # if this fails silently, use plain apply() to see errors
-                results.append(pool.apply_async(feed.parse,
-                                                (body, None, force)))
+                data_results.append((feed, pool.apply_async(feed.parse, (body,))))
             else:
                 global LOCK
                 LOCK = None
-                feed.parse(body=body, force=force)
+                self.dispatch(feed, feed.parse(body), None, force)
         if parallel:
-            for result in results:
-                result.get()
+            for feed, result in data_results:
+                self.dispatch(feed, result.get(), lock, force)
             pool.close()
             pool.join()
         logging.info('%d feeds processed', i+1)
+
+    def dispatch(self, feed, data, lock=None, force=False):
+        '''process parsed entries and execute plugins
+
+        This handles locking, caching, and filter and output
+        plugins.
+        '''
+        logging.debug('dispatching plugins for items parsed from %s', feed['name'])
+        cache = FeedCacheStorage(self.database, feed=feed['name'])
+        for item in data['entries']:
+            feed.normalize(item=item)
+            plugins.filter(feed=feed, item=item, lock=lock)
+            if item.get('skip'):
+                logging.info('item %s of feed %s filtered out',
+                             item.get('title'), feed.get('name'))
+                continue
+            guid = item['id']
+            if not force and guid in cache:
+                logging.debug('item %s already seen', guid)
+            else:
+                logging.debug('new item %s <%s>', guid, item['link'])
+                if plugins.output(feed, item, lock=lock) is not False and not force:  # noqa
+                    if lock:
+                        lock.acquire()
+                    cache.add(guid)
+                    if lock:
+                        lock.release()
+        return data
 
     def opml_import(self, opmlfile):
         """import a file stream as an OPML feed in the feed storage"""
@@ -449,16 +479,16 @@ class FeedManager(ConfFeedStorage):
                 title = node.attrib.get('title', utils.slug(node.attrib['xmlUrl']))
                 logging.info('importing element %s <%s> in folder %s',
                              title, node.attrib['xmlUrl'], folder)
-                if title in self:
+                if title in self.config_storage:
                     if folder:
                         title = folder + '/' + title
                         logging.info('feed %s exists, using folder name: %s',
                                      node.attrib['title'], title)
-                if title in self:
+                if title in self.config_storage:
                     logging.error('feed %s already exists, skipped',
                                   node.attrib['title'])
                 else:
-                    self.add(title, node.attrib['xmlUrl'], folder=folder)
+                    self.config_storage.add(title, node.attrib['xmlUrl'], folder=folder)
             elif node.attrib.get('type') == 'folder':
                 if event == 'start':
                     logging.debug('found folder %s', node.attrib.get('text'))
@@ -477,7 +507,7 @@ class FeedManager(ConfFeedStorage):
     </opml>'''
         outline_tmpl = u'<outline title="{name}" type="rss" xmlUrl="{url}" />'
         body = u''
-        for feed in self:
+        for feed in self.config_storage:
             if feed:
                 body += outline_tmpl.format(**feed) + "\n"
         output = xml_tmpl.format(title=u'feed2exec RSS feeds',
@@ -490,11 +520,10 @@ class SqliteStorage(object):
     sql = None
     record = None
     conn = None
-    path = os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
     cache = {}
 
-    def __init__(self):
-        self.path = os.path.expanduser(SqliteStorage.path)
+    def __init__(self, path):
+        self.path = os.path.expanduser(path)
         assert self.path
         utils.make_dirs_helper(os.path.dirname(self.path))
         if self.path not in SqliteStorage.cache:
@@ -517,13 +546,20 @@ class FeedCacheStorage(SqliteStorage):
              PRIMARY KEY (name, guid))'''
     record = namedtuple('record', 'name guid')
 
-    def __init__(self, feed=None, guid=None):
+    def __init__(self, path, feed=None, guid=None):
         self.feed = feed
         if guid is None:
             self.guid = '%'
         else:
             self.guid = '%' + guid + '%'
-        super(FeedCacheStorage, self).__init__()
+        super().__init__(path)
+
+    def __repr__(self):
+        return 'FeedCacheStorage("%s", "%s", "%s")' % (self.path, self.feed, self.guid)
+
+    @classmethod
+    def guess_path(cls):
+        return os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
 
     def add(self, guid):
         assert self.feed

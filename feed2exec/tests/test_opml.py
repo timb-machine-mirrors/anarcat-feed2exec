@@ -6,16 +6,17 @@ import pytest
 
 from feed2exec.__main__ import main
 from feed2exec.feeds import (FeedManager)
-from feed2exec.tests.fixtures import (db_path, conf_path)  # noqa
 import feed2exec.utils as utils
 
 testdir = utils.find_test_file()
 
 
 @pytest.mark.parametrize("opmlpath", glob(os.path.join(testdir, '*.opml')))  # noqa
-def test_import(db_path, conf_path, opmlpath):
+def test_import(tmpdir, opmlpath):
+    conf_path = tmpdir.join('feed2exec.ini')
+    db_path = tmpdir.join('feed2exec.db')
     with open(utils.find_test_file(opmlpath), 'rb') as opmlfile:
-        FeedManager().opml_import(opmlfile)
+        FeedManager(str(conf_path), str(db_path)).opml_import(opmlfile)
         assert conf_path.check()
         try:
             with open(utils.find_test_file(opmlpath[:-4] + 'ini')) as expected:
@@ -26,8 +27,10 @@ def test_import(db_path, conf_path, opmlpath):
     conf_path.remove()
 
 
-def test_opml(tmpdir_factory, conf_path, db_path):  # noqa
+def test_opml(tmpdir):  # noqa
     runner = CliRunner()
+    conf_path = tmpdir.join('feed2exec.ini')
+    db_path = tmpdir.join('feed2exec.db')
 
     assert not conf_path.check()
     result = runner.invoke(main, ['--config', str(conf_path),
@@ -39,7 +42,7 @@ def test_opml(tmpdir_factory, conf_path, db_path):  # noqa
     with open(utils.find_test_file('simple.ini')) as p:
         conf_path.read() == p.read()
 
-    opml_path = tmpdir_factory.mktemp('ompl').join('simple.opml')
+    opml_path = tmpdir.join('simple.opml')
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'export',
