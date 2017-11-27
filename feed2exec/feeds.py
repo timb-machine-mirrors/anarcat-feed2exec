@@ -344,21 +344,21 @@ class FeedManager(object):
     simplicity's sake, and there is no real "view" (except maybe
     `__main__`).
     """
-    def __init__(self, config, database, pattern=None):
-        self.config = config
-        self.database = database
-        self.config_storage = ConfFeedStorage(self.config, pattern=pattern)
+    def __init__(self, conf_path, db_path, pattern=None):
+        self.conf_path = conf_path
+        self.db_path = db_path
+        self.conf_storage = ConfFeedStorage(self.conf_path, pattern=pattern)
 
     def __repr__(self):
-        return 'FeedManager(%s, %s, %s)' % (self.config, self.database, self.pattern)
+        return 'FeedManager(%s, %s, %s)' % (self.conf_path, self.db_path, self.pattern)
 
     @property
     def pattern(self):
-        return self.config_storage.pattern
+        return self.conf_storage.pattern
 
     @pattern.setter
     def pattern(self, val):
-        self.config_storage.pattern = val
+        self.conf_storage.pattern = val
 
     def fetch(self, parallel=False, force=False, catchup=False):
         """main entry point for the feed fetch routines.
@@ -387,7 +387,7 @@ class FeedManager(object):
                              catchup on feed entries without firing
                              plugins.
         """
-        logging.debug('looking for feeds %s in %s', self.pattern, self.config_storage)
+        logging.debug('looking for feeds %s in %s', self.pattern, self.conf_storage)
         if parallel:
             lock = multiprocessing.Lock()
             processes = None
@@ -414,7 +414,7 @@ class FeedManager(object):
                                         initargs=(lock,))
         data_results = []
         i = -1
-        for i, feed in enumerate(self.config_storage):
+        for i, feed in enumerate(self.conf_storage):
             logging.debug('found feed in DB: %s', dict(feed))
             # XXX: this is dirty. iterator/getters/??? should return
             # the right thing? or will that break an eventual editor?
@@ -446,7 +446,7 @@ class FeedManager(object):
         plugins.
         '''
         logging.debug('dispatching plugins for items parsed from %s', feed['name'])
-        cache = FeedCacheStorage(self.database, feed=feed['name'])
+        cache = FeedCacheStorage(self.db_path, feed=feed['name'])
         for item in data['entries']:
             feed.normalize(item=item)
             plugins.filter(feed=feed, item=item, lock=lock)
@@ -479,16 +479,16 @@ class FeedManager(object):
                 title = node.attrib.get('title', utils.slug(node.attrib['xmlUrl']))
                 logging.info('importing element %s <%s> in folder %s',
                              title, node.attrib['xmlUrl'], folder)
-                if title in self.config_storage:
+                if title in self.conf_storage:
                     if folder:
                         title = folder + '/' + title
                         logging.info('feed %s exists, using folder name: %s',
                                      node.attrib['title'], title)
-                if title in self.config_storage:
+                if title in self.conf_storage:
                     logging.error('feed %s already exists, skipped',
                                   node.attrib['title'])
                 else:
-                    self.config_storage.add(title, node.attrib['xmlUrl'], folder=folder)
+                    self.conf_storage.add(title, node.attrib['xmlUrl'], folder=folder)
             elif node.attrib.get('type') == 'folder':
                 if event == 'start':
                     logging.debug('found folder %s', node.attrib.get('text'))
@@ -507,7 +507,7 @@ class FeedManager(object):
     </opml>'''
         outline_tmpl = u'<outline title="{name}" type="rss" xmlUrl="{url}" />'
         body = u''
-        for feed in self.config_storage:
+        for feed in self.conf_storage:
             if feed:
                 body += outline_tmpl.format(**feed) + "\n"
         output = xml_tmpl.format(title=u'feed2exec RSS feeds',

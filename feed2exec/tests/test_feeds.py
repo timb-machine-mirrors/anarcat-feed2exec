@@ -63,59 +63,59 @@ test_params = Feed('params',
 
 
 def test_add(feed_manager):  # noqa
-    assert test_data['name'] not in feed_manager.config_storage, 'this is supposed to be empty'
-    feed_manager.config_storage.add(**test_data)
-    assert test_data['name'] in feed_manager.config_storage, 'contains works'
+    assert test_data['name'] not in feed_manager.conf_storage, 'this is supposed to be empty'
+    feed_manager.conf_storage.add(**test_data)
+    assert test_data['name'] in feed_manager.conf_storage, 'contains works'
     with pytest.raises(AttributeError):
-        feed_manager.config_storage.add(**test_data)
-    for r in feed_manager.config_storage:
+        feed_manager.conf_storage.add(**test_data)
+    for r in feed_manager.conf_storage:
         assert test_data['name'] == r['name'], 'iterator works'
-    feed_manager.config_storage.remove(test_data['name'])
-    assert test_data['name'] not in feed_manager.config_storage, 'remove works'
+    feed_manager.conf_storage.remove(test_data['name'])
+    assert test_data['name'] not in feed_manager.conf_storage, 'remove works'
 
 
 def test_settings(feed_manager, capfd, betamax):  # noqa
-    assert 0 == len(list(feed_manager.config_storage)), "no params set yet"
-    feed_manager.config_storage.add(**test_params)
-    assert 1 == len(list(feed_manager.config_storage)), "params properly added"
+    assert 0 == len(list(feed_manager.conf_storage)), "no params set yet"
+    feed_manager.conf_storage.add(**test_params)
+    assert 1 == len(list(feed_manager.conf_storage)), "params properly added"
     feed2exec.plugins.echo.output.called = False
     feed_manager.fetch()
     assert feed2exec.plugins.echo.output.called, "plugins get called correctly"
 
     feed2exec.plugins.echo.output.called = False
-    feed_manager.config_storage.set(test_params['name'], 'pause', 'True')
+    feed_manager.conf_storage.set(test_params['name'], 'pause', 'True')
     feed_manager.fetch()
     assert not feed2exec.plugins.echo.output.called, "pause works"
 
-    feed_manager.config_storage.set(test_params['name'], 'catchup', 'True')
-    feed_manager.config_storage.set(test_params['name'], 'pause', 'False')
+    feed_manager.conf_storage.set(test_params['name'], 'catchup', 'True')
+    feed_manager.conf_storage.set(test_params['name'], 'pause', 'False')
     assert not feed2exec.plugins.echo.output.called, "catchup works"
     out, err = capfd.readouterr()
     assert '1 2 3 4' in out, "... but still calls the plugin"
 
-    feed_manager.config_storage.remove_option(test_params['name'], 'filter')
-    feed_manager.config_storage.remove_option(test_params['name'], 'output')
+    feed_manager.conf_storage.remove_option(test_params['name'], 'filter')
+    feed_manager.conf_storage.remove_option(test_params['name'], 'output')
     feed_manager.fetch()
     assert not feed2exec.plugins.echo.output.called, "removing plugins work"
 
-    feed_manager.config_storage.remove(test_params['name'])
+    feed_manager.conf_storage.remove(test_params['name'])
 
 
 def test_pattern(feed_manager):  # noqa
-    feed_manager.config_storage.add(**test_data)
-    assert test_data['name'] in feed_manager.config_storage, 'previous test should have ran'
-    feed_manager.config_storage.add(**test_data2)
-    assert test_data2['name'] in feed_manager.config_storage, 'second add works'
+    feed_manager.conf_storage.add(**test_data)
+    assert test_data['name'] in feed_manager.conf_storage, 'previous test should have ran'
+    feed_manager.conf_storage.add(**test_data2)
+    assert test_data2['name'] in feed_manager.conf_storage, 'second add works'
     feed_manager.pattern = 'test2'
-    feeds = list(feed_manager.config_storage)
+    feeds = list(feed_manager.conf_storage)
     assert 1 == len(feeds), 'find only one item'
     feed_manager.pattern = 'test'
-    feeds = list(feed_manager.config_storage)
+    feeds = list(feed_manager.conf_storage)
     assert 2 == len(feeds), 'find two items'
 
 
 def test_cache(feed_manager):  # noqa
-    db_path = feed_manager.database
+    db_path = feed_manager.db_path
     st = FeedCacheStorage(db_path, feed=test_data['name'])
     assert 'guid' not in st
     st.add('guid')
@@ -136,28 +136,28 @@ def test_cache(feed_manager):  # noqa
 
 
 def test_fetch(feed_manager, betamax):  # noqa
-    feed_manager.config_storage.add(**test_sample)
+    feed_manager.conf_storage.add(**test_sample)
 
     feed2exec.plugins.echo.output.called = False
     feed_manager.fetch()
-    cache = FeedCacheStorage(feed_manager.database, feed=test_sample['name'])
+    cache = FeedCacheStorage(feed_manager.db_path, feed=test_sample['name'])
     assert feed2exec.plugins.echo.output.called
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
 
-    feed_manager.config_storage.add(**test_nasa)
+    feed_manager.conf_storage.add(**test_nasa)
     feed2exec.plugins.echo.output.called = False
     assert not feed2exec.plugins.echo.output.called
     feed_manager.fetch()
     assert ('test_nasa', ) == feed2exec.plugins.echo.output.called
     feed2exec.plugins.echo.output.called = False
     assert not feed2exec.plugins.echo.output.called
-    feed_manager.config_storage.add(**test_udd)
+    feed_manager.conf_storage.add(**test_udd)
     feed_manager.fetch()
     assert ('test_udd', ) == feed2exec.plugins.echo.output.called
 
 
 def test_fetch_parallel(feed_manager, capfd, betamax):  # noqa
-    feed_manager.config_storage.add(**test_sample)
+    feed_manager.conf_storage.add(**test_sample)
     feed_manager.fetch(parallel=True, force=True)
     # can't use feed2exec.feeds.plugins.echo.output.called as it is
     # set in a separate process.

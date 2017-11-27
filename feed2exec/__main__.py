@@ -77,10 +77,10 @@ def main(ctx, loglevel, syslog, config, database):
 @click.pass_obj
 def add(obj, name, url, output, args, filter, filter_args, folder, mailbox):
     try:
-        obj['feeds'].config_storage.add(name=name, url=url,
-                                        output=plugins.resolve(output), args=args,
-                                        filter=plugins.resolve(filter), filter_args=filter_args,
-                                        folder=folder, mailbox=mailbox)
+        obj['feeds'].conf_storage.add(name=name, url=url,
+                                      output=plugins.resolve(output), args=args,
+                                      filter=plugins.resolve(filter), filter_args=filter_args,
+                                      folder=folder, mailbox=mailbox)
     except AttributeError as e:
         raise click.BadParameter('feed %s already exists' % name)
 
@@ -88,7 +88,7 @@ def add(obj, name, url, output, args, filter, filter_args, folder, mailbox):
 @click.command(help='list configured feeds')
 @click.pass_obj
 def ls(obj):
-    for feed in obj['feeds'].config_storage:
+    for feed in obj['feeds'].conf_storage:
         if feed:
             print(json.dumps(feed, indent=2, sort_keys=True))
 
@@ -97,7 +97,7 @@ def ls(obj):
 @click.argument('name')
 @click.pass_obj
 def rm(obj, name):
-    obj['feeds'].config_storage.remove(name)
+    obj['feeds'].conf_storage.remove(name)
 
 
 @click.command(help='fetch and process all feeds')
