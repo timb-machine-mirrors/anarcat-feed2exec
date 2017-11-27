@@ -194,15 +194,16 @@ General information:
 ========= ======= ==== ==== ========
 Program   Version Date SLOC Language
 ========= ======= ==== ==== ========
-feed2exec  0.5    2017 1417  Python
-feed2imap  1.2.5  2015 3249  Ruby
-rss2email  3.9    2014 1986  Python
+feed2exec  0.10   2017  989  Python
+feed2imap  1.2.5  2015 3238  Ruby
+rss2email  3.9    2014 1754  Python
 ========= ======= ==== ==== ========
 
  * version: the version analysed
  * date: the date of that release
  * SLOC: Source Lines of Codes as counted by sloccount, only counting
-   dominant language (e.g. excluding XML from test feeds)
+   dominant language (e.g. excluding XML from test feeds) and
+   excluding tests
  * Language: primary programming language
 
 Delivery options:
