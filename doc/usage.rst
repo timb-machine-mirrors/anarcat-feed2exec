@@ -207,8 +207,9 @@ normal SQLite database and can be inspected using the normal sqlite
 tools. It is used to keep track of which feed items have been
 processed. To clear the cache, you can simply remove the file, which
 will make the program process all feeds items from scratch again. In
-this case, you may want to use the ``null`` output plugin to avoid
-doing any sort of processing to catchup with the feeds.
+this case, you should use the ``--catchup`` argument to avoid
+duplicate processing. You can also use the ``null`` output plugin to
+the same effect.
 
 Limitations
 -----------
@@ -241,7 +242,8 @@ another alternative would be to considering something like SQLalchemy
 instead of rolling our own ORM.
 
 Older feed items are not purged from the database when they disappear from the
-feed, which may lead to database bloat in the long term.
+feed, which may lead to database bloat in the long term. Similarly,
+there is no way for plugins to remove old entry that expire from the feed.
 
 See also
 --------
