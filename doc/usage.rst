@@ -124,8 +124,8 @@ Configuration file
 Any files used by feed2exec is stored in the config directory, in
 ``~/.config/feed2exec/`` or ``$XDG_CONFIG_HOME/feed2exec``. It can
 also be specified with the ``--config`` commandline parameter. The
-main configuration file is in called ``feed2exec.ini``. The above
-commandline will yield the following configuration::
+main configuration file is called ``feed2exec.ini``. This is an
+example configuration snippet::
 
   [NASA breaking news]
   url = https://www.nasa.gov/rss/dyn/breaking_news.rss
