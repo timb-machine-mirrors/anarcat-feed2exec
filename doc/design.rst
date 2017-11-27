@@ -9,6 +9,51 @@ API using ``importlib``.
 More information about known issues and limitations in the
 :doc:`usage` document.
 
+Quick tour
+----------
+
+The most common workflow is through the `fetch` subcommand and goes
+something like this:
+
+ 1. ``__main__.py`` is the main entrypoint, managed through the
+    :mod:`click` module, which normally calls function defined in
+    ``feeds.py``. :func:`feed2exec.feeds.main` creates a
+    :class:`feed2exec.feeds.FeedManager` object which gets passed to
+    subcommands. In our case, it passes the control to the ``fetch``
+    subcommand.
+
+ 2. The fetch command calls the 
+    :func:`feed2exec.feeds.FeedManager.fetch` function which creates a
+    :class:`feed2exec.feeds.Feed` object that is then used to parse
+    the feed and return it as an opaque `data` object as returned by
+    :mod:`feedparser`.
+
+ 3. ``fetch`` then calls the
+    :func:`feed2exec.feeds.FeedManager.dispatch` function that calls the
+    various filter and output plugins, passing in the feed
+    configuration and one item at a time. The filters can modify the
+    feed items while the output plugins are responsible for writing
+    them somewhere. That distinction is mostly arbitrary, but the
+    return values of the output plugins matter, while filters do not.
+
+The feed cache is stored in a minimal :mod:`sqlite3` database. That
+database could be extended to keep the body of the feed and other data
+to enable more powerful features, but I haven't had the need for this
+yet.
+
+Configuration is stored in a ``.ini`` file or whatever
+:mod:`configparser` supports. It was originally stored in the database
+as well, but it was found inconvenient to modify by hand and a
+configuration file was used instead. The ``.ini`` file format was
+chosen because it is well supported by Python and allows for default
+settings.
+
+There is the possibility for this project to cover more than RSS/Atom
+feeds. In theory, the ``parse`` function could also be pluggable and
+support *reading* from other data sources like Twitter or Facebook,
+which would bring us closer to the `IFTTT
+<https://en.wikipedia.org/wiki/IFTTT>`_ concept.
+
 Plugin system
 -------------
 
