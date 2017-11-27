@@ -8,6 +8,8 @@ import json
 import re
 
 from click.testing import CliRunner
+import pytest
+import xdg.BaseDirectory
 
 import feed2exec.utils as utils
 from feed2exec.__main__ import main
@@ -126,6 +128,22 @@ def test_parse(tmpdir_factory):  # noqa
     assert not conf_path.check()
     assert db_path.check()
     assert "foo bar\n" == result.output
+
+
+@pytest.mark.regression(issue=1)
+def test_missing_conf(tmpdir_factory, monkeypatch):
+    tmpdir = tmpdir_factory.mktemp('missing')
+    # XXX: dumb xdg limitation: changing the environment doesn't
+    # change those variables since they are only set at load time
+    # https://bugs.freedesktop.org/show_bug.cgi?id=103943
+    monkeypatch.setattr(xdg.BaseDirectory, 'xdg_config_home', str(tmpdir))
+    monkeypatch.setattr(xdg.BaseDirectory, 'xdg_config_dirs', [str(tmpdir)])
+    runner = CliRunner(env={'XDG_CONFIG_HOME': str(tmpdir)})
+    result = runner.invoke(main, ['--debug', 'add', test_sample['name'], test_sample['url']],
+                           catch_exceptions=False)
+    print("output: " + result.output)
+    assert 0 == result.exit_code
+    assert tmpdir.join('feed2exec.ini').check()
 
 
 def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa

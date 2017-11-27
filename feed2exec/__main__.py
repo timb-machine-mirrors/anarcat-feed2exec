@@ -21,7 +21,7 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 import json
-
+import logging
 
 import click
 
@@ -45,14 +45,20 @@ from feed2exec.utils import slug
               help='show debugging information (loglevel: DEBUG)')
 @click.option('--syslog', help='send LEVEL logs to syslog', metavar='LEVEL',
               type=click.Choice(feed2exec.logging.levels))
-@click.option('--config', default=FeedConfStorage.guess_path(),
-              show_default=True, help='use a different config file')
-@click.option('--database', default=FeedCacheStorage.guess_path(),
-              show_default=True, help='use a different database')
+@click.option('--config', default=None,
+              help='use a different config file [default: %s]' % FeedConfStorage.guess_path())
+@click.option('--database', default=None,
+              help='use a different database [default: %s]' % FeedCacheStorage.guess_path())
 @click.pass_context
 def main(ctx, loglevel, syslog, config, database):
     if ctx.obj is None:
         ctx.obj = {}
+    if database is None:
+        database = FeedCacheStorage.guess_path()
+        logging.debug('guessed db_path to be %s', database)
+    if config is None:
+        config = FeedConfStorage.guess_path()
+        logging.debug('guessed conf_path to be %s', config)
     ctx.obj['database'] = database
     ctx.obj['config'] = config
     # preload for commands who do not need a specific pattern like add/list/rm
@@ -82,7 +88,7 @@ def add(obj, name, url, output, args, filter, filter_args, folder, mailbox):
                                       filter=plugins.resolve(filter), filter_args=filter_args,
                                       folder=folder, mailbox=mailbox)
     except AttributeError as e:
-        raise click.BadParameter('feed %s already exists' % name)
+        raise click.BadParameter('feed %s already exists in %s' % (name, obj['feeds'].conf_storage.path))
 
 
 @click.command(help='list configured feeds')
