@@ -51,6 +51,8 @@ from feed2exec.utils import slug
               help='use a different database [default: %s]' % FeedCacheStorage.guess_path())
 @click.pass_context
 def main(ctx, loglevel, syslog, config, database):
+    feed2exec.logging.advancedConfig(level=loglevel, syslog=syslog,
+                                     logFormat='%(messageq)s')
     if ctx.obj is None:
         ctx.obj = {}
     if database is None:
@@ -63,8 +65,6 @@ def main(ctx, loglevel, syslog, config, database):
     ctx.obj['config'] = config
     # preload for commands who do not need a specific pattern like add/list/rm
     ctx.obj['feeds'] = FeedManager(config, database)
-    feed2exec.logging.advancedConfig(level=loglevel, syslog=syslog,
-                                     logFormat='%(messageq)s')
 
 
 @click.command(help='add a URL to the configuration')
