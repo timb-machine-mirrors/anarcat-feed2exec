@@ -9,6 +9,17 @@ the :doc:`code`.
 
 .. include:: refs.rst.inc
 
+Positive feedback
+-----------------
+
+Even if you have no changes, suggestions, documentation or bug reports
+to submit, even just positive feedback like "it works" goes a long
+way. It shows the project is being used and gives instant
+gratification to contributors. So we welcome emails that tell us of
+your positive experiences with the project or just thank you
+notes. Head out to :ref:`contact` for contact informations or submit
+a closed issue with your story.
+
 Documentation
 -------------
 
