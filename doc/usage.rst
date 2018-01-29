@@ -20,7 +20,8 @@ Options
   -v, --verbose    show what is happening (loglevel: VERBOSE)
   -d, --debug      show debugging information (loglevel: DEBUG)
   --syslog LEVEL   send LEVEL logs to syslog
-  --config TEXT    configuration directory
+  --config TEXT    use a different configuration file
+  --database DB    use a different database
   -h, --help       Show this message and exit.
 
 .. include:: ../README.rst
@@ -30,90 +31,116 @@ Options
 Commands
 --------
 
- * parse::
+.. contents::
+   :local:
+
+parse
+~~~~~
+
+Usage::
 
      parse URL
          [--output PLUGIN [--args ARG [ARG [...]]]
          [--filter PLUGIN] [--filter_args ARG [ARG [...]]]
          [--mailbox PATH] [--folder PATH]
 
-   The parse command loads and parses a single feed, without touching
-   the database. This is similar to calling `add` then `fetch` on a
-   single feed, but the feed is not kept in the configuration. This is
-   designed to make quick tests with a new feed. The arguments are the
-   same as the `add` command.
+The parse command loads and parses a single feed, without touching the
+database. This is similar to calling `add` then `fetch` on a single
+feed, but the feed is not kept in the configuration. This is designed
+to make quick tests with a new feed. The arguments are the same as the
+`add` command.
 
- * fetch::
+fetch
+~~~~~
 
-     fetch [--parallel | -p | --jobs N | -j N] [--force | -f] [pattern]
+Usage::
 
-   The fetch command iterates through all the configured feeds or
-   those matching the ``pattern`` substring if provided.
+   fetch [--parallel | -p | --jobs N | -j N] [--force | -f] [--pattern pattern]
 
-       --force     skip reading and writing the cache and
-                   will consider all entries as new
-       --catchup   do not run output plugins, equivalent of setting
-                   the output plugin to ``feed2exec.plugins.null``
-       --parallel  run parsing in the background to improve
-                   performance
-       --jobs N    run N tasks in parallel maximum. implies
-                   ``--parallel`` which defaults to the number of CPUs
-                   detected on the machine
+The fetch command iterates through all the configured feeds or those
+matching the ``pattern`` substring if provided.
 
- * add::
+Options:
+
+  --pattern TEXT  only fetch feeds matchin name or URL
+  --parallel      parse feeds in the background to improve performance
+  -j, --jobs N    start N jobs in parallel, implies
+                  ``--parallel`` which defaults to the number of CPUs
+                  detected on the machine
+  -f, --force     skip reading and writing the cache and
+                  will consider all entries as new
+  -n, --catchup   tell output plugins plugins to simulate their
+                  actions
+
+add
+~~~
+
+Usage::
 
      add NAME URL
          [--output PLUGIN [--args ARG [ARG [...]]]
          [--filter PLUGIN] [--filter_args ARG [ARG [...]]]
          [--mailbox PATH] [--folder PATH]
 
-   The add command adds the given feed ``NAME`` that will be fetched
-   from the provided ``URL``.
+The add command adds the given feed ``NAME`` that will be fetched from
+the provided ``URL``.
 
-       --output PLUGIN  use PLUGIN as an output module. defaults to
-                        ``maildir`` to store in a mailbox. use
-                        ``null`` to just fetch the feed without
-                        fetching anything. Modules are searched in the
-                        `feed2exec.plugins` package unless the name
-                        contains a dot in which case the whole Python
-                        search path is used.
-       --args ARGS      pass arguments ARGS to the output
-                        module. supports interpolation of feed
-                        parameters using, for example ``{title}``
-       --filter PLUGIN  filter feed items through the PLUGIN filter
-                        plugin
-       --filter_args A  arguments passed to the filter plugin
-       --mailbox PATH   folder to store email into, defaults to
-                        ``~/Maildir``.
-       --folder PATH    subfolder to store the email into
+Options:
 
-   Those parameters are documented more extensively in their
-   equivalent settings in the configuration file, see below.
+  --output PLUGIN     use PLUGIN as an output module. defaults to
+                      ``maildir`` to store in a mailbox. use
+                      ``null`` or ``echo`` to just fetch the feed without
+                      doing anything. Modules are searched in the
+                      `feed2exec.plugins` package unless the name
+                      contains a dot in which case the whole Python
+                      search path is used.
+  --args ARGS         pass arguments ARGS to the output
+                      plugin. supports interpolation of feed
+                      parameters using, for example ``{title}``
+  --filter PLUGIN     filter feed items through the PLUGIN filter
+                      plugin
+  --filter_args ARGS  arguments passed to the filter plugin
+  --mailbox PATH      folder to store email into, defaults to
+                      ``~/Maildir``.
+  --folder PATH       subfolder to store the email into
 
- * ls:
+Those parameters are documented more extensively in their equivalent
+settings in the configuration file, see below.
 
-   The ``ls`` command lists all configured feeds as JSON packets.
+ls
+~~
 
- * rm::
+The ``ls`` command lists all configured feeds as JSON packets.
 
-     rm NAME
+rm
+~~
 
-   Remove the feed named ``NAME`` from the configuration.
+Usage::
 
- * import::
+  rm NAME
+
+Remove the feed named ``NAME`` from the configuration.
+
+import
+~~~~~~
+
+Usage::
 
      import PATH
 
-   Import feeds from the file named PATH. The file is expected to have
-   ``outline`` elements and only the ``title`` and ``xmlUrl`` elements
-   are imported, as ``NAME`` and ``URL`` parameters, respectively.
+Import feeds from the file named PATH. The file is expected to have
+``outline`` elements and only the ``title`` and ``xmlUrl`` elements
+are imported, as ``NAME`` and ``URL`` parameters, respectively.
 
- * export::
+export
+~~~~~~
+
+Usage::
 
      export PATH
 
-   Export feeds into the file named PATH. The file will use the feed
-   NAME elements as ``title`` and the URL as ``xmlUrl``.
+Export feeds into the file named PATH. The file will use the feed NAME
+elements as ``title`` and the URL as ``xmlUrl``.
 
 Files
 -----
