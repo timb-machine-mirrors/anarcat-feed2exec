@@ -167,7 +167,7 @@ our plugin and add a ``pass`` statement to make sure the plugin works
       pass
 
 We can already test our plugin by adding it to our configuration, in
-``~/.config/feed2exec/feed2exec.ini``::
+``~/.config/feed2exec.ini``::
 
   [NASA]
   url = https://www.nasa.gov/rss/dyn/breaking_news.rss

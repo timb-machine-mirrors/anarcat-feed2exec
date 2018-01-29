@@ -148,11 +148,10 @@ Files
 Configuration file
 ~~~~~~~~~~~~~~~~~~
 
-Any files used by feed2exec is stored in the config directory, in
-``~/.config/feed2exec/`` or ``$XDG_CONFIG_HOME/feed2exec``. It can
-also be specified with the ``--config`` commandline parameter. The
-main configuration file is called ``feed2exec.ini``. This is an
-example configuration snippet::
+The configuration file is loaded from (and written to, by ``add``)
+``~/.config/feed2exec.ini`` or ``$XDG_CONFIG_HOME/feed2exec.ini``. It
+can also be specified with the ``--config`` commandline
+parameter. This is an example configuration snippet::
 
   [NASA breaking news]
   url = https://www.nasa.gov/rss/dyn/breaking_news.rss
@@ -229,8 +228,8 @@ used:
 Cache database
 ~~~~~~~~~~~~~~
 
-The feeds cache is stored in a ``feed2exec.sqlite`` file. It is a
-normal SQLite database and can be inspected using the normal sqlite
+The feeds cache is stored in a ``feed2exec.db`` file. It is a
+SQLite database and can be inspected using standard sqlite
 tools. It is used to keep track of which feed items have been
 processed. To clear the cache, you can simply remove the file, which
 will make the program process all feeds items from scratch again. In
