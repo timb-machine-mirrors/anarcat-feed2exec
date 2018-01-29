@@ -24,4 +24,4 @@ this section.
  * Operating system: Debian GNU/Linux 9.1 (stretch), Windows 7, Ubuntu Xenial, etc
  * Install method: distribution package, PyPI, from source tarball, from git, etc
  * URL: e.g. https://example.com/feed.rss
- * Minimal configuration file: output of `feed2exec list`
+ * Minimal configuration file: output of `feed2exec ls`
