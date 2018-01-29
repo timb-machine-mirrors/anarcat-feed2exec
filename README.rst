@@ -50,7 +50,7 @@ Saving feed items to a Maildir folder::
   feed2exec add "NASA breaking news" https://www.nasa.gov/rss/dyn/breaking_news.rss --folder nasa
   feed2exec fetch
 
-This creates the equivalent of this configuration file in ``~/.config/feed2exec/feed2exec.ini``::
+This creates the equivalent of this configuration file in ``~/.config/feed2exec.ini``::
 
   [DEFAULT]
   output = feed2exec.plugins.maildir
