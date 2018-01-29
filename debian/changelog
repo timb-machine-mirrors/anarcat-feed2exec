@@ -1,3 +1,65 @@
+feed2exec (0.11.0) unstable; urgency=medium
+
+  major release: two months of bugfixes, major refactoring and
+  documentation overhaul.
+
+  * bugfixes:
+    * create missing directory in archive plugin
+    * deal with feeds without a title
+    * fix crash in mbox logging
+    * fix crash when running without a config file
+    * handle missing content-location header from the wayback machine
+    * fix crash when using a relative path with --config
+  * features:
+    * allow shorter plugin names on the commandline: the full plugin load
+      path is quite a mouthful. This makes it easier for our users and allow
+      them to use only the shorter module name, relative to the
+      `feed2exec.plugins` path, on the commandline only.  We keep the
+      configuration file and internal use with the full plugin path. This is
+      to avoid double-resolving the path and ensures the configuration file
+      has a reliable plugin name.
+  * major API refactoring, more details in d0b770a:
+    * force API consumers to specify an explicit path instead of doing
+      load-time guessing.
+    * use composition instead of inheritance in the feed manager, to
+      reduce ambiguity
+    * locking is now in the FeedManager dispatch command
+    * plugins are now ran serially even when running in parallel, although
+      plugins are, as a whole, executed in parallel with the parsing, which
+      is the main performance improvement we are looking for in parallelism
+      anyways, because parsing is the slow part. performance tests don't
+      show any significant degradation in performance
+  * minor API changes:
+    * allow find_test_file to return the test directory, to permit listing
+      test artifacts
+    * shorten and explicit variable names
+    * rename test_db fixture to db_path to harmonize with conf_path fixture
+    * also harmonize class names between conf and cache storage
+  * extensive documentation refactoring:
+    * document test writing
+    * split code of conduct and contribution guide
+    * fix formatting error in plugins docs and broken links in design docs
+    * add security disclosure guidelines and contact
+    * add support section inspired by Monkeysign
+    * add issue template, integrated with GitLab
+    * expand design documentation to provide a quick tour of the code
+    * mention --catchup in cache purge and plugin deletion limitation
+    * count lines of code without tests: it is unfair to compare out line
+      count with the others because we have a much larger test suite, which
+      has exploded in recent releases
+    * suggest positive feedback as a contribution
+    * fix syntax error and mention caveat of toot/mastodon integration
+      after tests
+  * test suite improvements;
+    * add test suite for archive plugin
+    * use pytest parametrization for opml test files
+    * enable debug-level log capture in the catchlog module
+    * accept OPML test files without resulting .ini file
+    * refactor temp db use to simplify test suite
+    * move OPML main test along with other OPML tests
+
+ -- Antoine Beaupré <anarcat@debian.org>  Mon, 29 Jan 2018 11:12:36 -0500
+
 feed2exec (0.10.0) unstable; urgency=medium
 
   * bugfies:
