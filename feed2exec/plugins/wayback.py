@@ -30,9 +30,12 @@ def output(*args, feed=None, item=None, **kwargs):
         res = feed.session.head(wayback_url, allow_redirects=True)
         res.headers['status_code'] = res.status_code
         if res.history:
-            res.headers['Content-Location'] = res.history[0].headers['Content-Location']  # noqa
-        location = res.headers['Content-Location']
-        archive_location = WAYBACK_URL + location
+            res.headers['Content-Location'] = res.history[0].headers.get('Content-Location')  # noqa
+        location = res.headers.get('Content-Location')
+        if location:
+            archive_location = WAYBACK_URL + location
+        else:
+            archive_location = 'N/A'
         if res.status_code == requests.codes.ok:
             logging.info('URL %s saved to wayback machine: %s',
                          item.get('link'), archive_location, extra=res)
