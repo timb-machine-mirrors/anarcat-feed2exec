@@ -180,10 +180,6 @@ To make a release:
 
        gbp dch
 
-   the file header will need to be moved back up to the beginning of
-   the file. also make sure to add a summary and choose a proper
-   version according to `Semantic Versioning`_
-
 3. tag the release according to `Semantic Versioning`_ rules::
 
        git tag -s x.y.z
