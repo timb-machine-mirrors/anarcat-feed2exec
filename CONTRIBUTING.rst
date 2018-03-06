@@ -20,6 +20,13 @@ your positive experiences with the project or just thank you
 notes. Head out to :ref:`contact` for contact informations or submit
 a closed issue with your story.
 
+You can also send your "thanks" through `saythanks.io
+<https://saythanks.io/to/anarcat>`_.
+
+.. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg 
+   :alt: Say thanks to the author
+   :target: https://saythanks.io/to/anarcat
+
 Documentation
 -------------
 

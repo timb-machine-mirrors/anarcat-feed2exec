@@ -36,6 +36,10 @@ arbitrary folders.
    :alt: feed2exec version in unstable
    :target: https://packages.debian.org/unstable/feed2exec
 
+.. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg 
+   :alt: Say thanks to the author
+   :target: https://saythanks.io/to/anarcat
+
 .. marker-examples
 
 Examples
