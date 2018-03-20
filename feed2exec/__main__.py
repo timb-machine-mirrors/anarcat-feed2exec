@@ -136,6 +136,8 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
               help="filter plugin arguments, also with parameter substitution")
 @click.option('--folder', help="subfolder to store email into")
 @click.option('--mailbox', help="basic mailbox to store email into")
+@click.option('--catchup', '-n',
+              is_flag=True, help='tell output plugins to do nothing permanent')
 @click.pass_obj
 def parse(obj, url, **kwargs):
     kwargs.update({'url': url})
