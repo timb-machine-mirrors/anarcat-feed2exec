@@ -114,7 +114,7 @@ def rm(obj, name):
               default=None, type=int, metavar='N')
 @click.option('--force', '-f', is_flag=True, help='do not check cache')
 @click.option('--catchup', '-n',
-              is_flag=True, help='do not call output plugins')
+              is_flag=True, help='tell output plugins to do nothing permanent')
 def fetch(obj, pattern, parallel, jobs, force, catchup):
     st = FeedManager(obj['config'], obj['database'], pattern=pattern)
     # used for unit testing

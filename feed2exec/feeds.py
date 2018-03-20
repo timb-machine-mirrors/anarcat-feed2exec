@@ -97,12 +97,9 @@ class FeedManager(object):
                            already seen. passed to
                            :class:`feed2exec.feeds.parse` as is
 
-        :param bool catchup: disables the output plugin by setting the
-                             ``output`` field to None in the ``feed``
-                             argument passed to
-                             :func:`feed2exec.feeds.parse`, used to
-                             catchup on feed entries without firing
-                             plugins.
+        :param bool catchup: set the `catchup` flag on the feed, so
+                             that output plugins can avoid doing any
+                             permanent changes.
         """
         logging.debug('looking for feeds %s in %s', self.pattern, self.conf_storage)
         if parallel:
