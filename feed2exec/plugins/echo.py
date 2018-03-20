@@ -1,3 +1,4 @@
+import logging
 import shlex
 
 
@@ -14,6 +15,8 @@ class output(object):
 
     def __init__(self, *args, feed=None, **kwargs):
         print(" ".join([shlex.quote(x) for x in args]))
+        logging.debug('echo plugin called with args%s: %s',
+                      feed.get('catchup', '') and ' (simulated)', args)
         if not feed.get('catchup'):
             output.called = args
 
