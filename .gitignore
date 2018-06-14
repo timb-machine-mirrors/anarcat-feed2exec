@@ -7,3 +7,4 @@ dist
 *.pyc
 .tox/
 _version.py
+.pytest_cache
