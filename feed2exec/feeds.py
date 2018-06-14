@@ -324,7 +324,7 @@ class Feed(feedparser.FeedParserDict):
             item['id'] = item.get('title')
 
         # 3. not completely absolute links
-        scheme, netloc, *rest = urlparse.urlsplit(item.get('link'))
+        scheme, netloc, *rest = urlparse.urlsplit(item.get('link', ''))
         if not scheme:
             # take missing scheme/host from feed URL
             scheme, netloc, *_ = urlparse.urlsplit(self.get('url', ''))
