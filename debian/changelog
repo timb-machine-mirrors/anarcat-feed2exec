@@ -1,3 +1,21 @@
+feed2exec (0.12.0) unstable; urgency=medium
+
+  [ Christophe Moille ]
+  * feed2exec.ini no more in ~/.config/feed2exec
+
+  [ Antoine Beaupré ]
+  * synchronize commandline usage with usage docs
+  * fix remaining instances of old config file path
+  * add more badges incl. say thanks
+  * add --catchup flag to parse as well
+  * fix documentation for catchup flag
+  * make the echo plugin more manifest when debugging
+  * fix planet test failure on older html2text
+  * add failing test for issue #5
+  * fix parsing of empty links
+
+ -- Antoine Beaupré <anarcat@debian.org>  Thu, 14 Jun 2018 12:31:38 -0400
+
 feed2exec (0.11.0) unstable; urgency=medium
 
   major release: two months of bugfixes, major refactoring and
