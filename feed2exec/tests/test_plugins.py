@@ -236,7 +236,7 @@ def test_wayback(capfd, betamax):  # noqa
         called = True
         return mock.MagicMock()
 
-    betamax.head = fake
+    betamax.get = fake
     item = feedparser.FeedParserDict({'link': 'http://example.com/'})
     e = plugins.output(feed=feed, item=item)
     assert called
