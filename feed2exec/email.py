@@ -10,6 +10,7 @@ from email.mime.multipart import MIMEMultipart
 import logging
 import socket
 import time
+import warnings
 
 import feed2exec
 import feed2exec.utils as utils
@@ -97,7 +98,9 @@ def make_message(feed, item, to_addr=None, cls=email.message.Message):
     #
     # also, default on the feed updated date
     orig = timestamp = datetime.datetime.utcnow().timestamp()
-    timestamp = item.get('updated_parsed') or orig
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        timestamp = item.get('updated_parsed', item.get('published_parsed', orig))
     if isinstance(timestamp, (datetime.datetime,
                               datetime.date,
                               datetime.time)):

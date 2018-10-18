@@ -41,6 +41,7 @@ try:
 except ImportError:  # pragma: nocover
     # py2
     import urlparse
+import warnings
 
 
 import feed2exec
@@ -316,8 +317,10 @@ class Feed(feedparser.FeedParserDict):
             unreported for now.
         """
         # 1. add more defaults (issue #113)
-        item['updated_parsed'] = item.get('updated_parsed', item.get('created_parsed', self.get('updated_parsed', False)))  # noqa
-        assert item.get('updated_parsed') is not None
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            item['updated_parsed'] = item.get('updated_parsed', item.get('published_parsed', item.get('created_parsed', self.get('updated_parsed', self.get('published_parsed', False)))))  # noqa
+            assert item.get('updated_parsed') is not None
 
         # 2. add UID if missing (issue #112)
         if not item.get('id'):
