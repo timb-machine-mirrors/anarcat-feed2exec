@@ -41,6 +41,6 @@ def output(*args, feed=None, item=None, **kwargs):
                          item.get('link'), archive_location)
             return True
         else:
-            logging.warn('wayback machine failed to save URL %s, status %d',
-                         item.get('link'), res.status_code)  # noqa
+            logging.warning('wayback machine failed to save URL %s, status %d',
+                            item.get('link'), res.status_code)  # noqa
             return False
