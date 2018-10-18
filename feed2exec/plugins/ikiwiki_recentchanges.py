@@ -1,3 +1,5 @@
+from datetime import datetime
+from time import mktime
 from urllib.parse import unquote
 import logging
 import re
@@ -21,6 +23,10 @@ def filter(*args, item=None, **kwargs):
 
     This generates a feed with proper ``<link>`` elements but requires
     write access to the wiki.
+
+    This will also add the date to the URL GUID so that we refresh
+    when a page is updated. Otherwise feed2exec would think the entry
+    has already been passed.
     """
 
     r = re.search(r'(https?://[^/]*/)ikiwiki.cgi\?do=goto&amp;page=([^"]*)"',
@@ -30,3 +36,7 @@ def filter(*args, item=None, **kwargs):
         logging.debug('link changed from %s to %s',
                       item['link'], link)
         item['link'] = link
+
+    # append timestamp
+    t = mktime(item['published_parsed'])
+    item['id'] = datetime.fromtimestamp(t).isoformat() + '-' + item['id']
