@@ -128,6 +128,12 @@ This is also hooked into the ``setup.py`` command, so this also works::
 
   python3 setup.py test
 
+.. note:: This alias is called by ``tox`` in the ``tox.ini`` file
+          through the ``pytest-runner`` plugin. It is defined in the
+          ``setup.cfg`` file. ``tox``, in turn, gets called by the
+          Continuous Integration (CI) system through the
+          ``.gitlab-ci.yml`` file.
+
 Enabling the `catchlog`_ plugin will also enable logging in the test
 suite which will help diagnostics.
 
