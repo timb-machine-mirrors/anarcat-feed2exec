@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="dsa-rdf.css" type="text/css"?>
+<rdf:RDF
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns="http://purl.org/rss/1.0/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xml:lang="en"
+>
+<channel rdf:about="https://www.debian.org/security/dsa.rdf">
+  <title>Debian Security</title>
+  <link>http://security.debian.org/</link>
+  <description>
+Debian Security Advisories
+  </description>
+  <dc:date>2018-11-11T15:40:19+00:00</dc:date>
+  <items>
+    <rdf:Seq>
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4337" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4336" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4335" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4334" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4333" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4332" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4331" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4330" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4329" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4328" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4327" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4326" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4325" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4324" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4323" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4322" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4321" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4320" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4319" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4318" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4317" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4316" />
+<rdf:li resource="https://www.debian.org/security/2018/dsa-4315" />
+    </rdf:Seq>
+  </items>
+</channel>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4337">
+  <title>DSA-4337 thunderbird</title>
+  <link>https://www.debian.org/security/2018/dsa-4337</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-11-10</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4336">
+  <title>DSA-4336 ghostscript</title>
+  <link>https://www.debian.org/security/2018/dsa-4336</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-11-10</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4335">
+  <title>DSA-4335 nginx</title>
+  <link>https://www.debian.org/security/2018/dsa-4335</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-11-08</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4334">
+  <title>DSA-4334 mupdf</title>
+  <link>https://www.debian.org/security/2018/dsa-4334</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-11-04</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4333">
+  <title>DSA-4333 icecast2</title>
+  <link>https://www.debian.org/security/2018/dsa-4333</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-11-04</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4332">
+  <title>DSA-4332 ruby2.3</title>
+  <link>https://www.debian.org/security/2018/dsa-4332</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-11-03</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4331">
+  <title>DSA-4331 curl</title>
+  <link>https://www.debian.org/security/2018/dsa-4331</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-11-02</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4330">
+  <title>DSA-4330 chromium-browser</title>
+  <link>https://www.debian.org/security/2018/dsa-4330</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-11-02</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4329">
+  <title>DSA-4329 teeworlds</title>
+  <link>https://www.debian.org/security/2018/dsa-4329</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-28</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4328">
+  <title>DSA-4328 xorg-server</title>
+  <link>https://www.debian.org/security/2018/dsa-4328</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-25</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4327">
+  <title>DSA-4327 thunderbird</title>
+  <link>https://www.debian.org/security/2018/dsa-4327</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-25</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4326">
+  <title>DSA-4326 openjdk-8</title>
+  <link>https://www.debian.org/security/2018/dsa-4326</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-25</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4325">
+  <title>DSA-4325 mosquitto</title>
+  <link>https://www.debian.org/security/2018/dsa-4325</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-25</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4324">
+  <title>DSA-4324 firefox-esr</title>
+  <link>https://www.debian.org/security/2018/dsa-4324</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-24</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4323">
+  <title>DSA-4323 drupal7</title>
+  <link>https://www.debian.org/security/2018/dsa-4323</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-18</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4322">
+  <title>DSA-4322 libssh</title>
+  <link>https://www.debian.org/security/2018/dsa-4322</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-17</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4321">
+  <title>DSA-4321 graphicsmagick</title>
+  <link>https://www.debian.org/security/2018/dsa-4321</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-16</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4320">
+  <title>DSA-4320 asterisk</title>
+  <link>https://www.debian.org/security/2018/dsa-4320</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-16</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4319">
+  <title>DSA-4319 spice</title>
+  <link>https://www.debian.org/security/2018/dsa-4319</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-15</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4318">
+  <title>DSA-4318 moin</title>
+  <link>https://www.debian.org/security/2018/dsa-4318</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-15</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4317">
+  <title>DSA-4317 otrs2</title>
+  <link>https://www.debian.org/security/2018/dsa-4317</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-14</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4316">
+  <title>DSA-4316 imagemagick</title>
+  <link>https://www.debian.org/security/2018/dsa-4316</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-12</dc:date>
+</item>
+<item rdf:about="https://www.debian.org/security/2018/dsa-4315">
+  <title>DSA-4315 wireshark</title>
+  <link>https://www.debian.org/security/2018/dsa-4315</link>
+  <description>
+    security update
+  </description>
+  <dc:date>2018-10-12</dc:date>
+</item>
+</rdf:RDF>

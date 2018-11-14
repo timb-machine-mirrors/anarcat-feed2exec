@@ -295,3 +295,30 @@ def test_archive(tmpdir, betamax):  # noqa
                                       'title': 'example site'})
     assert archive_plugin.output(str(dest), feed=feed, item=item)
     assert not dest.join('example-site').check()
+
+def test_addlink(tmpdir, feed_manager):  # noqa
+    testdir = utils.find_test_file('.')
+    path = os.path.join(str(testdir), 'dsa.xml')
+    feed = Feed('dsa',
+                {'url': 'file://' + path,
+                 'output': 'feed2exec.plugins.mbox',
+                 'mailbox': str(tmpdir.join('Mail')),
+                 'email': 'from@example.com',
+                 'args': 'to@example.com',
+                 'filter': 'feed2exec.plugins.addlink'
+                 })
+    feed_manager.dispatch(feed, feed.parse(feed.url), lock=LOCK)
+    folder = utils.slug(feed['name']) + '.mbx'
+    ua_pattern = re.compile('User-Agent: .*$', flags=re.MULTILINE)
+    actual = ua_pattern.sub('', tmpdir.join('Mail', folder).read())
+    assert actual
+
+    mbox_path = path[:-3] + 'mbx-manual'
+    try:
+        with open(mbox_path) as expected:
+            expect = ua_pattern.sub('', expected.read())
+    except FileNotFoundError:
+        # ignore missing mailbox samples
+        pass
+    else:
+        assert expect == actual
