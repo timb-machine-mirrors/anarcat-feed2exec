@@ -47,7 +47,7 @@ Examples
 
 Simple run with no side effects::
 
-  feed2exec parse https://www.nasa.gov/rss/dyn/breaking_news.rss --output echo --args '{item.title'}
+  feed2exec parse https://www.nasa.gov/rss/dyn/breaking_news.rss --output echo --args '{item.title}'
 
 Saving feed items to a Maildir folder::
 
