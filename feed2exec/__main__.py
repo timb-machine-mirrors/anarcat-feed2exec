@@ -87,7 +87,7 @@ def add(obj, name, url, output, args, filter, filter_args, folder, mailbox):
                                       output=plugins.resolve(output), args=args,
                                       filter=plugins.resolve(filter), filter_args=filter_args,
                                       folder=folder, mailbox=mailbox)
-    except AttributeError as e:
+    except AttributeError:
         raise click.BadParameter('feed %s already exists in %s' % (name, obj['feeds'].conf_storage.path))
 
 
