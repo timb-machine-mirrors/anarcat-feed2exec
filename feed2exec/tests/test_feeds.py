@@ -22,7 +22,7 @@ from __future__ import print_function
 from feed2exec.feeds import (FeedConfStorage, FeedCacheStorage, Feed)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
-from feed2exec.tests.fixtures import (feed_manager, betamax)  # noqa
+from feed2exec.tests.fixtures import (feed_manager, betamax, skipUnlessNetwork)  # noqa
 import pytest
 
 test_data = Feed('test',
@@ -166,6 +166,27 @@ def test_fetch_parallel(feed_manager, capfd, betamax):  # noqa
     feed_manager.fetch(parallel=2, force=True)
     out, err = capfd.readouterr()
     assert '1 2 3 4' in out
+
+
+@skipUnlessNetwork
+def test_failed_cert(feed_manager, caplog):  # noqa
+    '''requests will fail with sites that are missing an intermediate cert
+
+    This occured with https://www.drugsandwires.fail/feed starting
+    from 2018-11-12T09:01:57-0500.
+
+    Reported on Twitter to author:
+
+    https://twitter.com/theanarcat/status/1064604439741415424
+    '''
+    feed = Feed('dnw',
+                {'url': 'https://incomplete-chain.badssl.com/',
+                 'output': None,
+                 'args': None})
+    assert feed.fetch() is None
+    assert 'certificate verify failed' in caplog.text
+    feed['x509_verify'] = False
+    assert feed.fetch()
 
 
 def test_normalize(feed_manager, betamax):  # noqa

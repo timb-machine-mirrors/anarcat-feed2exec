@@ -248,7 +248,7 @@ class Feed(feedparser.FeedParserDict):
     For all intents and purposes, this can be considered like a dict()
     unless otherwise noted.
     """
-    locked_keys = ('output', 'args', 'filter', 'filter_args',
+    locked_keys = ('output', 'args', 'filter', 'filter_args', 'x509_verify',
                    'folder', 'mailbox', 'url', 'name', 'pause', 'catchup')
 
     #: class :class:`request.Session` object that can be used by plugins
@@ -400,12 +400,15 @@ class Feed(feedparser.FeedParserDict):
             return None
         logging.info('fetching feed %s', self['url'])
         try:
-            body = self.session.get(self['url']).content
-        except (requests.exceptions.Timeout,
-                requests.exceptions.ConnectionError) as e:
+            body = self.session.get(self['url'], verify=self.get('x509_verify', True)).content
+        except requests.exceptions.Timeout as e:
             # XXX: we should count those and warn after a few
             # occurrences
             logging.warning('timeout while fetching feed %s at %s: %s',
+                            self['name'], self['url'], e)
+            return None
+        except requests.exceptions.ConnectionError as e:
+            logging.warning('error while fetching feed %s at %s: %s',
                             self['name'], self['url'], e)
             return None
         except requests.exceptions.RequestException as e:

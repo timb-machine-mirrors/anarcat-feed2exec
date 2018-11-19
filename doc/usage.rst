@@ -219,6 +219,11 @@ The following configuration parameters are supported:
       Completely skip feed during fetch or parse. Similar to catchup,
       but doesn't fetch the feed at all and doesn't touch the cache.
 
+  x509_verify
+      Set to "False" to disable HTTPS verification on fetch. USE WITH
+      CAUTION! This was implemented only to skip verification on sites
+      which enforce HTTPS but implement it poorly.
+
 Here is a more complete example configuration with all the settings
 used:
 

@@ -6,6 +6,10 @@ include /usr/share/dpkg/default.mk
 %:
 	dh $@  --with=python3,sphinxdoc --buildsystem=pybuild
 
+# disable network tests in Debian package build
+PYTEST_USENETWORK?=no
+export PYTEST_USENETWORK
+
 override_dh_auto_build:
 	dh_auto_build
         # builder=html,man only supported in Sphinx 1.6, not yet released:
