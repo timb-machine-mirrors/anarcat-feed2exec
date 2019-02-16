@@ -135,5 +135,5 @@ def make_message(feed, item, to_addr=None, cls=email.message.Message):
     msg['Precedence'] = 'list'
     msg['Auto-Submitted'] = 'auto-generated'
     if item.get('link'):
-        msg['Archive-At'] = item.get('link')
+        msg['Archived-At'] = item.get('link')
     return msg, timestamp
