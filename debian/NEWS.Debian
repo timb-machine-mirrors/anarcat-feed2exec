@@ -1,0 +1,17 @@
+feed2exec (0.13.0) unstable; urgency=medium
+
+  * ikiwiki_recentchanges incompatible change
+
+    The recent changes page can include multiple posts with the same GUID,
+    as the GUID is simply the URL of the page. In blog posts, that's
+    usually fine because we don't want to act every time a blog post
+    is *modified* but for things like link checks or archival, it's
+    actually important to fetch pages on each update.
+    
+    This will require the user to run `--catchup` on the feeds with that
+    plugin enabled after upgrade.
+    
+    We simply prefix the GUID with a ISO-8601 formatted timestamp so that
+    changes (above seconds increments) are considered
+
+ -- Antoine Beaupré <anarcat@debian.org>  Sat, 16 Feb 2019 10:42:20 -0500

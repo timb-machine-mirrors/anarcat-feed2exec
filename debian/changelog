@@ -1,3 +1,21 @@
+feed2exec (0.13.0) unstable; urgency=medium
+
+  [ Antoine Beaupré ]
+  * python 3.7 support, default on python:latest now
+  * wayback machine API change: HEAD not supported anymore
+  * fix strange crash in wayback plugin
+  * comply with new feedparser deprecation warning
+  * switch to logging.warning to comply with deprecation warning
+  * disable cov which crashes on sqlite3.IntegrityError
+  * explain how tests are hooked up together.
+  * fix typo, thanks gagz
+  * include post timestamp in ikiwiki GUIDs
+
+  [ Kang ]
+  * According to RFC5064, change header 'Archive-At' to 'Archived-At'
+
+ -- Antoine Beaupré <anarcat@debian.org>  Sat, 16 Feb 2019 10:38:09 -0500
+
 feed2exec (0.12.0) unstable; urgency=medium
 
   [ Christophe Moille ]
