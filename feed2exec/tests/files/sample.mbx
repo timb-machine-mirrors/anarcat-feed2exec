@@ -9,7 +9,7 @@ Message-ID: 7bd204c6-1655-4c27-aeee-53f933c5395f
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
-Archive-At: http://www.example.com/blog/post/1
+Archived-At: http://www.example.com/blog/post/1
 
 --===============testboundary==
 Content-Type: text/html; charset="utf-8"
