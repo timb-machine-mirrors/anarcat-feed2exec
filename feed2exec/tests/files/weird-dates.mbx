@@ -5,12 +5,44 @@ Content-Transfer-Encoding: 7bit
 Date: Sun, 03 Sep 2017 09:03:54 -0000
 To: to@example.com
 From: weird-dates <to@example.com>
-Subject: test item
-Message-ID: http-example-com-test
+Subject: missing date
+Message-ID: http-example-com-test-missing-date
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://example.com/test/
 
-test descr1
+This item has no date but there's one on the feed to fallback on
+
+From weird-dates Sun Sep  3 09:03:54 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Date: Sun, 03 Sep 2017 09:03:54 -0000
+To: to@example.com
+From: weird-dates <to@example.com>
+Subject: missing space
+Message-ID: http-example-com-test-missing-space
+
+Precedence: list
+Auto-Submitted: auto-generated
+Archived-At: http://example.com/test/
+
+This item has a date that feedparser has trouble with, probably because of the missing space between the day of week and date
+
+From weird-dates Sun Sep  3 09:03:54 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Date: Sun, 03 Sep 2017 09:03:54 -0000
+To: to@example.com
+From: weird-dates <to@example.com>
+Subject: no timezone
+Message-ID: http-example-com-test-no-timezone
+
+Precedence: list
+Auto-Submitted: auto-generated
+Archived-At: http://example.com/test/
+
+This item has a date that feedparser has trouble with, maybe because of the missing timezone
 

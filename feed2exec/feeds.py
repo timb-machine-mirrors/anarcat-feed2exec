@@ -321,6 +321,10 @@ class Feed(feedparser.FeedParserDict):
             warnings.simplefilter("ignore")
             item['updated_parsed'] = item.get('updated_parsed', item.get('published_parsed', item.get('created_parsed', self.get('updated_parsed', self.get('published_parsed', False)))))  # noqa
             assert item.get('updated_parsed') is not None
+        if not item.get('updated_parsed'):
+            logging.warning('no parseable date found in feed item %s from feed %s, using current time instead',
+                            item.get('id'), self.get('url'))
+            item['updated_parsed'] = datetime.utcnow().timestamp()
 
         # 2. add UID if missing (issue #112)
         if not item.get('id'):
