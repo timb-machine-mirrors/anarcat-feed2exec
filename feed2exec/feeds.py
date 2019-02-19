@@ -372,9 +372,10 @@ class Feed(feedparser.FeedParserDict):
         for (key, val) in data['feed'].items():
             if key not in self and key not in Feed.locked_keys:
                 self[key] = val
+        # import json
         # logging.debug('parsed structure %s',
         #               json.dumps(data, indent=2, sort_keys=True,
-        #                          default=safe_serial))
+        #                          default=str))
         # massage result for multiprocessing module
         if data['bozo']:
             data['bozo_exception'] = str(data['bozo_exception'])
