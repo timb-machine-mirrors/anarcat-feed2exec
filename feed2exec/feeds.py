@@ -53,6 +53,11 @@ import requests_file
 import sqlite3
 import xdg.BaseDirectory as xdg_base_dirs
 
+try:
+    import dateparser
+except ImportError:
+    dateparser = False
+
 
 class FeedManager(object):
     """a feed manager fetches and stores feeds.
@@ -66,6 +71,10 @@ class FeedManager(object):
         self.conf_path = conf_path
         self.db_path = db_path
         self.conf_storage = FeedConfStorage(self.conf_path, pattern=pattern)
+        if dateparser:
+            def dateparser_tuple_parser(string):
+                return dateparser.parse(string).utctimetuple()
+            feedparser.registerDateHandler(dateparser_tuple_parser)
 
     def __repr__(self):
         return 'FeedManager(%s, %s, %s)' % (self.conf_path, self.db_path, self.pattern)
