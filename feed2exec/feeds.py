@@ -304,10 +304,7 @@ class Feed(feedparser.FeedParserDict):
         we do the following operation:
 
          1. add more defaults to item dates (`issue #113
-            <https://github.com/kurtmckee/feedparser/issues/113>`_):
-
-            * created_parsed of the item
-            * updated_parsed of the feed
+            <https://github.com/kurtmckee/feedparser/issues/113>`_)
 
          2. missing GUID in some feeds (`issue #112
             <https://github.com/kurtmckee/feedparser/issues/112>`_)
@@ -316,11 +313,26 @@ class Feed(feedparser.FeedParserDict):
             where feeds are /foo instead of https://github.com/foo.
             unreported for now.
         """
+
         # 1. add more defaults (issue #113)
+        def pick_first_date():
+            """find a valid date in item or feed"""
+            fields = ('updated_parsed', 'published_parsed', 'created_parsed')
+            # first check the item itself, then fallback on the field
+            for scope in (item, self):
+                # all the fields to inspect
+                for field in fields:
+                    if scope.get(field, False):
+                        logging.debug('picked field %s for item %s: %s',
+                                      field, item.get('id'), scope.get(field))
+                        return scope.get(field)
+
+        # ignore deprecation warnings from feedparser:
+        # https://github.com/kurtmckee/feedparser/issues/151
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            item['updated_parsed'] = item.get('updated_parsed', item.get('published_parsed', item.get('created_parsed', self.get('updated_parsed', self.get('published_parsed', False)))))  # noqa
-            assert item.get('updated_parsed') is not None
+            item['updated_parsed'] = pick_first_date()
+
         if not item.get('updated_parsed'):
             logging.warning('no parseable date found in feed item %s from feed %s, using current time instead',
                             item.get('id'), self.get('url'))
