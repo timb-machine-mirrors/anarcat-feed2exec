@@ -103,6 +103,9 @@ def output(feed, item, lock=None):
         plugin = importlib.import_module(plugin)
         try:
             return plugin.output(*args, feed=feed, item=item, lock=lock)
+        except (BrokenPipeError):
+            # handle pipe errors gracefully, e.g. | head
+            raise
         except Exception as e:
             logging.exception("plugin generated exception: %s, skipping", e)
             return None
