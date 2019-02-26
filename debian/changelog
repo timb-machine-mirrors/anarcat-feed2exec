@@ -1,3 +1,17 @@
+feed2exec (0.14.0) unstable; urgency=medium
+
+  bugfix release, with a small new feature
+
+  * warn instead of crashing on invalid dates
+  * expand and cleanup date validation routines
+  * use dateparser module if available
+  * recommend the dateparser module for better dates handling
+  * handle broken pipe correctly from plugins
+  * add JSON output plugin
+  * bump standards, switch to dh-compat, no change
+
+ -- Antoine Beaupré <anarcat@debian.org>  Tue, 26 Feb 2019 17:00:07 -0500
+
 feed2exec (0.13.0) unstable; urgency=medium
 
   [ Antoine Beaupré ]
