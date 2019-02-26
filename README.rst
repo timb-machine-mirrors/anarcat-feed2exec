@@ -122,6 +122,14 @@ Linux distribution.
 <https://gitlab.com/anarcat/feed2exec/issues>`_ are available on
 GitLab.
 
+.. note:: feed2exec relies on the `feedparser`_ module to parse feeds
+          and as such has all the bugs and limitations of that
+          modules. In particular, feeds with non-standard dates will
+          break the parser, unless the `dateparser`_ module is
+          installed.
+
+.. _dateparser: https://github.com/scrapinghub/dateparser
+
 Why the name?
 -------------
 

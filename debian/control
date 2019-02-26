@@ -14,6 +14,7 @@ Build-Depends: debhelper (>= 10)
              , python3-pytest-runner
              , python3-betamax
              , python3-click
+             , python3-dateparser
              , python3-feedparser
              , python3-html2text
              , python3-requests
@@ -30,6 +31,7 @@ Package: feed2exec
 Architecture: all
 Depends: ${misc:Depends}
        , ${python3:Depends}
+Recommends: python3-dateparser
 Suggests: feed2exec-doc
 Description: programmable feed reader
  feed2exec is a simple program that runs custom actions on new RSS
