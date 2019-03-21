@@ -3,7 +3,7 @@
 .. make sure you review each line and also fix the link in webirc.html
 ..
 .. |project_name| replace:: feed2exec
-.. |irc_channel| replace:: ``#feed2exec``
+.. |irc_channel| replace:: ``#anarcat``
 .. |webirc| replace:: https://webchat.freenode.net/?nick=feed2exec.&channels=feed2exec&prompt=1
 .. _irc: ircs://irc.freenode.net/feed2exec/
 .. _webirc: https://webchat.freenode.net/?nick=feed2exec.&channels=feed2exec&prompt=1
