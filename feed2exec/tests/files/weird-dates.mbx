@@ -14,11 +14,11 @@ Archived-At: http://example.com/test/
 
 This item has no date but there's one on the feed to fallback on
 
-From weird-dates Sun Sep  3 09:03:54 2017
+From weird-dates Tue Feb 19 14:08:19 2019
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Date: Sun, 03 Sep 2017 09:03:54 -0000
+Date: Tue, 19 Feb 2019 14:08:19 -0000
 To: to@example.com
 From: weird-dates <to@example.com>
 Subject: missing space
@@ -30,11 +30,11 @@ Archived-At: http://example.com/test/
 
 This item has a date that feedparser has trouble with, probably because of the missing space between the day of week and date
 
-From weird-dates Sun Sep  3 09:03:54 2017
+From weird-dates Sun Feb 15 00:00:00 2015
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Date: Sun, 03 Sep 2017 09:03:54 -0000
+Date: Sun, 15 Feb 2015 00:00:00 -0000
 To: to@example.com
 From: weird-dates <to@example.com>
 Subject: no timezone
