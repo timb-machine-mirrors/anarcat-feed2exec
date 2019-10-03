@@ -347,8 +347,8 @@ class Feed(feedparser.FeedParserDict):
             item['updated_parsed'] = pick_first_date()
 
         if not item.get('updated_parsed'):
-            logging.warning('no parseable date found in feed item %s from feed %s, using current time instead',
-                            item.get('id'), self.get('url'))
+            logging.info('no parseable date found in feed item %s from feed %s, using current time instead',
+                         item.get('id'), self.get('url'))
             item['updated_parsed'] = datetime.utcnow().timestamp()
 
         # 2. add UID if missing (issue #112)
