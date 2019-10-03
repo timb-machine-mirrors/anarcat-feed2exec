@@ -147,7 +147,7 @@ def test_missing_conf(tmpdir_factory, monkeypatch):
     assert tmpdir.join('feed2exec.ini').check()
 
 
-@pytest.mark.xfail(condition=html2text.__version__ < (2017, 10, 4), reason="older html2text output varies, install version 2017.10.4 or later")  # noqa
+@pytest.mark.xfail(condition=html2text.__version__ < (2019, 9, 26), reason="older html2text output varies, install version 2019.9.26 or later")  # noqa
 def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
     """test i18n feeds for double-encoding
 

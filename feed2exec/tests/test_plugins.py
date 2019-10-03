@@ -115,7 +115,7 @@ This is the body, which should show instead of the above
 
 
 @pytest.mark.xfail(condition=parse_version(feedparser.__version__) < parse_version('5.2.1'), reason="older feedparser version do not sort <img> tags, install feedparser 5.2.1 or later")  # noqa
-@pytest.mark.xfail(condition=html2text.__version__ < (2017, 10, 4), reason="older html2text output varies, install version 2017.10.4 or later")  # noqa
+@pytest.mark.xfail(condition=html2text.__version__ < (2019, 9, 26), reason="older html2text output varies, install version 2019.9.26 or later")  # noqa
 def test_email(tmpdir, feed_manager, static_boundary, betamax):  # noqa
     global LOCK
     LOCK = mock.MagicMock()
