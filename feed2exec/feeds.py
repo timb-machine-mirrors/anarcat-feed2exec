@@ -73,6 +73,10 @@ class FeedManager(object):
         self.conf_storage = FeedConfStorage(self.conf_path, pattern=pattern)
         if dateparser:
             def dateparser_tuple_parser(string):
+                if string.endswith('-0000'):
+                    # workaround bug https://github.com/scrapinghub/dateparser/issues/548
+                    # replace the last '-0000' with '+0000' by reversing the string twice
+                    string = string[::-1].replace('-0000'[::-1], '+0000'[::-1], 1)[::-1]
                 return dateparser.parse(string).utctimetuple()
             feedparser.registerDateHandler(dateparser_tuple_parser)
 
