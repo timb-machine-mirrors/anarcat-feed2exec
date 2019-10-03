@@ -1,3 +1,15 @@
+feed2exec (0.15.0) unstable; urgency=medium
+
+  bugfix release to catchup with changes in feedparser from buster.
+
+  * play catchup with newer html2text version again
+  * workaround timezone parsing bug in dateparser
+  * switch to dateparser for PyPI and tests as well
+  * register properly the special mark we are using
+  * reduce noise level of 'missing time' problems
+
+ -- Antoine Beaupré <anarcat@debian.org>  Thu, 03 Oct 2019 12:36:22 -0400
+
 feed2exec (0.14.0) unstable; urgency=medium
 
   bugfix release, with a small new feature
