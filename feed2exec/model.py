@@ -352,7 +352,6 @@ class FeedConfStorage(configparser.RawConfigParser):
 class SqliteStorage(object):
     sql = None
     record = None
-    conn = None
     cache = {}
     table_name = None
     key_name = 'key'
@@ -371,15 +370,15 @@ class SqliteStorage(object):
     def connection(self):
         if self.path not in SqliteStorage.cache:
             logging.info('connecting to database at %s', self.path)
-            self.conn = sqlite3.connect(self.path)
+            conn = sqlite3.connect(self.path)
             try:
-                self.conn.set_trace_callback(logging.debug)
+                conn.set_trace_callback(logging.debug)
             except AttributeError:  # pragma: nocover
                 logging.debug('no logging support in sqlite')
-            SqliteStorage.cache[self.path] = self.conn
+            SqliteStorage.cache[self.path] = conn
+            yield conn
         else:
-            self.conn = SqliteStorage.cache[self.path]
-        yield self.conn
+            yield SqliteStorage.cache[self.path]
 
     @classmethod
     def guess_path(cls):
