@@ -353,6 +353,9 @@ class SqliteStorage(object):
     record = None
     conn = None
     cache = {}
+    table_name = None
+    key_name = 'key'
+    value_name = 'value'
 
     def __init__(self, path):
         self.path = os.path.expanduser(path)
@@ -371,12 +374,45 @@ class SqliteStorage(object):
             self.conn.execute(self.sql)
             self.conn.commit()
 
+    @classmethod
+    def guess_path(cls):
+        return os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
+
+    def get(self, key, value='%'):
+        cur = self.conn.execute("""SELECT * FROM `%s`
+                                WHERE `%s`=? AND `%s`=?"""
+                                % (self.table_name, self.key_name, self.value_name),
+                                (key, value))
+        return cur.fetchone()
+
+    def set(self, key, value):
+        self.conn.execute("INSERT INTO `%s` (`%s`, `%s`) VALUES (?, ?)"
+                          % (self.table_name, self.key_name, self.value_name),
+                          (key, value))
+        self.conn.commit()
+
+    def delete(self, key):
+        self.conn.execute("DELETE FROM `%s` WHERE `%s` = ?"
+                          % (self.table_name, self.key_name), (key,))
+        self.conn.commit()
+
+    def __contains__(self, key):
+        return self.get(key) is not None
+
+    def __iter__(self):
+        cur = self.conn.cursor()
+        cur.row_factory = sqlite3.Row
+        return cur.execute("SELECT * from `%s`" % self.table_name)
+
 
 class FeedItemCacheStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
              feedcache (name text, guid text,
              PRIMARY KEY (name, guid))'''
     record = namedtuple('record', 'name guid')
+    table_name = 'feedcache'
+    key_name = 'guid'
+    value_name = 'name'
 
     def __init__(self, path, feed=None, guid=None):
         self.feed = feed
@@ -389,22 +425,15 @@ class FeedItemCacheStorage(SqliteStorage):
     def __repr__(self):
         return 'FeedItemCacheStorage("%s", "%s", "%s")' % (self.path, self.feed, self.guid)
 
-    @classmethod
-    def guess_path(cls):
-        return os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
-
     def add(self, guid):
         assert self.feed
-        self.conn.execute("INSERT INTO feedcache VALUES (?, ?)",
-                          (self.feed, guid))
-        self.conn.commit()
+        self.set(guid, self.feed)
 
     def remove(self, guid):
-        assert self.feed
-        self.conn.execute("DELETE FROM feedcache WHERE guid = ?", (guid,))
-        self.conn.commit()
+        self.delete(guid)
 
     def __contains__(self, guid):
+        '''override base class to look only in the specified feed'''
         if self.feed is None:
             pattern = '%'
         else:
@@ -415,6 +444,7 @@ class FeedItemCacheStorage(SqliteStorage):
         return cur.fetchone() is not None
 
     def __iter__(self):
+        '''override base class to look only in the specified feed'''
         if self.feed is None:
             pattern = '%'
         else:
