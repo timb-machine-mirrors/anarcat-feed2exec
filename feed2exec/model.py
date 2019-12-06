@@ -78,9 +78,8 @@ class Feed(feedparser.FeedParserDict):
 
         # reuse class level session
         if Feed._session is None:
-            Feed._session = self.session = requests.Session()
-        else:
-            self._session = Feed._session
+            Feed._session = requests.Session()
+        self._session = Feed._session
 
     @property
     def session(self):
