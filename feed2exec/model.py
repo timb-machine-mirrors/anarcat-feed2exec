@@ -30,6 +30,7 @@ from contextlib import contextmanager
 from datetime import datetime
 import logging
 import os.path
+from threading import Lock
 try:
     import urllib.parse as urlparse
 except ImportError:  # pragma: nocover
@@ -353,6 +354,7 @@ class SqliteStorage(object):
     sql = None
     record = None
     cache = {}
+    locks = {}
     table_name = None
     key_name = 'key'
     value_name = 'value'
@@ -368,7 +370,10 @@ class SqliteStorage(object):
 
     @contextmanager
     def connection(self):
-        yield SqliteStorage.connect_cache(self.path)
+        if self.path not in SqliteStorage.locks:
+            SqliteStorage.locks[self.path] = Lock()
+        with SqliteStorage.locks[self.path]:
+            yield self.connect_cache(self.path)
 
     @classmethod
     def connect_cache(cls, path):
