@@ -24,7 +24,7 @@ import pytest
 
 import feed2exec
 import feed2exec.utils as utils
-from feed2exec.feeds import Feed
+from feed2exec.controller import Feed
 import feed2exec.plugins as plugins
 import feed2exec.plugins.maildir as maildir_plugin
 import feed2exec.plugins.transmission as transmission_plugin

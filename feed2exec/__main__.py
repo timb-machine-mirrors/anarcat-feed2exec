@@ -26,7 +26,8 @@ import logging
 import click
 
 import feed2exec
-from feed2exec.feeds import (FeedManager, FeedConfStorage, FeedCacheStorage, Feed)
+from feed2exec.controller import FeedManager
+from feed2exec.model import (FeedConfStorage, FeedCacheStorage, Feed)
 import feed2exec.logging
 import feed2exec.plugins as plugins
 from feed2exec.utils import slug

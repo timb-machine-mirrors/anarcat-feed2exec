@@ -19,7 +19,7 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-from feed2exec.feeds import (FeedConfStorage, FeedCacheStorage, Feed)
+from feed2exec.model import (FeedConfStorage, FeedCacheStorage, Feed)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
 from feed2exec.tests.fixtures import (feed_manager, betamax)  # noqa
@@ -202,6 +202,6 @@ args = 1 2 3 4
     assert expected == conf_path.read()
     assert 'sample' in conf
     for feed in conf:
-        assert type(feed) is feed2exec.feeds.Feed
+        assert type(feed) is feed2exec.model.Feed
     conf.remove('sample')
     assert '' == conf_path.read()
