@@ -26,6 +26,7 @@ except ImportError:  # pragma: nocover
     # py2: should never happen as we depend on the newer one in setup.py
     import ConfigParser as configparser
 from collections import OrderedDict, namedtuple
+from contextlib import contextmanager
 from datetime import datetime
 import logging
 import os.path
@@ -361,48 +362,57 @@ class SqliteStorage(object):
         self.path = os.path.expanduser(path)
         assert self.path
         utils.make_dirs_helper(os.path.dirname(self.path))
+        if self.sql:
+            with self.connection() as con:
+                con.execute(self.sql)
+                con.commit()
+
+    @contextmanager
+    def connection(self):
         if self.path not in SqliteStorage.cache:
             logging.info('connecting to database at %s', self.path)
-            conn = sqlite3.connect(self.path)
+            self.conn = sqlite3.connect(self.path)
             try:
-                conn.set_trace_callback(logging.debug)
+                self.conn.set_trace_callback(logging.debug)
             except AttributeError:  # pragma: nocover
                 logging.debug('no logging support in sqlite')
-            SqliteStorage.cache[self.path] = conn
-        self.conn = SqliteStorage.cache[self.path]
-        if self.sql:
-            self.conn.execute(self.sql)
-            self.conn.commit()
+            SqliteStorage.cache[self.path] = self.conn
+        else:
+            self.conn = SqliteStorage.cache[self.path]
+        yield self.conn
 
     @classmethod
     def guess_path(cls):
         return os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
 
     def get(self, key, value='%'):
-        cur = self.conn.execute("""SELECT * FROM `%s`
-                                WHERE `%s`=? AND `%s`=?"""
-                                % (self.table_name, self.key_name, self.value_name),
-                                (key, value))
-        return cur.fetchone()
+        with self.connection() as con:
+            cur = con.execute("""SELECT * FROM `%s` WHERE `%s`=? AND `%s`=?"""
+                              % (self.table_name, self.key_name, self.value_name),
+                              (key, value))
+            return cur.fetchone()
 
     def set(self, key, value):
-        self.conn.execute("INSERT INTO `%s` (`%s`, `%s`) VALUES (?, ?)"
-                          % (self.table_name, self.key_name, self.value_name),
-                          (key, value))
-        self.conn.commit()
+        with self.connection() as con:
+            con.execute("INSERT INTO `%s` (`%s`, `%s`) VALUES (?, ?)"
+                        % (self.table_name, self.key_name, self.value_name),
+                        (key, value))
+            con.commit()
 
     def delete(self, key):
-        self.conn.execute("DELETE FROM `%s` WHERE `%s` = ?"
-                          % (self.table_name, self.key_name), (key,))
-        self.conn.commit()
+        with self.connection() as con:
+            con.execute("DELETE FROM `%s` WHERE `%s` = ?"
+                        % (self.table_name, self.key_name), (key,))
+            con.commit()
 
     def __contains__(self, key):
         return self.get(key) is not None
 
     def __iter__(self):
-        cur = self.conn.cursor()
-        cur.row_factory = sqlite3.Row
-        return cur.execute("SELECT * from `%s`" % self.table_name)
+        with self.connection() as con:
+            cur = con.cursor()
+            cur.row_factory = sqlite3.Row
+            return cur.execute("SELECT * from `%s`" % self.table_name)
 
 
 class FeedItemCacheStorage(SqliteStorage):
@@ -438,10 +448,10 @@ class FeedItemCacheStorage(SqliteStorage):
             pattern = '%'
         else:
             pattern = self.feed
-        cur = self.conn.execute("""SELECT * FROM feedcache
-                                WHERE name LIKE ? AND guid=?""",
-                                (pattern, guid))
-        return cur.fetchone() is not None
+        with self.connection() as con:
+            cur = con.execute("""SELECT * FROM feedcache WHERE name LIKE ? AND guid=?""",
+                              (pattern, guid))
+            return cur.fetchone() is not None
 
     def __iter__(self):
         '''override base class to look only in the specified feed'''
@@ -449,8 +459,8 @@ class FeedItemCacheStorage(SqliteStorage):
             pattern = '%'
         else:
             pattern = self.feed
-        cur = self.conn.cursor()
-        cur.row_factory = sqlite3.Row
-        return cur.execute("""SELECT * from feedcache
-                              WHERE name LIKE ? AND guid LIKE ?""",
-                           (pattern, self.guid))
+        with self.connection() as con:
+            cur = con.cursor()
+            cur.row_factory = sqlite3.Row
+            return cur.execute("""SELECT * from feedcache WHERE name LIKE ? AND guid LIKE ?""",
+                               (pattern, self.guid))
