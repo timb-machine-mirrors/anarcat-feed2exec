@@ -33,7 +33,7 @@ import os.path
 
 import feed2exec.plugins as plugins
 import feed2exec.utils as utils
-from feed2exec.model import Feed, FeedConfStorage, FeedCacheStorage
+from feed2exec.model import Feed, FeedConfStorage, FeedItemCacheStorage
 import feedparser
 
 try:
@@ -157,7 +157,7 @@ class FeedManager(object):
         plugins.
         '''
         logging.debug('dispatching plugins for items parsed from %s', feed['name'])
-        cache = FeedCacheStorage(self.db_path, feed=feed['name'])
+        cache = FeedItemCacheStorage(self.db_path, feed=feed['name'])
         for item in data['entries']:
             feed.normalize(item=item)
             plugins.filter(feed=feed, item=item, lock=lock)

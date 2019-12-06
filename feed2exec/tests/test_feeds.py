@@ -19,7 +19,7 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-from feed2exec.model import (FeedConfStorage, FeedCacheStorage, Feed)
+from feed2exec.model import (FeedConfStorage, FeedItemCacheStorage, Feed)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
 from feed2exec.tests.fixtures import (feed_manager, betamax)  # noqa
@@ -116,11 +116,11 @@ def test_pattern(feed_manager):  # noqa
 
 def test_cache(feed_manager):  # noqa
     db_path = feed_manager.db_path
-    st = FeedCacheStorage(db_path, feed=test_data['name'])
+    st = FeedItemCacheStorage(db_path, feed=test_data['name'])
     assert 'guid' not in st
     st.add('guid')
     assert 'guid' in st
-    tmp = FeedCacheStorage(db_path)
+    tmp = FeedItemCacheStorage(db_path)
     assert 'guid' in tmp
     st.add('another')
     for item in tmp:
@@ -129,7 +129,7 @@ def test_cache(feed_manager):  # noqa
             break
     else:  # sanity check
         assert False, 'failed to iterate through storage'  # pragma: nocover
-    for item in FeedCacheStorage(db_path, feed=test_data['name'], guid='guid'):
+    for item in FeedItemCacheStorage(db_path, feed=test_data['name'], guid='guid'):
         assert 'another' not in item['guid']
     st.remove('guid')
     assert 'guid' not in st
@@ -140,7 +140,7 @@ def test_fetch(feed_manager, betamax):  # noqa
 
     feed2exec.plugins.echo.output.called = False
     feed_manager.fetch()
-    cache = FeedCacheStorage(feed_manager.db_path, feed=test_sample['name'])
+    cache = FeedItemCacheStorage(feed_manager.db_path, feed=test_sample['name'])
     assert feed2exec.plugins.echo.output.called
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
 

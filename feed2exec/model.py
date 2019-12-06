@@ -372,7 +372,7 @@ class SqliteStorage(object):
             self.conn.commit()
 
 
-class FeedCacheStorage(SqliteStorage):
+class FeedItemCacheStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
              feedcache (name text, guid text,
              PRIMARY KEY (name, guid))'''
@@ -387,7 +387,7 @@ class FeedCacheStorage(SqliteStorage):
         super().__init__(path)
 
     def __repr__(self):
-        return 'FeedCacheStorage("%s", "%s", "%s")' % (self.path, self.feed, self.guid)
+        return 'FeedItemCacheStorage("%s", "%s", "%s")' % (self.path, self.feed, self.guid)
 
     @classmethod
     def guess_path(cls):
