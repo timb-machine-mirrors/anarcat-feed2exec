@@ -368,17 +368,19 @@ class SqliteStorage(object):
 
     @contextmanager
     def connection(self):
-        if self.path not in SqliteStorage.cache:
-            logging.info('connecting to database at %s', self.path)
-            conn = sqlite3.connect(self.path)
+        yield SqliteStorage.connect_cache(self.path)
+
+    @classmethod
+    def connect_cache(cls, path):
+        if path not in cls.cache:
+            logging.info('connecting to database at %s', path)
+            conn = sqlite3.connect(path)
             try:
                 conn.set_trace_callback(logging.debug)
             except AttributeError:  # pragma: nocover
                 logging.debug('no logging support in sqlite')
-            SqliteStorage.cache[self.path] = conn
-            yield conn
-        else:
-            yield SqliteStorage.cache[self.path]
+            cls.cache[path] = conn
+        return cls.cache[path]
 
     @classmethod
     def guess_path(cls):
