@@ -168,6 +168,21 @@ def test_fetch_parallel(feed_manager, capfd, betamax):  # noqa
     assert '1 2 3 4' in out
 
 
+def test_fetch_cache(feed_manager, betamax):  # noqa
+    '''that a second fetch returns no body'''
+    feed = Feed('sample',
+                {'url': 'http://planet.debian.org/rss20.xml',
+                 'output': 'feed2exec.plugins.echo',
+                 'args': 'noop'})
+    Feed.sessionCache(betamax, feed_manager.db_path)
+    Feed._session = betamax
+    content = feed.fetch()
+    assert content is not None
+
+    content = feed.fetch()
+    assert content is None
+
+
 def test_normalize(feed_manager, betamax):  # noqa
     '''black box testing for :func:feeds.normalize_item()'''
     data = test_udd.parse(betamax.get(test_udd['url']).content)

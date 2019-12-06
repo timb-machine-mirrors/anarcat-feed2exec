@@ -44,6 +44,10 @@ import feed2exec.utils as utils
 import feedparser
 import requests
 import requests_file
+try:
+    import cachecontrol
+except ImportError:
+    cachecontrol = None
 import sqlite3
 import xdg.BaseDirectory as xdg_base_dirs
 
@@ -79,6 +83,8 @@ class Feed(feedparser.FeedParserDict):
         # reuse class level session
         if Feed._session is None:
             Feed._session = requests.Session()
+            # use the default db_path
+            Feed.sessionCache(Feed._session)
         self._session = Feed._session
 
     @property
@@ -113,6 +119,16 @@ class Feed(feedparser.FeedParserDict):
                                 % (feed2exec.__prog__,
                                    feed2exec.__version__)})
         session.mount('file://', requests_file.FileAdapter())
+
+    @staticmethod
+    def sessionCache(session, db_path=None):
+        if db_path is None:
+            db_path = SqliteStorage.guess_path()
+        if cachecontrol is not None:
+            cache_adapter = cachecontrol.CacheControlAdapter(cache=FeedContentCacheStorage(db_path))
+            for proto in ('http://', 'https://'):
+                session.mount(proto, cache_adapter)
+            session._fe_cache_adapter = cache_adapter
 
     def normalize(self, item=None):
         """normalize feeds a little more than what feedparser provides.
@@ -233,7 +249,17 @@ class Feed(feedparser.FeedParserDict):
             return None
         logging.info('fetching feed %s', self['url'])
         try:
-            body = self.session.get(self['url']).content
+            cache = getattr(self.session, '_fe_cache_adapter', None)
+            headers = {}
+            if cache:
+                row = cache.cache.get(self['url'])
+                if row:
+                    headers['If-Modified-Since'] = row[3]
+
+            resp = self.session.get(self['url'], headers=headers)
+            if getattr(resp, 'from_cache', False):
+                return None
+            body = resp.content
         except (requests.exceptions.Timeout,
                 requests.exceptions.ConnectionError) as e:
             # XXX: we should count those and warn after a few
@@ -401,7 +427,7 @@ class SqliteStorage(object):
 
     def set(self, key, value):
         with self.connection() as con:
-            con.execute("INSERT INTO `%s` (`%s`, `%s`) VALUES (?, ?)"
+            con.execute("INSERT OR REPLACE INTO `%s` (`%s`, `%s`) VALUES (?, ?)"
                         % (self.table_name, self.key_name, self.value_name),
                         (key, value))
 
@@ -469,3 +495,10 @@ class FeedItemCacheStorage(SqliteStorage):
             cur.row_factory = sqlite3.Row
             return cur.execute("""SELECT * from feedcache WHERE name LIKE ? AND guid LIKE ?""",
                                (pattern, self.guid))
+
+
+class FeedContentCacheStorage(SqliteStorage):
+    sql = '''CREATE TABLE IF NOT EXISTS
+             content (key, value, time DEFAULT CURRENT_TIMESTAMP,
+             PRIMARY KEY (key))'''
+    table_name = 'content'
