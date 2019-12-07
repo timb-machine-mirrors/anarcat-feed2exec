@@ -25,6 +25,10 @@ import feed2exec.utils as utils
 from feed2exec.tests.fixtures import (feed_manager, betamax)  # noqa
 import pytest
 
+# XXX: bypass the Feed constructor so we don't create the cache
+# database in ~/.cache/feed2exec.db by mistake during tests.
+Feed._session = False
+
 test_data = Feed('test',
                  {'url': 'file:///dev/null',
                   'output': None,
