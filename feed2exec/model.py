@@ -128,7 +128,6 @@ class Feed(feedparser.FeedParserDict):
             cache_adapter = cachecontrol.CacheControlAdapter(cache=FeedContentCacheStorage(db_path))
             for proto in ('http://', 'https://'):
                 session.mount(proto, cache_adapter)
-            session._fe_cache_adapter = cache_adapter
 
     def normalize(self, item=None):
         """normalize feeds a little more than what feedparser provides.
@@ -249,14 +248,7 @@ class Feed(feedparser.FeedParserDict):
             return None
         logging.info('fetching feed %s', self['url'])
         try:
-            cache = getattr(self.session, '_fe_cache_adapter', None)
-            headers = {}
-            if cache:
-                row = cache.cache.get(self['url'])
-                if row:
-                    headers['If-Modified-Since'] = row[3]
-
-            resp = self.session.get(self['url'], headers=headers)
+            resp = self.session.get(self['url'])
             if getattr(resp, 'from_cache', False):
                 return None
             body = resp.content
@@ -418,12 +410,11 @@ class SqliteStorage(object):
     def guess_path(cls):
         return os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
 
-    def get(self, key, value='%'):
+    def get(self, key):
         with self.connection(commit=False) as con:
-            cur = con.execute("""SELECT * FROM `%s` WHERE `%s`=? AND `%s`=?"""
-                              % (self.table_name, self.key_name, self.value_name),
-                              (key, value))
-            return cur.fetchone()
+            val = con.execute("""SELECT `%s` FROM `%s` WHERE `%s`=?"""
+                              % (self.value_name, self.table_name, self.key_name), (key, )).fetchone()
+            return val[0] if val else None
 
     def set(self, key, value):
         with self.connection() as con:
@@ -499,6 +490,6 @@ class FeedItemCacheStorage(SqliteStorage):
 
 class FeedContentCacheStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
-             content (key, value, time DEFAULT CURRENT_TIMESTAMP,
+             content (key, value,
              PRIMARY KEY (key))'''
     table_name = 'content'
