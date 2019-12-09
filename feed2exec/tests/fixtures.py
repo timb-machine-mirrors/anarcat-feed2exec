@@ -1,7 +1,6 @@
 import pytest
 
 from feed2exec.controller import FeedManager
-from feed2exec.model import Feed
 import feed2exec.plugins.maildir
 
 
@@ -18,10 +17,11 @@ def static_boundary(monkeypatch):
                         '===============testboundary==')
 
 
+# XXX: maybe merge with the feedmanager fixture?
 @pytest.fixture()
 @pytest.mark.usefixtures('betamax_session')
 def betamax(betamax_session):
     assert betamax_session
-    Feed.sessionConfig(betamax_session)
-    Feed._session = betamax_session
+    FeedManager.sessionConfig(betamax_session)
+    FeedManager._session = betamax_session
     return betamax_session

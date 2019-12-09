@@ -31,10 +31,17 @@ import multiprocessing
 import os
 import os.path
 
+import feed2exec
 import feed2exec.plugins as plugins
 import feed2exec.utils as utils
-from feed2exec.model import Feed, FeedConfStorage, FeedItemCacheStorage
+from feed2exec.model import Feed, FeedConfStorage, FeedContentCacheStorage, FeedItemCacheStorage
 import feedparser
+import requests
+import requests_file
+try:
+    import cachecontrol
+except ImportError:
+    cachecontrol = None
 
 try:
     import dateparser
@@ -49,7 +56,17 @@ class FeedManager(object):
     derives the "model" (:class:`feed2exec.feeds.FeedConfStorage`) for
     simplicity's sake, and there is no real "view" (except maybe
     `__main__`).
+
+    on intialization, a new :class:`requests.Session` object is
+    created to be used across all requests. it is passed to plugins
+    during dispatch as a `session` parameter so it can be reused.
     """
+
+    #: class :class:`requests.Session` object that can be used by
+    # plugins : to make HTTP requests. initialized in __init__() or by
+    # test suite
+    _session = None
+
     def __init__(self, conf_path, db_path, pattern=None):
         self.conf_path = conf_path
         self.db_path = db_path
@@ -63,8 +80,57 @@ class FeedManager(object):
                 return dateparser.parse(string).utctimetuple()
             feedparser.registerDateHandler(dateparser_tuple_parser)
 
+        # reuse class level session
+        if FeedManager._session is None:
+            FeedManager._session = requests.Session()
+            # use the default db_path
+            FeedManager.sessionCache(FeedManager._session, self.db_path)
+        self.session = FeedManager._session
+
     def __repr__(self):
         return 'FeedManager(%s, %s, %s)' % (self.conf_path, self.db_path, self.pattern)
+
+    @staticmethod
+    def sessionConfig(session):
+        """our custom session configuration
+
+        we change the user agent and set the file:// hanlder. extra
+        configuration may be performed in the future and will override
+        your changes.
+
+        this can be used to configure sessions used externally, for
+        example by plugins.
+        """
+        session.headers.update({'User-Agent': '%s/%s'
+                                % (feed2exec.__prog__,
+                                   feed2exec.__version__)})
+        session.mount('file://', requests_file.FileAdapter())
+
+    @staticmethod
+    def sessionCache(session, db_path=None):
+        if db_path is not None and cachecontrol is not None:
+            cache_adapter = cachecontrol.CacheControlAdapter(cache=FeedContentCacheStorage(db_path))
+            for proto in ('http://', 'https://'):
+                session.mount(proto, cache_adapter)
+
+    @property
+    def session(self):
+        """the session property"""
+        return self._session
+
+    @session.setter
+    def session(self, value):
+        """set the session to the given value
+
+        will configure the session appropriately with sessionConfig
+
+        we could also use a @classproperty here, see `this discussion
+        <https://stackoverflow.com/a/7864317/1174784>`_
+        """
+        # XXX: maybe those can become normal members now
+        FeedManager.sessionConfig(value)
+        FeedManager.sessionCache(value, self.db_path)
+        self._session = value
 
     @property
     def pattern(self):
@@ -131,7 +197,7 @@ class FeedManager(object):
             # the right thing? or will that break an eventual editor?
             # maybe autocommit is a bad idea in the first place..
             feed = Feed(feed['name'], feed)
-            body = feed.fetch()
+            body = self.fetch_one(feed)
             if body is None:
                 continue
             if catchup:
@@ -150,6 +216,43 @@ class FeedManager(object):
             pool.join()
         logging.info('%d feeds processed', i+1)
 
+    def fetch_one(self, feed):
+        """fetch the feed content and return the body, in binary
+
+        This will call :func:`logging.warning` for exceptions
+        :class:`requests.exceptions.Timeout` and
+        :class:`requests.exceptions.ConnectionError` as they are
+        transient errors and the user may want to ignore those.
+
+        Other exceptions raised from :mod:`requests.exceptions` (like
+        TooManyRedirects or HTTPError but basically any other exception)
+        may be a configuration error or a more permanent failure so will
+        be signaled with :func:`logging.error`.
+
+        this will return the body on success or None on failure
+        """
+        if feed.get('pause'):
+            logging.info('feed %s is paused, skipping', feed['name'])
+            return None
+        logging.info('fetching feed %s', feed['url'])
+        try:
+            resp = self.session.get(feed['url'])
+            if getattr(resp, 'from_cache', False):
+                return None
+            body = resp.content
+        except (requests.exceptions.Timeout,
+                requests.exceptions.ConnectionError) as e:
+            # XXX: we should count those and warn after a few
+            # occurrences
+            logging.warning('timeout while fetching feed %s at %s: %s',
+                            feed['name'], feed['url'], e)
+            return None
+        except requests.exceptions.RequestException as e:
+            logging.error('exception while fetching feed %s at %s: %s',
+                          feed['name'], feed['url'], e)
+            return None
+        return body
+
     def dispatch(self, feed, data, lock=None, force=False):
         '''process parsed entries and execute plugins
 
@@ -160,7 +263,7 @@ class FeedManager(object):
         cache = FeedItemCacheStorage(self.db_path, feed=feed['name'])
         for item in data['entries']:
             feed.normalize(item=item)
-            plugins.filter(feed=feed, item=item, lock=lock)
+            plugins.filter(feed=feed, item=item, session=self.session, lock=lock)
             if item.get('skip'):
                 logging.info('item %s of feed %s filtered out',
                              item.get('title'), feed.get('name'))
@@ -170,7 +273,7 @@ class FeedManager(object):
                 logging.debug('item %s already seen', guid)
             else:
                 logging.debug('new item %s <%s>', guid, item['link'])
-                if plugins.output(feed, item, lock=lock) is not False and not force:  # noqa
+                if plugins.output(feed, item, session=self.session, lock=lock) is not False and not force:  # noqa
                     if lock:
                         lock.acquire()
                     cache.add(guid)

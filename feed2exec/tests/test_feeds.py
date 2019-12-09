@@ -178,12 +178,10 @@ def test_fetch_cache(feed_manager, betamax):  # noqa
                 {'url': 'http://planet.debian.org/rss20.xml',
                  'output': 'feed2exec.plugins.echo',
                  'args': 'noop'})
-    Feed.sessionCache(betamax, feed_manager.db_path)
-    Feed._session = betamax
-    content = feed.fetch()
+    content = feed_manager.fetch_one(feed)
     assert content is not None
 
-    content = feed.fetch()
+    content = feed_manager.fetch_one(feed)
     assert content is None
 
 

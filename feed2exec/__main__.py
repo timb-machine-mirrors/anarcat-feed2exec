@@ -120,7 +120,7 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
     st = FeedManager(obj['config'], obj['database'], pattern=pattern)
     # used for unit testing
     if obj and obj.get('session'):
-        Feed._session = obj['session']
+        FeedManager._session = obj['session']
     parallel = jobs or parallel
     st.fetch(parallel, force=force, catchup=catchup)
 
@@ -142,12 +142,17 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
 @click.pass_obj
 def parse(obj, url, **kwargs):
     kwargs.update({'url': url})
+    feed_manager = obj['feeds']
     for plugin in ('output', 'filter'):
         kwargs[plugin] = plugins.resolve(kwargs[plugin])
     feed = Feed(slug(url), kwargs)
-    data = feed.parse(feed.fetch())
+    body = feed_manager.fetch_one(feed)
+    if body is None:
+        logging.info('feed already cached, skipping')
+        return 0
+    data = feed.parse(body)
     # XXX: i don't like this - we should use a clean environment.
-    obj['feeds'].dispatch(feed, data, lock=False, force=True)
+    feed_manager.dispatch(feed, data, lock=False, force=True)
 
 
 @click.command(name='import', help='import feed list from OPML file')

@@ -43,7 +43,7 @@ def test_maildir(tmpdir, feed_manager, static_boundary, betamax):  # noqa
             'link': 'http://example.com/',
             'published_parsed': datetime.datetime.now()}
 
-    f = maildir_plugin.output(to_addr='nobody@example.com',
+    f = maildir_plugin.output(to_addr='nobody@example.com', session=betamax,
                               feed=feed, item=item, lock=LOCK)
     message = tmpdir.join('Mail', 'inbox', 'new', f.key)
     assert message.check()
@@ -54,7 +54,7 @@ def test_maildir(tmpdir, feed_manager, static_boundary, betamax):  # noqa
     # subject header hijack protection
     item['title'] = 'subject\nX-Header-Hijack: true'
     with pytest.raises(email.errors.HeaderParseError):
-        maildir_plugin.output(to_addr='nobody@example.com',
+        maildir_plugin.output(to_addr='nobody@example.com', session=betamax,
                               feed=feed, item=item, lock=LOCK)
     sample = Feed('maildir test',
                   {'url': test_sample['url'],
@@ -102,13 +102,13 @@ This is the body, which should show instead of the above
     body = betamax.get(sample['url']).content
     data = feed_manager.dispatch(sample, sample.parse(body), lock=LOCK)
     for item in data['entries']:
-        f = plugins.output(sample, item, lock=LOCK)
+        f = plugins.output(sample, item, lock=LOCK, session=betamax)
         message = tmpdir.join('Mail', 'folder-test', 'new', f.key)
         assert message.check()
 
     tmpdir.join('Mail', 'inbox').remove()
     feed['catchup'] = True
-    f = maildir_plugin.output(to_addr='nobody@example.com',
+    f = maildir_plugin.output(to_addr='nobody@example.com', session=betamax,
                               feed=feed, item=item, lock=LOCK)
     message = tmpdir.join('Mail', 'inbox', 'new', f.key)
     assert not message.check()
@@ -153,6 +153,7 @@ def test_echo(capfd):
     item = feedparser.FeedParserDict({'title': 'bar'})
     e = plugins.output(feed={'output': 'feed2exec.plugins.echo',
                              'args': 'foo {item[title]}'},
+                       session=betamax,
                        item=item)
     assert e.called
     out, err = capfd.readouterr()
@@ -163,18 +164,21 @@ def test_error():
     # shouldn't raise
     plugins.output(feed={'output': 'feed2exec.plugins.error',
                          'args': ''},
+                   session=betamax,
                    item={})
 
 
 def test_exec(capfd):
     e = plugins.output(feed={'output': 'feed2exec.plugins.exec',
                              'args': 'seq 1'},
+                       session=betamax,
                        item={})
     out, err = capfd.readouterr()
     assert "1\n" == out
     assert 0 == e
     e = plugins.output(feed={'output': 'feed2exec.plugins.exec',
                              'args': 'seq 1', 'catchup': 'True'},
+                       session=betamax,
                        item={})
     out, err = capfd.readouterr()
     assert "" == out
@@ -184,25 +188,24 @@ def test_exec(capfd):
 def test_filter():
     item = {'title': 'test'}
     expected = item.copy()
-    p = plugins.filter(feed={'filter': 'feed2exec.plugins.echo'}, item=item)
+    p = plugins.filter(feed={'filter': 'feed2exec.plugins.echo'}, item=item, session=betamax)
     assert expected == item
     assert p
     assert p.called is not None
     item = {'title': 'test'}
-    plugins.filter(feed={'filter': 'feed2exec.plugins.null'}, item=item)
+    plugins.filter(feed={'filter': 'feed2exec.plugins.null'}, item=item, session=betamax)
     assert expected != item
     assert p.called is not None
 
 
 def test_wayback(capfd, betamax):  # noqa
-    assert Feed.session
     handler = logging.handlers.MemoryHandler(0)
     handler.setLevel('INFO')
     logging.getLogger('').addHandler(handler)
     logging.getLogger('').setLevel('DEBUG')
     feed = Feed('wayback test', {'output': 'feed2exec.plugins.wayback'})
     item = feedparser.FeedParserDict({'link': 'http://example.com/'})
-    e = plugins.output(feed=feed, item=item)
+    e = plugins.output(feed=feed, item=item, session=betamax)
     assert e
     for record in handler.buffer:
         if 'wayback machine' in record.getMessage():
@@ -213,7 +216,7 @@ def test_wayback(capfd, betamax):  # noqa
     assert 'URL %s saved to wayback machine: %s' == record.msg
     handler.buffer = []
     item = feedparser.FeedParserDict({'link': 'http://example.com/404'})
-    e = plugins.output(feed=feed, item=item)
+    e = plugins.output(feed=feed, item=item, session=betamax)
     assert not e
     for record in handler.buffer:
         if 'wayback machine' in record.getMessage():
@@ -226,7 +229,7 @@ def test_wayback(capfd, betamax):  # noqa
 
     item = feedparser.FeedParserDict({'link':
                                       'https://anarc.at/wikiicons/email.png'})
-    e = plugins.output(feed=feed, item=item)
+    e = plugins.output(feed=feed, item=item, session=betamax)
     assert e
 
     called = False
@@ -238,11 +241,11 @@ def test_wayback(capfd, betamax):  # noqa
 
     betamax.get = fake
     item = feedparser.FeedParserDict({'link': 'http://example.com/'})
-    e = plugins.output(feed=feed, item=item)
+    e = plugins.output(feed=feed, item=item, session=betamax)
     assert called
     feed['catchup'] = True
     called = False
-    e = plugins.output(feed=feed, item=item)
+    e = plugins.output(feed=feed, item=item, session=betamax)
     assert not called
 
 
@@ -257,19 +260,19 @@ def test_transmission(monkeypatch):
             'title': 'Evil/../../../etc/password',
             'link': 'http://example.com/',
             'published_parsed': datetime.datetime.now()}
-    transmission_plugin.output(hostname='example.com',
+    transmission_plugin.output(hostname='example.com', session=betamax,
                                feed=test_sample, item=item)
     assert [['transmission-remote', 'example.com',
              '-a', 'http://example.com/']] == capture
     capture = []
-    transmission_plugin.output(hostname='example.com',
+    transmission_plugin.output(hostname='example.com', session=betamax,
                                feed=test_params, item=item)
     assert [['transmission-remote', 'example.com',
              '-a', 'http://example.com/',
              '-w', 'test-folder/Evil.etc.password']] == capture
     test_params['catchup'] = True
     capture = []
-    transmission_plugin.output(hostname='example.com',
+    transmission_plugin.output(hostname='example.com', session=betamax,
                                feed=test_params, item=item)
     assert [] == capture
 
@@ -279,19 +282,19 @@ def test_archive(tmpdir, betamax):  # noqa
     feed = Feed('test archive', test_sample)
     item = feedparser.FeedParserDict({'link': 'http://example.com/',
                                       'title': 'example site'})
-    assert archive_plugin.output(str(dest), feed=feed, item=item)
+    assert archive_plugin.output(str(dest), feed=feed, item=item, session=betamax)
     assert dest.join('example-site').check()
     dest.remove()
     item = feedparser.FeedParserDict({'link': 'http://example.com/404',
                                       'title': 'example site'})
-    assert not archive_plugin.output(str(dest), feed=feed, item=item)
+    assert not archive_plugin.output(str(dest), feed=feed, item=item, session=betamax)
     assert not dest.join('example-site').check()
     # no link
     item = feedparser.FeedParserDict({'title': 'example site'})
-    assert archive_plugin.output(str(dest), feed=feed, item=item)
+    assert archive_plugin.output(str(dest), feed=feed, item=item, session=betamax)
     assert not dest.join('example-site').check()
     feed['catchup'] = True
     item = feedparser.FeedParserDict({'link': 'http://example.com/',
                                       'title': 'example site'})
-    assert archive_plugin.output(str(dest), feed=feed, item=item)
+    assert archive_plugin.output(str(dest), feed=feed, item=item, session=betamax)
     assert not dest.join('example-site').check()

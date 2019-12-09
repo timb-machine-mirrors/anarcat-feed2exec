@@ -6,7 +6,7 @@ import requests
 WAYBACK_URL = 'https://web.archive.org'
 
 
-def output(*args, feed=None, item=None, **kwargs):
+def output(*args, feed=None, item=None, session=None, **kwargs):
     """This plugin saves the feed items `link` element to the wayback
     machine. It will retry URLs that fail, so it may be necessary to
     manually catchup feeds if they have broken `link` fields.
@@ -27,7 +27,7 @@ def output(*args, feed=None, item=None, **kwargs):
                       item.get('link'), wayback_url)
         if feed.get('catchup'):
             return True
-        res = feed.session.get(wayback_url, allow_redirects=True)
+        res = session.get(wayback_url, allow_redirects=True)
         res.headers['status_code'] = res.status_code
         if res.history:
             res.headers['Content-Location'] = res.history[0].headers.get('Content-Location')  # noqa
