@@ -5,7 +5,7 @@ from click.testing import CliRunner
 import pytest
 
 from feed2exec.__main__ import main
-from feed2exec.feeds import (FeedManager)
+from feed2exec.controller import (FeedManager)
 import feed2exec.utils as utils
 
 testdir = utils.find_test_file()

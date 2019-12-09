@@ -26,7 +26,8 @@ import logging
 import click
 
 import feed2exec
-from feed2exec.feeds import (FeedManager, FeedConfStorage, FeedCacheStorage, Feed)
+from feed2exec.controller import FeedManager
+from feed2exec.model import (FeedConfStorage, FeedItemCacheStorage, Feed)
 import feed2exec.logging
 import feed2exec.plugins as plugins
 from feed2exec.utils import slug
@@ -48,7 +49,7 @@ from feed2exec.utils import slug
 @click.option('--config', default=None,
               help='use a different config file [default: %s]' % FeedConfStorage.guess_path())
 @click.option('--database', default=None,
-              help='use a different database [default: %s]' % FeedCacheStorage.guess_path())
+              help='use a different database [default: %s]' % FeedItemCacheStorage.guess_path())
 @click.pass_context
 def main(ctx, loglevel, syslog, config, database):
     feed2exec.logging.advancedConfig(level=loglevel, syslog=syslog,
@@ -56,7 +57,7 @@ def main(ctx, loglevel, syslog, config, database):
     if ctx.obj is None:
         ctx.obj = {}
     if database is None:
-        database = FeedCacheStorage.guess_path()
+        database = FeedItemCacheStorage.guess_path()
         logging.debug('guessed db_path to be %s', database)
     if config is None:
         config = FeedConfStorage.guess_path()

@@ -1,6 +1,7 @@
 import pytest
 
-from feed2exec.feeds import (FeedManager, Feed)
+from feed2exec.controller import FeedManager
+from feed2exec.model import Feed
 import feed2exec.plugins.maildir
 
 

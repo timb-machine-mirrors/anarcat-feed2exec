@@ -1,8 +1,8 @@
-#!/usr/bin/python3
 # coding: utf-8
 
-'''fast feed parser that offloads tasks to plugins and commands'''
-# Copyright (C) 2016 Antoine Beaupré <anarcat@debian.org>
+'''data structures and storage for feed2exec'''
+
+# Copyright (C) 2019 Antoine Beaupré <anarcat@debian.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -20,22 +20,17 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-
 try:
     import configparser
 except ImportError:  # pragma: nocover
     # py2: should never happen as we depend on the newer one in setup.py
     import ConfigParser as configparser
 from collections import OrderedDict, namedtuple
+from contextlib import contextmanager
 from datetime import datetime
-try:
-    from lxml import etree
-except ImportError:  # pragma: nocover
-    import xml.etree.ElementTree as etree
 import logging
-import multiprocessing
-import os
 import os.path
+from threading import Lock
 try:
     import urllib.parse as urlparse
 except ImportError:  # pragma: nocover
@@ -43,205 +38,18 @@ except ImportError:  # pragma: nocover
     import urlparse
 import warnings
 
-
 import feed2exec
-import feed2exec.plugins as plugins
 import feed2exec.utils as utils
+
 import feedparser
 import requests
 import requests_file
+try:
+    import cachecontrol
+except ImportError:
+    cachecontrol = None
 import sqlite3
 import xdg.BaseDirectory as xdg_base_dirs
-
-try:
-    import dateparser
-except ImportError:
-    dateparser = False
-
-
-class FeedManager(object):
-    """a feed manager fetches and stores feeds.
-
-    this is a "controller" in a "model-view-controller" pattern. it
-    derives the "model" (:class:`feed2exec.feeds.FeedConfStorage`) for
-    simplicity's sake, and there is no real "view" (except maybe
-    `__main__`).
-    """
-    def __init__(self, conf_path, db_path, pattern=None):
-        self.conf_path = conf_path
-        self.db_path = db_path
-        self.conf_storage = FeedConfStorage(self.conf_path, pattern=pattern)
-        if dateparser:
-            def dateparser_tuple_parser(string):
-                if string.endswith('-0000'):
-                    # workaround bug https://github.com/scrapinghub/dateparser/issues/548
-                    # replace the last '-0000' with '+0000' by reversing the string twice
-                    string = string[::-1].replace('-0000'[::-1], '+0000'[::-1], 1)[::-1]
-                return dateparser.parse(string).utctimetuple()
-            feedparser.registerDateHandler(dateparser_tuple_parser)
-
-    def __repr__(self):
-        return 'FeedManager(%s, %s, %s)' % (self.conf_path, self.db_path, self.pattern)
-
-    @property
-    def pattern(self):
-        return self.conf_storage.pattern
-
-    @pattern.setter
-    def pattern(self, val):
-        self.conf_storage.pattern = val
-
-    def fetch(self, parallel=False, force=False, catchup=False):
-        """main entry point for the feed fetch routines.
-
-        this iterates through all feeds configured in the parent
-        :class:`feed2exec.feeds.FeedConfStorage` that match the given
-        ``pattern``, fetches the feeds and dispatches the parsing,
-        which in turn dispatches the plugins.
-
-        :param str pattern: restrict operations to feeds named
-                            ``pattern``. passed to parent
-                            :class:`feed2exec.feeds.FeedConfStorage`
-                            as is
-
-        :param bool parallel: parse feeds in parallel, using
-                              :mod:`multiprocessing`
-
-        :param bool force: force plugin execution even if entry was
-                           already seen. passed to
-                           :class:`feed2exec.feeds.parse` as is
-
-        :param bool catchup: set the `catchup` flag on the feed, so
-                             that output plugins can avoid doing any
-                             permanent changes.
-        """
-        logging.debug('looking for feeds %s in %s', self.pattern, self.conf_storage)
-        if parallel:
-            lock = multiprocessing.Lock()
-            processes = None
-            if isinstance(parallel, int):
-                processes = parallel
-
-            def init_global_lock(lock):
-                """setup a global lock across pool threads
-
-                this is necessary because Lock objects are not
-                serializable so we can't pass them as arguments. An
-                alternative pattern is to have a `Manager` process and
-                use IPC for locking.
-
-                cargo-culted from this `stackoverflow answer
-                <https://stackoverflow.com/a/25558333/1174784>`_
-
-                """
-                global LOCK
-                LOCK = lock
-
-            pool = multiprocessing.Pool(processes=processes,
-                                        initializer=init_global_lock,
-                                        initargs=(lock,))
-        data_results = []
-        i = -1
-        for i, feed in enumerate(self.conf_storage):
-            logging.debug('found feed in DB: %s', dict(feed))
-            # XXX: this is dirty. iterator/getters/??? should return
-            # the right thing? or will that break an eventual editor?
-            # maybe autocommit is a bad idea in the first place..
-            feed = Feed(feed['name'], feed)
-            body = feed.fetch()
-            if body is None:
-                continue
-            if catchup:
-                feed['catchup'] = catchup
-            if parallel:
-                # if this fails silently, use plain apply() to see errors
-                data_results.append((feed, pool.apply_async(feed.parse, (body,))))
-            else:
-                global LOCK
-                LOCK = None
-                self.dispatch(feed, feed.parse(body), None, force)
-        if parallel:
-            for feed, result in data_results:
-                self.dispatch(feed, result.get(), lock, force)
-            pool.close()
-            pool.join()
-        logging.info('%d feeds processed', i+1)
-
-    def dispatch(self, feed, data, lock=None, force=False):
-        '''process parsed entries and execute plugins
-
-        This handles locking, caching, and filter and output
-        plugins.
-        '''
-        logging.debug('dispatching plugins for items parsed from %s', feed['name'])
-        cache = FeedCacheStorage(self.db_path, feed=feed['name'])
-        for item in data['entries']:
-            feed.normalize(item=item)
-            plugins.filter(feed=feed, item=item, lock=lock)
-            if item.get('skip'):
-                logging.info('item %s of feed %s filtered out',
-                             item.get('title'), feed.get('name'))
-                continue
-            guid = item['id']
-            if not force and guid in cache:
-                logging.debug('item %s already seen', guid)
-            else:
-                logging.debug('new item %s <%s>', guid, item['link'])
-                if plugins.output(feed, item, lock=lock) is not False and not force:  # noqa
-                    if lock:
-                        lock.acquire()
-                    cache.add(guid)
-                    if lock:
-                        lock.release()
-        return data
-
-    def opml_import(self, opmlfile):
-        """import a file stream as an OPML feed in the feed storage"""
-        folders = []
-        for (event, node) in etree.iterparse(opmlfile, ['start', 'end']):
-            if node.tag != 'outline':
-                continue
-            logging.debug('found OPML entry: %s', node.attrib)
-            if event == 'start' and node.attrib.get('xmlUrl'):
-                folder = os.path.join(*folders) if folders else None
-                title = node.attrib.get('title', utils.slug(node.attrib['xmlUrl']))
-                logging.info('importing element %s <%s> in folder %s',
-                             title, node.attrib['xmlUrl'], folder)
-                if title in self.conf_storage:
-                    if folder:
-                        title = folder + '/' + title
-                        logging.info('feed %s exists, using folder name: %s',
-                                     node.attrib['title'], title)
-                if title in self.conf_storage:
-                    logging.error('feed %s already exists, skipped',
-                                  node.attrib['title'])
-                else:
-                    self.conf_storage.add(title, node.attrib['xmlUrl'], folder=folder)
-            elif node.attrib.get('type') == 'folder':
-                if event == 'start':
-                    logging.debug('found folder %s', node.attrib.get('text'))
-                    folders.append(node.attrib.get('text'))
-                else:
-                    folders.pop()
-
-    def opml_export(self, path):
-        xml_tmpl = u'''<opml version="1.0">
-      <head>
-        <title>{title}</title>
-        <dateModified>{date}</dateModified>
-      </head>
-      <body>
-    {body}</body>
-    </opml>'''
-        outline_tmpl = u'<outline title="{name}" type="rss" xmlUrl="{url}" />'
-        body = u''
-        for feed in self.conf_storage:
-            if feed:
-                body += outline_tmpl.format(**feed) + "\n"
-        output = xml_tmpl.format(title=u'feed2exec RSS feeds',
-                                 date=datetime.now(),
-                                 body=body)
-        path.write(output.encode('utf-8'))
 
 
 class Feed(feedparser.FeedParserDict):
@@ -274,9 +82,10 @@ class Feed(feedparser.FeedParserDict):
 
         # reuse class level session
         if Feed._session is None:
-            Feed._session = self.session = requests.Session()
-        else:
-            self._session = Feed._session
+            Feed._session = requests.Session()
+            # use the default db_path
+            Feed.sessionCache(Feed._session)
+        self._session = Feed._session
 
     @property
     def session(self):
@@ -310,6 +119,15 @@ class Feed(feedparser.FeedParserDict):
                                 % (feed2exec.__prog__,
                                    feed2exec.__version__)})
         session.mount('file://', requests_file.FileAdapter())
+
+    @staticmethod
+    def sessionCache(session, db_path=None):
+        if db_path is None:
+            db_path = SqliteStorage.guess_path()
+        if cachecontrol is not None:
+            cache_adapter = cachecontrol.CacheControlAdapter(cache=FeedContentCacheStorage(db_path))
+            for proto in ('http://', 'https://'):
+                session.mount(proto, cache_adapter)
 
     def normalize(self, item=None):
         """normalize feeds a little more than what feedparser provides.
@@ -430,7 +248,10 @@ class Feed(feedparser.FeedParserDict):
             return None
         logging.info('fetching feed %s', self['url'])
         try:
-            body = self.session.get(self['url']).content
+            resp = self.session.get(self['url'])
+            if getattr(resp, 'from_cache', False):
+                return None
+            body = resp.content
         except (requests.exceptions.Timeout,
                 requests.exceptions.ConnectionError) as e:
             # XXX: we should count those and warn after a few
@@ -549,32 +370,81 @@ class FeedConfStorage(configparser.RawConfigParser):
 class SqliteStorage(object):
     sql = None
     record = None
-    conn = None
     cache = {}
+    locks = {}
+    table_name = None
+    key_name = 'key'
+    value_name = 'value'
 
     def __init__(self, path):
         self.path = os.path.expanduser(path)
         assert self.path
         utils.make_dirs_helper(os.path.dirname(self.path))
-        if self.path not in SqliteStorage.cache:
-            logging.info('connecting to database at %s', self.path)
-            conn = sqlite3.connect(self.path)
+        if self.sql:
+            with self.connection() as con:
+                con.execute(self.sql)
+
+    @contextmanager
+    def connection(self, commit=True):
+        if self.path not in SqliteStorage.locks:
+            SqliteStorage.locks[self.path] = Lock()
+        with SqliteStorage.locks[self.path]:
+            con = self.connect_cache(self.path)
+            yield con
+            if commit:
+                con.commit()
+
+    @classmethod
+    def connect_cache(cls, path):
+        if path not in cls.cache:
+            logging.info('connecting to database at %s', path)
+            conn = sqlite3.connect(path)
             try:
                 conn.set_trace_callback(logging.debug)
             except AttributeError:  # pragma: nocover
                 logging.debug('no logging support in sqlite')
-            SqliteStorage.cache[self.path] = conn
-        self.conn = SqliteStorage.cache[self.path]
-        if self.sql:
-            self.conn.execute(self.sql)
-            self.conn.commit()
+            cls.cache[path] = conn
+        return cls.cache[path]
+
+    @classmethod
+    def guess_path(cls):
+        return os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
+
+    def get(self, key):
+        with self.connection(commit=False) as con:
+            val = con.execute("""SELECT `%s` FROM `%s` WHERE `%s`=?"""
+                              % (self.value_name, self.table_name, self.key_name), (key, )).fetchone()
+            return val[0] if val else None
+
+    def set(self, key, value):
+        with self.connection() as con:
+            con.execute("INSERT OR REPLACE INTO `%s` (`%s`, `%s`) VALUES (?, ?)"
+                        % (self.table_name, self.key_name, self.value_name),
+                        (key, value))
+
+    def delete(self, key):
+        with self.connection() as con:
+            con.execute("DELETE FROM `%s` WHERE `%s` = ?"
+                        % (self.table_name, self.key_name), (key,))
+
+    def __contains__(self, key):
+        return self.get(key) is not None
+
+    def __iter__(self):
+        with self.connection(commit=False) as con:
+            cur = con.cursor()
+            cur.row_factory = sqlite3.Row
+            return cur.execute("SELECT * from `%s`" % self.table_name)
 
 
-class FeedCacheStorage(SqliteStorage):
+class FeedItemCacheStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
              feedcache (name text, guid text,
              PRIMARY KEY (name, guid))'''
     record = namedtuple('record', 'name guid')
+    table_name = 'feedcache'
+    key_name = 'guid'
+    value_name = 'name'
 
     def __init__(self, path, feed=None, guid=None):
         self.feed = feed
@@ -585,40 +455,41 @@ class FeedCacheStorage(SqliteStorage):
         super().__init__(path)
 
     def __repr__(self):
-        return 'FeedCacheStorage("%s", "%s", "%s")' % (self.path, self.feed, self.guid)
-
-    @classmethod
-    def guess_path(cls):
-        return os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
+        return 'FeedItemCacheStorage("%s", "%s", "%s")' % (self.path, self.feed, self.guid)
 
     def add(self, guid):
         assert self.feed
-        self.conn.execute("INSERT INTO feedcache VALUES (?, ?)",
-                          (self.feed, guid))
-        self.conn.commit()
+        self.set(guid, self.feed)
 
     def remove(self, guid):
-        assert self.feed
-        self.conn.execute("DELETE FROM feedcache WHERE guid = ?", (guid,))
-        self.conn.commit()
+        self.delete(guid)
 
     def __contains__(self, guid):
+        '''override base class to look only in the specified feed'''
         if self.feed is None:
             pattern = '%'
         else:
             pattern = self.feed
-        cur = self.conn.execute("""SELECT * FROM feedcache
-                                WHERE name LIKE ? AND guid=?""",
-                                (pattern, guid))
-        return cur.fetchone() is not None
+        with self.connection(commit=False) as con:
+            cur = con.execute("""SELECT * FROM feedcache WHERE name LIKE ? AND guid=?""",
+                              (pattern, guid))
+            return cur.fetchone() is not None
 
     def __iter__(self):
+        '''override base class to look only in the specified feed'''
         if self.feed is None:
             pattern = '%'
         else:
             pattern = self.feed
-        cur = self.conn.cursor()
-        cur.row_factory = sqlite3.Row
-        return cur.execute("""SELECT * from feedcache
-                              WHERE name LIKE ? AND guid LIKE ?""",
-                           (pattern, self.guid))
+        with self.connection(commit=False) as con:
+            cur = con.cursor()
+            cur.row_factory = sqlite3.Row
+            return cur.execute("""SELECT * from feedcache WHERE name LIKE ? AND guid LIKE ?""",
+                               (pattern, self.guid))
+
+
+class FeedContentCacheStorage(SqliteStorage):
+    sql = '''CREATE TABLE IF NOT EXISTS
+             content (key, value,
+             PRIMARY KEY (key))'''
+    table_name = 'content'

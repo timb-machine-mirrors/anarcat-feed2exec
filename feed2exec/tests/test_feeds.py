@@ -19,11 +19,15 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
-from feed2exec.feeds import (FeedConfStorage, FeedCacheStorage, Feed)
+from feed2exec.model import (FeedConfStorage, FeedItemCacheStorage, Feed)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
 from feed2exec.tests.fixtures import (feed_manager, betamax)  # noqa
 import pytest
+
+# XXX: bypass the Feed constructor so we don't create the cache
+# database in ~/.cache/feed2exec.db by mistake during tests.
+Feed._session = False
 
 test_data = Feed('test',
                  {'url': 'file:///dev/null',
@@ -116,11 +120,11 @@ def test_pattern(feed_manager):  # noqa
 
 def test_cache(feed_manager):  # noqa
     db_path = feed_manager.db_path
-    st = FeedCacheStorage(db_path, feed=test_data['name'])
+    st = FeedItemCacheStorage(db_path, feed=test_data['name'])
     assert 'guid' not in st
     st.add('guid')
     assert 'guid' in st
-    tmp = FeedCacheStorage(db_path)
+    tmp = FeedItemCacheStorage(db_path)
     assert 'guid' in tmp
     st.add('another')
     for item in tmp:
@@ -129,7 +133,7 @@ def test_cache(feed_manager):  # noqa
             break
     else:  # sanity check
         assert False, 'failed to iterate through storage'  # pragma: nocover
-    for item in FeedCacheStorage(db_path, feed=test_data['name'], guid='guid'):
+    for item in FeedItemCacheStorage(db_path, feed=test_data['name'], guid='guid'):
         assert 'another' not in item['guid']
     st.remove('guid')
     assert 'guid' not in st
@@ -140,7 +144,7 @@ def test_fetch(feed_manager, betamax):  # noqa
 
     feed2exec.plugins.echo.output.called = False
     feed_manager.fetch()
-    cache = FeedCacheStorage(feed_manager.db_path, feed=test_sample['name'])
+    cache = FeedItemCacheStorage(feed_manager.db_path, feed=test_sample['name'])
     assert feed2exec.plugins.echo.output.called
     assert '7bd204c6-1655-4c27-aeee-53f933c5395f' in cache
 
@@ -166,6 +170,21 @@ def test_fetch_parallel(feed_manager, capfd, betamax):  # noqa
     feed_manager.fetch(parallel=2, force=True)
     out, err = capfd.readouterr()
     assert '1 2 3 4' in out
+
+
+def test_fetch_cache(feed_manager, betamax):  # noqa
+    '''that a second fetch returns no body'''
+    feed = Feed('sample',
+                {'url': 'http://planet.debian.org/rss20.xml',
+                 'output': 'feed2exec.plugins.echo',
+                 'args': 'noop'})
+    Feed.sessionCache(betamax, feed_manager.db_path)
+    Feed._session = betamax
+    content = feed.fetch()
+    assert content is not None
+
+    content = feed.fetch()
+    assert content is None
 
 
 def test_normalize(feed_manager, betamax):  # noqa
@@ -202,6 +221,6 @@ args = 1 2 3 4
     assert expected == conf_path.read()
     assert 'sample' in conf
     for feed in conf:
-        assert type(feed) is feed2exec.feeds.Feed
+        assert type(feed) is feed2exec.model.Feed
     conf.remove('sample')
     assert '' == conf_path.read()
