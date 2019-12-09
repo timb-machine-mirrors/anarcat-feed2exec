@@ -154,21 +154,18 @@ def test_planet(tmpdir_factory, static_boundary, feed_manager):  # noqa
     previously, we would double-encode email bodies and subject, which
     would break display of any feed item with unicode.
     """
-    d = tmpdir_factory.mktemp('planet')
-    mbox_dir = d.join('Mail')
-    conf_path = d.join('feed2exec.ini')
-    db_path = d.join('feed2exec.db')
+    mbox_dir = tmpdir_factory.mktemp('planet').join('Mail')
     runner = CliRunner()
 
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
+    result = runner.invoke(main, ['--config', feed_manager.conf_path,
+                                  '--database', feed_manager.db_path,
                                   'add', 'planet-debian',
                                   'http://planet.debian.org/rss20.xml',
                                   '--args', 'to@example.com',
                                   '--output', 'feed2exec.plugins.mbox',
                                   '--mailbox', str(mbox_dir)])
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
+    result = runner.invoke(main, ['--config', feed_manager.conf_path,
+                                  '--database', feed_manager.db_path,
                                   'fetch'],
                            obj={'session': feed_manager.session},
                            catch_exceptions=False)
