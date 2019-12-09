@@ -55,7 +55,7 @@ classifiers = [
 requires = [
     "click",
     "dateparser",
-    "feedparser",
+    "feedparser<6.0",
     "html2text",
     "pyxdg",
     "requests",
