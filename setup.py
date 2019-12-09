@@ -56,6 +56,7 @@ classifiers = [
 ]
 
 requires = [
+    "cachecontrol",
     "click",
     "dateparser",
     "feedparser<6.0",
