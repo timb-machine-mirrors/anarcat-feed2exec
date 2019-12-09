@@ -7,7 +7,7 @@ variables:
 
 before_script:
   - python -V                                   # Print out python version for debugging
-  - apt install python3-dev
+  - apt update && apt install -y python3-dev
   - python setup.py build
 
 test:
