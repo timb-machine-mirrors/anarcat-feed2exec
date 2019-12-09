@@ -15,7 +15,7 @@ import xdg.BaseDirectory
 import feed2exec.utils as utils
 from feed2exec.__main__ import main
 from feed2exec.tests.test_feeds import (test_sample, test_nasa)
-from feed2exec.tests.fixtures import (static_boundary)  # noqa
+from feed2exec.tests.fixtures import (static_boundary, feed_manager)  # noqa
 
 
 def test_usage():
@@ -148,7 +148,7 @@ def test_missing_conf(tmpdir_factory, monkeypatch):
 
 
 @pytest.mark.xfail(condition=html2text.__version__ < (2019, 9, 26), reason="older html2text output varies, install version 2019.9.26 or later")  # noqa
-def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
+def test_planet(tmpdir_factory, static_boundary, feed_manager):  # noqa
     """test i18n feeds for double-encoding
 
     previously, we would double-encode email bodies and subject, which
@@ -170,7 +170,7 @@ def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
     result = runner.invoke(main, ['--config', str(conf_path),
                                   '--database', str(db_path),
                                   'fetch'],
-                           obj={'session': betamax_session},
+                           obj={'session': feed_manager.session},
                            catch_exceptions=False)
     assert 0 == result.exit_code
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)

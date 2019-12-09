@@ -62,12 +62,7 @@ class FeedManager(object):
     during dispatch as a `session` parameter so it can be reused.
     """
 
-    #: class :class:`requests.Session` object that can be used by
-    # plugins : to make HTTP requests. initialized in __init__() or by
-    # test suite
-    _session = None
-
-    def __init__(self, conf_path, db_path, pattern=None):
+    def __init__(self, conf_path, db_path, pattern=None, session=None):
         self.conf_path = conf_path
         self.db_path = db_path
         self.conf_storage = FeedConfStorage(self.conf_path, pattern=pattern)
@@ -80,18 +75,13 @@ class FeedManager(object):
                 return dateparser.parse(string).utctimetuple()
             feedparser.registerDateHandler(dateparser_tuple_parser)
 
-        # reuse class level session
-        if FeedManager._session is None:
-            FeedManager._session = requests.Session()
-            # use the default db_path
-            FeedManager.sessionCache(FeedManager._session, self.db_path)
-        self.session = FeedManager._session
+        self._session = session or requests.Session()
+        self.sessionConfig()
 
     def __repr__(self):
         return 'FeedManager(%s, %s, %s)' % (self.conf_path, self.db_path, self.pattern)
 
-    @staticmethod
-    def sessionConfig(session):
+    def sessionConfig(self):
         """our custom session configuration
 
         we change the user agent and set the file:// hanlder. extra
@@ -101,17 +91,14 @@ class FeedManager(object):
         this can be used to configure sessions used externally, for
         example by plugins.
         """
-        session.headers.update({'User-Agent': '%s/%s'
-                                % (feed2exec.__prog__,
-                                   feed2exec.__version__)})
-        session.mount('file://', requests_file.FileAdapter())
-
-    @staticmethod
-    def sessionCache(session, db_path=None):
-        if db_path is not None and cachecontrol is not None:
-            cache_adapter = cachecontrol.CacheControlAdapter(cache=FeedContentCacheStorage(db_path))
+        self._session.headers.update({'User-Agent': '%s/%s'
+                                      % (feed2exec.__prog__,
+                                         feed2exec.__version__)})
+        self._session.mount('file://', requests_file.FileAdapter())
+        if self.db_path is not None and cachecontrol is not None:
+            cache_adapter = cachecontrol.CacheControlAdapter(cache=FeedContentCacheStorage(self.db_path))
             for proto in ('http://', 'https://'):
-                session.mount(proto, cache_adapter)
+                self._session.mount(proto, cache_adapter)
 
     @property
     def session(self):
@@ -127,10 +114,8 @@ class FeedManager(object):
         we could also use a @classproperty here, see `this discussion
         <https://stackoverflow.com/a/7864317/1174784>`_
         """
-        # XXX: maybe those can become normal members now
-        FeedManager.sessionConfig(value)
-        FeedManager.sessionCache(value, self.db_path)
         self._session = value
+        self.sessionConfig()
 
     @property
     def pattern(self):

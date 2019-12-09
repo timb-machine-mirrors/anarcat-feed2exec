@@ -120,7 +120,7 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
     st = FeedManager(obj['config'], obj['database'], pattern=pattern)
     # used for unit testing
     if obj and obj.get('session'):
-        FeedManager._session = obj['session']
+        st._session = obj['session']
     parallel = jobs or parallel
     st.fetch(parallel, force=force, catchup=catchup)
 
