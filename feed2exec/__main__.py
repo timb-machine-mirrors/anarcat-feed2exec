@@ -117,12 +117,13 @@ def rm(obj, name):
 @click.option('--catchup', '-n',
               is_flag=True, help='tell output plugins to do nothing permanent')
 def fetch(obj, pattern, parallel, jobs, force, catchup):
-    st = FeedManager(obj['config'], obj['database'], pattern=pattern)
-    # used for unit testing
+    feed_manager = obj['feed_manager']
+    feed_manager.pattern = pattern
+    # for unit tests
     if obj and obj.get('session'):
-        st._session = obj['session']
+        feed_manager._session = obj['session']
     parallel = jobs or parallel
-    st.fetch(parallel, force=force, catchup=catchup)
+    feed_manager.fetch(parallel, force=force, catchup=catchup)
 
 
 @click.command(help='fetch and parse a single feed')
