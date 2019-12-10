@@ -128,11 +128,10 @@ This is also hooked into the ``setup.py`` command, so this also works::
 
   python3 setup.py test
 
-.. note:: This alias is called by ``tox`` in the ``tox.ini`` file
-          through the ``pytest-runner`` plugin. It is defined in the
-          ``setup.cfg`` file. ``tox``, in turn, gets called by the
-          Continuous Integration (CI) system through the
-          ``.gitlab-ci.yml`` file.
+.. note:: It's recommended to use the ``tox`` command to run tests, as
+          some tests are picky about dependencies version
+          numbers. That's how the Continuous Integration (CI) system
+          runs tests, through the ``.gitlab-ci.yml`` file.
 
 Enabling the `catchlog`_ plugin will also enable logging in the test
 suite which will help diagnostics.
@@ -152,12 +151,14 @@ more information about how to write tests.
 The test suite also uses the `betamax`_ module to cache HTTP requests
 locally so the test suite can run offline. If a new test requires
 networking, you can simply add a new test doing requests with the
-right fixture (:func:`feed2exec.tests.fixtures.betamax`), and a new
-recording will be added to the source tree. Note that you can also use
-the normal :func:`betamax_session` fixture provided upstream if you
+right fixture (:func:`betamax_session`) provided by upstream if you
 are going to do standalone HTTP request (not going through the
-feed2exec libraries). If a new test is added in an *existing* test,
-you may need to configure `recording
+feed2exec libraries). But you would more likely use the existing
+session by using the :func:`feed2exec.tests.fixtures.feed_manager`
+fixture, which has a `session` member you can use.
+
+If a new test is added in an *existing* test, you may need to
+configure `recording
 <https://betamax.readthedocs.io/en/latest/record_modes.html>`_ (in
 ``feed2exec/tests/conftest.py``) to ``new_episodes``::
 
