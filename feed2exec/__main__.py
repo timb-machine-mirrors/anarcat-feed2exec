@@ -65,7 +65,12 @@ def main(ctx, loglevel, syslog, config, database):
     ctx.obj['database'] = database
     ctx.obj['config'] = config
     # preload for commands who do not need a specific pattern like add/list/rm
-    ctx.obj['feed_manager'] = FeedManager(config, database)
+    if 'feed_manager_override' in ctx.obj:
+        ctx.obj['feed_manager'] = ctx.obj['feed_manager_override']
+        logging.debug('using feed_manager_override (%s)', ctx.obj['feed_manager'])
+    else:
+        ctx.obj['feed_manager'] = FeedManager(config, database)
+    logging.debug('using feed_manager (%s)', ctx.obj['feed_manager'])
 
 
 @click.command(help='add a URL to the configuration')
@@ -119,9 +124,6 @@ def rm(obj, name):
 def fetch(obj, pattern, parallel, jobs, force, catchup):
     feed_manager = obj['feed_manager']
     feed_manager.pattern = pattern
-    # for unit tests
-    if obj and obj.get('session'):
-        feed_manager._session = obj['session']
     parallel = jobs or parallel
     feed_manager.fetch(parallel, force=force, catchup=catchup)
 

@@ -157,17 +157,14 @@ def test_planet(tmpdir_factory, static_boundary, feed_manager):  # noqa
     mbox_dir = tmpdir_factory.mktemp('planet').join('Mail')
     runner = CliRunner()
 
-    result = runner.invoke(main, ['--config', feed_manager.conf_path,
-                                  '--database', feed_manager.db_path,
-                                  'add', 'planet-debian',
+    result = runner.invoke(main, ['add', 'planet-debian',
                                   'http://planet.debian.org/rss20.xml',
                                   '--args', 'to@example.com',
                                   '--output', 'feed2exec.plugins.mbox',
-                                  '--mailbox', str(mbox_dir)])
-    result = runner.invoke(main, ['--config', feed_manager.conf_path,
-                                  '--database', feed_manager.db_path,
-                                  'fetch'],
-                           obj={'session': feed_manager.session},
+                                  '--mailbox', str(mbox_dir)],
+                           obj={'feed_manager_override': feed_manager})
+    result = runner.invoke(main, ['fetch'],
+                           obj={'feed_manager_override': feed_manager},
                            catch_exceptions=False)
     assert 0 == result.exit_code
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
