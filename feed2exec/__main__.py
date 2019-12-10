@@ -65,7 +65,12 @@ def main(ctx, loglevel, syslog, config, database):
     ctx.obj['database'] = database
     ctx.obj['config'] = config
     # preload for commands who do not need a specific pattern like add/list/rm
-    ctx.obj['feeds'] = FeedManager(config, database)
+    if 'feed_manager_override' in ctx.obj:
+        ctx.obj['feed_manager'] = ctx.obj['feed_manager_override']
+        logging.debug('using feed_manager_override (%s)', ctx.obj['feed_manager'])
+    else:
+        ctx.obj['feed_manager'] = FeedManager(config, database)
+    logging.debug('using feed_manager (%s)', ctx.obj['feed_manager'])
 
 
 @click.command(help='add a URL to the configuration')
@@ -84,18 +89,18 @@ def main(ctx, loglevel, syslog, config, database):
 @click.pass_obj
 def add(obj, name, url, output, args, filter, filter_args, folder, mailbox):
     try:
-        obj['feeds'].conf_storage.add(name=name, url=url,
-                                      output=plugins.resolve(output), args=args,
-                                      filter=plugins.resolve(filter), filter_args=filter_args,
-                                      folder=folder, mailbox=mailbox)
+        obj['feed_manager'].conf_storage.add(name=name, url=url,
+                                             output=plugins.resolve(output), args=args,
+                                             filter=plugins.resolve(filter), filter_args=filter_args,
+                                             folder=folder, mailbox=mailbox)
     except AttributeError:
-        raise click.BadParameter('feed %s already exists in %s' % (name, obj['feeds'].conf_storage.path))
+        raise click.BadParameter('feed %s already exists in %s' % (name, obj['feed_manager'].conf_storage.path))
 
 
 @click.command(help='list configured feeds')
 @click.pass_obj
 def ls(obj):
-    for feed in obj['feeds'].conf_storage:
+    for feed in obj['feed_manager'].conf_storage:
         if feed:
             print(json.dumps(feed, indent=2, sort_keys=True))
 
@@ -104,7 +109,7 @@ def ls(obj):
 @click.argument('name')
 @click.pass_obj
 def rm(obj, name):
-    obj['feeds'].conf_storage.remove(name)
+    obj['feed_manager'].conf_storage.remove(name)
 
 
 @click.command(help='fetch and process all feeds')
@@ -117,12 +122,10 @@ def rm(obj, name):
 @click.option('--catchup', '-n',
               is_flag=True, help='tell output plugins to do nothing permanent')
 def fetch(obj, pattern, parallel, jobs, force, catchup):
-    st = FeedManager(obj['config'], obj['database'], pattern=pattern)
-    # used for unit testing
-    if obj and obj.get('session'):
-        Feed._session = obj['session']
+    feed_manager = obj['feed_manager']
+    feed_manager.pattern = pattern
     parallel = jobs or parallel
-    st.fetch(parallel, force=force, catchup=catchup)
+    feed_manager.fetch(parallel, force=force, catchup=catchup)
 
 
 @click.command(help='fetch and parse a single feed')
@@ -142,26 +145,31 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
 @click.pass_obj
 def parse(obj, url, **kwargs):
     kwargs.update({'url': url})
+    feed_manager = obj['feed_manager']
     for plugin in ('output', 'filter'):
         kwargs[plugin] = plugins.resolve(kwargs[plugin])
     feed = Feed(slug(url), kwargs)
-    data = feed.parse(feed.fetch())
+    body = feed_manager.fetch_one(feed)
+    if body is None:
+        logging.info('feed already cached, skipping')
+        return 0
+    data = feed.parse(body)
     # XXX: i don't like this - we should use a clean environment.
-    obj['feeds'].dispatch(feed, data, lock=False, force=True)
+    feed_manager.dispatch(feed, data, lock=False, force=True)
 
 
 @click.command(name='import', help='import feed list from OPML file')
 @click.argument('path', type=click.File('rb'))
 @click.pass_obj
 def import_(obj, path):
-    obj['feeds'].opml_import(path)
+    obj['feed_manager'].opml_import(path)
 
 
 @click.command(help='export feeds to an OPML file')
 @click.argument('path', type=click.File('wb'))
 @click.pass_obj
 def export(obj, path):
-    obj['feeds'].opml_export(path)
+    obj['feed_manager'].opml_export(path)
 
 
 main.add_command(add)

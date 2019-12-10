@@ -5,6 +5,7 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 import json
+import os.path
 import re
 
 from click.testing import CliRunner
@@ -15,7 +16,7 @@ import xdg.BaseDirectory
 import feed2exec.utils as utils
 from feed2exec.__main__ import main
 from feed2exec.tests.test_feeds import (test_sample, test_nasa)
-from feed2exec.tests.fixtures import (static_boundary)  # noqa
+from feed2exec.tests.fixtures import (static_boundary, feed_manager)  # noqa
 
 
 def test_usage():
@@ -24,65 +25,55 @@ def test_usage():
     assert 0 == result.exit_code
 
 
-def test_basics(tmpdir_factory, static_boundary):  # noqa
+def test_basics(tmpdir_factory, feed_manager, static_boundary):  # noqa
     runner = CliRunner()
-    d = tmpdir_factory.mktemp('basics')
-    conf_path = d.join('feed2exec.ini')
-    db_path = d.join('feed2exec.db')
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'add',
+    result = runner.invoke(main, ['add',
                                   '--output', 'feed2exec.plugins.echo',
                                   test_sample['name'],
-                                  test_sample['url']])
-    assert conf_path.check()
+                                  test_sample['url']],
+                           obj={'feed_manager_override': feed_manager})
+    assert os.path.exists(feed_manager.conf_path)
     assert 0 == result.exit_code
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'add',
+    result = runner.invoke(main, ['add',
                                   test_sample['name'],
-                                  test_sample['url']])
+                                  test_sample['url']],
+                           obj={'feed_manager_override': feed_manager})
     assert 2 == result.exit_code
     assert 'already exists' in result.output
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'ls'])
+    result = runner.invoke(main, ['ls'],
+                           obj={'feed_manager_override': feed_manager})
     assert 0 == result.exit_code
     del test_sample['args']
     expected = json.dumps(test_sample, indent=2, sort_keys=True)
     assert expected == result.output.strip()
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'rm', test_sample['name']])
+    result = runner.invoke(main, ['rm', test_sample['name']],
+                           obj={'feed_manager_override': feed_manager})
     assert 0 == result.exit_code
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'ls'])
+    result = runner.invoke(main, ['ls'],
+                           obj={'feed_manager_override': feed_manager})
     assert 0 == result.exit_code
     assert "" == result.output
 
     maildir = tmpdir_factory.mktemp('maildir')
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'add',
+    result = runner.invoke(main, ['add',
                                   '--output', 'maildir',
                                   '--mailbox', str(maildir),
                                   test_nasa['name'],
-                                  test_nasa['url']])
-    assert conf_path.check()
-    assert 'feed2exec.plugins.maildir' in conf_path.read()
+                                  test_nasa['url']],
+                           obj={'feed_manager_override': feed_manager})
+    assert os.path.exists(feed_manager.conf_path)
+    with open(feed_manager.conf_path) as fp:
+        assert 'feed2exec.plugins.maildir' in fp.read()
     assert 0 == result.exit_code
 
     test_path = utils.find_test_file('planet-debian.xml')
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'add', 'planet-debian',
+    result = runner.invoke(main, ['add', 'planet-debian',
                                   'file://' + test_path,
                                   '--args', 'to@example.com',
-                                  '--mailbox', str(maildir)])
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'fetch'])
+                                  '--mailbox', str(maildir)],
+                           obj={'feed_manager_override': feed_manager})
+    result = runner.invoke(main, ['fetch'],
+                           obj={'feed_manager_override': feed_manager})
     assert 0 == result.exit_code
     assert maildir.check()
     for path in maildir.join('planet-debian').join('new').visit():
@@ -114,20 +105,16 @@ def test_relative_conf(tmpdir):
     assert 0 == result.exit_code
 
 
-def test_parse(tmpdir_factory):  # noqa
+def test_parse(feed_manager):  # noqa
     runner = CliRunner()
-    d = tmpdir_factory.mktemp('parse')
-    conf_path = d.join('feed2exec.ini')
-    db_path = d.join('feed2exec.db')
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'parse',
+    result = runner.invoke(main, ['parse',
                                   '--output', 'feed2exec.plugins.echo',
                                   '--args', 'foo bar',
-                                  test_sample['url']])
+                                  test_sample['url']],
+                           obj={'feed_manager_override': feed_manager})
     assert 0 == result.exit_code
-    assert not conf_path.check()
-    assert db_path.check()
+    assert not os.path.exists(feed_manager.conf_path)
+    assert os.path.exists(feed_manager.db_path)
     assert "foo bar\n" == result.output
 
 
@@ -148,29 +135,23 @@ def test_missing_conf(tmpdir_factory, monkeypatch):
 
 
 @pytest.mark.xfail(condition=html2text.__version__ < (2019, 9, 26), reason="older html2text output varies, install version 2019.9.26 or later")  # noqa
-def test_planet(tmpdir_factory, static_boundary, betamax_session):  # noqa
+def test_planet(tmpdir_factory, static_boundary, feed_manager):  # noqa
     """test i18n feeds for double-encoding
 
     previously, we would double-encode email bodies and subject, which
     would break display of any feed item with unicode.
     """
-    d = tmpdir_factory.mktemp('planet')
-    mbox_dir = d.join('Mail')
-    conf_path = d.join('feed2exec.ini')
-    db_path = d.join('feed2exec.db')
+    mbox_dir = tmpdir_factory.mktemp('planet').join('Mail')
     runner = CliRunner()
 
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'add', 'planet-debian',
+    result = runner.invoke(main, ['add', 'planet-debian',
                                   'http://planet.debian.org/rss20.xml',
                                   '--args', 'to@example.com',
                                   '--output', 'feed2exec.plugins.mbox',
-                                  '--mailbox', str(mbox_dir)])
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'fetch'],
-                           obj={'session': betamax_session},
+                                  '--mailbox', str(mbox_dir)],
+                           obj={'feed_manager_override': feed_manager})
+    result = runner.invoke(main, ['fetch'],
+                           obj={'feed_manager_override': feed_manager},
                            catch_exceptions=False)
     assert 0 == result.exit_code
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)

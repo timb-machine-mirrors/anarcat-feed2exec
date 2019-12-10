@@ -42,12 +42,6 @@ import feed2exec
 import feed2exec.utils as utils
 
 import feedparser
-import requests
-import requests_file
-try:
-    import cachecontrol
-except ImportError:
-    cachecontrol = None
 import sqlite3
 import xdg.BaseDirectory as xdg_base_dirs
 
@@ -61,73 +55,15 @@ class Feed(feedparser.FeedParserDict):
     add convenience functions to parse (in parallel) and normalize
     feed items.
 
-    on intialization, a new :class:`requests.Session` object is
-    created to be used across all requests. therefore, as long as a
-    first FeedManager() object was created, FeedManager._session can
-    be used by plugins.
-
     For all intents and purposes, this can be considered like a dict()
     unless otherwise noted.
     """
     locked_keys = ('output', 'args', 'filter', 'filter_args',
                    'folder', 'mailbox', 'url', 'name', 'pause', 'catchup')
 
-    #: class :class:`request.Session` object that can be used by plugins
-    #: to make HTTP requests. initialized in __init__() or in test suite
-    _session = None
-
     def __init__(self, name, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self['name'] = name
-
-        # reuse class level session
-        if Feed._session is None:
-            Feed._session = requests.Session()
-            # use the default db_path
-            Feed.sessionCache(Feed._session)
-        self._session = Feed._session
-
-    @property
-    def session(self):
-        """the session property"""
-        return self._session
-
-    @session.setter
-    def session(self, value):
-        """set the session to the given value
-
-        will configure the session appropriately with sessionConfig
-
-        we could also use a @classproperty here, see `this discussion
-        <https://stackoverflow.com/a/7864317/1174784>`_
-        """
-        Feed.sessionConfig(value)
-        self._session = value
-
-    @staticmethod
-    def sessionConfig(session):
-        """our custom session configuration
-
-        we change the user agent and set the file:// hanlder. extra
-        configuration may be performed in the future and will override
-        your changes.
-
-        this can be used to configure sessions used externally, for
-        example by plugins.
-        """
-        session.headers.update({'User-Agent': '%s/%s'
-                                % (feed2exec.__prog__,
-                                   feed2exec.__version__)})
-        session.mount('file://', requests_file.FileAdapter())
-
-    @staticmethod
-    def sessionCache(session, db_path=None):
-        if db_path is None:
-            db_path = SqliteStorage.guess_path()
-        if cachecontrol is not None:
-            cache_adapter = cachecontrol.CacheControlAdapter(cache=FeedContentCacheStorage(db_path))
-            for proto in ('http://', 'https://'):
-                session.mount(proto, cache_adapter)
 
     def normalize(self, item=None):
         """normalize feeds a little more than what feedparser provides.
@@ -227,43 +163,6 @@ class Feed(feedparser.FeedParserDict):
         if data['bozo']:
             data['bozo_exception'] = str(data['bozo_exception'])
         return data
-
-    def fetch(self):
-        """fetch the feed content and return the body, in binary
-
-        This will call :func:`logging.warning` for exceptions
-        :class:`requests.exceptions.Timeout` and
-        :class:`requests.exceptions.ConnectionError` as they are
-        transient errors and the user may want to ignore those.
-
-        Other exceptions raised from :mod:`requests.exceptions` (like
-        TooManyRedirects or HTTPError but basically any other exception)
-        may be a configuration error or a more permanent failure so will
-        be signaled with :func:`logging.error`.
-
-        this will return the body on success or None on failure
-        """
-        if self.get('pause'):
-            logging.info('feed %s is paused, skipping', self['name'])
-            return None
-        logging.info('fetching feed %s', self['url'])
-        try:
-            resp = self.session.get(self['url'])
-            if getattr(resp, 'from_cache', False):
-                return None
-            body = resp.content
-        except (requests.exceptions.Timeout,
-                requests.exceptions.ConnectionError) as e:
-            # XXX: we should count those and warn after a few
-            # occurrences
-            logging.warning('timeout while fetching feed %s at %s: %s',
-                            self['name'], self['url'], e)
-            return None
-        except requests.exceptions.RequestException as e:
-            logging.error('exception while fetching feed %s at %s: %s',
-                          self['name'], self['url'], e)
-            return None
-        return body
 
 
 class FeedConfStorage(configparser.RawConfigParser):

@@ -8,7 +8,7 @@ from feed2exec.utils import slug, make_dirs_helper
 DEFAULT_ARCHIVE_DIR = '/run/user/1000/'
 
 
-def output(*args, feed=None, item=None, **kwargs):
+def output(*args, feed=None, item=None, session=None, **kwargs):
     """The archive plugin saves the feed's item.link URLs into a
     directory, specified by DEFAULT_ARCHIVE_DIR or through the output
     `args` value.
@@ -43,7 +43,7 @@ def output(*args, feed=None, item=None, **kwargs):
         if feed.get('catchup'):
             return True
         # fetch the URL in memory
-        result = feed.session.get(item.get('link'))
+        result = session.get(item.get('link'))
         if result.status_code != requests.codes.ok:
             logging.warning('failed to fetch link %s: %s',
                             item.get('link'), result.status_code)

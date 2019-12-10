@@ -33,7 +33,7 @@ import logging
 import shlex
 
 
-def output(feed, item, lock=None):
+def output(feed, item, lock=None, session=None):
     """load and run the given plugin with the given arguments
 
     an "output plugin" is a simple Python module with an ``output``
@@ -102,7 +102,7 @@ def output(feed, item, lock=None):
                       plugin, args)
         plugin = importlib.import_module(plugin)
         try:
-            return plugin.output(*args, feed=feed, item=item, lock=lock)
+            return plugin.output(*args, feed=feed, item=item, lock=lock, session=session)
         except (BrokenPipeError):
             # handle pipe errors gracefully, e.g. | head
             raise
@@ -113,7 +113,7 @@ def output(feed, item, lock=None):
         return False
 
 
-def filter(feed, item, lock=None):
+def filter(feed, item, lock=None, session=None):
     """call filter plugins.
 
     very similar to the output plugin, but just calls the ``filter``
@@ -133,7 +133,7 @@ def filter(feed, item, lock=None):
                       plugin, args)
         plugin = importlib.import_module(plugin)
         try:
-            return plugin.filter(*args, feed=feed, item=item, lock=lock)
+            return plugin.filter(*args, feed=feed, item=item, lock=lock, session=session)
         except Exception as e:
             logging.exception("plugin generated exception: %s, ignoring", e)
             return None
