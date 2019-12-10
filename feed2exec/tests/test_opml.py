@@ -6,6 +6,7 @@ import pytest
 
 from feed2exec.__main__ import main
 from feed2exec.controller import (FeedManager)
+from feed2exec.tests.fixtures import feed_manager  # noqa
 import feed2exec.utils as utils
 
 testdir = utils.find_test_file()
@@ -27,27 +28,23 @@ def test_import(tmpdir, opmlpath):
     conf_path.remove()
 
 
-def test_opml(tmpdir):  # noqa
+def test_opml(tmpdir, feed_manager):  # noqa
     runner = CliRunner()
-    conf_path = tmpdir.join('feed2exec.ini')
-    db_path = tmpdir.join('feed2exec.db')
 
-    assert not conf_path.check()
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'import',
-                                  utils.find_test_file('simple.opml')])
-    assert conf_path.check()
+    assert not os.path.exists(feed_manager.conf_path)
+    result = runner.invoke(main, ['import',
+                                  utils.find_test_file('simple.opml')],
+                           obj={'feed_manager_override': feed_manager})
+    assert os.path.exists(feed_manager.conf_path)
     assert 0 == result.exit_code
-    with open(utils.find_test_file('simple.ini')) as p:
-        conf_path.read() == p.read()
+    with open(utils.find_test_file('simple.ini')) as p, open(feed_manager.conf_path) as fp:
+        fp.read() == p.read()
 
     opml_path = tmpdir.join('simple.opml')
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'export',
-                                  str(opml_path)])
-    assert conf_path.check()
+    result = runner.invoke(main, ['export',
+                                  str(opml_path)],
+                           obj={'feed_manager_override': feed_manager})
+    assert os.path.exists(feed_manager.conf_path)
     assert 0 == result.exit_code
     with open(utils.find_test_file('simple.opml')) as p:
         p.read() == opml_path.read()

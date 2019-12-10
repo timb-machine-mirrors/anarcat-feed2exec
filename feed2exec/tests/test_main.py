@@ -5,6 +5,7 @@ from __future__ import division, absolute_import
 from __future__ import print_function
 
 import json
+import os.path
 import re
 
 from click.testing import CliRunner
@@ -24,65 +25,55 @@ def test_usage():
     assert 0 == result.exit_code
 
 
-def test_basics(tmpdir_factory, static_boundary):  # noqa
+def test_basics(tmpdir_factory, feed_manager, static_boundary):  # noqa
     runner = CliRunner()
-    d = tmpdir_factory.mktemp('basics')
-    conf_path = d.join('feed2exec.ini')
-    db_path = d.join('feed2exec.db')
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'add',
+    result = runner.invoke(main, ['add',
                                   '--output', 'feed2exec.plugins.echo',
                                   test_sample['name'],
-                                  test_sample['url']])
-    assert conf_path.check()
+                                  test_sample['url']],
+                           obj={'feed_manager_override': feed_manager})
+    assert os.path.exists(feed_manager.conf_path)
     assert 0 == result.exit_code
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'add',
+    result = runner.invoke(main, ['add',
                                   test_sample['name'],
-                                  test_sample['url']])
+                                  test_sample['url']],
+                           obj={'feed_manager_override': feed_manager})
     assert 2 == result.exit_code
     assert 'already exists' in result.output
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'ls'])
+    result = runner.invoke(main, ['ls'],
+                           obj={'feed_manager_override': feed_manager})
     assert 0 == result.exit_code
     del test_sample['args']
     expected = json.dumps(test_sample, indent=2, sort_keys=True)
     assert expected == result.output.strip()
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'rm', test_sample['name']])
+    result = runner.invoke(main, ['rm', test_sample['name']],
+                           obj={'feed_manager_override': feed_manager})
     assert 0 == result.exit_code
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'ls'])
+    result = runner.invoke(main, ['ls'],
+                           obj={'feed_manager_override': feed_manager})
     assert 0 == result.exit_code
     assert "" == result.output
 
     maildir = tmpdir_factory.mktemp('maildir')
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'add',
+    result = runner.invoke(main, ['add',
                                   '--output', 'maildir',
                                   '--mailbox', str(maildir),
                                   test_nasa['name'],
-                                  test_nasa['url']])
-    assert conf_path.check()
-    assert 'feed2exec.plugins.maildir' in conf_path.read()
+                                  test_nasa['url']],
+                           obj={'feed_manager_override': feed_manager})
+    assert os.path.exists(feed_manager.conf_path)
+    with open(feed_manager.conf_path) as fp:
+        assert 'feed2exec.plugins.maildir' in fp.read()
     assert 0 == result.exit_code
 
     test_path = utils.find_test_file('planet-debian.xml')
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'add', 'planet-debian',
+    result = runner.invoke(main, ['add', 'planet-debian',
                                   'file://' + test_path,
                                   '--args', 'to@example.com',
-                                  '--mailbox', str(maildir)])
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'fetch'])
+                                  '--mailbox', str(maildir)],
+                           obj={'feed_manager_override': feed_manager})
+    result = runner.invoke(main, ['fetch'],
+                           obj={'feed_manager_override': feed_manager})
     assert 0 == result.exit_code
     assert maildir.check()
     for path in maildir.join('planet-debian').join('new').visit():
@@ -114,20 +105,16 @@ def test_relative_conf(tmpdir):
     assert 0 == result.exit_code
 
 
-def test_parse(tmpdir_factory):  # noqa
+def test_parse(feed_manager):  # noqa
     runner = CliRunner()
-    d = tmpdir_factory.mktemp('parse')
-    conf_path = d.join('feed2exec.ini')
-    db_path = d.join('feed2exec.db')
-    result = runner.invoke(main, ['--config', str(conf_path),
-                                  '--database', str(db_path),
-                                  'parse',
+    result = runner.invoke(main, ['parse',
                                   '--output', 'feed2exec.plugins.echo',
                                   '--args', 'foo bar',
-                                  test_sample['url']])
+                                  test_sample['url']],
+                           obj={'feed_manager_override': feed_manager})
     assert 0 == result.exit_code
-    assert not conf_path.check()
-    assert db_path.check()
+    assert not os.path.exists(feed_manager.conf_path)
+    assert os.path.exists(feed_manager.db_path)
     assert "foo bar\n" == result.output
 
 
