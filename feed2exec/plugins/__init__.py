@@ -52,6 +52,10 @@ def output(feed, item, lock=None, session=None):
     the provided ``lock`` (a multiprocessor.Lock object) to acquire
     and release locks around contentious resources.
 
+    Finally, the FeedManager will pass along his own ``session`` that
+    should be reused by plugins to do requests. This allows plugins to
+    be unit-tested and leverages the built-in cache as well.
+
     The following keywords are usually replaced in the arguments:
 
     * {item.link}

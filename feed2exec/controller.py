@@ -53,7 +53,7 @@ class FeedManager(object):
     """a feed manager fetches and stores feeds.
 
     this is a "controller" in a "model-view-controller" pattern. it
-    derives the "model" (:class:`feed2exec.feeds.FeedConfStorage`) for
+    derives the "model" (:class:`feed2exec.model.FeedConfStorage`) for
     simplicity's sake, and there is no real "view" (except maybe
     `__main__`).
 
@@ -144,15 +144,10 @@ class FeedManager(object):
     def fetch(self, parallel=False, force=False, catchup=False):
         """main entry point for the feed fetch routines.
 
-        this iterates through all feeds configured in the parent
-        :class:`feed2exec.feeds.FeedConfStorage` that match the given
+        this iterates through all feeds configured in the linked
+        :class:`feed2exec.model.FeedConfStorage` that match the given
         ``pattern``, fetches the feeds and dispatches the parsing,
         which in turn dispatches the plugins.
-
-        :param str pattern: restrict operations to feeds named
-                            ``pattern``. passed to parent
-                            :class:`feed2exec.feeds.FeedConfStorage`
-                            as is
 
         :param bool parallel: parse feeds in parallel, using
                               :mod:`multiprocessing`
@@ -230,7 +225,7 @@ class FeedManager(object):
         may be a configuration error or a more permanent failure so will
         be signaled with :func:`logging.error`.
 
-        this will return the body on success or None on failure
+        this will return the body on success or None on failure and cached entries
         """
         if feed.get('pause'):
             logging.info('feed %s is paused, skipping', feed['name'])
@@ -259,6 +254,25 @@ class FeedManager(object):
 
         This handles locking, caching, and filter and output
         plugins.
+
+        This calls the plugins configured in the ``feed`` (using
+        :func:`feed2exec.plugins.output` and
+        :func:`feed2exec.plugins.filter`). It also updates the cache
+        with the found items if the ``output`` plugin succeeds
+        (returns True) and if the ``filter`` plugin doesn't set the
+        ``skip`` element in the feed item.
+
+        :param object lock: a :class:`multiprocessing.Lock` object
+                            previously initialized. if None, the global
+                            `LOCK` variable will be used: this is used in
+                            the test suite to avoid having to pass locks
+                            all the way through the API. this lock is in
+                            turn passed to plugin calls.
+
+        :param bool force: force plugin execution even if entry was
+                           already seen. passed to
+                           :class:`feed2exec.feeds.parse` as is
+
         '''
         logging.debug('dispatching plugins for items parsed from %s', feed['name'])
         cache = FeedItemCacheStorage(self.db_path, feed=feed['name'])

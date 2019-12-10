@@ -51,7 +51,7 @@ class Feed(feedparser.FeedParserDict):
 
     it derives from the base :class:`feedparser.FeedParserDict` but
     forces the element to have a ``name``, which is the unique name
-    for that feed in the :class:`feed2exec.feeds.FeedManager`. We also
+    for that feed in the :class:`feed2exec.controller.FeedManager`. We also
     add convenience functions to parse (in parallel) and normalize
     feed items.
 
@@ -119,13 +119,8 @@ class Feed(feedparser.FeedParserDict):
     def parse(self, body):
         """parse the body of the feed
 
-        this parses the given body using :mod:`feedparser` and calls the
-        plugins configured in the ``feed`` (using
-        :func:`feed2exec.plugins.output` and
-        :func:`feed2exec.plugins.filter`). updates the cache with the
-        found items if the ``output`` plugin succeeds (returns True) and
-        if the ``filter`` plugin doesn't set the ``skip`` element in the
-        feed item.
+        this parses the given body using :mod:`feedparser` and returns
+        the parsed data.
 
         :todo: this could be moved to a plugin, but then we'd need to take
                out the cache checking logic, which would remove most of
@@ -134,17 +129,6 @@ class Feed(feedparser.FeedParserDict):
         :param bytes body: the body of the feed, as returned by :func:fetch
 
         :param dict self: a feed object used to pass to plugins and debugging
-
-        :param object lock: a :class:`multiprocessing.Lock` object
-                            previously initialized. if None, the global
-                            `LOCK` variable will be used: this is used in
-                            the test suite to avoid having to pass locks
-                            all the way through the API. this lock is in
-                            turn passed to plugin calls.
-
-        :param bool force: force plugin execution even if entry was
-                           already seen. passed to
-                           :class:`feed2exec.feeds.parse` as is
 
         :return dict: the parsed data
 
