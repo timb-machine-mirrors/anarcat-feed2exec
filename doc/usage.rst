@@ -230,7 +230,7 @@ Cache database
 
 The feeds cache is stored in a ``feed2exec.db`` file. It is a
 SQLite database and can be inspected using standard sqlite
-tools. It is used to keep track of which feed items have been
+tools. It is used to keep track of which feed and items have been
 processed. To clear the cache, you can simply remove the file, which
 will make the program process all feeds items from scratch again. In
 this case, you should use the ``--catchup`` argument to avoid
@@ -256,8 +256,9 @@ API, commandline interface, configuration file syntax and database format can
 be changed until the 1.0 release is published, at which point normal `Semantic
 Versioning <http://semver.org>`_ semantics apply.
 
-The program is written mainly targeting Python 3.5 and should work in
-3.6. Python 2.7 is not supported anymore.
+The program is written mainly targeting Python 3.5 and 3.7, but should
+support later releases as well. See the ``setup.py`` classification
+for an authoritative reference. Python 2.7 is not supported anymore.
 
 The SQL storage layer is badly written and is known to trigger locking
 issues with SQLite when doing multiprocessing. The global LOCK object
@@ -265,7 +266,9 @@ could be used to work around this issue but that could mean pretty bad
 coupling. A good inspiration may be the `beets story about this
 problem <http://beets.io/blog/sqlite-nightmare.html>`_. And of course,
 another alternative would be to considering something like SQLalchemy
-instead of rolling our own ORM.
+instead of rolling our own ORM. There has, however, been some
+improvements to the locking recently, although that has been done with
+*thread* instead of *process*-specific locks.
 
 Older feed items are not purged from the database when they disappear from the
 feed, which may lead to database bloat in the long term. Similarly,

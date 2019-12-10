@@ -16,30 +16,32 @@ The most common workflow is through the `fetch` subcommand and goes
 something like this:
 
  1. ``__main__.py`` is the main entrypoint, managed through the
-    :mod:`click` module, which normally calls function defined in
-    ``feeds.py``. :func:`feed2exec.feeds.main` creates a
-    :class:`feed2exec.feeds.FeedManager` object which gets passed to
+    :mod:`click` module, which normally calls functions defined in
+    ``controller.py``. The base command (`__main__.main`) creates a
+    :class:`feed2exec.controller.FeedManager` object which gets passed to
     subcommands. In our case, it passes the control to the ``fetch``
     subcommand.
 
  2. The fetch command calls the 
-    :func:`feed2exec.feeds.FeedManager.fetch` function which creates a
-    :class:`feed2exec.feeds.Feed` object that is then used to parse
+    :func:`feed2exec.controller.FeedManager.fetch` function which creates a
+    :class:`feed2exec.model.Feed` object that is then used to parse
     the feed and return it as an opaque `data` object as returned by
-    :mod:`feedparser`.
+    :mod:`feedparser`. The feed is parsed (and, below, dispatched)
+    only if it not already present in the cache, managed by the
+    `cachecontrol <https://cachecontrol.readthedocs.io/>`_ module.
 
  3. ``fetch`` then calls the
-    :func:`feed2exec.feeds.FeedManager.dispatch` function that calls the
+    :func:`feed2exec.controller.FeedManager.dispatch` function that calls the
     various filter and output plugins, passing in the feed
     configuration and one item at a time. The filters can modify the
     feed items while the output plugins are responsible for writing
     them somewhere. That distinction is mostly arbitrary, but the
     return values of the output plugins matter, while filters do not.
 
-The feed cache is stored in a minimal :mod:`sqlite3` database. That
-database could be extended to keep the body of the feed and other data
-to enable more powerful features, but I haven't had the need for this
-yet.
+The feed cache is stored in a minimal :mod:`sqlite3` database. A table
+keeps track of which feed item has been seen and another is the
+backend for the ``cachecontrol`` module and has a copy of the actual
+requests, keyed by URL.
 
 Configuration is stored in a ``.ini`` file or whatever
 :mod:`configparser` supports. It was originally stored in the database
@@ -109,6 +111,12 @@ and `Trio`_, I'm tempted to give async/await a try again, but that
 would mean completely dropping 2.7 compatibility. The ``pool.map``
 design is just badly adapted, as it would load all the feed's
 datastructure in memory before processing them.
+
+The current parallel design also doesn't profit much from the caching
+system. While before we would spend a lot of time parsing all feeds
+(in parallel), now most feeds are not parsed anymore (because
+unchanged) so a lot of time is spent doing HTTP requests, which could
+be done in parallel (but currently isn't).
 
  .. _Curio: http://curio.readthedocs.io/
  .. _Trio: https://github.com/python-trio/trio

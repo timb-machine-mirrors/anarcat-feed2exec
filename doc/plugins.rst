@@ -354,7 +354,7 @@ in a pre-determined location::
   
   ARCHIVE_DIR='/run/user/1000/feed-archives/'
   
-  def output(*args, feed=None, item=None, **kwargs):
+  def output(*args, feed=None, item=None, session=None, **kwargs):
       # make a safe path from the item name
       path = slug(item.get('title', 'no-name'))
       # put the file in the archive directory
@@ -413,7 +413,7 @@ file, like this::
 We also need to modify the plugin to fetch that configuration, like
 this::
 
-  def output(*args, feed=None, item=None, **kwargs):
+  def output(*args, feed=None, item=None, session=None, **kwargs):
       # make a safe path from the item name
       path = slug(item.get('title', 'no-name'))
       # take the archive dir from the user or use the default
@@ -431,7 +431,7 @@ And now obviously, we only saved the link itself, not the link
 module, and do something like this::
 
   # fetch the URL in memory
-  result = requests.get(item.get('link'))
+  result = session.get(item.get('link'))
   if result.status_code != requests.codes.ok:
       logging.warning('failed to fetch link %s: %s',
                       item.get('link'), result.status_code)
@@ -446,7 +446,7 @@ This will save the actual link content (``result.text``) to the
 file. The important statement here is::
 
   # fetch the URL in memory
-  result = requests.get(item.get('link'))
+  result = session.get(item.get('link'))
 
 which fetches the URL in memory and checks for errors. The other
 change in the final plugin is simply::
@@ -455,6 +455,10 @@ change in the final plugin is simply::
 
 which writes the article content instead of the link.
 
+Notice how the ``session`` argument is used here instead of talking
+directly to the ``requests`` module. This leverages a caching system
+we already have, alongside configuration like user-agent and so on.
+
 Plugin return values
 ++++++++++++++++++++
 
@@ -462,7 +466,7 @@ Notice how we ``return False`` here: this makes the plugin system
 avoid adding the item to the cache, so it is retried on the next
 run. If the plugin returns ``True`` or nothing (``None``), the plugin
 is considered to have succeeded and the entry is added to the
-cache. That logic is defined in :func:`feed2exec.feeds.parse`.
+cache. That logic is defined in :func:`feed2exec.controller.FeedManager.fetch`.
 
 Catchup
 +++++++
@@ -478,7 +482,7 @@ simply return success, right before we fetch the URL::
   if feed.get('catchup'):
       return True
   # fetch the URL in memory
-  result = requests.get(item.get('link'))
+  result = session.get(item.get('link'))
 
 Notice how we still fetch the actual feed content but stop before
 doing any permanent operation. That is the spirit of the "catchup"
@@ -672,7 +676,7 @@ documentation.
 
 .. note:: If you discover a bug associated with a single feed, you can
           use the betamax session and the
-          :func:`feed2exec.feeds.Feed.parse()` function to manually
+          :func:`feed2exec.model.Feed.parse()` function to manually
           parse a feed and fire your plugin. This is how email
           functionality is tested: see the
           :func:`feed2exec.tests.test_plugins.test_email` function for

@@ -4,16 +4,28 @@ API documentation
 This is the API documentation of the program. It should explain how to
 create new plugins and navigate the code.
 
-Feeds module
-------------
+Controller module
+-----------------
 
 .. why can't this be just the __doc__ of the renderer module (ie. the
    top of file docstring)? somehow it fails to show up then...
 
-This is the core modules that processes all feeds and takes care of
-the storage. It's where most of the logic lies.
+This is the core modules that processes all feeds and talks to the
+storage. It's where most of the logic lies, althought the parsing is
+still currently done inside the model. It dispatches the plugin logic
+to the plugin module.
 
-.. automodule:: feed2exec.feeds
+.. automodule:: feed2exec.controller
+   :members:
+
+
+Model
+-----
+
+The "model" keeps track of feeds and their items. It handles
+configuration and cache storage.
+
+.. automodule:: feed2exec.model
    :members:
 
 Main entry point
