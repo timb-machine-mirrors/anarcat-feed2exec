@@ -110,6 +110,13 @@ def sphinx2rst(path):
                   read(path))
 
 
+test_requires = [
+    "betamax",
+    "pyflakes",
+    "pytest",
+    "pytest-cov",
+    "tox",
+]
 if __name__ == '__main__':
     setup(name=mod.__prog__,
           author=mod.__author__,
@@ -131,20 +138,16 @@ if __name__ == '__main__':
                   % (mod.__prog__, mod.__prog__),
               ]
           },
-          setup_requires=['setuptools_scm',
-                          'pytest-runner',
-                          'pytest-cov',
-                          'sphinx',
-                          ],
+          setup_requires=[
+              'setuptools_scm',
+              'sphinx',
+          ],
           install_requires=requires,
           extras_require={
-              "dev": [
-                  "pytest",
-                  "tox",
-                  "pyflakes",
-              ],
+              "test": test_requires,
           },
-          tests_require=['pytest', 'betamax'],
+          # for setup.py test
+          tests_require=test_requires,
           data_files=[
               # this completion file is generated with:
               # _FEED2EXEC_COMPLETE=source feed2exec
