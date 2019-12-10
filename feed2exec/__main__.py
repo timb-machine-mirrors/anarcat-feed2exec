@@ -65,7 +65,7 @@ def main(ctx, loglevel, syslog, config, database):
     ctx.obj['database'] = database
     ctx.obj['config'] = config
     # preload for commands who do not need a specific pattern like add/list/rm
-    ctx.obj['feeds'] = FeedManager(config, database)
+    ctx.obj['feed_manager'] = FeedManager(config, database)
 
 
 @click.command(help='add a URL to the configuration')
@@ -84,18 +84,18 @@ def main(ctx, loglevel, syslog, config, database):
 @click.pass_obj
 def add(obj, name, url, output, args, filter, filter_args, folder, mailbox):
     try:
-        obj['feeds'].conf_storage.add(name=name, url=url,
-                                      output=plugins.resolve(output), args=args,
-                                      filter=plugins.resolve(filter), filter_args=filter_args,
-                                      folder=folder, mailbox=mailbox)
+        obj['feed_manager'].conf_storage.add(name=name, url=url,
+                                             output=plugins.resolve(output), args=args,
+                                             filter=plugins.resolve(filter), filter_args=filter_args,
+                                             folder=folder, mailbox=mailbox)
     except AttributeError:
-        raise click.BadParameter('feed %s already exists in %s' % (name, obj['feeds'].conf_storage.path))
+        raise click.BadParameter('feed %s already exists in %s' % (name, obj['feed_manager'].conf_storage.path))
 
 
 @click.command(help='list configured feeds')
 @click.pass_obj
 def ls(obj):
-    for feed in obj['feeds'].conf_storage:
+    for feed in obj['feed_manager'].conf_storage:
         if feed:
             print(json.dumps(feed, indent=2, sort_keys=True))
 
@@ -104,7 +104,7 @@ def ls(obj):
 @click.argument('name')
 @click.pass_obj
 def rm(obj, name):
-    obj['feeds'].conf_storage.remove(name)
+    obj['feed_manager'].conf_storage.remove(name)
 
 
 @click.command(help='fetch and process all feeds')
@@ -142,7 +142,7 @@ def fetch(obj, pattern, parallel, jobs, force, catchup):
 @click.pass_obj
 def parse(obj, url, **kwargs):
     kwargs.update({'url': url})
-    feed_manager = obj['feeds']
+    feed_manager = obj['feed_manager']
     for plugin in ('output', 'filter'):
         kwargs[plugin] = plugins.resolve(kwargs[plugin])
     feed = Feed(slug(url), kwargs)
@@ -159,14 +159,14 @@ def parse(obj, url, **kwargs):
 @click.argument('path', type=click.File('rb'))
 @click.pass_obj
 def import_(obj, path):
-    obj['feeds'].opml_import(path)
+    obj['feed_manager'].opml_import(path)
 
 
 @click.command(help='export feeds to an OPML file')
 @click.argument('path', type=click.File('wb'))
 @click.pass_obj
 def export(obj, path):
-    obj['feeds'].opml_export(path)
+    obj['feed_manager'].opml_export(path)
 
 
 main.add_command(add)
