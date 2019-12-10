@@ -17,7 +17,7 @@ __website__ = 'https://feed2exec.readthedocs.io/'
 __prog__ = 'feed2exec'
 __author__ = u'Antoine Beaupré'
 __email__ = 'anarcat@debian.org'
-__copyright__ = u"Copyright (C) 2016  Antoine Beaupré"
+__copyright__ = u"Copyright (C) 2016-2019  Antoine Beaupré"
 __license_short__ = 'AGPLv3'
 __license__ = """
 This program is free software: you can redistribute it and/or modify
