@@ -1,0 +1,6 @@
+# delegate install of test requirements to setup.py. this corresponds
+# to the "test" section of the "extra_requires" dict.
+#
+# this exists so we don't have to duplicate test dependencies between
+# tox and setup.py
+-e .[test]
