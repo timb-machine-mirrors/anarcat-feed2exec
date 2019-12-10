@@ -172,6 +172,7 @@ def test_fetch_parallel(feed_manager, capfd):  # noqa
     assert '1 2 3 4' in out
 
 
+@pytest.mark.xfail(reason="cachecontrol does not know how to chain adapters")  # noqa
 def test_fetch_cache(feed_manager):  # noqa
     '''that a second fetch returns no body'''
     feed = Feed('sample',
@@ -182,6 +183,10 @@ def test_fetch_cache(feed_manager):  # noqa
     assert content is not None
 
     content = feed_manager.fetch_one(feed)
+    # XXX: this will fail because betamax will bypass the cache and
+    # repeat the request exactly as before. we need a way to put the
+    # cache in front of betamax, but that doesn't work. see the mark
+    # above and FeedManager.sessionConfig() for details.
     assert content is None
 
 

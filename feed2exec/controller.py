@@ -97,8 +97,24 @@ class FeedManager(object):
         self._session.mount('file://', requests_file.FileAdapter())
         if self.db_path is not None and cachecontrol is not None:
             cache_adapter = cachecontrol.CacheControlAdapter(cache=FeedContentCacheStorage(self.db_path))
-            for proto in ('http://', 'https://'):
-                self._session.mount(proto, cache_adapter)
+            # assume we mount over http and https all at once so check
+            # only the latter
+            adapter = self._session.adapters.get('https://', None)
+            if hasattr(adapter, 'old_adapters'):
+                # looks like a betamax session was setup, hook ourselves behind it
+                #
+                # XXX: this doesn't actually work, as betamax will
+                # never pass the query to the cache. this is
+                # backwards, but there's no other way. see
+                # https://github.com/ionrock/cachecontrol/issues/212
+                logging.debug('appending cache adapter (%r) to existing betamax adapter (%r)', cache_adapter, adapter)
+                adapter.old_adapters['http://'] = cache_adapter
+                adapter.old_adapters['https://'] = cache_adapter
+            else:
+                logging.debug('mounting cache adapter (%r)', cache_adapter)
+                # override existing adapters to use the cache adapter instead
+                self._session.mount('http://', cache_adapter)
+                self._session.mount('https://', cache_adapter)
 
     @property
     def session(self):
