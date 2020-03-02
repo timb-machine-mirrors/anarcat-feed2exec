@@ -58,7 +58,7 @@ This creates the equivalent of this configuration file in ``~/.config/feed2exec.
 
   [DEFAULT]
   output = feed2exec.plugins.maildir
-  mailbox = '~/Maildir'
+  mailbox = ~/Maildir
 
   [NASA breaking news]
   folder = nasa
