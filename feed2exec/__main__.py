@@ -22,6 +22,7 @@ from __future__ import print_function
 
 import json
 import logging
+import sys
 
 import click
 
@@ -154,8 +155,11 @@ def parse(obj, url, **kwargs):
         logging.info('feed already cached, skipping')
         return 0
     data = feed.parse(body)
-    # XXX: i don't like this - we should use a clean environment.
-    feed_manager.dispatch(feed, data, lock=False, force=True)
+    if data:
+        # XXX: i don't like this - we should use a clean environment.
+        feed_manager.dispatch(feed, data, lock=False, force=True)
+    else:
+        sys.exit(1)
 
 
 @click.command(name='import', help='import feed list from OPML file')

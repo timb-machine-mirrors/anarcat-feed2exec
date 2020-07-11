@@ -134,7 +134,11 @@ class Feed(feedparser.FeedParserDict):
 
         """
         logging.info('parsing feed %s (%d bytes)', self['url'], len(body))
-        data = feedparser.parse(body)
+        try:
+            data = feedparser.parse(body)
+        except Exception as e:
+            logging.warning('feedparser failed: either a bug or a malformed feed: %s (feed skipped)', e)
+            return None
         # add metadata from the feed without overriding user config
         for (key, val) in data['feed'].items():
             if key not in self and key not in Feed.locked_keys:

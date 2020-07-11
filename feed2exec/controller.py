@@ -204,10 +204,14 @@ class FeedManager(object):
             else:
                 global LOCK
                 LOCK = None
-                self.dispatch(feed, feed.parse(body), None, force)
+                data = feed.parse(body)
+                if data:
+                    self.dispatch(feed, data, None, force)
         if parallel:
             for feed, result in data_results:
-                self.dispatch(feed, result.get(), lock, force)
+                data = result.get()
+                if data:
+                    self.dispatch(feed, data, lock, force)
             pool.close()
             pool.join()
         logging.info('%d feeds processed', i+1)
