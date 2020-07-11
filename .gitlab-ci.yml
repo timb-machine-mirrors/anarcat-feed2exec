@@ -37,6 +37,10 @@ test-3.5:
   extends: .tox
   image: python:3.5
 
+test-3.6:
+  extends: .tox
+  image: python:3.6
+
 test-3.7:
   extends: .tox
   image: python:3.7
