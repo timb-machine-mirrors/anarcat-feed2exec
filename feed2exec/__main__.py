@@ -40,7 +40,7 @@ from feed2exec.utils import slug
 @click.option('--loglevel', 'loglevel',
               help='choose specific log level [default: WARNING]',
               type=click.Choice(feed2exec.logging.levels),
-              flag_value='WARNING', default=True)
+              default='WARNING')
 @click.option('-v', '--verbose', 'loglevel', flag_value='INFO',
               help='show what is happening (loglevel: VERBOSE)')
 @click.option('-d', '--debug', 'loglevel', flag_value='DEBUG',
