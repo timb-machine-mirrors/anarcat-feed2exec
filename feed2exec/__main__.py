@@ -37,10 +37,8 @@ from feed2exec.utils import slug
 @click.group(help=feed2exec.__description__,
              context_settings=dict(help_option_names=['-h', '--help']))
 @click.version_option(version=feed2exec.__version__)
-@click.option('--loglevel', 'loglevel',
-              help='choose specific log level [default: WARNING]',
-              type=click.Choice(feed2exec.logging.levels),
-              default='WARNING')
+@click.option('-q', '--quiet', 'loglevel', flag_value='ERROR',
+              help='hide warnings (loglevel: ERROR)')
 @click.option('-v', '--verbose', 'loglevel', flag_value='INFO',
               help='show what is happening (loglevel: VERBOSE)')
 @click.option('-d', '--debug', 'loglevel', flag_value='DEBUG',
