@@ -43,14 +43,19 @@ class output(object):
         folder = os.path.basename(os.path.abspath(utils.slug(feed.get('name'))))  # noqa
         # allow user to override our folder
         folder = feed.get('folder', folder)
-        path = os.path.join(prefix, folder)
+        # only use the prefix if folder path is not absolute
+        if os.path.isabs(folder):
+            path = folder
+        else:
+            path = os.path.join(prefix, folder)
         logging.debug('established folder path %s', path)
         if lock:
             lock.acquire()
         if feed.get('catchup'):
             self.key = ''
         else:
-            utils.make_dirs_helper(prefix)
+            # create directories up to the maildir
+            utils.make_dirs_helper(os.path.dirname(path))
             maildir = mailbox.Maildir(path, create=True)
             self.key = maildir.add(msg)
             maildir.flush()

@@ -118,6 +118,58 @@ def test_parse(feed_manager):  # noqa
     assert "foo bar\n" == result.output
 
 
+def test_no_maildir(tmpdir, monkeypatch):
+    """reproducer for issue 14
+
+    ... which is that folder can get created by mistake or
+    intermediate directories do not. specifically:
+
+    1. ~/Maildir (possibly, if not overriden) gets created by mistake
+
+    2. the `mailbox` setting gets created even if overriden by an
+    absolute `folder` path
+
+    3. intermediate directories of the `folder` should be created
+    correctly, even if outside of `mailbox`
+    """
+    # 1. set the home directory to the tmpdir
+    monkeypatch.setenv('HOME', str(tmpdir))
+    home_maildir = tmpdir.join("Maildir")
+    # 2. path for the `mailbox` setting, different from the above to
+    # test whether home_maildir gets mistakenly created as well
+    mailbox_path = tmpdir.join("mailbox")
+    # path to another mailbox, different from the above to test
+    # whether the set mailbox gets mistakenly created
+    another_mailbox_path = tmpdir.join("anothermailbox")
+    # 3. make sure we have an intermediate directory
+    folder_path = another_mailbox_path.join("folder")
+
+    # create the sample config file to bind all this together. note
+    # that home_maildir must NOT be present here for the test to work
+    config = tmpdir.join("test.ini")
+    config_data = """
+[DEFAULT]
+output = feed2exec.plugins.maildir
+mailbox = %s
+
+[planet-debian]
+folder = %s
+url = %s
+""" % (mailbox_path, folder_path, test_sample['url'])
+    config.write(config_data)
+
+    runner = CliRunner()
+    with tmpdir.as_cwd():
+        result = runner.invoke(main, ['--config', 'test.ini',
+                                      '--database', 'test.db',
+                                      'fetch'])
+        assert 0 == result.exit_code
+    assert another_mailbox_path.exists()
+    assert folder_path.exists()
+    assert not home_maildir.exists(), "home maildir is not used, should not be created"
+    assert not mailbox_path.exists(), "default mailbox is not used, should not be created"
+
+
 @pytest.mark.regression(issue=1)
 def test_missing_conf(tmpdir_factory, monkeypatch):
     tmpdir = tmpdir_factory.mktemp('missing')

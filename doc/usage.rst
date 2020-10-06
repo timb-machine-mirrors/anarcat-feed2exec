@@ -208,7 +208,8 @@ The following configuration parameters are supported:
       *slugified* version of the feed name (where spaces and special
       character are replaced by ``-``) is used. For example, the feed
       named "NASA breaking news" would be stored in
-      ``~/Maildir/nasa-breaking-news/``.
+      ``~/Maildir/nasa-breaking-news/``. Note that the ``mailbox``
+      prefix is used **only** if the ``folder`` path is relative.
 
   catchup
       Skip to the latest feed items. The feed is still read and
