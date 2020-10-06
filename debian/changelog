@@ -1,3 +1,36 @@
+feed2exec (0.16.0) unstable; urgency=medium
+
+  major refactoring, new features, bug fixes
+
+  API changes:
+
+  * refactoring into a somewhat MVC model: split large feeds.py into
+    model.py and controller.py
+  * rename FeedCacheStorage to FeedItemCacheStorage
+  * factor out getter/setters in the base sqlite class
+  * remove conn member in sqlite to force use of context manager
+  * move session and fetching to the feed manager
+  * rename feeds to feed_manager in main
+  * allow absolute path in folder setting (Closes: #14)
+
+  New features:
+
+  * caching: latest feed contents get cached to avoid re-downloading
+    unchanged feeds. this includes parsing HTTP headers and so on, and
+    relies on the good behavior of the `cachecontrol` Python module
+  * Python 3.6-3.8 support
+
+  Bugfixes:
+  * recover from feedparser exceptions (Closes: #964597)
+
+  [ Roland Hieber ]
+  * README: don't let the example config create a folder named '~/Mailbox/'
+
+  [ Ian Zimmerman ]
+  * add --quiet option to silence warnings since --loglevel was broken
+
+ -- Antoine Beaupré <anarcat@debian.org>  Tue, 06 Oct 2020 14:29:08 -0400
+
 feed2exec (0.15.0) unstable; urgency=medium
 
   bugfix release to catchup with changes in feedparser from buster.
