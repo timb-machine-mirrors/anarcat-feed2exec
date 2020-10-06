@@ -170,8 +170,11 @@ url = %s
     assert not mailbox_path.exists(), "default mailbox is not used, should not be created"
 
 
-@pytest.mark.regression(issue=1)
 def test_missing_conf(tmpdir_factory, monkeypatch):
+    """regression for issue 1
+
+    make sure we can live with a missing configuration file on import
+    """
     tmpdir = tmpdir_factory.mktemp('missing')
     # XXX: dumb xdg limitation: changing the environment doesn't
     # change those variables since they are only set at load time
