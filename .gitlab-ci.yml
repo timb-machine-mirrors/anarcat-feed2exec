@@ -7,12 +7,8 @@ before_script:
   - apt update && apt install -y python3-dev
   - python setup.py build
 
-# GitLab CI doesn't support build matrices, yet:
-#
-# https://gitlab.com/gitlab-org/gitlab/issues/15356
-#
-# So we use a job template to avoid mindless repetition.  All of our
-# jobs run 'tox', and we vary which tox environment they run or which
+# We use a job template to avoid mindless repetition.  All of our jobs
+# run 'tox', and we vary which tox environment they run or which
 # Python version they use by overriding the 'TOXENV' environment
 # variable or the 'image' job parameter.
 #
@@ -30,24 +26,20 @@ before_script:
     # which allows us to test various Python versions by changing the
     # Docker image version in use.
 
-# match this list of python versions with the classifiers variable in
-# setup.py. see also the list in .gitlab-ci.yml, which is specific to
-# the docker container running the tests
-test-3.5:
+# the main test suite, for each python version
+test:
   extends: .tox
-  image: python:3.5
-
-test-3.6:
-  extends: .tox
-  image: python:3.6
-
-test-3.7:
-  extends: .tox
-  image: python:3.7
-
-test-3.8:
-  extends: .tox
-  image: python:3.8
+  # match this list of python versions with the classifiers variable
+  # in setup.py. see also the list in .gitlab-ci.yml, which is
+  # specific to the docker container running the tests
+  parallel:
+    matrix:
+      - IMAGE:
+          - python:3.5
+          - python:3.6
+          - python:3.7
+          - python:3.8
+  image: $IMAGE
 
 flake8:
   extends: .tox
