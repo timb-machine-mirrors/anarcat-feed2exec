@@ -85,7 +85,10 @@ def make_dirs_helper(path):
 
 
 def find_test_file(name='.'):
-    """need to be updated from ecdysis"""
+    """need to be updated from ecdysis
+
+    See also https://pypi.org/project/pytest-datadir/
+    """
     localpath = os.path.join(os.path.dirname(__file__), 'tests', 'files', name)
     try:
         pkg = pkg_resources.Requirement.parse(__prog__)
