@@ -1,3 +1,9 @@
+feed2exec (0.17.1) unstable; urgency=medium
+
+  * fix unit tests in a clean environment
+
+ -- Antoine Beaupré <anarcat@debian.org>  Thu, 04 Feb 2021 17:14:59 -0500
+
 feed2exec (0.17.0) unstable; urgency=medium
 
   [ Roland Hieber ]
