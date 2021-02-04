@@ -295,7 +295,11 @@ class SqliteStorage(object):
 
     @classmethod
     def guess_path(cls):
-        return os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
+        cache_home_db = os.path.join(xdg_base_dirs.xdg_cache_home, 'feed2exec.db')
+        if os.path.exists(cache_home_db):
+            return cache_home_db
+        else:
+            return os.path.join(xdg_base_dirs.xdg_data_home, 'feed2exec.db')
 
     def get(self, key):
         with self.connection(commit=False) as con:
