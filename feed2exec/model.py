@@ -300,10 +300,19 @@ class SqliteStorage(object):
         if os.path.exists(data_home_db):
             return data_home_db
         else:
-            logging.warning(
-                "falling back on deprecated cache directory, move %s to %s to remove this warning",
-                cache_home_db,
-                data_home_db,
+            # we use warnings here because this function is likely to
+            # be called before the logging module is initialized,
+            # which typicall creates a StreamHandler that's not
+            # configured the way we like. A better way to work around
+            # this problem would be to use a LoggerAction in argparse
+            # but, alas, we are using click, so this insanity
+            # continues.
+            warnings.warn(
+                "falling back on deprecated cache directory, move %s to %s to remove this warning" % (
+                    cache_home_db,
+                    data_home_db,
+                    ),
+                DeprecationWarning,
             )
             return cache_home_db
 

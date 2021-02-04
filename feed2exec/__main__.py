@@ -23,6 +23,7 @@ from __future__ import print_function
 import json
 import logging
 import sys
+import warnings
 
 import click
 
@@ -58,7 +59,17 @@ def main(ctx, loglevel, syslog, config, database):
     if ctx.obj is None:
         ctx.obj = {}
     if database is None:
-        database = FeedItemCacheStorage.guess_path()
+        # we do this crazy warning dance because guess_path() triggers
+        # a warning, and does not log on its own. for some reason,
+        # warnings do not show up by default in feed2exec, and I don't
+        # have time to investigate why, so this will have to do for
+        # now.
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            database = FeedItemCacheStorage.guess_path()
+            if (len(w) > 0):
+                logging.warning(str(w[-1].message))
+                assert issubclass(w[-1].category, DeprecationWarning)
         logging.debug('guessed db_path to be %s', database)
     if config is None:
         config = FeedConfStorage.guess_path()
