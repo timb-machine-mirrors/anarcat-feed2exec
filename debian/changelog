@@ -1,3 +1,13 @@
+feed2exec (0.17.0) unstable; urgency=medium
+
+  [ Roland Hieber ]
+  * move default database path to ~/.local/share (Closes: GL#16)
+
+  [ Antoine Beaupré ]
+  * default to data directory and add a deprecation warning (Closes: GL#17)
+
+ -- Antoine Beaupré <anarcat@debian.org>  Thu, 04 Feb 2021 15:59:22 -0500
+
 feed2exec (0.16.0) unstable; urgency=medium
 
   major refactoring, new features, bug fixes
