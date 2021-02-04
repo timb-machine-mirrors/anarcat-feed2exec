@@ -94,7 +94,7 @@ def advancedConfig(level='warning', stream=None, syslog=False, prog=None,
         logger.addHandler(sl)
         logger.debug('configured syslog level %s' % syslog)
     handler = logging.StreamHandler(stream)
-    handler.setFormatter(logging.Formatter('%(message)s'))
+    handler.setFormatter(logging.Formatter(logFormat))
     handler.setLevel(level.upper())
     logger.addHandler(handler)
     if logfile:

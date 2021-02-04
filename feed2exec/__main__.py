@@ -54,7 +54,7 @@ from feed2exec.utils import slug
 @click.pass_context
 def main(ctx, loglevel, syslog, config, database):
     feed2exec.logging.advancedConfig(level=loglevel, syslog=syslog,
-                                     logFormat='%(messageq)s')
+                                     logFormat='%(message)s')
     if ctx.obj is None:
         ctx.obj = {}
     if database is None:
