@@ -299,7 +299,7 @@ class SqliteStorage(object):
         data_home_db = os.path.join(xdg_base_dirs.xdg_data_home, 'feed2exec.db')
         if os.path.exists(data_home_db):
             return data_home_db
-        else:
+        elif os.path.exists(cache_home_db):
             # we use warnings here because this function is likely to
             # be called before the logging module is initialized,
             # which typicall creates a StreamHandler that's not
@@ -315,6 +315,9 @@ class SqliteStorage(object):
                 DeprecationWarning,
             )
             return cache_home_db
+        else:
+            # if no DB exists, fallback on the good one
+            return data_home_db
 
     def get(self, key):
         with self.connection(commit=False) as con:
