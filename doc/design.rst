@@ -277,3 +277,10 @@ rss2email    ✓     ✓     ✓     ✗       ✓     ✓     ✓
 
 .. note:: ``feed2imap`` supports only importing OPML feeds, exporting
           is supported by a third-party plugin.
+
+.. note:: ``feed2exec`` might one day be expanded to support other
+          feeds than RSS/Atom, and turn into a more generic
+          "if-this-then-that" type of program, to support, say, REST
+          APIs, or Gemini, or whatever. In the meantime, see
+          `gmi2email <https://manpages.debian.org/gmi2email>`_ for an
+          alternative supporting Gemini.
