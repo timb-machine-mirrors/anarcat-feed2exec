@@ -65,6 +65,23 @@ class Feed(feedparser.FeedParserDict):
         super().__init__(*args, **kwargs)
         self['name'] = name
 
+    def get(self, key, default=None):
+        """override upstream getter
+
+        in my own configuration, the maildir output plugin is default,
+        yet it doesn't have a maildir or folder defined. somehow in
+        there, the getter here ends up returning None for those,
+        because those keys do not exist.
+
+        that's not exactly what we expect here: what we want is to
+        return the default in those cases.
+        """
+        v = super().get(key, default)
+        if v is None:
+            return default
+        else:
+            return v
+
     def normalize(self, item=None):
         """normalize feeds a little more than what feedparser provides.
 
