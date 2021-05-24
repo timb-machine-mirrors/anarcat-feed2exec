@@ -4,9 +4,9 @@
 ..
 .. |project_name| replace:: feed2exec
 .. |irc_channel| replace:: ``#anarcat``
-.. |webirc| replace:: https://webchat.freenode.net/?nick=feed2exec.&channels=feed2exec&prompt=1
-.. _irc: ircs://irc.freenode.net/feed2exec/
-.. _webirc: https://webchat.freenode.net/?nick=feed2exec.&channels=feed2exec&prompt=1
+.. |webirc| replace:: https://webchat.oftc.net/?nick=feed2exec.&channels=feed2exec&prompt=1
+.. _irc: ircs://irc.oftc.net/anarcat/
+.. _webirc: https://webchat.oftc.net/?nick=feed2exec.&channels=feed2exec&prompt=1
 .. _project: https://gitlab.com/anarcat/feed2exec/
 .. _merge requests: https://gitlab.com/anarcat/feed2exec/merge_requests
 .. _tag: https://gitlab.com/anarcat/feed2exec/tags
