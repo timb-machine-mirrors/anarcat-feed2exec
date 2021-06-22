@@ -22,7 +22,7 @@ Build-Depends: debhelper-compat (= 12)
              , python3-unidecode
              , python3-xdg
 X-Python-3-Version: >= 3.5
-Standards-Version: 4.3.0
+Standards-Version: 4.5.1
 Homepage: https://gitlab.com/anarcat/feed2exec
 Vcs-Git: https://gitlab.com/anarcat/feed2exec.git
 Vcs-Browser: https://gitlab.com/anarcat/feed2exec/tree/master
