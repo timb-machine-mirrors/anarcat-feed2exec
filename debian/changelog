@@ -368,4 +368,3 @@ feed2exec (0.1) unstable; urgency=medium
   * first alpha release: maildir, exec support, parallelism
 
  -- Antoine Beaupré <anarcat@debian.org>  Mon, 11 Sep 2017 21:05:13 -0400
-
