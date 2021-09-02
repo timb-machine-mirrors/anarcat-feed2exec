@@ -66,6 +66,7 @@ requires = [
     "requests",
     "requests-file",
     "unidecode",
+    "html5lib",
 ]
 
 packages = [
@@ -112,7 +113,7 @@ def sphinx2rst(path):
 
 
 test_requires = [
-    "betamax",
+    "betamax >= 0.8.0",
     "pyflakes",
     "pytest",
     "pytest-cov",
