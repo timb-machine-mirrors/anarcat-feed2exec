@@ -1,55 +1,42 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 include:
-  - template: Security/SAST.gitlab-ci.yml
-
+- template: Security/SAST.gitlab-ci.yml
+- template: Security/Dependency-Scanning.gitlab-ci.yml
 variables:
-  LC_ALL: "C.UTF-8"
-  LANG: "C.UTF-8"
-
+  LC_ALL: C.UTF-8
+  LANG: C.UTF-8
 before_script:
-  - python -V                                   # Print out python version for debugging
-  - apt update && apt install -y python3-dev
-  - python setup.py build
-
-# We use a job template to avoid mindless repetition.  All of our jobs
-# run 'tox', and we vary which tox environment they run or which
-# Python version they use by overriding the 'TOXENV' environment
-# variable or the 'image' job parameter.
-#
-# The name of the template starts with a dot to prevent GitLab from
-# running it as an actual job.
-.tox:
+- python -V
+- apt update && apt install -y python3-dev
+- python setup.py build
+".tox":
   image: python:latest
   before_script:
-    - pip install tox
+  - pip install tox
   script:
-    - tox
+  - tox
   variables:
     TOXENV: py
-    # The environment 'py' uses the version of Python used to invoke tox,
-    # which allows us to test various Python versions by changing the
-    # Docker image version in use.
-
-# the main test suite, for each python version
 test:
-  extends: .tox
-  # match this list of python versions with the classifiers variable
-  # in setup.py. see also the list in .gitlab-ci.yml, which is
-  # specific to the docker container running the tests
+  extends: ".tox"
   parallel:
     matrix:
-      - IMAGE:
-          - python:3.5
-          - python:3.6
-          - python:3.7
-          - python:3.8
-  image: $IMAGE
-
+    - IMAGE:
+      - python:3.5
+      - python:3.6
+      - python:3.7
+      - python:3.8
+  image: "$IMAGE"
 flake8:
-  extends: .tox
+  extends: ".tox"
   variables:
     TOXENV: flake8
-
 black:
-  extends: .tox
+  extends: ".tox"
   variables:
     TOXENV: black
