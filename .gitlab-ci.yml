@@ -3,6 +3,7 @@ include:
 
 variables:
   SAST_EXCLUDED_ANALYZERS: "eslint"
+  SAST_EXCLUDED_PATHS: ".eggs/*"
   LC_ALL: "C.UTF-8"
   LANG: "C.UTF-8"
 
