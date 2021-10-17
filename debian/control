@@ -12,11 +12,12 @@ Build-Depends: debhelper-compat (= 12)
              , python3-sphinx-rtd-theme
              , python3-pytest-cov
              , python3-pytest-runner
-             , python3-betamax
+             , python3-betamax (>= 0.8.0)
              , python3-click
              , python3-dateparser
              , python3-feedparser
              , python3-html2text
+             , python3-html5lib
              , python3-requests
              , python3-requests-file
              , python3-unidecode
