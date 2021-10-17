@@ -1,8 +1,8 @@
-import pytest
 import logging
 import logging.handlers
+import pytest
 
-from feed2exec.controller import FeedManager, Feed
+from feed2exec.controller import FeedManager
 import feed2exec.plugins.maildir
 
 
@@ -11,7 +11,14 @@ import feed2exec.plugins.maildir
 def feed_manager_recorder(tmpdir_factory, betamax_parametrized_recorder):
     conf_path = tmpdir_factory.mktemp('config').join('feed2exex.ini')
     db_path = tmpdir_factory.mktemp('db').join('feed2exec.db')
-    return (betamax_parametrized_recorder, FeedManager(str(conf_path), str(db_path), session=betamax_parametrized_recorder.session))
+    return (
+            betamax_parametrized_recorder,
+            FeedManager(
+                        str(conf_path),
+                        str(db_path),
+                        session=betamax_parametrized_recorder.session
+            )
+    )
 
 
 @pytest.fixture()

@@ -36,14 +36,13 @@ def _check_response(url, res):
 
     # SPN2 POST requests always return HTML error pages that need parsing
     # SPN1 GET requests return HTML error pages with HTTP error codes
-    parse = res.request.method == 'POST' or \
-            res.status_code != requests.codes.ok
+    parse = res.request.method == 'POST' or res.status_code != requests.codes.ok
 
     if parse and res.text:
         html = html5lib.parse(res.text, treebuilder="lxml")
 
-        for XPATH in ERROR_XPATHS:
-            error = html.xpath(XPATH)
+        for error_xpath in ERROR_XPATHS:
+            error = html.xpath(error_xpath)
             if error:
                 break
 
@@ -126,7 +125,7 @@ def output(*args, feed=None, item=None, session=None, **kwargs):
         wayback_url = '%s/save' % (WAYBACK_URL)
         form = {
             'url': url,
-            'capture_all': 'on', # Enables saving HTTP error pages
+            'capture_all': 'on',  # Enables saving HTTP error pages
         }
         res = session.post(wayback_url, data=form)
         if _check_response(url, res):
