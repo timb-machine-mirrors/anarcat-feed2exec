@@ -18,6 +18,7 @@ Build-Depends: debhelper-compat (= 12)
              , python3-feedparser
              , python3-html2text
              , python3-html5lib
+             , python3-lxml
              , python3-requests
              , python3-requests-file
              , python3-unidecode
