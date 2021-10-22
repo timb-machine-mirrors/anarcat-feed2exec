@@ -25,9 +25,6 @@ import feed2exec.utils as utils
 from feed2exec.tests.fixtures import feed_manager  # noqa
 import pytest
 
-from pkg_resources import parse_version
-from feedparser import __version__ as feedparser_version
-
 # XXX: bypass the Feed constructor so we don't create the cache
 # database in ~/.cache/feed2exec.db by mistake during tests.
 Feed._session = False
@@ -193,8 +190,6 @@ def test_fetch_cache(feed_manager):  # noqa
     assert content is None
 
 
-@pytest.mark.xfail(condition=parse_version(feedparser_version) < parse_version("6.0.0"),
-                   reason="older feedparser fails to fail to parse timezoneless date")
 def test_normalize(feed_manager):  # noqa
     '''black box testing for :func:feeds.normalize_item()'''
     data = test_udd.parse(feed_manager.session.get(test_udd['url']).content)
