@@ -1,3 +1,77 @@
+[project]
+name = "feed2exec"
+authors = [
+  {email = "anarcat@debian.org"},
+  {name = "Antoine Beaupré"}
+]
+description = "The programmable feed reader"
+# XXX: should be tested on testpypi, see
+# https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives
+long_description = { "file" = "README.rst" }
+long_description_content_type = "text/x-rst"
+# this must be kept in sync with .gitlab-ci.yml
+requires-python = ">=3.6"
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Environment :: Console',
+    'Intended Audience :: End Users/Desktop',
+    'Intended Audience :: System Administrators',
+    'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',  # noqa
+    'Natural Language :: English',
+    'Operating System :: POSIX',
+    'Operating System :: POSIX :: Linux',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    # this list should match the Python images in .gitlab-ci.yml
+    'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Topic :: Communications :: Email',
+    'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: News/Diary',
+    'Topic :: Text Processing :: Markup :: HTML',
+]
+dependencies = [
+    "cachecontrol",
+    "click",
+    "dateparser",
+    "feedparser<6.0 ; python_version < '3.6'",
+    "feedparser>=6.0.0b3 ; python_version >= '3.6'",
+    "html2text",
+    "pyxdg",
+    "requests",
+    "requests-file",
+    "setuptools_scm",
+    "unidecode",
+    "html5lib",
+]
+license = "AGPLv3"
+# specific to poetry, might not work?
+packages = [
+    { include = "feed2exec" },
+    { include = "feed2exec.plugins" },
+    { include = "feed2exec.tests" },
+]
+# this is the old package_data, probably doesn't work without poetry
+# either
+include = ["feed2exec/tests/files/*"]
+
+[project.optional-dependencies]
+test = [
+    "betamax >= 0.8.0",
+    "pyflakes",
+    "pytest",
+    "pytest-cov",
+    "tox",
+]
+
+[project.urls]
+homepage = "gitlab.com/anarcat/feed2exec"
+documentation = "feed2exec.readthedocs.io"
+
+[project.entry-points."feed2exec"]
+feed2exec = "feed2exec.__main__.main"
+
 # no stub files for those third-party libraries on typeshed
 [[tool.mypy.overrides]]
 module = [
@@ -19,3 +93,9 @@ addopts = "--cov=feed2exec --doctest-modules"
 # requires the catchlog pytest plugin:
 # https://pypi.python.org/pypi/pytest-catchlog/
 log_cli_level = "DEBUG"
+
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
+
+[tool.setuptools_scm]
+write_to = "feed2exec/_version.py"
