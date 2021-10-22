@@ -89,8 +89,10 @@ Show feed contents::
 .. marker-installation
 
 Multiple feeds can also be added with the OPML import command. See the
-:doc:`usage` document for more information including known issues and
+`usage`_ document for more information including known issues and
 limitations.
+
+.. _usage: https://feed2exec.readthedocs.io/en/latest/usage.html
 
 Installation
 ------------
@@ -145,6 +147,8 @@ once.
 Design information
 ------------------
 
-See the :doc:`design` document for more information about how and why the
+See the `design`_ document for more information about how and why the
 program was built. The design document also features a comparison with other
 similar software.
+
+.. _design: https://feed2exec.readthedocs.io/en/latest/design.html
