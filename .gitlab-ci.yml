@@ -50,3 +50,4 @@ black:
   extends: .tox
   variables:
     TOXENV: black
+  allow_failure: true
