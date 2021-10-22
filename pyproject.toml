@@ -13,3 +13,9 @@ module = [
   "xdg.BaseDirectory",
 ]
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=feed2exec --doctest-modules"
+# requires the catchlog pytest plugin:
+# https://pypi.python.org/pypi/pytest-catchlog/
+log_cli_level = "DEBUG"
