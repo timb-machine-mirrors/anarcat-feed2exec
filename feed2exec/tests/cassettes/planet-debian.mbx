@@ -6,7 +6,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steinar H. Gunderson: Introducing Narabu, part 2: Meet the GPU
 Message-ID: http-blog-sesse-net-blog-tech-2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu-html
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://blog.sesse.net/blog/tech/2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu.html
@@ -16,7 +16,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/sesse.png" width="74" height="85" alt="" align="right" style="float: right;">  <p>Narabu is a new intraframe video codec. You may or may not want to read
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/sesse.png" style="float: right;" width="74" />  <p>Narabu is a new intraframe video codec. You may or may not want to read
 <a href="https://blog.sesse.net/blog/tech/2017-10-18-09-25_introducing_narabu_part_1_introduction">part 1</a>
 first.</p>
 
@@ -244,7 +244,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Analysing Debian packages with Neo4j
 Message-ID: https-www-preining-info-blog-p-6831
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.preining.info/blog/2017/10/analysing-debian-packages-with-neo4j/
@@ -254,7 +254,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/preining.png" width="65" height="85" alt="" align="right" style="float: right;">  <p>I just finished the presentation at the <a href="https://www.meetup.com/Neo4j-Online-Meetup/">Neo4j Online Meetup</a> on getting the Debian <a href="https://wiki.debian.org/UltimateDebianDatabase">UDD</a> into a <a href="https://neo4j.com/">Neo4j</a> graph database. Besides the usual technical quibbles it did work out quite well.</p>
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/preining.png" style="float: right;" width="65" />  <p>I just finished the presentation at the <a href="https://www.meetup.com/Neo4j-Online-Meetup/">Neo4j Online Meetup</a> on getting the Debian <a href="https://wiki.debian.org/UltimateDebianDatabase">UDD</a> into a <a href="https://neo4j.com/">Neo4j</a> graph database. Besides the usual technical quibbles it did work out quite well.</p>
 <p><img alt="" class="aligncenter size-full wp-image-6832" height="498" src="https://www.preining.info/blog/wp-content/uploads/2017/10/neo4j-debian-talk.png" width="796" /></p>
 <p>The code for pulling the data from the UDD, as well as converting and importing it into Neo4j is available on <a href="https://github.com/norbusan/debian-graph">Github Debian-Graph</a>. The slides are also available on Github: <a href="https://github.com/norbusan/debian-graph/blob/master/slides/preining-debian-packages-neo4j.pdf">preining-debian-packages-neo4j.pdf</a>.</p>
 <p>There are still some things I want to implement, time permitting, because it would be a great tool for better integration for Debian. In any case, graph databases are lots of fun to play around.</p>
@@ -295,7 +295,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Daniel Pocock: FOSDEM 2018 Real-Time Communications Call for Participation
 Message-ID: https-danielpocock-com-341-at-https-danielpocock-com
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://danielpocock.com/fosdem-2018-rtc-cfp
@@ -305,7 +305,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/pocock.png" width="65" height="85" alt="" align="right" style="float: right;">  <div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even"><p><a href="https://fosdem.org">FOSDEM</a> is one of the world's premier meetings of free software developers, with over five thousand people attending each year.  FOSDEM 2018 takes place 3-4 February 2018 in Brussels, Belgium.</p>
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/pocock.png" style="float: right;" width="65" />  <div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even"><p><a href="https://fosdem.org">FOSDEM</a> is one of the world's premier meetings of free software developers, with over five thousand people attending each year.  FOSDEM 2018 takes place 3-4 February 2018 in Brussels, Belgium.</p>
 <p>This email contains information about:</p>
 <ul><li>Real-Time communications dev-room and lounge,</li>
 <li>speaking opportunities,</li>
@@ -591,7 +591,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Joey Hess: extending Scuttlebutt with Annah
 Message-ID: http-joeyh-name-blog-entry-extending_scuttlebutt_with_annah
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://joeyh.name/blog/entry/extending_Scuttlebutt_with_Annah/
@@ -601,7 +601,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/joeyh2.png" width="84" height="75" alt="" align="right" style="float: right;">  <p>This post has it all. Flotillas of sailboats, peer-to-peer wikis, games,
+<img align="right" alt="" height="75" src="http://planet.debian.org/heads/joeyh2.png" style="float: right;" width="84" />  <p>This post has it all. Flotillas of sailboats, peer-to-peer wikis, games,
 and de-frogging. But, I need to start by talking about some tech you may not
 have heard of yet...</p>
 
@@ -1015,7 +1015,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Gammu 1.38.5
 Message-ID: https-blog-cihar-com-archives-2017-10-18-gammu-1385-utm_source-rss2
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.cihar.com/archives/2017/10/18/gammu-1385/?utm_source=rss2
@@ -1025,7 +1025,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/nijel.png" width="64" height="67" alt="" align="right" style="float: right;">  <p>Today, <a href="https://wammu.eu/download/gammu/1.38.5/">Gammu 1.38.5</a> has been released. After long period of bugfix only releases, this comes with several new noteworthy features.</p>
+<img align="right" alt="" height="67" src="http://planet.debian.org/heads/nijel.png" style="float: right;" width="64" />  <p>Today, <a href="https://wammu.eu/download/gammu/1.38.5/">Gammu 1.38.5</a> has been released. After long period of bugfix only releases, this comes with several new noteworthy features.</p>
 <p>The biggest feature probably is that SMSD can now handle USSD messages as well. Those are usually used for things like checking remaining credit, but it's certainly not limited to this. This feature has been contributed thanks to funding on <a href="https://www.bountysource.com/teams/gammu">BountySource</a>.</p>
 <p>You can read more information in the <a href="https://wammu.eu/download/gammu/1.38.5/">release announcement</a>.</p>
 
@@ -1079,7 +1079,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steinar H. Gunderson: Introducing Narabu, part 1: Introduction
 Message-ID: http-blog-sesse-net-blog-tech-2017-10-18-09-25_introducing_narabu_part_1_introduction-html
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://blog.sesse.net/blog/tech/2017-10-18-09-25_introducing_narabu_part_1_introduction.html
@@ -1089,7 +1089,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/sesse.png" width="74" height="85" alt="" align="right" style="float: right;">  <p>Narabu is a new intraframe video codec, from the Japanese verb
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/sesse.png" style="float: right;" width="74" />  <p>Narabu is a new intraframe video codec, from the Japanese verb
 <em>narabu</em> (並ぶ), which means to line up or be parallel.</p>
 
 <p>Let me first state straight up that Narabu isn't where I hoped it would be at
@@ -1259,7 +1259,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Kobo firmware 4.6.9995 mega update (KSM, nickel patch, ssh, fonts)
 Message-ID: https-www-preining-info-blog-p-6827
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.preining.info/blog/2017/10/kobo-firmware-4-6-9995-mega-update-ksm-nickel-patch-ssh-fonts/
@@ -1269,7 +1269,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/preining.png" width="65" height="85" alt="" align="right" style="float: right;">  <p>It has been ages that I haven’t updated the MegaUpdate package for Kobo. Now that a new and seemingly rather bug-free and quick firmware release (4.6.9995) has been released, I finally took the time to update the whole package to the latest releases of all the included items. The update includes all my favorite patches and features: Kobo Start Menu, koreader, coolreader, pbchess, ssh access, custom dictionaries, and some side-loaded fonts.</p>
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/preining.png" style="float: right;" width="65" />  <p>It has been ages that I haven’t updated the MegaUpdate package for Kobo. Now that a new and seemingly rather bug-free and quick firmware release (4.6.9995) has been released, I finally took the time to update the whole package to the latest releases of all the included items. The update includes all my favorite patches and features: Kobo Start Menu, koreader, coolreader, pbchess, ssh access, custom dictionaries, and some side-loaded fonts.</p>
 <p><a href="http://www.preining.info/blog/wp-content/uploads/2013/07/kobo_720w.png"><img alt="Kobo Logo" class="aligncenter size-full wp-image-1241" height="380" src="http://www.preining.info/blog/wp-content/uploads/2013/07/kobo_720w.png" width="720" /></a></p>
 <p>So what are all these items:</p>
 <ul>
@@ -1577,7 +1577,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Sune Vuorela: KDE still makes Qt
 Message-ID: http-pusling-com-blog-p-448
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://pusling.com/blog/?p=448
@@ -1587,7 +1587,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/sune.png" width="65" height="90" alt="" align="right" style="float: right;">  <p>A couple of years ago, I made a blog post, <a href="http://pusling.com/blog/?p=362">KDE makes Qt</a>, with data about which percentage of Qt contributions came from people starting in KDE. Basically, how many Qt contributions are made by people who used KDE as a “gateway” drug into it.</p>
+<img align="right" alt="" height="90" src="http://planet.debian.org/heads/sune.png" style="float: right;" width="65" />  <p>A couple of years ago, I made a blog post, <a href="http://pusling.com/blog/?p=362">KDE makes Qt</a>, with data about which percentage of Qt contributions came from people starting in KDE. Basically, how many Qt contributions are made by people who used KDE as a “gateway” drug into it.</p>
 <p>I have now updated the graphs with data until the end of September 2017:</p>
 <p><img alt="KDE still makes Qt" src="https://i.imgur.com/nTIqvlj.png" /></p>
 <p>Many of these changes are made by people not directly as a result of their KDE work, but as a result of their paid work. But this doesn’t change the fact that KDE is an important project for attracting contributors to Qt, and a very good place to find experienced Qt developers.</p>
@@ -1625,7 +1625,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Reproducible builds folks: Reproducible Builds: Weekly report #129
 Message-ID: https-reproducible-alioth-debian-org-blog-posts-129
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://reproducible.alioth.debian.org/blog/posts/129/
@@ -2042,7 +2042,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Jonathan Dowland: Electric Dreams
 Message-ID: http-jmtd-net-log-electric_dreams
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://jmtd.net/log/electric_dreams/
@@ -2052,7 +2052,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/jmtd.png" width="65" height="85" alt="" align="right" style="float: right;">  <p><em>No spoilers, for those who have yet to watch it...</em></p>
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/jmtd.png" style="float: right;" width="65" />  <p><em>No spoilers, for those who have yet to watch it...</em></p>
 
 <p>Channel 4 have been broadcasting a new 10-part series called <em>Electric Dreams</em>,
 based on some of the short fiction of Philip K Dick. The series was
@@ -2198,7 +2198,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Russ Allbery: Bundle haul
 Message-ID: https-www-eyrie-org-eagle-journal-2017-10-002-html
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.eyrie.org/~eagle/journal/2017-10/002.html
@@ -2492,7 +2492,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Japanese TeX User Meeting 2017
 Message-ID: https-www-preining-info-blog-p-6823
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.preining.info/blog/2017/10/japanese-tex-user-meeting-2017/
@@ -2502,7 +2502,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/preining.png" width="65" height="85" alt="" align="right" style="float: right;">  <p><img alt="" class="alignleft size-full wp-image-6825" height="128" src="https://www.preining.info/blog/wp-content/uploads/2017/10/texconf2017.png" width="128" />Last saturday the <a href="https://texconf2017.tumblr.com/">Japanese TeX User Meeting</a> took place in Fujisawa, Kanagawa. For those who have been at the <a href="https://tug.org/tug2013/">TUG 2013</a> in Tokyo you will remember that the Japanese TeX community is quite big and vibrant. On Saturday about 50 users and developers gathered for a set of talks on a variety of topics.</p>
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/preining.png" style="float: right;" width="65" />  <p><img alt="" class="alignleft size-full wp-image-6825" height="128" src="https://www.preining.info/blog/wp-content/uploads/2017/10/texconf2017.png" width="128" />Last saturday the <a href="https://texconf2017.tumblr.com/">Japanese TeX User Meeting</a> took place in Fujisawa, Kanagawa. For those who have been at the <a href="https://tug.org/tug2013/">TUG 2013</a> in Tokyo you will remember that the Japanese TeX community is quite big and vibrant. On Saturday about 50 users and developers gathered for a set of talks on a variety of topics.</p>
 <p>The first talk was by <a href="https://www.lambdanote.com/">Keiichiro Shikano (鹿野 桂一郎)</a> on using Markup text to generate (La)TeX and HTML. He presented a variety of markup formats, including his own tool <a href="https://github.com/k16shikano/xml2tex">xml2tex</a>.</p>
 <p>The second talk was my <a href="http://www.trueroad.jp/">Masamichi Hosoda (細田 真道)</a> on reducing the size of PDF files using PDFmark extraction. As a contributor to many projects including <a href="https://www.gnu.org/software/texinfo/">Texinfo</a> and <a href="http://lilypond.org/">LilyPond</a>, Masamichi Hosoda tells us horror stories about multiple font embedding in the manual of LilyPond, the permanent need for adaption to newer <a href="https://www.ghostscript.com/">Ghostscript</a> versions, and the very recent development in Ghostscript prohibiting the merge of font definitions in PDF files.</p>
 <p>Next up was Yusuke Terada (寺田 侑祐) on grading exams using TeX. Working through hundreds and hundreds of exams and do the grading is something many of us are used to and I think nobody really enjoys it. Yusuke Terada has combined various tools, including scans, pdf merging using pdfpages, to generate gradable PDF which were then checked on an iPad. On the way he did hit some limits in dvipdfmx on the number of images, but this was obviously only a small bump on the road. Now if that could be automatized as a nice application, it would be a big hit I guess!</p>
@@ -2607,7 +2607,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Fran=C3=A7ois_Marier=3A_Checking_Your_Passwords_Against_the_Have_I_Been_Pwned_List?=
 Message-ID: http-feeding-cloud-geek-nz-posts-checking-your-passwords-against-hibp
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://feeding.cloud.geek.nz/posts/checking-your-passwords-against-hibp/
@@ -2690,7 +2690,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Gustavo Noronha Silva: Who knew we still had low-hanging fruits?
 Message-ID: https-blog-kov-eti-br-p-402
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.kov.eti.br/2017/10/who-knew-we-still-had-low-hanging-fruits/
@@ -2700,7 +2700,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/kov.png" width="65" height="86" alt="" align="right" style="float: right;">  <p>Earlier this month I had the pleasure of attending the Web Engines Hackfest, hosted by Igalia at their offices in A Coruña, and also sponsored by my employer, <a href="http://collabora.com/" title="Collabora Ltd.">Collabora</a>, Google and Mozilla. It has grown a lot and we had many new people this year.</p>
+<img align="right" alt="" height="86" src="http://planet.debian.org/heads/kov.png" style="float: right;" width="65" />  <p>Earlier this month I had the pleasure of attending the Web Engines Hackfest, hosted by Igalia at their offices in A Coruña, and also sponsored by my employer, <a href="http://collabora.com/" title="Collabora Ltd.">Collabora</a>, Google and Mozilla. It has grown a lot and we had many new people this year.</p>
 <p>Fun fact: I am one of the 3 or 4 people who have attended all of the editions of the hackfest since its inception in 2009, when it was called WebKitGTK+ hackfest \o/</p>
 <p><a href="https://blog.kov.eti.br/wp-content/uploads/2017/10/20171002_204405.jpg"><img alt="20171002_204405" class="alignright size-large wp-image-404" height="371" src="https://blog.kov.eti.br/wp-content/uploads/2017/10/20171002_204405-1024x576.jpg" width="660" /></a></p>
 <p>It was a great get together where I met many friends and made some new ones. Had plenty of discussions, mainly with <a href="https://blogs.igalia.com/tonikitoo/">Antonio Gomes</a> and Google’s Robert Kroeger, about the way forward for Chromium on Wayland.</p>
@@ -2817,7 +2817,7 @@ To: to@example.com
 From: Yves-Alexis <corsac@debian.org>
 Subject: Yves-Alexis Perez: OpenPGP smartcard transition (part 1.5)
 Message-ID: http-www-corsac-net-rub-blog-post-1589
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://www.corsac.net/?rub=blog&post=1589
@@ -2827,7 +2827,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/corsac-planet.png" width="80" height="81" alt="" align="right" style="float: right;">  <p>Following the news about the ROCA vulnerability (weak key
+<img align="right" alt="" height="81" src="http://planet.debian.org/heads/corsac-planet.png" style="float: right;" width="80" />  <p>Following the news about the ROCA vulnerability (weak key
 generation in Infineon-based smartcards, more info <a href="https://crocs.fi.muni.cz/public/papers/rsa_ccs17">here</a> and
 <a href="https://arstechnica.com/information-technology/2017/10/crypto-failure-cripples-millions-of-high-security-keys-750k-estonian-ids/">
 here</a>) I can confirm that the Almex smartcard I mentionned on
@@ -2869,7 +2869,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: No more no surprises
 Message-ID: https-iain-learmonth-me-blog-2017-2017w421
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://iain.learmonth.me/blog/2017/2017w421/
@@ -2879,7 +2879,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/irl.png" width="80" height="80" alt="" align="right" style="float: right;">  <p><a href="https://www.debian.org/">Debian</a> has generally always had, as a rule, “sane
+<img align="right" alt="" height="80" src="http://planet.debian.org/heads/irl.png" style="float: right;" width="80" />  <p><a href="https://www.debian.org/">Debian</a> has generally always had, as a rule, “sane
 defaults” and “no surprises”.  This was completely shattered for me when
 <a href="http://www.vim.org/">Vim</a> decided to hijack the mouse from my terminal and
 break all copy/paste functionality. This has occured since the release of
@@ -3002,7 +3002,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Russ Allbery: Free software log (September 2017)
 Message-ID: https-www-eyrie-org-eagle-journal-2017-10-001-html
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.eyrie.org/~eagle/journal/2017-10/001.html
@@ -3248,7 +3248,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Fixing vim in Debian
 Message-ID: https-www-preining-info-blog-p-6814
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.preining.info/blog/2017/10/fixing-vim-in-debian/
@@ -3258,7 +3258,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/preining.png" width="65" height="85" alt="" align="right" style="float: right;">  <p>I was wondering for quite some time why on my server vim behaves so stupid with respect to the mouse: Jumping around, copy and paste wasn’t possible the usual way. All this despite having</p>
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/preining.png" style="float: right;" width="65" />  <p>I was wondering for quite some time why on my server vim behaves so stupid with respect to the mouse: Jumping around, copy and paste wasn’t possible the usual way. All this despite having</p>
 <pre lang="shell">  set mouse=
 </pre>
 <p>in my <tt>/etc/vim/vimrc.local</tt>. Finally I found out why, thanks to bug <a href="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=864074">#864074</a> and fixed it.</p>
@@ -3362,7 +3362,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Free Software Efforts (2017W41)
 Message-ID: https-iain-learmonth-me-blog-2017-2017w41
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://iain.learmonth.me/blog/2017/2017w41/
@@ -3372,7 +3372,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/irl.png" width="80" height="80" alt="" align="right" style="float: right;">  <p>Here’s my weekly report for week 41 of 2017. In this week I have explored some
+<img align="right" alt="" height="80" src="http://planet.debian.org/heads/irl.png" style="float: right;" width="80" />  <p>Here’s my weekly report for week 41 of 2017. In this week I have explored some
 <a href="https://iain.learmonth.me/blog/2017/2017w413/">Java 8</a>
 <a href="http://localhost:1313/blog/2017/2017w414/">features</a>, looked at <a href="https://iain.learmonth.me/blog/2017/2017w412/">automatic
 updates in a few Linux distributions</a> and decided that
@@ -3615,7 +3615,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: TeX Live Manager: JSON output
 Message-ID: https-www-preining-info-blog-p-6806
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.preining.info/blog/2017/10/tex-live-manager-json-output/
@@ -3625,7 +3625,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/preining.png" width="65" height="85" alt="" align="right" style="float: right;">  <p>With the development of <a href="https://github.com/TeX-Live/tlcockpit">TLCockpit</a> continuing, I found the need for and easy exchange format between the <a href="https://www.tug.org/texlive/tlmgr.html">TeX Live Manager</a> <tt>tlmgr</tt> and frontend programs like TLCockpit. Thus, I have implemented JSON output for the <tt>tlmgr info</tt> command.</p>
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/preining.png" style="float: right;" width="65" />  <p>With the development of <a href="https://github.com/TeX-Live/tlcockpit">TLCockpit</a> continuing, I found the need for and easy exchange format between the <a href="https://www.tug.org/texlive/tlmgr.html">TeX Live Manager</a> <tt>tlmgr</tt> and frontend programs like TLCockpit. Thus, I have implemented JSON output for the <tt>tlmgr info</tt> command.</p>
 <p><img alt="" class="aligncenter size-full wp-image-4631" height="451" src="https://www.preining.info/blog/wp-content/uploads/2015/06/texlive-tlmgr.jpg" width="860" /></p>
 <p>While the format is not 100% stable – I might change some thing – I consider it pretty settled. The output of <tt>tlmgr info --data json</tt> is a JSON array with JSON objects for each package requested (default is to list all).</p>
 <pre lang="json">[ TLPackageObj, TLPackageObj, ... ]
@@ -3827,7 +3827,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Lior Kaplan: Debian Installer git repository
 Message-ID: http-liorkaplan-wordpress-com-p-620
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://liorkaplan.wordpress.com/2017/10/15/debian-installer-git-repository/
@@ -3893,7 +3893,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Petter Reinholdtsen: A one-way wall on the border?
 Message-ID: http-people-skolelinux-org-pere-blog-a_one_way_wall_on_the_border_-html
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://people.skolelinux.org/pere/blog/A_one_way_wall_on_the_border_.html
@@ -3948,7 +3948,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Alex Muntada: My Free Software Activities in Jul-Sep 2017
 Message-ID: http-log-alexm-org-p-487
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://log.alexm.org/2017/10/13/my-free-software-ativities-in-jul-sep-2017/
@@ -3958,7 +3958,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/alexm.png" width="65" height="85" alt="" align="right" style="float: right;">  <p>If you read <a href="http://planet.debian.org/">Planet Debian</a> often, you’ve probably noticed a trend of Free Software activity reports at the beginning of the month. First, those reports seemed a bit unamusing and lengthy, but since I take the time to read them I’ve learnt a lot of things, and now I’m amazed at the amount of work that people are doing for Free Software. Indeed, I knew already that many people are doing lots of work. But reading those reports gives you an actual view of how much it is.</p>
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/alexm.png" style="float: right;" width="65" />  <p>If you read <a href="http://planet.debian.org/">Planet Debian</a> often, you’ve probably noticed a trend of Free Software activity reports at the beginning of the month. First, those reports seemed a bit unamusing and lengthy, but since I take the time to read them I’ve learnt a lot of things, and now I’m amazed at the amount of work that people are doing for Free Software. Indeed, I knew already that many people are doing lots of work. But reading those reports gives you an actual view of how much it is.</p>
 <p>Then, I decided that I should do the same and write some kind of report since I became a <a href="https://bits.debian.org/2017/07/new-developers-2017-06.html">Debian Developer</a> in July. I think it’s a nice way to share your work with others and maybe inspire them as it happened to me. So I asked some of the people that have been inspiring me how do they do it. I mean, I was curious to know how they keep track of the work they do and how long it takes to write their reports. It seems that it takes quite some time, it’s mostly manual work and usually starts by the end of the month, reviewing their contributions in mailing lists, bug trackers, e-mail folders, etc.</p>
 <p>Here I am now, writing my first report about my Free Software activities since July and until September 2017. I hope you like it:</p>
 <ul>
@@ -4060,7 +4060,7 @@ To: to@example.com
 From: =?utf-8?q?Lisandro_Dami=C3=A1n_Nicanor_P=C3=A9rez_Meyer?= <noreply@blogger.com>
 Subject: =?utf-8?q?Lisandro_Dami=C3=A1n_Nicanor_P=C3=A9rez_Meyer=3A_Qt_4_and_5_and_OpenSSL1=2E0_removal?=
 Message-ID: tag-blogger-com-1999-blog-6357172297737057475-post-4876329106387979395
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://perezmeyer.blogspot.com/2017/10/qt-4-and-5-and-oepnssl10-removal.html
@@ -4070,7 +4070,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/lisandropm.png" width="78" height="100" alt="" align="right" style="float: right;">  Today we received updates on the OpenSSL 1.0 removal status:<br /><br />&lt;<a href="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=828522#206">https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=828522#206</a>&gt;<br />&lt;<a href="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=859671#19">https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=859671#19</a>&gt;<br /><br />So those removal bugs' severities will be raised to RC in aproximately a month.<br /><br />We still don't have any solutions for Qt 4 or 5.<br /><br />For the Qt 5 case we will probably keep the bug open until Qt 5.10 is in the archive which should bring OpenSSL 1.1 support <b>*or*</b> FTP masters decide to remove OpenSSL1.0. In this last case the fate will be the same as with Qt4, below.<br /><br />For Qt4 we do not have patches available and there will probably be none in time (remember we do not have upstream support). That plus the fact that we are actively trying to remove it from the archive it means we will remove openssl support. This might mean that apps using Qt4:<br /><br />- Might cease to work.<br />- Might keep working:<br />  - Informing their users that no SSL support is available → programmer did a good job.<br />  - Not informing their users that no SSL support is available and establishing connections non the less → programmer might have not done a good job.<br /><br />Trying to inform users as soon as possible,<br /><br />Lisandro for the Qt/KDE team.
+<img align="right" alt="" height="100" src="http://planet.debian.org/heads/lisandropm.png" style="float: right;" width="78" />  Today we received updates on the OpenSSL 1.0 removal status:<br /><br />&lt;<a href="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=828522#206">https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=828522#206</a>&gt;<br />&lt;<a href="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=859671#19">https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=859671#19</a>&gt;<br /><br />So those removal bugs' severities will be raised to RC in aproximately a month.<br /><br />We still don't have any solutions for Qt 4 or 5.<br /><br />For the Qt 5 case we will probably keep the bug open until Qt 5.10 is in the archive which should bring OpenSSL 1.1 support <b>*or*</b> FTP masters decide to remove OpenSSL1.0. In this last case the fate will be the same as with Qt4, below.<br /><br />For Qt4 we do not have patches available and there will probably be none in time (remember we do not have upstream support). That plus the fact that we are actively trying to remove it from the archive it means we will remove openssl support. This might mean that apps using Qt4:<br /><br />- Might cease to work.<br />- Might keep working:<br />  - Informing their users that no SSL support is available → programmer did a good job.<br />  - Not informing their users that no SSL support is available and establishing connections non the less → programmer might have not done a good job.<br /><br />Trying to inform users as soon as possible,<br /><br />Lisandro for the Qt/KDE team.
 --===============testboundary==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
@@ -4120,7 +4120,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Weblate 2.17
 Message-ID: https-blog-cihar-com-archives-2017-10-13-weblate-217-utm_source-rss2
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.cihar.com/archives/2017/10/13/weblate-217/?utm_source=rss2
@@ -4130,7 +4130,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/nijel.png" width="64" height="67" alt="" align="right" style="float: right;">  <p><a href="https://weblate.org/">Weblate 2.17</a> has been released today. There are quite some performance improvements, improved search, improved access control settings and various other improvements.</p>
+<img align="right" alt="" height="67" src="http://planet.debian.org/heads/nijel.png" style="float: right;" width="64" />  <p><a href="https://weblate.org/">Weblate 2.17</a> has been released today. There are quite some performance improvements, improved search, improved access control settings and various other improvements.</p>
 <p>Full list of changes:</p>
 <ul>
 <li>Weblate by default does shallow Git clones now.</li>
@@ -4251,7 +4251,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Shirish_Agarwal=3A_I_need_to_speak_up_now_X_=E2=80=93_Economics?=
 Message-ID: http-flossexperiences-wordpress-com-p-4100
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://flossexperiences.wordpress.com/2017/10/13/i-need-to-speak-up-now-x-economics/
@@ -4261,7 +4261,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/shirish.png" width="80" height="80" alt="" align="right" style="float: right;">  <p>Dear all,</p>
+<img align="right" alt="" height="80" src="http://planet.debian.org/heads/shirish.png" style="float: right;" width="80" />  <p>Dear all,</p>
 <p>This would be a longish blog post (as most of mine are) compiled over days but as there is so short a time and so much to share.</p>
 <p>I had previously thought to share beautiful photographs of Ganesh mandals taking out the procession at time of <a href="https://en.wikipedia.org/wiki/Ganesh_Chaturthi#In_public" rel="noopener" target="_blank">immersion</a> of the idol or the last day of <a href="https://en.wikipedia.org/wiki/Durga_Puja" rel="noopener" target="_blank">Durga Puja</a> recent events around do not make my mood to share photos at this point in time. I may share some of them in a future blog post or two .</p>
 <p>Before going further, I would like to offer my sympathies and condolences to people hurt and dislocated in <a href="https://en.wikipedia.org/wiki/Hurricane_Irma" rel="noopener" target="_blank">Hurricane Irma</a> , the <a href="https://en.wikipedia.org/wiki/2017_Central_Mexico_earthquake" rel="noopener" target="_blank">2017 Central Mexico Earthquake</a> and lastly the most recent <a href="https://en.wikipedia.org/wiki/2017_Las_Vegas_Strip_shooting" rel="noopener" target="_blank">Las Vegas shooting</a> as well as <a href="https://en.wikipedia.org/wiki/Hurricane_Maria" rel="noopener" target="_blank">Hurricane Maria</a> in Puerto Rico . I am somewhat nonplussed as to why Americans always want to name, especially hurricanes which destroy people’s lives and livelihood built over generations and why most of the hurricanes are named after women. A look at weather.com <a href="https://weather.com/storms/hurricane/news/tropical-storm-hurricane-names-20130626#/!" rel="noopener" target="_blank">site</a> unveiled the answer to the mystery.</p>
@@ -4654,7 +4654,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Using Trezor to store cryptocurencies
 Message-ID: https-blog-cihar-com-archives-2017-10-13-using-trezor-store-cryptocurencies-utm_source-rss2
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.cihar.com/archives/2017/10/13/using-trezor-store-cryptocurencies/?utm_source=rss2
@@ -4664,7 +4664,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/nijel.png" width="64" height="67" alt="" align="right" style="float: right;">  <p>For quite some time I have some cryptocurrencies on hold. These mostly come from times it was possible to mine Bitcoin on the CPU, but I've got some small payments recently as well.</p>
+<img align="right" alt="" height="67" src="http://planet.debian.org/heads/nijel.png" style="float: right;" width="64" />  <p>For quite some time I have some cryptocurrencies on hold. These mostly come from times it was possible to mine Bitcoin on the CPU, but I've got some small payments recently as well.</p>
 <p>I've been using <a href="https://electrum.org/">Electrum</a> wallet so far. It worked quite well, but with increasing Bitcoin value, I was considering having some hardware wallet for that. There are few options which you can use, but I've always preferred <a href="https://shop.trezor.io?a=572b241135e1">Trezor</a> as that device is made by guys I know. Also it's probably device with best support out of these (at least I've heard really bad stories about Ledger support).</p>
 <p>In the end what decided is that they are also <a href="https://doc.satoshilabs.com/trezor-tech/translating.html">using Weblate</a> to translate their user interface and offered me the wallet for free in exchange. This is price you can not beat :-). Anyway the setup was really smooth and I'm now fully set up. This also made me more open to accept other cryptocurrencies which are supported by <a href="https://shop.trezor.io?a=572b241135e1">Trezor</a>, so you can now see more options on the <a href="https://weblate.org/donate/">Weblate donations page</a>.</p>
 
@@ -4730,7 +4730,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Dirk Eddelbuettel: GitHub Streak: Round Four
 Message-ID: http-dirk-eddelbuettel-com-blog-2017-10-12-github_oct2016_oct2017
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://dirk.eddelbuettel.com/blog/2017/10/12#github_oct2016_oct2017
@@ -4740,7 +4740,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/dirk.png" width="65" height="90" alt="" align="right" style="float: right;">  <p><a href="http://dirk.eddelbuettel.com/blog/2014/10/12#github_oct2013_oct2014">Three years ago</a> I referenced the <a href="http://lifehacker.com/281626/jerry-seinfelds-productivity-secret">Seinfeld Streak</a> used in an <a href="http://dirk.eddelbuettel.com/blog/2013/02/03/">earlier post</a> of regular updates to to the <a href="http://gallery.rcpp.org">Rcpp Gallery</a>:</p>
+<img align="right" alt="" height="90" src="http://planet.debian.org/heads/dirk.png" style="float: right;" width="65" />  <p><a href="http://dirk.eddelbuettel.com/blog/2014/10/12#github_oct2013_oct2014">Three years ago</a> I referenced the <a href="http://lifehacker.com/281626/jerry-seinfelds-productivity-secret">Seinfeld Streak</a> used in an <a href="http://dirk.eddelbuettel.com/blog/2013/02/03/">earlier post</a> of regular updates to to the <a href="http://gallery.rcpp.org">Rcpp Gallery</a>:</p>
 <blockquote>
 <p>This is sometimes called Jerry Seinfeld's secret to productivity: Just keep at it. <em>Don't break the streak</em>.</p>
 </blockquote>
@@ -4825,7 +4825,7 @@ To: to@example.com
 From: Joachim Breitner <mail@joachim-breitner.de>
 Subject: Joachim Breitner: Isabelle functions: Always total, sometimes undefined
 Message-ID: http-www-joachim-breitner-de-blog-732-isabelle_functions__always_total-2c_sometimes_undefined
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://www.joachim-breitner.de/blog/732-Isabelle_functions__Always_total%2C_sometimes_undefined
@@ -4835,7 +4835,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/nomeata.png" width="64" height="64" alt="" align="right" style="float: right;">  <p>Often, when I mention how things work in the interactive theorem prover <a href="http://isabelle.in.tum.de/">Isabelle/HOL</a> to people with a strong background in functional programming (whether that means Haskell or Coq or something else), I cause confusion, especially around the issue of <em>what is a function</em>, are function <em>total</em> and what is the business with <em>undefined</em>. In this blog post, I want to explain some these issues, aimed at functional programmers or type theoreticians.</p>
+<img align="right" alt="" height="64" src="http://planet.debian.org/heads/nomeata.png" style="float: right;" width="64" />  <p>Often, when I mention how things work in the interactive theorem prover <a href="http://isabelle.in.tum.de/">Isabelle/HOL</a> to people with a strong background in functional programming (whether that means Haskell or Coq or something else), I cause confusion, especially around the issue of <em>what is a function</em>, are function <em>total</em> and what is the business with <em>undefined</em>. In this blog post, I want to explain some these issues, aimed at functional programmers or type theoreticians.</p>
 <p>Note that this is not meant to be a tutorial; I will not explain how to do these things, and will focus on what they mean.</p>
 <h3 id="hol-is-a-logic-of-total-functions">HOL is a logic of total functions</h3>
 <p>If I have a Isabelle function <code>f :: a ⇒ b</code> between two types <code>a</code> and <code>b</code> (the function arrow in Isabelle is <code>⇒</code>, not <code>→</code>), then – by definition of what it means to be a function in HOL – whenever I have a value <code>x :: a</code>, then the expression <code>f x</code> (i.e. <code>f</code> applied to <code>x</code>) <em>is</em> a value of type <code>b</code>. Therefore, and without exception, <em>every Isabelle function is total</em>.</p>
@@ -5383,7 +5383,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Dirk Eddelbuettel: RcppArmadillo 0.8.100.1.0
 Message-ID: http-dirk-eddelbuettel-com-blog-2017-10-11-rcpparmadillo_0-8-100-1-0
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://dirk.eddelbuettel.com/blog/2017/10/11#rcpparmadillo_0.8.100.1.0
@@ -5393,7 +5393,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/dirk.png" width="65" height="90" alt="" align="right" style="float: right;">  <p><img alt="armadillo image" src="http://arma.sourceforge.net/img/armadillo_logo.png" style="float: left; margin: 10px 10px 10px 0;" width="248" /></p>
+<img align="right" alt="" height="90" src="http://planet.debian.org/heads/dirk.png" style="float: right;" width="65" />  <p><img alt="armadillo image" src="http://arma.sourceforge.net/img/armadillo_logo.png" style="float: left; margin: 10px 10px 10px 0;" width="248" /></p>
 <p>We are thrilled to announce a new <em>big</em> <a href="http://dirk.eddelbuettel.com/code/rcpp.armadillo.html">RcppArmadillo</a> release! Conrad recently moved <a href="http://arma.sourceforge.net/">Armadillo</a> to the 8.* series, with significant improvements and speed ups for sparse matrix operations, and more. See below for a brief summary.</p>
 <p>This also required some changes at our end which <a href="https://github.com/binxiangni">Binxiang Ni</a> provided, and <a href="https://github.com/sgsokol">Serguei Sokol</a> improved some instantiations. We now show the new vignette <a href="https://github.com/binxiangni">Binxiang Ni</a> wrote for his GSoC contribution, and I converted it (and the other main vignette) to using the <a href="http://dirk.eddelbuettel.com/code/pinp.html">pinp</a> package for sleeker pdf vignettes.</p>
 <p>This release resumes our bi-monthly CRAN release cycle. I may make interim updates available at GitHub "as needed". And this time I managed to mess up the reverse depends testing, and missed one <code>sync()</code> call on the way back to R---but all that is now taken care of.</p>
@@ -5535,7 +5535,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steve Kemp: A busy week or two
 Message-ID: https-blog-steve-fi-a_busy_week_or_two-html
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.steve.fi/a_busy_week_or_two.html
@@ -5545,7 +5545,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/skx.png" width="76" height="105" alt="" align="right" style="float: right;">  <p>It feels like the past week or two has been very busy, and so I'm looking forward to my "holiday" next month.</p>
+<img align="right" alt="" height="105" src="http://planet.debian.org/heads/skx.png" style="float: right;" width="76" />  <p>It feels like the past week or two has been very busy, and so I'm looking forward to my "holiday" next month.</p>
 
 <p>I'm not really having a holiday of course, my wife is slowly returning to work, so I'll be taking a month of paternity leave, taking
 sole care of Oiva for the month of November.  He's still a little angel, and now that he's reached 10 months old he's starting to
@@ -5656,7 +5656,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: New projects on Hosted Weblate
 Message-ID: https-blog-cihar-com-archives-2017-10-11-new-projects-hosted-weblate-utm_source-rss2
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.cihar.com/archives/2017/10/11/new-projects-hosted-weblate/?utm_source=rss2
@@ -5666,7 +5666,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/nijel.png" width="64" height="67" alt="" align="right" style="float: right;">  <p><a href="http://weblate.org/hosting/">Hosted Weblate</a> provides also free hosting for free software projects. The hosting requests queue has grown too long, so it's time to process it and include new project.</p>
+<img align="right" alt="" height="67" src="http://planet.debian.org/heads/nijel.png" style="float: right;" width="64" />  <p><a href="http://weblate.org/hosting/">Hosted Weblate</a> provides also free hosting for free software projects. The hosting requests queue has grown too long, so it's time to process it and include new project.</p>
 <p>This time, the newly hosted projects include:</p>
 <ul>
 <li><a href="https://hosted.weblate.org/projects/hunspell/translations/">Hunspell</a> - famous spell checker</li>
@@ -5755,7 +5755,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Carl Chenet: The Slack Threat
 Message-ID: https-carlchenet-com-p-5230
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://carlchenet.com/the-slack-threat/
@@ -6069,7 +6069,7 @@ To: to@example.com
 From: Yves-Alexis <corsac@debian.org>
 Subject: Yves-Alexis Perez: OpenPGP smartcard transition (part 1)
 Message-ID: http-www-corsac-net-rub-blog-post-1588
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://www.corsac.net/?rub=blog&post=1588
@@ -6079,7 +6079,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/corsac-planet.png" width="80" height="81" alt="" align="right" style="float: right;">  <p>A <a href="https://www.corsac.net/../index.php?rub=blog&amp;post=1548">long time
+<img align="right" alt="" height="81" src="http://planet.debian.org/heads/corsac-planet.png" style="float: right;" width="80" />  <p>A <a href="https://www.corsac.net/../index.php?rub=blog&amp;post=1548">long time
 ago</a>, I switched my GnuPG setup to a smartcard based one. I kept
 using the same master key, but:</p>
 <ul>
@@ -6238,7 +6238,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Better access control in Weblate
 Message-ID: https-blog-cihar-com-archives-2017-10-09-better-access-control-weblate-utm_source-rss2
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.cihar.com/archives/2017/10/09/better-access-control-weblate/?utm_source=rss2
@@ -6248,7 +6248,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/nijel.png" width="64" height="67" alt="" align="right" style="float: right;">  <p>Upcoming <a href="https://weblate.org/">Weblate 2.17</a> will bring improved access control settings. Previously this could be controlled only by server admins, but now the project visibility and access presets can be configured. </p>
+<img align="right" alt="" height="67" src="http://planet.debian.org/heads/nijel.png" style="float: right;" width="64" />  <p>Upcoming <a href="https://weblate.org/">Weblate 2.17</a> will bring improved access control settings. Previously this could be controlled only by server admins, but now the project visibility and access presets can be configured. </p>
 <p>This allows you to better tweak access control for your needs. There is additional choice of making the project public, but restricting translations, what has been requested by several projects.</p>
 <p>You can see the possible choices on the UI screenshot:</p>
 <p><img alt="Weblate overall experience" src="https://blog.cihar.com/images/blog/2017/weblate-access.png" /></p>
@@ -6311,7 +6311,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Automatic Updates
 Message-ID: https-iain-learmonth-me-blog-2017-2017w412
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://iain.learmonth.me/blog/2017/2017w412/
@@ -6321,7 +6321,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/irl.png" width="80" height="80" alt="" align="right" style="float: right;">  <blockquote class="twitter-tweet"><p dir="ltr" lang="en">The <a href="https://twitter.com/TorAtlas?ref_src=twsrc%5Etfw">@TorAtlas</a> web application will now also prompt operators to update their relays if they are outdated. <a href="https://t.co/HMixwqbBKM">pic.twitter.com/HMixwqbBKM</a></p>— Tor Atlas (@TorAtlas) <a href="https://twitter.com/TorAtlas/status/917212905782865921?ref_src=twsrc%5Etfw">October 9, 2017</a></blockquote>
+<img align="right" alt="" height="80" src="http://planet.debian.org/heads/irl.png" style="float: right;" width="80" />  <blockquote class="twitter-tweet"><p dir="ltr" lang="en">The <a href="https://twitter.com/TorAtlas?ref_src=twsrc%5Etfw">@TorAtlas</a> web application will now also prompt operators to update their relays if they are outdated. <a href="https://t.co/HMixwqbBKM">pic.twitter.com/HMixwqbBKM</a></p>— Tor Atlas (@TorAtlas) <a href="https://twitter.com/TorAtlas/status/917212905782865921?ref_src=twsrc%5Etfw">October 9, 2017</a></blockquote>
 
 
 <p>We have instructions for <a href="https://www.torproject.org/docs/tor-relay-debian.html.en">setting up new Tor relays on
@@ -6498,7 +6498,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Jamie McClelland: Docker in Debian
 Message-ID: http-current-workingdirectory-net-posts-2017-docker-in-debian
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://current.workingdirectory.net/posts/2017/docker-in-debian/
@@ -6704,7 +6704,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Lars Wirzenius: Debian and the GDPR
 Message-ID: http-blog-liw-fi-posts-2017-10-10-debian_and_the_gdpr
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://blog.liw.fi/posts/2017/10/10/debian_and_the_gdpr/
@@ -6714,7 +6714,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/lars.png" width="85" height="100" alt="" align="right" style="float: right;">  <p><a href="https://en.wikipedia.org/wiki/General_Data_Protection_Regulation">GDPR</a> is a new EU regulation for privacy. The name is short for
+<img align="right" alt="" height="100" src="http://planet.debian.org/heads/lars.png" style="float: right;" width="85" />  <p><a href="https://en.wikipedia.org/wiki/General_Data_Protection_Regulation">GDPR</a> is a new EU regulation for privacy. The name is short for
 "General Data Protection Regulation" and it covers all organisations
 that handle personal data of EU citizens and EU residents. It will
 become enforceable May 25, 2018 (<a href="https://en.wikipedia.org/wiki/Towel_Day">Towel Day</a>). This will affect
@@ -6823,7 +6823,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Reproducible builds folks: Reproducible Builds: Weekly report #128
 Message-ID: https-reproducible-alioth-debian-org-blog-posts-128
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://reproducible.alioth.debian.org/blog/posts/128/
@@ -7184,7 +7184,7 @@ To: to@example.com
 From: Vincent Fourmond <noreply@blogger.com>
 Subject: Vincent Fourmond: Define a function with inline Ruby code in QSoas
 Message-ID: tag-blogger-com-1999-blog-3019054489127059271-post-241025559998196415
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://vince-debian.blogspot.com/2017/10/define-function-with-inline-ruby-code.html
@@ -7337,7 +7337,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Markus Koschany: My Free Software Activities in September 2017
 Message-ID: https-gambaru-de-blog-p-10232
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://gambaru.de/blog/2017/10/10/my-free-software-activities-in-september-2017/
@@ -7347,7 +7347,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/apo.png" width="65" height="61" alt="" align="right" style="float: right;">  <p>Welcome to gambaru.de. Here is my monthly report that covers what I have been doing for Debian. If you’re interested in  Java, Games and LTS topics, this might be interesting for you.</p>
+<img align="right" alt="" height="61" src="http://planet.debian.org/heads/apo.png" style="float: right;" width="65" />  <p>Welcome to gambaru.de. Here is my monthly report that covers what I have been doing for Debian. If you’re interested in  Java, Games and LTS topics, this might be interesting for you.</p>
 <h2>Debian Games</h2>
 <ul>
 <li>I sponsored a new release of <a href="https://tracker.debian.org/pkg/hexalate">hexalate</a> for Unit193 and <a href="https://tracker.debian.org/pkg/icebreaker">icebreaker</a> for Andreas Gnau. The latter is a reintroduction.</li>
@@ -7491,7 +7491,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Ben Hutchings: Debian LTS work, September 2017
 Message-ID: https-www-decadent-org-uk-ben-blog-2017-10-09-debian-lts-work-september-2017
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.decadent.org.uk/ben/blog/debian-lts-work-september-2017.html
@@ -7501,7 +7501,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/benh.png" width="109" height="100" alt="" align="right" style="float: right;">  <p>
+<img align="right" alt="" height="100" src="http://planet.debian.org/heads/benh.png" style="float: right;" width="109" />  <p>
   I was assigned 15 hours of work by Freexian's Debian LTS initiative
   and carried over 6 hours from August. I only worked 12 hours, so I
   will carry over 9 hours to the next month.
@@ -7540,7 +7540,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Antonio Terceiro: pristine-tar updates
 Message-ID: http-softwarelivre-org-terceiro-blog-pristine-tar-updates
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://softwarelivre.org/terceiro/blog/pristine-tar-updates
@@ -7721,7 +7721,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Petter Reinholdtsen: Generating 3D prints in Debian using Cura and Slic3r(-prusa)
 Message-ID: http-people-skolelinux-org-pere-blog-generating_3d_prints_in_debian_using_cura_and_slic3r__prusa_-html
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://people.skolelinux.org/pere/blog/Generating_3D_prints_in_Debian_using_Cura_and_Slic3r__prusa_.html
@@ -7821,7 +7821,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Gunnar Wolf: Achievement unlocked - Made with Creative Commons translated to Spanish! (Thanks, @xattack!)
 Message-ID: http-gwolf-org-4113-at-http-gwolf-org
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://gwolf.org/node/4113
@@ -7831,7 +7831,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/gwolf.png" width="69" height="83" alt="" align="right" style="float: right;">  <p>I am very, very, very happy to report this — And I cannot believe we have achieved this so fast:</p>
+<img align="right" alt="" height="83" src="http://planet.debian.org/heads/gwolf.png" style="float: right;" width="69" />  <p>I am very, very, very happy to report this — And I cannot believe we have achieved this so fast:</p>
 <p>Back in June, I <a href="http://gwolf.org/node/4102">announced I'd start working on the translation</a> of the <a href="https://creativecommons.org/made-with-cc/">Made with Creative Commons book</a> into Spanish.</p>
 <p>Over the following few weeks, I worked out the most viable infrastructure, gathered input and commitments for help from a couple of friends, submitted my project for inclusion in the <a href="https://hosted.weblate.org/">Hosted Weblate translations</a> site (and got it approved!)</p>
 <p>Then, we quietly and slowly started working.</p>
@@ -7940,7 +7940,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Free Software Efforts (2017W40)
 Message-ID: https-iain-learmonth-me-blog-2017-2017w40
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://iain.learmonth.me/blog/2017/2017w40/
@@ -7950,7 +7950,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/irl.png" width="80" height="80" alt="" align="right" style="float: right;">  <p>Here’s my weekly report for week 40 of 2017. In this week I have <a href="https://iain.learmonth.me/blog/2017/2017w401/">looked at
+<img align="right" alt="" height="80" src="http://planet.debian.org/heads/irl.png" style="float: right;" width="80" />  <p>Here’s my weekly report for week 40 of 2017. In this week I have <a href="https://iain.learmonth.me/blog/2017/2017w401/">looked at
 censorship in Catalonia</a> and
 <a href="https://iain.learmonth.me/blog/2017/2017w402/">had my “deleted” Facebook account
 hacked</a> (<a href="https://news.ycombinator.com/item?id=15391933">which made HN front
@@ -8105,7 +8105,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michael Stapelberg: Debian stretch on the Raspberry Pi 3 (update)
 Message-ID: https-people-debian-org-stapelberg-2017-10-08-raspberry-pi-3
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://people.debian.org/~stapelberg//2017/10/08/raspberry-pi-3.html
@@ -8233,7 +8233,7 @@ To: to@example.com
 From: Joachim Breitner <mail@joachim-breitner.de>
 Subject: Joachim Breitner: e.g. in TeX
 Message-ID: http-www-joachim-breitner-de-blog-731-e_g__in_tex
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://www.joachim-breitner.de/blog/731-e_g__in_TeX
@@ -8243,7 +8243,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/nomeata.png" width="64" height="64" alt="" align="right" style="float: right;">  <p>When I learned TeX, I was told to not write <code>e.g. something</code>, because TeX would think the period after the “g” ends a sentence, and introduce a wider, inter-sentence space. Instead, I was to write <code>e.g.\␣</code>.</p>
+<img align="right" alt="" height="64" src="http://planet.debian.org/heads/nomeata.png" style="float: right;" width="64" />  <p>When I learned TeX, I was told to not write <code>e.g. something</code>, because TeX would think the period after the “g” ends a sentence, and introduce a wider, inter-sentence space. Instead, I was to write <code>e.g.\␣</code>.</p>
 <p>Years later, I learned from a convincing, but since forgotten source, that in fact <code>e.g.\@</code> is the proper thing to write. I vaguely remembering that <code>e.g.\␣</code> supposedly affected the inter-word space in some unwanted way. So I did that for many years.</p>
 <p>Until I recently was called out for doing it wrong, and that infact <code>e.g.\␣</code> is the proper way. This was supported by <a href="https://tex.stackexchange.com/a/22563/15107">a StackExchange answer</a> written by a LaTeX authority and backed by a reference to documentation. The same question has, however, <a href="https://tex.stackexchange.com/a/22564/15107">another answer</a> by another TeX authority, backed by an analysis of the implementation, which concludes that <code>e.g.\@</code> is proper.</p>
 <p>What now? I guess I just have to find it out myself.</p>
@@ -8352,7 +8352,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Daniel Pocock: A step change in managing your calendar, without social media
 Message-ID: https-danielpocock-com-340-at-https-danielpocock-com
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://danielpocock.com/a-step-change-in-your-calendar
@@ -8362,7 +8362,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/pocock.png" width="65" height="85" alt="" align="right" style="float: right;">  <div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even"><p>Have you been to an event recently involving <a href="https://en.wikipedia.org/wiki/Free_software">free software</a> or a related topic?  How did you find it?  Are you organizing an event and don't want to fall into the trap of using Facebook or Meetup or other services that compete for a share of your community's attention?</p>
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/pocock.png" style="float: right;" width="65" />  <div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even"><p>Have you been to an event recently involving <a href="https://en.wikipedia.org/wiki/Free_software">free software</a> or a related topic?  How did you find it?  Are you organizing an event and don't want to fall into the trap of using Facebook or Meetup or other services that compete for a share of your community's attention?</p>
 <p>Are you keen to find events in foreign destinations related to your interest areas to coincide with other travel intentions?</p>
 <p>Have you been concerned when your <a href="https://danielpocock.com/tags/gsoc">GSoC or Outreachy</a> interns lost a week of their project going through the bureaucracy to get a visa for your community's event?  Would you like to make it easier for them to find the best events in the countries that welcome and respect visitors?</p>
 <p>In many recent discussions about free software activism, people have struggled to break out of the illusion that social media is the way to cultivate new contacts.  Wouldn't it be great to make more meaningful contacts by attending more a more diverse range of events rather <a href="https://danielpocock.com/how-did-the-world-ever-work-without-facebook">than losing time on social media</a>?</p>
@@ -8482,7 +8482,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Ricardo Mones: Cannot enable. Maybe the USB cable is bad?
 Message-ID: https-mones-livejournal-com-116050-html
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://mones.livejournal.com/116050.html
@@ -8492,7 +8492,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/mones.png" width="65" height="85" alt="" align="right" style="float: right;">  One of the reasons which made me switch my old 17" BenQ monitor for a Dell U2413 three years ago was it had an integrated SD card reader. I find very convenient to take camera's card out, plug the card into the monitor and click on KDE device monitor's option “Open with <a href="https://www.digikam.org/" rel="nofollow">digiKam</a>” to download the photos or videos.<br /><br />But last week, when trying to reconnect the USB cable to the new board just didn't work and the kernel log messages were not very hopeful:<br /><br /><pre>[190231.770349] usb 2-2.3.3: new SuperSpeed USB device number 15 using xhci_hcd
+<img align="right" alt="" height="85" src="http://planet.debian.org/heads/mones.png" style="float: right;" width="65" />  One of the reasons which made me switch my old 17" BenQ monitor for a Dell U2413 three years ago was it had an integrated SD card reader. I find very convenient to take camera's card out, plug the card into the monitor and click on KDE device monitor's option “Open with <a href="https://www.digikam.org/" rel="nofollow">digiKam</a>” to download the photos or videos.<br /><br />But last week, when trying to reconnect the USB cable to the new board just didn't work and the kernel log messages were not very hopeful:<br /><br /><pre>[190231.770349] usb 2-2.3.3: new SuperSpeed USB device number 15 using xhci_hcd
 [190231.890439] usb 2-2.3.3: New USB device found, idVendor=0bda, idProduct=0307
 [190231.890444] usb 2-2.3.3: New USB device strings: Mfr=1, Product=2, SerialNumber=3
 [190231.890446] usb 2-2.3.3: Product: USB3.0 Card Reader
@@ -8586,7 +8586,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Tor Relays on Twitter
 Message-ID: https-iain-learmonth-me-blog-2017-2017w407
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://iain.learmonth.me/blog/2017/2017w407/
@@ -8596,7 +8596,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/irl.png" width="80" height="80" alt="" align="right" style="float: right;">  <p>A while ago I played with <a href="https://twitter.com/hamlocator">a Twitter bot</a> that
+<img align="right" alt="" height="80" src="http://planet.debian.org/heads/irl.png" style="float: right;" width="80" />  <p>A while ago I played with <a href="https://twitter.com/hamlocator">a Twitter bot</a> that
 would track <a href="https://en.wikipedia.org/wiki/Amateur_radio">radio amateurs</a> using
 a <a href="http://www.aprs-is.net/">packet radio position reporting system</a>, tweet
 their location and a picture from Flickr that was taken near to their location
@@ -8753,7 +8753,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Thomas Lange: FAI 5.4 enters the embedded world
 Message-ID: http-blog-fai-project-org-posts-fai-5-4
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://blog.fai-project.org/posts/fai-5.4/
@@ -8763,7 +8763,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/mrfai.png" width="76" height="100" alt="" align="right" style="float: right;">  <p>Since DebConf 17 I was working on cross-architecture support for
+<img align="right" alt="" height="100" src="http://planet.debian.org/heads/mrfai.png" style="float: right;" width="76" />  <p>Since DebConf 17 I was working on cross-architecture support for
 FAI. The new FAI release supports creating cross-architecture disk images, for
 e.g. you can build an image for Arm64 (aarch64) on a host running 64-bit
 x86 Linux (amd64) in about 6 minutes.</p>
@@ -8818,7 +8818,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Chris Lamb: python-gfshare: Secret sharing in Python
 Message-ID: https-chris-lamb-co-uk-posts-python-gfshare-secret-sharing-in-python
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://chris-lamb.co.uk/posts/python-gfshare-secret-sharing-in-python
@@ -8828,7 +8828,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/lamby.png" width="70" height="87" alt="" align="right" style="float: right;">  <p>I've just released <a class="reference external" href="https://chris-lamb.co.uk/projects/python-gfshare">python-gfshare</a>, a Python library that implements <a class="reference external" href="https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing">Shamir’s method for secret sharing</a>, a technique to split a "secret" into multiple parts.</p>
+<img align="right" alt="" height="87" src="http://planet.debian.org/heads/lamby.png" style="float: right;" width="70" />  <p>I've just released <a class="reference external" href="https://chris-lamb.co.uk/projects/python-gfshare">python-gfshare</a>, a Python library that implements <a class="reference external" href="https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing">Shamir’s method for secret sharing</a>, a technique to split a "secret" into multiple parts.</p>
 <p>An arbitrary number of those parts are then needed to recover the original file but any smaller combination of parts are useless to an attacker.</p>
 <p>For instance, you might split a GPG key into a “3-of-5” share, putting one share on each of three computers and two shares on a USB memory stick. You can then use the GPG key on any of those three computers using the memory stick.</p>
 <p>If the memory stick is lost you can ultimately recover the key by bringing the three computers back together again.</p>
@@ -8929,7 +8929,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Scarlett Clark: KDE at #UbuntuRally in New York! KDE Applications snaps!
 Message-ID: http-scarlettgatelyclark-com-p-450
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://scarlettgatelyclark.com/2017/kde-at-ubunturally-in-new-york-kde-applications-snaps/
@@ -8984,7 +8984,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Rapha&#235;l Hertzog: My Free Software Activities in September 2017
 Message-ID: https-raphaelhertzog-com-p-3636
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://raphaelhertzog.com/2017/10/06/my-free-software-activities-in-september-2017/
@@ -8994,7 +8994,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/hertzog.png" width="65" height="93" alt="" align="right" style="float: right;">  <p><img alt="" class="alignleft size-medium wp-image-2728" height="300" src="https://raphaelhertzog.com/files/2012/07/activity-report-300x300.jpg" title="Activity report" width="300" />My monthly report covers a large part of what I have been doing in the free software world. I write it for <a href="https://raphaelhertzog.com/go/donate/">my donors</a> (thanks to them!) but also for the wider Debian community because it can give ideas to newcomers and it’s one of the best ways to find volunteers to work with me on projects that matter to me.</p>
+<img align="right" alt="" height="93" src="http://planet.debian.org/heads/hertzog.png" style="float: right;" width="65" />  <p><img alt="" class="alignleft size-medium wp-image-2728" height="300" src="https://raphaelhertzog.com/files/2012/07/activity-report-300x300.jpg" title="Activity report" width="300" />My monthly report covers a large part of what I have been doing in the free software world. I write it for <a href="https://raphaelhertzog.com/go/donate/">my donors</a> (thanks to them!) but also for the wider Debian community because it can give ideas to newcomers and it’s one of the best ways to find volunteers to work with me on projects that matter to me.</p>
 <h3>Debian LTS</h3>
 <p>This month I was allocated 12h but I only spent 10.5h. During this time, I continued my work on exiv2. I finished reproducing all the issues and then went on doing code reviews to confirm that vulnerabilities were not present when the issue was not reproducible. I found two CVE where the vulnerability was present in the wheezy version and I posted patches in the upstream bug tracker: <a href="https://github.com/Exiv2/exiv2/issues/57#issuecomment-333086302">#57</a> and <a href="https://github.com/Exiv2/exiv2/issues/55#issuecomment-332240966">#55</a>.</p>
 <p>Then another batch of 10 CVE appeared and I started the process over… I’m currently trying to reproduce the issues.</p>
@@ -9111,7 +9111,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Ross Gammon: My FOSS activities for August & September 2017
 Message-ID: http-rossgammon68-wordpress-com-p-1652
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://rossgammon68.wordpress.com/2017/10/05/my-foss-activities-for-august-september-2017/
@@ -9121,7 +9121,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/rosco.png" width="100" height="75" alt="" align="right" style="float: right;">  <div class="entry-content">
+<img align="right" alt="" height="75" src="http://planet.debian.org/heads/rosco.png" style="float: right;" width="100" />  <div class="entry-content">
 <div class="entry-content">
 <div class="entry-content">
 <p>I am writing this from my hotel room in Bologna, Italy before going out for a pizza. After a successful Factory Acceptance Test today, I might also allow myself to celebrate with a beer. But anyway, here is what I have been up to in the FLOSS world for the last month and a bit.</p>
@@ -9216,7 +9216,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Wouter Verhelst: Patching Firefox
 Message-ID: https-grep-be-blog-en-computer-code-patching_firefox
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://grep.be/blog//en/computer/code/Patching_Firefox/
@@ -9226,7 +9226,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/wouter3.png" width="85" height="80" alt="" align="right" style="float: right;">  <p>At work, I help maintain a <a href="https://eid.belgium.be">smartcard</a>
+<img align="right" alt="" height="80" src="http://planet.debian.org/heads/wouter3.png" style="float: right;" width="85" />  <p>At work, I help maintain a <a href="https://eid.belgium.be">smartcard</a>
 <a href="https://github.com/Fedict/eid-mw">middleware</a> that is provided to
 Belgian citizens who want to use their electronic ID card to, e.g., log
 on to government websites. This middleware is a piece of software that
@@ -9394,7 +9394,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steve Kemp: Tracking aircraft in real-time, via software-defined-radio
 Message-ID: https-blog-steve-fi-tracking_aircraft_in_real_time__via_software_defined_radio-html
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.steve.fi/tracking_aircraft_in_real_time__via_software_defined_radio.html
@@ -9404,7 +9404,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-<img src="http://planet.debian.org/heads/skx.png" width="76" height="105" alt="" align="right" style="float: right;">  <p>So my last blog-post was about creating a digital-radio, powered by an ESP8266 device, there's a joke there about wireless-control of a wireless.  I'm not going to make it.</p>
+<img align="right" alt="" height="105" src="http://planet.debian.org/heads/skx.png" style="float: right;" width="76" />  <p>So my last blog-post was about creating a digital-radio, powered by an ESP8266 device, there's a joke there about wireless-control of a wireless.  I'm not going to make it.</p>
 
 <p>Sticking with a theme <em>this</em> post is also about radio, <a href="https://en.wikipedia.org/wiki/Software-defined_radio">software-defined radio</a>.  I know almost nothing about SDR, except that it can be used to let your computer "do stuff" with radio.  The only application I've ever read about that seemed interesting was tracking aircraft.</p>
 
@@ -9601,7 +9601,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Daniel Silverstone: F/LOSS (in)activity, September 2017
 Message-ID: http-blog-digital-scurf-org-posts-floss-activity-2017-09
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://blog.digital-scurf.org/posts/floss-activity-2017-09/
@@ -9611,7 +9611,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/kinnison.png" width="75" height="96" alt="" align="right" style="float: right;">  <blockquote>
+<img align="right" alt="" height="96" src="http://planet.debian.org/heads/kinnison.png" style="float: right;" width="75" />  <blockquote>
   <p>In the interests of keeping myself "honest" regarding F/LOSS activity, here's
   a report, sadly it's not very good.</p>
 </blockquote>
@@ -9668,7 +9668,7 @@ To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Dirk Eddelbuettel: RProtoBuf 0.4.11
 Message-ID: http-dirk-eddelbuettel-com-blog-2017-10-03-rprotobuf_0-4-11
-User-Agent: feed2exec (0.8.0)
+User-Agent: feed2exec (0.17.2.dev12+ge589a97)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://dirk.eddelbuettel.com/blog/2017/10/03#rprotobuf_0.4.11
@@ -9678,7 +9678,7 @@ Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-<img src="http://planet.debian.org/heads/dirk.png" width="65" height="90" alt="" align="right" style="float: right;">  <p><a href="http://dirk.eddelbuettel.com/code/rprotobuf.html">RProtoBuf</a> provides <a href="http://www.r-project.org">R</a> bindings for the <a href="https://github.com/google/protobuf">Google Protocol Buffers ("ProtoBuf")</a> data encoding and serialization library used and released by Google, and deployed fairly widely in numerous projects as a language and operating-system agnostic protocol.</p>
+<img align="right" alt="" height="90" src="http://planet.debian.org/heads/dirk.png" style="float: right;" width="65" />  <p><a href="http://dirk.eddelbuettel.com/code/rprotobuf.html">RProtoBuf</a> provides <a href="http://www.r-project.org">R</a> bindings for the <a href="https://github.com/google/protobuf">Google Protocol Buffers ("ProtoBuf")</a> data encoding and serialization library used and released by Google, and deployed fairly widely in numerous projects as a language and operating-system agnostic protocol.</p>
 <p>A new releases <a href="http://dirk.eddelbuettel.com/code/rprotobuf.html">RProtoBuf 0.4.11</a> appeared on <a>CRAN</a> earlier today. Not unlike the other recent releases, it is mostly a maintenance release which switches two of the vignettes over to using the <a href="http://dirk.eddelbuettel.com/code/pinp.html">pinp</a> package and its template for vignettes.</p>
 <blockquote>
 <h4 id="changes-in-rprotobuf-version-0.4.11-2017-10-03">Changes in RProtoBuf version 0.4.11 (2017-10-03)</h4>

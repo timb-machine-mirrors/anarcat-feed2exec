@@ -1,9 +1,4 @@
-include:
-  - template: Security/SAST.gitlab-ci.yml
-
 variables:
-  SAST_EXCLUDED_ANALYZERS: "eslint"
-  SAST_EXCLUDED_PATHS: ".eggs/*"
   LC_ALL: "C.UTF-8"
   LANG: "C.UTF-8"
 
@@ -40,10 +35,10 @@ test:
   parallel:
     matrix:
       - IMAGE:
-          - python:3.5
           - python:3.6
           - python:3.7
           - python:3.8
+          - python:3.9
   image: $IMAGE
 
 flake8:

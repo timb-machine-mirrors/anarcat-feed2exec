@@ -36,6 +36,7 @@ import feed2exec.plugins as plugins
 import feed2exec.utils as utils
 from feed2exec.model import Feed, FeedConfStorage, FeedContentCacheStorage, FeedItemCacheStorage
 import feedparser
+from pkg_resources import parse_version
 import requests
 import requests_file
 try:
@@ -67,12 +68,16 @@ class FeedManager(object):
         self.db_path = db_path
         self.conf_storage = FeedConfStorage(self.conf_path, pattern=pattern)
         if dateparser:
-            def dateparser_tuple_parser(string):
-                if string.endswith('-0000'):
-                    # workaround bug https://github.com/scrapinghub/dateparser/issues/548
-                    # replace the last '-0000' with '+0000' by reversing the string twice
-                    string = string[::-1].replace('-0000'[::-1], '+0000'[::-1], 1)[::-1]
-                return dateparser.parse(string).utctimetuple()
+            if parse_version(dateparser.__version__) >= parse_version('0.7.4'):
+                def dateparser_tuple_parser(string):
+                    return dateparser.parse(string).utctimetuple()
+            else:
+                # workaround bug https://github.com/scrapinghub/dateparser/issues/548
+                def dateparser_tuple_parser(string):
+                    if string.endswith('-0000'):
+                        # replace the last '-0000' with '+0000' by reversing the string twice
+                        string = string[::-1].replace('-0000'[::-1], '+0000'[::-1], 1)[::-1]
+                    return dateparser.parse(string).utctimetuple()
             feedparser.registerDateHandler(dateparser_tuple_parser)
 
         self._session = session or requests.Session()
