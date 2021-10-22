@@ -29,9 +29,8 @@ before_script:
 # the main test suite, for each python version
 test:
   extends: .tox
-  # match this list of python versions with the classifiers variable
-  # in setup.py. see also the list in .gitlab-ci.yml, which is
-  # specific to the docker container running the tests
+  # match this list of python versions with the "classifiers" and
+  # "requires_python" variables in setup.cfg.
   parallel:
     matrix:
       - IMAGE:
