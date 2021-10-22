@@ -193,10 +193,12 @@ To make a release:
 
 4. build and test the Python package::
 
-       python3 setup.py bdist_wheel
+       python3 -m build
        sudo pip3 install dist/*.whl
        feed2exec --version
        sudo pip3 uninstall feed2exec
+
+   .. note:: the `build` module might require an install.
 
 5. build and test the debian package::
 
