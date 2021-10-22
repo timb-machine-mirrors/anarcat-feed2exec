@@ -47,10 +47,10 @@ classifiers = [
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
     # this list should match the Python images in .gitlab-ci.yml
-    'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
     'Topic :: Communications :: Email',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: News/Diary',
     'Topic :: Text Processing :: Markup :: HTML',
