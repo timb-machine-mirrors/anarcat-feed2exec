@@ -25,7 +25,8 @@ from datetime import datetime
 try:
     from lxml import etree
 except ImportError:  # pragma: nocover
-    import xml.etree.ElementTree as etree
+    # stdlib
+    import xml.etree.ElementTree as etree   # type: ignore
 import logging
 import multiprocessing
 import os
@@ -46,8 +47,9 @@ except ImportError:
 
 try:
     import dateparser
+    dateparser_enabled = True
 except ImportError:
-    dateparser = False
+    dateparser_enabled = False
 
 
 class FeedManager(object):
@@ -67,7 +69,7 @@ class FeedManager(object):
         self.conf_path = conf_path
         self.db_path = db_path
         self.conf_storage = FeedConfStorage(self.conf_path, pattern=pattern)
-        if dateparser:
+        if dateparser_enabled:
             if parse_version(dateparser.__version__) >= parse_version('0.7.4'):
                 def dateparser_tuple_parser(string):
                     return dateparser.parse(string).utctimetuple()

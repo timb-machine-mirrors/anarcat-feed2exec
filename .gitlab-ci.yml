@@ -51,3 +51,8 @@ black:
   variables:
     TOXENV: black
   allow_failure: true
+
+mypy:
+  extends: .tox
+  variables:
+    TOXENV: mypy

@@ -8,7 +8,7 @@ try:  # pragma nocover
     import unittest.mock as mock
 except ImportError:  # pragma nocover
     # py2
-    import mock
+    import mock  # type: ignore
 import os
 import os.path
 from pkg_resources import parse_version

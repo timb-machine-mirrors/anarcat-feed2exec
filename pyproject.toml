@@ -1,0 +1,15 @@
+# no stub files for those third-party libraries on typeshed
+[[tool.mypy.overrides]]
+module = [
+  "betamax",
+  "cachecontrol",
+  "feedparser",
+  "html2text",
+  "pytest",
+  "requests_file",
+  "setuptools_scm",
+  "unidecode",
+  "xdg",
+  "xdg.BaseDirectory",
+]
+ignore_missing_imports = true

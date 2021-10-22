@@ -20,11 +20,13 @@
 from __future__ import division, absolute_import
 from __future__ import print_function
 
+from typing import Optional, Dict
+
 try:
     import configparser
 except ImportError:  # pragma: nocover
     # py2: should never happen as we depend on the newer one in setup.py
-    import ConfigParser as configparser
+    import ConfigParser as configparser  # type: ignore
 from collections import OrderedDict, namedtuple
 from contextlib import contextmanager
 from datetime import datetime
@@ -35,7 +37,7 @@ try:
     import urllib.parse as urlparse
 except ImportError:  # pragma: nocover
     # py2
-    import urlparse
+    import urlparse  # type: ignore
 import warnings
 
 import feed2exec
@@ -272,11 +274,11 @@ class FeedConfStorage(configparser.RawConfigParser):
 
 
 class SqliteStorage(object):
-    sql = None
+    sql: Optional[str] = None
     record = None
-    cache = {}
-    locks = {}
-    table_name = None
+    cache: Dict[str, sqlite3.Connection] = {}
+    locks: Dict[str, Lock] = {}
+    table_name: Optional[str] = None
     key_name = 'key'
     value_name = 'value'
 
