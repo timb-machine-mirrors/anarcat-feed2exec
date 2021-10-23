@@ -55,3 +55,4 @@ mypy:
   extends: .tox
   variables:
     TOXENV: mypy
+  allow_failure: true
