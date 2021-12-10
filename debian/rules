@@ -3,6 +3,10 @@
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/default.mk
 
+# disable network tests in Debian package build
+PYTEST_USENETWORK?=no
+export PYTEST_USENETWORK
+
 %:
 	dh $@  --with=python3,sphinxdoc --buildsystem=pybuild
 

@@ -344,7 +344,7 @@ class SqliteStorage(object):
                               % (self.value_name, self.table_name, self.key_name), (key, )).fetchone()
             return val[0] if val else None
 
-    def set(self, key, value):
+    def set(self, key, value, expires=None):
         with self.connection() as con:
             con.execute("INSERT OR REPLACE INTO `%s` (`%s`, `%s`) VALUES (?, ?)"
                         % (self.table_name, self.key_name, self.value_name),

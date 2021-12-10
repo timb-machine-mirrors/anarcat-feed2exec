@@ -29,6 +29,14 @@ def feed_manager(tmpdir_factory, betamax_parametrized_session):
     return FeedManager(str(conf_path), str(db_path), session=betamax_parametrized_session)
 
 
+@pytest.fixture()
+def feed_manager_networked(tmpdir_factory):
+    """like feed_manager, but doing actual network requests"""
+    conf_path = tmpdir_factory.mktemp('config').join('feed2exex.ini')
+    db_path = tmpdir_factory.mktemp('db').join('feed2exec.db')
+    return FeedManager(str(conf_path), str(db_path))
+
+
 @pytest.fixture(autouse=True)
 def static_boundary(monkeypatch):
     monkeypatch.setattr(feed2exec.email, 'boundary',
