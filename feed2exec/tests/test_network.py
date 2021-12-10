@@ -36,6 +36,8 @@ import pytest
 def test_cachecontrol(feed_manager_networked):  # noqa: F811
     """test for https://gitlab.com/anarcat/feed2exec/-/issues/22"""
     f = Feed('test', {
+        # this URL *MUST* send Expires header to trigger the
+        # interoperability bug between feed2exec and cachecontrol
         'url': 'https://anarc.at/blog/index.rss',
         'output': None,
         'args': None,
