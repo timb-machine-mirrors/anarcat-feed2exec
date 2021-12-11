@@ -5,8 +5,8 @@ Date: Thu, 19 Oct 2017 17:45:29 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steinar H. Gunderson: Introducing Narabu, part 2: Meet the GPU
-Message-ID: http-blog-sesse-net-blog-tech-2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu-html
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-blog-sesse-net-blog-tech-2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu-html>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://blog.sesse.net/blog/tech/2017-10-19-19-16_introducing_narabu_part_2_meet_the_gpu.html
@@ -243,8 +243,8 @@ Date: Thu, 19 Oct 2017 14:21:14 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Analysing Debian packages with Neo4j
-Message-ID: https-www-preining-info-blog-p-6831
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-www-preining-info-blog-p-6831>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.preining.info/blog/2017/10/analysing-debian-packages-with-neo4j/
@@ -294,8 +294,8 @@ Date: Thu, 19 Oct 2017 08:33:31 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Daniel Pocock: FOSDEM 2018 Real-Time Communications Call for Participation
-Message-ID: https-danielpocock-com-341-at-https-danielpocock-com
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-danielpocock-com-341-at-https-danielpocock-com>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://danielpocock.com/fosdem-2018-rtc-cfp
@@ -590,8 +590,8 @@ Date: Wed, 18 Oct 2017 19:31:14 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Joey Hess: extending Scuttlebutt with Annah
-Message-ID: http-joeyh-name-blog-entry-extending_scuttlebutt_with_annah
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-joeyh-name-blog-entry-extending_scuttlebutt_with_annah>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://joeyh.name/blog/entry/extending_Scuttlebutt_with_Annah/
@@ -1014,8 +1014,8 @@ Date: Wed, 18 Oct 2017 10:00:19 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Gammu 1.38.5
-Message-ID: https-blog-cihar-com-archives-2017-10-18-gammu-1385-utm_source-rss2
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-blog-cihar-com-archives-2017-10-18-gammu-1385-utm_source-rss2>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.cihar.com/archives/2017/10/18/gammu-1385/?utm_source=rss2
@@ -1078,8 +1078,8 @@ Date: Wed, 18 Oct 2017 08:25:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steinar H. Gunderson: Introducing Narabu, part 1: Introduction
-Message-ID: http-blog-sesse-net-blog-tech-2017-10-18-09-25_introducing_narabu_part_1_introduction-html
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-blog-sesse-net-blog-tech-2017-10-18-09-25_introducing_narabu_part_1_introduction-html>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://blog.sesse.net/blog/tech/2017-10-18-09-25_introducing_narabu_part_1_introduction.html
@@ -1258,8 +1258,8 @@ Date: Wed, 18 Oct 2017 00:54:15 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Kobo firmware 4.6.9995 mega update (KSM, nickel patch, ssh, fonts)
-Message-ID: https-www-preining-info-blog-p-6827
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-www-preining-info-blog-p-6827>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.preining.info/blog/2017/10/kobo-firmware-4-6-9995-mega-update-ksm-nickel-patch-ssh-fonts/
@@ -1576,8 +1576,8 @@ Date: Tue, 17 Oct 2017 20:21:28 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Sune Vuorela: KDE still makes Qt
-Message-ID: http-pusling-com-blog-p-448
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-pusling-com-blog-p-448>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://pusling.com/blog/?p=448
@@ -1624,8 +1624,8 @@ Date: Tue, 17 Oct 2017 19:29:02 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Reproducible builds folks: Reproducible Builds: Weekly report #129
-Message-ID: https-reproducible-alioth-debian-org-blog-posts-129
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-reproducible-alioth-debian-org-blog-posts-129>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://reproducible.alioth.debian.org/blog/posts/129/
@@ -2041,8 +2041,8 @@ Date: Tue, 17 Oct 2017 11:33:56 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Jonathan Dowland: Electric Dreams
-Message-ID: http-jmtd-net-log-electric_dreams
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-jmtd-net-log-electric_dreams>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://jmtd.net/log/electric_dreams/
@@ -2197,8 +2197,8 @@ Date: Tue, 17 Oct 2017 05:38:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Russ Allbery: Bundle haul
-Message-ID: https-www-eyrie-org-eagle-journal-2017-10-002-html
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-www-eyrie-org-eagle-journal-2017-10-002-html>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.eyrie.org/~eagle/journal/2017-10/002.html
@@ -2491,8 +2491,8 @@ Date: Tue, 17 Oct 2017 05:22:48 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Japanese TeX User Meeting 2017
-Message-ID: https-www-preining-info-blog-p-6823
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-www-preining-info-blog-p-6823>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.preining.info/blog/2017/10/japanese-tex-user-meeting-2017/
@@ -2606,8 +2606,8 @@ Date: Tue, 17 Oct 2017 05:10:20 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Fran=C3=A7ois_Marier=3A_Checking_Your_Passwords_Against_the_Have_I_Been_Pwned_List?=
-Message-ID: http-feeding-cloud-geek-nz-posts-checking-your-passwords-against-hibp
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-feeding-cloud-geek-nz-posts-checking-your-passwords-against-hibp>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://feeding.cloud.geek.nz/posts/checking-your-passwords-against-hibp/
@@ -2689,8 +2689,8 @@ Date: Mon, 16 Oct 2017 18:23:45 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Gustavo Noronha Silva: Who knew we still had low-hanging fruits?
-Message-ID: https-blog-kov-eti-br-p-402
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-blog-kov-eti-br-p-402>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.kov.eti.br/2017/10/who-knew-we-still-had-low-hanging-fruits/
@@ -2816,8 +2816,8 @@ Date: Mon, 16 Oct 2017 15:32:01 -0000
 To: to@example.com
 From: Yves-Alexis <corsac@debian.org>
 Subject: Yves-Alexis Perez: OpenPGP smartcard transition (part 1.5)
-Message-ID: http-www-corsac-net-rub-blog-post-1589
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-www-corsac-net-rub-blog-post-1589>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://www.corsac.net/?rub=blog&post=1589
@@ -2868,8 +2868,8 @@ Date: Mon, 16 Oct 2017 08:00:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: No more no surprises
-Message-ID: https-iain-learmonth-me-blog-2017-2017w421
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-iain-learmonth-me-blog-2017-2017w421>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://iain.learmonth.me/blog/2017/2017w421/
@@ -3001,8 +3001,8 @@ Date: Mon, 16 Oct 2017 04:47:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Russ Allbery: Free software log (September 2017)
-Message-ID: https-www-eyrie-org-eagle-journal-2017-10-001-html
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-www-eyrie-org-eagle-journal-2017-10-001-html>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.eyrie.org/~eagle/journal/2017-10/001.html
@@ -3247,8 +3247,8 @@ Date: Mon, 16 Oct 2017 01:18:39 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: Fixing vim in Debian
-Message-ID: https-www-preining-info-blog-p-6814
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-www-preining-info-blog-p-6814>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.preining.info/blog/2017/10/fixing-vim-in-debian/
@@ -3361,8 +3361,8 @@ Date: Sun, 15 Oct 2017 22:00:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Free Software Efforts (2017W41)
-Message-ID: https-iain-learmonth-me-blog-2017-2017w41
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-iain-learmonth-me-blog-2017-2017w41>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://iain.learmonth.me/blog/2017/2017w41/
@@ -3614,8 +3614,8 @@ Date: Sun, 15 Oct 2017 01:32:53 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Norbert Preining: TeX Live Manager: JSON output
-Message-ID: https-www-preining-info-blog-p-6806
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-www-preining-info-blog-p-6806>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.preining.info/blog/2017/10/tex-live-manager-json-output/
@@ -3826,8 +3826,8 @@ Date: Sat, 14 Oct 2017 22:15:50 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Lior Kaplan: Debian Installer git repository
-Message-ID: http-liorkaplan-wordpress-com-p-620
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-liorkaplan-wordpress-com-p-620>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://liorkaplan.wordpress.com/2017/10/15/debian-installer-git-repository/
@@ -3892,8 +3892,8 @@ Date: Sat, 14 Oct 2017 20:10:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Petter Reinholdtsen: A one-way wall on the border?
-Message-ID: http-people-skolelinux-org-pere-blog-a_one_way_wall_on_the_border_-html
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-people-skolelinux-org-pere-blog-a_one_way_wall_on_the_border_-html>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://people.skolelinux.org/pere/blog/A_one_way_wall_on_the_border_.html
@@ -3947,8 +3947,8 @@ Date: Fri, 13 Oct 2017 18:47:36 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Alex Muntada: My Free Software Activities in Jul-Sep 2017
-Message-ID: http-log-alexm-org-p-487
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-log-alexm-org-p-487>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://log.alexm.org/2017/10/13/my-free-software-ativities-in-jul-sep-2017/
@@ -4059,8 +4059,8 @@ Date: Fri, 13 Oct 2017 14:29:00 -0000
 To: to@example.com
 From: =?utf-8?q?Lisandro_Dami=C3=A1n_Nicanor_P=C3=A9rez_Meyer?= <noreply@blogger.com>
 Subject: =?utf-8?q?Lisandro_Dami=C3=A1n_Nicanor_P=C3=A9rez_Meyer=3A_Qt_4_and_5_and_OpenSSL1=2E0_removal?=
-Message-ID: tag-blogger-com-1999-blog-6357172297737057475-post-4876329106387979395
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <tag-blogger-com-1999-blog-6357172297737057475-post-4876329106387979395>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://perezmeyer.blogspot.com/2017/10/qt-4-and-5-and-oepnssl10-removal.html
@@ -4119,8 +4119,8 @@ Date: Fri, 13 Oct 2017 13:00:19 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Weblate 2.17
-Message-ID: https-blog-cihar-com-archives-2017-10-13-weblate-217-utm_source-rss2
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-blog-cihar-com-archives-2017-10-13-weblate-217-utm_source-rss2>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.cihar.com/archives/2017/10/13/weblate-217/?utm_source=rss2
@@ -4250,8 +4250,8 @@ Date: Fri, 13 Oct 2017 11:58:45 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: =?utf-8?q?Shirish_Agarwal=3A_I_need_to_speak_up_now_X_=E2=80=93_Economics?=
-Message-ID: http-flossexperiences-wordpress-com-p-4100
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-flossexperiences-wordpress-com-p-4100>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://flossexperiences.wordpress.com/2017/10/13/i-need-to-speak-up-now-x-economics/
@@ -4653,8 +4653,8 @@ Date: Fri, 13 Oct 2017 04:00:19 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Using Trezor to store cryptocurencies
-Message-ID: https-blog-cihar-com-archives-2017-10-13-using-trezor-store-cryptocurencies-utm_source-rss2
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-blog-cihar-com-archives-2017-10-13-using-trezor-store-cryptocurencies-utm_source-rss2>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.cihar.com/archives/2017/10/13/using-trezor-store-cryptocurencies/?utm_source=rss2
@@ -4729,8 +4729,8 @@ Date: Fri, 13 Oct 2017 02:45:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Dirk Eddelbuettel: GitHub Streak: Round Four
-Message-ID: http-dirk-eddelbuettel-com-blog-2017-10-12-github_oct2016_oct2017
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-dirk-eddelbuettel-com-blog-2017-10-12-github_oct2016_oct2017>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://dirk.eddelbuettel.com/blog/2017/10/12#github_oct2016_oct2017
@@ -4824,8 +4824,8 @@ Date: Thu, 12 Oct 2017 17:54:20 -0000
 To: to@example.com
 From: Joachim Breitner <mail@joachim-breitner.de>
 Subject: Joachim Breitner: Isabelle functions: Always total, sometimes undefined
-Message-ID: http-www-joachim-breitner-de-blog-732-isabelle_functions__always_total-2c_sometimes_undefined
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-www-joachim-breitner-de-blog-732-isabelle_functions__always_total-2c_sometimes_undefined>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://www.joachim-breitner.de/blog/732-Isabelle_functions__Always_total%2C_sometimes_undefined
@@ -5382,8 +5382,8 @@ Date: Thu, 12 Oct 2017 02:13:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Dirk Eddelbuettel: RcppArmadillo 0.8.100.1.0
-Message-ID: http-dirk-eddelbuettel-com-blog-2017-10-11-rcpparmadillo_0-8-100-1-0
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-dirk-eddelbuettel-com-blog-2017-10-11-rcpparmadillo_0-8-100-1-0>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://dirk.eddelbuettel.com/blog/2017/10/11#rcpparmadillo_0.8.100.1.0
@@ -5534,8 +5534,8 @@ Date: Wed, 11 Oct 2017 21:00:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steve Kemp: A busy week or two
-Message-ID: https-blog-steve-fi-a_busy_week_or_two-html
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-blog-steve-fi-a_busy_week_or_two-html>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.steve.fi/a_busy_week_or_two.html
@@ -5655,8 +5655,8 @@ Date: Wed, 11 Oct 2017 16:00:18 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: New projects on Hosted Weblate
-Message-ID: https-blog-cihar-com-archives-2017-10-11-new-projects-hosted-weblate-utm_source-rss2
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-blog-cihar-com-archives-2017-10-11-new-projects-hosted-weblate-utm_source-rss2>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.cihar.com/archives/2017/10/11/new-projects-hosted-weblate/?utm_source=rss2
@@ -5754,8 +5754,8 @@ Date: Tue, 10 Oct 2017 22:00:40 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Carl Chenet: The Slack Threat
-Message-ID: https-carlchenet-com-p-5230
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-carlchenet-com-p-5230>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://carlchenet.com/the-slack-threat/
@@ -6068,8 +6068,8 @@ Date: Tue, 10 Oct 2017 20:44:37 -0000
 To: to@example.com
 From: Yves-Alexis <corsac@debian.org>
 Subject: Yves-Alexis Perez: OpenPGP smartcard transition (part 1)
-Message-ID: http-www-corsac-net-rub-blog-post-1588
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-www-corsac-net-rub-blog-post-1588>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://www.corsac.net/?rub=blog&post=1588
@@ -6237,8 +6237,8 @@ Date: Tue, 10 Oct 2017 18:45:37 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michal &#268;iha&#345;: Better access control in Weblate
-Message-ID: https-blog-cihar-com-archives-2017-10-09-better-access-control-weblate-utm_source-rss2
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-blog-cihar-com-archives-2017-10-09-better-access-control-weblate-utm_source-rss2>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.cihar.com/archives/2017/10/09/better-access-control-weblate/?utm_source=rss2
@@ -6310,8 +6310,8 @@ Date: Tue, 10 Oct 2017 18:00:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Automatic Updates
-Message-ID: https-iain-learmonth-me-blog-2017-2017w412
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-iain-learmonth-me-blog-2017-2017w412>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://iain.learmonth.me/blog/2017/2017w412/
@@ -6497,8 +6497,8 @@ Date: Tue, 10 Oct 2017 16:07:53 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Jamie McClelland: Docker in Debian
-Message-ID: http-current-workingdirectory-net-posts-2017-docker-in-debian
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-current-workingdirectory-net-posts-2017-docker-in-debian>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://current.workingdirectory.net/posts/2017/docker-in-debian/
@@ -6703,8 +6703,8 @@ Date: Tue, 10 Oct 2017 15:11:57 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Lars Wirzenius: Debian and the GDPR
-Message-ID: http-blog-liw-fi-posts-2017-10-10-debian_and_the_gdpr
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-blog-liw-fi-posts-2017-10-10-debian_and_the_gdpr>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://blog.liw.fi/posts/2017/10/10/debian_and_the_gdpr/
@@ -6822,8 +6822,8 @@ Date: Tue, 10 Oct 2017 08:08:10 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Reproducible builds folks: Reproducible Builds: Weekly report #128
-Message-ID: https-reproducible-alioth-debian-org-blog-posts-128
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-reproducible-alioth-debian-org-blog-posts-128>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://reproducible.alioth.debian.org/blog/posts/128/
@@ -7183,8 +7183,8 @@ Date: Mon, 09 Oct 2017 22:31:50 -0000
 To: to@example.com
 From: Vincent Fourmond <noreply@blogger.com>
 Subject: Vincent Fourmond: Define a function with inline Ruby code in QSoas
-Message-ID: tag-blogger-com-1999-blog-3019054489127059271-post-241025559998196415
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <tag-blogger-com-1999-blog-3019054489127059271-post-241025559998196415>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://vince-debian.blogspot.com/2017/10/define-function-with-inline-ruby-code.html
@@ -7336,8 +7336,8 @@ Date: Mon, 09 Oct 2017 22:18:12 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Markus Koschany: My Free Software Activities in September 2017
-Message-ID: https-gambaru-de-blog-p-10232
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-gambaru-de-blog-p-10232>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://gambaru.de/blog/2017/10/10/my-free-software-activities-in-september-2017/
@@ -7490,8 +7490,8 @@ Date: Mon, 09 Oct 2017 16:25:52 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Ben Hutchings: Debian LTS work, September 2017
-Message-ID: https-www-decadent-org-uk-ben-blog-2017-10-09-debian-lts-work-september-2017
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-www-decadent-org-uk-ben-blog-2017-10-09-debian-lts-work-september-2017>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://www.decadent.org.uk/ben/blog/debian-lts-work-september-2017.html
@@ -7539,8 +7539,8 @@ Date: Mon, 09 Oct 2017 15:06:22 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Antonio Terceiro: pristine-tar updates
-Message-ID: http-softwarelivre-org-terceiro-blog-pristine-tar-updates
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-softwarelivre-org-terceiro-blog-pristine-tar-updates>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://softwarelivre.org/terceiro/blog/pristine-tar-updates
@@ -7720,8 +7720,8 @@ Date: Mon, 09 Oct 2017 08:50:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Petter Reinholdtsen: Generating 3D prints in Debian using Cura and Slic3r(-prusa)
-Message-ID: http-people-skolelinux-org-pere-blog-generating_3d_prints_in_debian_using_cura_and_slic3r__prusa_-html
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-people-skolelinux-org-pere-blog-generating_3d_prints_in_debian_using_cura_and_slic3r__prusa_-html>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://people.skolelinux.org/pere/blog/Generating_3D_prints_in_Debian_using_Cura_and_Slic3r__prusa_.html
@@ -7820,8 +7820,8 @@ Date: Mon, 09 Oct 2017 04:05:27 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Gunnar Wolf: Achievement unlocked - Made with Creative Commons translated to Spanish! (Thanks, @xattack!)
-Message-ID: http-gwolf-org-4113-at-http-gwolf-org
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-gwolf-org-4113-at-http-gwolf-org>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://gwolf.org/node/4113
@@ -7939,8 +7939,8 @@ Date: Sun, 08 Oct 2017 22:00:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Free Software Efforts (2017W40)
-Message-ID: https-iain-learmonth-me-blog-2017-2017w40
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-iain-learmonth-me-blog-2017-2017w40>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://iain.learmonth.me/blog/2017/2017w40/
@@ -8104,8 +8104,8 @@ Date: Sun, 08 Oct 2017 20:45:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Michael Stapelberg: Debian stretch on the Raspberry Pi 3 (update)
-Message-ID: https-people-debian-org-stapelberg-2017-10-08-raspberry-pi-3
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-people-debian-org-stapelberg-2017-10-08-raspberry-pi-3>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://people.debian.org/~stapelberg//2017/10/08/raspberry-pi-3.html
@@ -8232,8 +8232,8 @@ Date: Sun, 08 Oct 2017 19:08:13 -0000
 To: to@example.com
 From: Joachim Breitner <mail@joachim-breitner.de>
 Subject: Joachim Breitner: e.g. in TeX
-Message-ID: http-www-joachim-breitner-de-blog-731-e_g__in_tex
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-www-joachim-breitner-de-blog-731-e_g__in_tex>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://www.joachim-breitner.de/blog/731-e_g__in_TeX
@@ -8351,8 +8351,8 @@ Date: Sun, 08 Oct 2017 17:36:49 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Daniel Pocock: A step change in managing your calendar, without social media
-Message-ID: https-danielpocock-com-340-at-https-danielpocock-com
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-danielpocock-com-340-at-https-danielpocock-com>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://danielpocock.com/a-step-change-in-your-calendar
@@ -8481,8 +8481,8 @@ Date: Sun, 08 Oct 2017 16:17:09 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Ricardo Mones: Cannot enable. Maybe the USB cable is bad?
-Message-ID: https-mones-livejournal-com-116050-html
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-mones-livejournal-com-116050-html>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://mones.livejournal.com/116050.html
@@ -8585,8 +8585,8 @@ Date: Sun, 08 Oct 2017 14:00:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Iain R. Learmonth: Tor Relays on Twitter
-Message-ID: https-iain-learmonth-me-blog-2017-2017w407
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-iain-learmonth-me-blog-2017-2017w407>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://iain.learmonth.me/blog/2017/2017w407/
@@ -8752,8 +8752,8 @@ Date: Sun, 08 Oct 2017 13:05:34 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Thomas Lange: FAI 5.4 enters the embedded world
-Message-ID: http-blog-fai-project-org-posts-fai-5-4
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-blog-fai-project-org-posts-fai-5-4>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://blog.fai-project.org/posts/fai-5.4/
@@ -8817,8 +8817,8 @@ Date: Sat, 07 Oct 2017 10:12:23 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Chris Lamb: python-gfshare: Secret sharing in Python
-Message-ID: https-chris-lamb-co-uk-posts-python-gfshare-secret-sharing-in-python
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-chris-lamb-co-uk-posts-python-gfshare-secret-sharing-in-python>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://chris-lamb.co.uk/posts/python-gfshare-secret-sharing-in-python
@@ -8928,8 +8928,8 @@ Date: Fri, 06 Oct 2017 20:50:42 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Scarlett Clark: KDE at #UbuntuRally in New York! KDE Applications snaps!
-Message-ID: http-scarlettgatelyclark-com-p-450
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-scarlettgatelyclark-com-p-450>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://scarlettgatelyclark.com/2017/kde-at-ubunturally-in-new-york-kde-applications-snaps/
@@ -8983,8 +8983,8 @@ Date: Fri, 06 Oct 2017 08:30:46 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Rapha&#235;l Hertzog: My Free Software Activities in September 2017
-Message-ID: https-raphaelhertzog-com-p-3636
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-raphaelhertzog-com-p-3636>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://raphaelhertzog.com/2017/10/06/my-free-software-activities-in-september-2017/
@@ -9110,8 +9110,8 @@ Date: Thu, 05 Oct 2017 19:35:12 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Ross Gammon: My FOSS activities for August & September 2017
-Message-ID: http-rossgammon68-wordpress-com-p-1652
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-rossgammon68-wordpress-com-p-1652>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://rossgammon68.wordpress.com/2017/10/05/my-foss-activities-for-august-september-2017/
@@ -9215,8 +9215,8 @@ Date: Thu, 05 Oct 2017 14:49:21 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Wouter Verhelst: Patching Firefox
-Message-ID: https-grep-be-blog-en-computer-code-patching_firefox
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-grep-be-blog-en-computer-code-patching_firefox>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://grep.be/blog//en/computer/code/Patching_Firefox/
@@ -9393,8 +9393,8 @@ Date: Wed, 04 Oct 2017 21:00:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Steve Kemp: Tracking aircraft in real-time, via software-defined-radio
-Message-ID: https-blog-steve-fi-tracking_aircraft_in_real_time__via_software_defined_radio-html
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <https-blog-steve-fi-tracking_aircraft_in_real_time__via_software_defined_radio-html>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: https://blog.steve.fi/tracking_aircraft_in_real_time__via_software_defined_radio.html
@@ -9600,8 +9600,8 @@ Date: Wed, 04 Oct 2017 12:53:18 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Daniel Silverstone: F/LOSS (in)activity, September 2017
-Message-ID: http-blog-digital-scurf-org-posts-floss-activity-2017-09
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-blog-digital-scurf-org-posts-floss-activity-2017-09>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://blog.digital-scurf.org/posts/floss-activity-2017-09/
@@ -9667,8 +9667,8 @@ Date: Wed, 04 Oct 2017 00:28:00 -0000
 To: to@example.com
 From: planet-debian <to@example.com>
 Subject: Dirk Eddelbuettel: RProtoBuf 0.4.11
-Message-ID: http-dirk-eddelbuettel-com-blog-2017-10-03-rprotobuf_0-4-11
-User-Agent: feed2exec (0.17.2.dev12+ge589a97)
+Message-ID: <http-dirk-eddelbuettel-com-blog-2017-10-03-rprotobuf_0-4-11>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://dirk.eddelbuettel.com/blog/2017/10/03#rprotobuf_0.4.11

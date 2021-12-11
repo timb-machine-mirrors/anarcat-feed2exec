@@ -5,7 +5,7 @@ Date: Wed, 13 Sep 2017 15:24:28 -0000
 To: to@example.com
 From: fd0 <to@example.com>
 Subject: restic 0.7.2
-Message-ID: tag-github-com-2008-repository-19205896-v0-7-2
+Message-ID: <tag-github-com-2008-repository-19205896-v0-7-2>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
@@ -22,7 +22,7 @@ Date: Wed, 09 Aug 2017 06:20:32 -0000
 To: to@example.com
 From: fd0 <to@example.com>
 Subject: restic 0.7.1
-Message-ID: tag-github-com-2008-repository-19205896-v0-7-1
+Message-ID: <tag-github-com-2008-repository-19205896-v0-7-1>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
@@ -39,7 +39,7 @@ Date: Sat, 01 Jul 2017 12:46:02 -0000
 To: to@example.com
 From: fd0 <to@example.com>
 Subject: restic 0.7.0
-Message-ID: tag-github-com-2008-repository-19205896-v0-7-0
+Message-ID: <tag-github-com-2008-repository-19205896-v0-7-0>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
@@ -56,7 +56,7 @@ Date: Wed, 31 May 2017 22:14:33 -0000
 To: to@example.com
 From: fd0 <to@example.com>
 Subject: restic 0.6.1
-Message-ID: tag-github-com-2008-repository-19205896-v0-6-1
+Message-ID: <tag-github-com-2008-repository-19205896-v0-6-1>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
@@ -73,7 +73,7 @@ Date: Mon, 29 May 2017 21:30:06 -0000
 To: to@example.com
 From: fd0 <to@example.com>
 Subject: restic 0.6.0
-Message-ID: tag-github-com-2008-repository-19205896-v0-6-0
+Message-ID: <tag-github-com-2008-repository-19205896-v0-6-0>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
@@ -90,7 +90,7 @@ Date: Thu, 25 May 2017 13:49:05 -0000
 To: to@example.com
 From: fd0 <to@example.com>
 Subject: restic v0.6.0-rc.1
-Message-ID: tag-github-com-2008-repository-19205896-v0-6-0-rc-1
+Message-ID: <tag-github-com-2008-repository-19205896-v0-6-0-rc-1>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
@@ -107,7 +107,7 @@ Date: Sat, 11 Mar 2017 11:47:32 -0000
 To: to@example.com
 From: fd0 <to@example.com>
 Subject: restic 0.5.0
-Message-ID: tag-github-com-2008-repository-19205896-v0-5-0
+Message-ID: <tag-github-com-2008-repository-19205896-v0-5-0>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
@@ -124,7 +124,7 @@ Date: Thu, 09 Mar 2017 10:23:03 -0000
 To: to@example.com
 From: fd0 <to@example.com>
 Subject: restic 0.5.0-rc.1
-Message-ID: tag-github-com-2008-repository-19205896-v0-5-0-rc-1
+Message-ID: <tag-github-com-2008-repository-19205896-v0-5-0-rc-1>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
@@ -141,7 +141,7 @@ Date: Thu, 02 Feb 2017 09:30:15 -0000
 To: to@example.com
 From: fd0 <to@example.com>
 Subject: restic 0.4.0
-Message-ID: tag-github-com-2008-repository-19205896-v0-4-0
+Message-ID: <tag-github-com-2008-repository-19205896-v0-4-0>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated
@@ -158,7 +158,7 @@ Date: Sun, 08 Jan 2017 09:49:13 -0000
 To: to@example.com
 From: fd0 <to@example.com>
 Subject: restic 0.3.3
-Message-ID: tag-github-com-2008-repository-19205896-v0-3-3
+Message-ID: <tag-github-com-2008-repository-19205896-v0-3-3>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated

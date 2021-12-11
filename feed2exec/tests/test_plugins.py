@@ -71,7 +71,7 @@ Date: Sun, 06 Sep 2009 16:20:00 -0000
 To: to@example.com
 From: test author <from@example.com>
 Subject: Example entry
-Message-ID: 7bd204c6-1655-4c27-aeee-53f933c5395f
+Message-ID: <7bd204c6-1655-4c27-aeee-53f933c5395f>
 User-Agent: feed2exec (%s)
 Precedence: list
 Auto-Submitted: auto-generated
@@ -133,7 +133,8 @@ def test_email(tmpdir, feed_manager, static_boundary):  # noqa
         feed_manager.dispatch(feed, feed.parse(body), lock=LOCK)
         folder = utils.slug(feed['name']) + '.mbx'
         ua_pattern = re.compile('User-Agent: .*$', flags=re.MULTILINE)
-        actual = ua_pattern.sub('', tmpdir.join('Mail', folder).read())
+        actual_path = tmpdir.join('Mail', folder)
+        actual = ua_pattern.sub('', actual_path.read())
         assert actual
 
         mbox_path = path[:-3] + 'mbx'
@@ -144,7 +145,7 @@ def test_email(tmpdir, feed_manager, static_boundary):  # noqa
             # ignore missing mailbox samples
             pass
         else:
-            assert expect == actual
+            assert expect == actual, "%s different from expected %s" % (actual_path, mbox_path)
     assert path
 
 

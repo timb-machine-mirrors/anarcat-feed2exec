@@ -129,7 +129,8 @@ def make_message(feed, item, to_addr=None, cls=email.message.Message):
     msg['Subject'] = item.get('title', feed.get('title', u''))
     # workaround feedparser bug:
     # https://github.com/kurtmckee/feedparser/issues/112
-    msg['Message-ID'] = utils.slug(item.get('id', item.get('title')))
+    msg['Message-ID'] = "<%s>" % utils.slug(item.get('id', item.get('title')))
+    # respecting RFC2822 section 3.6.4
     msg['User-Agent'] = "%s (%s)" % (feed2exec.__prog__,
                                      feed2exec.__version__)
     msg['Precedence'] = 'list'

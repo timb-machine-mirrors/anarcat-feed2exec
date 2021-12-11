@@ -5,7 +5,7 @@ Date: Sun, 06 Sep 2009 16:20:00 -0000
 To: to@example.com
 From: test author <from@example.com>
 Subject: Example entry
-Message-ID: 7bd204c6-1655-4c27-aeee-53f933c5395f
+Message-ID: <7bd204c6-1655-4c27-aeee-53f933c5395f>
 User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
 Precedence: list
 Auto-Submitted: auto-generated

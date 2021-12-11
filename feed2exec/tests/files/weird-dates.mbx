@@ -6,8 +6,8 @@ Date: Sun, 03 Sep 2017 09:03:54 -0000
 To: to@example.com
 From: weird-dates <to@example.com>
 Subject: missing date
-Message-ID: http-example-com-test-missing-date
-User-Agent: feed2exec (0.5.dev8+ng8893be0.d20170920)
+Message-ID: <http-example-com-test-missing-date>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://example.com/test/
@@ -22,8 +22,8 @@ Date: Tue, 19 Feb 2019 14:08:19 -0000
 To: to@example.com
 From: weird-dates <to@example.com>
 Subject: missing space
-Message-ID: http-example-com-test-missing-space
-
+Message-ID: <http-example-com-test-missing-space>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://example.com/test/
@@ -38,8 +38,8 @@ Date: Sun, 15 Feb 2015 00:00:00 -0000
 To: to@example.com
 From: weird-dates <to@example.com>
 Subject: no timezone
-Message-ID: http-example-com-test-no-timezone
-
+Message-ID: <http-example-com-test-no-timezone>
+User-Agent: feed2exec (0.17.2.dev36+gb5fac00.d20211211)
 Precedence: list
 Auto-Submitted: auto-generated
 Archived-At: http://example.com/test/
