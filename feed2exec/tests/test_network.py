@@ -22,16 +22,11 @@ Test failures can be avoided by setting the PYTEST_USENETWORK to
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-
 from feed2exec.model import Feed
 import pytest
 
 
-@pytest.mark.xfail(
-    condition=os.environ.get('PYTEST_USENETWORK') == 'no',
-    reason="network may be unavailable",
-)
+@pytest.mark.network
 def test_cachecontrol(feed_manager_networked):
     """test for https://gitlab.com/anarcat/feed2exec/-/issues/22"""
     f = Feed('test', {
