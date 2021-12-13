@@ -281,6 +281,7 @@ class SqliteStorage(object):
     table_name: Optional[str] = None
     key_name = 'key'
     value_name = 'value'
+    expiry_name = 'expire_epoch'
 
     def __init__(self, path):
         self.path = os.path.expanduser(path)
@@ -345,10 +346,50 @@ class SqliteStorage(object):
             return val[0] if val else None
 
     def set(self, key, value, expires=None):
+        # TODO: actual expires = expires + now? check
+        # https://sqlite.org/lang_datefunc.html
+        # https://www.sqlitetutorial.net/sqlite-date/
+        # https://github.com/ionrock/cachecontrol/pull/233/files
+        #
+        # those implementations just seem to store expires as is, so
+        # presumably it has a date?
+        # https://github.com/ionrock/cachecontrol/blob/master/cachecontrol/cache.py
+        #
+        # note that cachecontrol-sqlite is a thing, but a thing that
+        # hasn't been updated in 4 years and doesn't support expires:
+        # https://github.com/ishitatsuyuki/cachecontrol-sqlite
+        query = "INSERT OR REPLACE INTO `%s` (`%s`, `%s`, `%s`) VALUES (?, ?, ?)" % (
+            self.table_name,
+            self.key_name,
+            self.value_name,
+            self.expiry_name)
+        insert_exception = None
         with self.connection() as con:
-            con.execute("INSERT OR REPLACE INTO `%s` (`%s`, `%s`) VALUES (?, ?)"
-                        % (self.table_name, self.key_name, self.value_name),
-                        (key, value))
+            try:
+                con.execute(query, (key, value, expires))
+            except sqlite3.OperationalError as e:
+                insert_exception = e
+        if insert_exception is not None:
+            needs_migration = False
+            # inspect table to confirm the missing column
+            with self.connection(commit=False) as con:
+                cur = con.cursor()
+                cur.row_factory = sqlite3.Row
+                for col in cur.execute("PRAGMA table_info(`%s`)" % self.table_name):
+                    if col['name'] == self.expiry_name:
+                        # the column already exist, this is a real failure
+                        raise
+                needs_migration = True
+            if needs_migration:
+                self._migrate_table_expiry()
+                # rerun failed query
+                con.execute(query, (key, value, expires))
+
+    def expiry(self, key):
+        with self.connection(commit=False) as con:
+            val = con.execute("""SELECT `%s` FROM `%s` WHERE `%s`=?"""
+                              % (self.expiry_name, self.table_name, self.key_name), (key, )).fetchone()
+            return val[0] if val else None
 
     def delete(self, key):
         with self.connection() as con:
@@ -364,10 +405,22 @@ class SqliteStorage(object):
             cur.row_factory = sqlite3.Row
             return cur.execute("SELECT * from `%s`" % self.table_name)
 
+    def _migrate_table_expiry(self):
+        """add the expiry column to the table
+
+        This is starting to look like an ORM. next time we need to do
+        something like this, consider sqlalchemy.
+        """
+        # column does not exist, do the migration
+        logging.info("migrating table %s to support expiry in database %s", self.table_name, self.path)
+        with self.connection() as con:
+            con.execute("ALTER TABLE `%s` ADD COLUMN `%s` int" %
+                        (self.table_name, self.expiry_name))
+
 
 class FeedItemCacheStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
-             feedcache (name text, guid text,
+             feedcache (name text, guid text, expire_epoch int,
              PRIMARY KEY (name, guid))'''
     record = namedtuple('record', 'name guid')
     table_name = 'feedcache'
@@ -385,9 +438,12 @@ class FeedItemCacheStorage(SqliteStorage):
     def __repr__(self):
         return 'FeedItemCacheStorage("%s", "%s", "%s")' % (self.path, self.feed, self.guid)
 
-    def add(self, guid):
+    # TODO: check callers, as this might not be called by
+    # cachecontrol, so we probably need logic up the stack here, for
+    # this to work.
+    def add(self, guid, expires=None):
         assert self.feed
-        self.set(guid, self.feed)
+        self.set(guid, self.feed, expires)
 
     def remove(self, guid):
         self.delete(guid)
@@ -418,6 +474,6 @@ class FeedItemCacheStorage(SqliteStorage):
 
 class FeedContentCacheStorage(SqliteStorage):
     sql = '''CREATE TABLE IF NOT EXISTS
-             content (key, value,
+             content (key, value, expire_epoch int,
              PRIMARY KEY (key))'''
     table_name = 'content'
