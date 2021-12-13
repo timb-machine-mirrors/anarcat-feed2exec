@@ -16,7 +16,6 @@ import xdg.BaseDirectory
 import feed2exec.utils as utils
 from feed2exec.__main__ import main
 from feed2exec.tests.test_feeds import (test_sample, test_nasa)
-from feed2exec.tests.fixtures import (static_boundary, feed_manager)  # noqa
 
 
 def test_usage():
@@ -25,7 +24,7 @@ def test_usage():
     assert 0 == result.exit_code
 
 
-def test_basics(tmpdir_factory, feed_manager, static_boundary):  # noqa
+def test_basics(tmpdir_factory, feed_manager, static_boundary):
     runner = CliRunner()
     result = runner.invoke(main, ['add',
                                   '--output', 'feed2exec.plugins.echo',
@@ -105,7 +104,7 @@ def test_relative_conf(tmpdir):
     assert 0 == result.exit_code
 
 
-def test_parse(feed_manager):  # noqa
+def test_parse(feed_manager):
     runner = CliRunner()
     result = runner.invoke(main, ['parse',
                                   '--output', 'feed2exec.plugins.echo',
@@ -189,8 +188,11 @@ def test_missing_conf(tmpdir_factory, monkeypatch):
     assert tmpdir.join('feed2exec.ini').check()
 
 
-@pytest.mark.xfail(condition=html2text.__version__ < (2020, 1, 16), reason="older html2text output varies, install version 2020.1.16 or later")  # noqa
-def test_planet(tmpdir_factory, static_boundary, feed_manager):  # noqa
+@pytest.mark.xfail(
+    condition=html2text.__version__ < (2020, 1, 16),
+    reason="older html2text output varies, install version 2020.1.16 or later",
+)
+def test_planet(tmpdir_factory, static_boundary, feed_manager):
     """test i18n feeds for double-encoding
 
     previously, we would double-encode email bodies and subject, which
@@ -210,7 +212,7 @@ def test_planet(tmpdir_factory, static_boundary, feed_manager):  # noqa
                            catch_exceptions=False)
     assert 0 == result.exit_code
     r = re.compile('User-Agent: .*$', flags=re.MULTILINE)
-    with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:  # noqa
+    with open(utils.find_test_file('../cassettes/planet-debian.mbx')) as expected:
         expected = r.sub('', expected.read())
         actual = r.sub('', mbox_dir.join('planet-debian.mbx').read())
         assert expected == actual

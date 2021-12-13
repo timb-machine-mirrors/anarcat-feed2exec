@@ -6,13 +6,12 @@ import pytest
 
 from feed2exec.__main__ import main
 from feed2exec.controller import (FeedManager)
-from feed2exec.tests.fixtures import feed_manager  # noqa
 import feed2exec.utils as utils
 
 testdir = utils.find_test_file()
 
 
-@pytest.mark.parametrize("opmlpath", glob(os.path.join(testdir, '*.opml')))  # noqa
+@pytest.mark.parametrize("opmlpath", glob(os.path.join(testdir, '*.opml')))
 def test_import(tmpdir, opmlpath):
     conf_path = tmpdir.join('feed2exec.ini')
     db_path = tmpdir.join('feed2exec.db')
@@ -28,7 +27,7 @@ def test_import(tmpdir, opmlpath):
     conf_path.remove()
 
 
-def test_opml(tmpdir, feed_manager):  # noqa
+def test_opml(tmpdir, feed_manager):
     runner = CliRunner()
 
     assert not os.path.exists(feed_manager.conf_path)

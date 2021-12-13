@@ -29,10 +29,9 @@ import feed2exec.plugins.maildir as maildir_plugin
 import feed2exec.plugins.transmission as transmission_plugin
 import feed2exec.plugins.archive as archive_plugin
 from feed2exec.tests.test_feeds import test_sample, test_params
-from feed2exec.tests.fixtures import (feed_manager, feed_manager_recorder, static_boundary, logging_handler)  # noqa
 
 
-def test_maildir(tmpdir, feed_manager, static_boundary):  # noqa
+def test_maildir(tmpdir, feed_manager, static_boundary):
     global LOCK
     LOCK = mock.MagicMock()
 
@@ -113,9 +112,15 @@ This is the body, which should show instead of the above
     assert not message.check()
 
 
-@pytest.mark.xfail(condition=parse_version(feedparser.__version__) < parse_version('5.2.1'), reason="older feedparser version do not sort <img> tags, install feedparser 5.2.1 or later")  # noqa
-@pytest.mark.xfail(condition=html2text.__version__ < (2020, 1, 16), reason="older html2text output varies, install version 2020.1.16 or later")  # noqa
-def test_email(tmpdir, feed_manager, static_boundary):  # noqa
+@pytest.mark.xfail(
+    condition=parse_version(feedparser.__version__) < parse_version('5.2.1'),
+    reason="older feedparser version do not sort <img> tags, install feedparser 5.2.1 or later",
+)
+@pytest.mark.xfail(
+    condition=html2text.__version__ < (2020, 1, 16),
+    reason="older html2text output varies, install version 2020.1.16 or later",
+)
+def test_email(tmpdir, feed_manager, static_boundary):
     global LOCK
     LOCK = mock.MagicMock()
 
@@ -200,7 +205,7 @@ def wayback_feed(request):
     return Feed('wayback test', config)
 
 
-def test_wayback_archive(feed_manager, logging_handler, wayback_feed):  # noqa
+def test_wayback_archive(feed_manager, logging_handler, wayback_feed):
     full = 'args' not in wayback_feed or 'full' in wayback_feed['args']
     item = feedparser.FeedParserDict({'link': 'http://archive.org/'})
     e = plugins.output(feed=wayback_feed, item=item, session=feed_manager.session)
@@ -221,7 +226,7 @@ def test_wayback_archive(feed_manager, logging_handler, wayback_feed):  # noqa
     assert 'Cannot save Internet Archive URLs! http://archive.org/.' == error
 
 
-def test_wayback_invalid_example(feed_manager, logging_handler, wayback_feed):  # noqa
+def test_wayback_invalid_example(feed_manager, logging_handler, wayback_feed):
     full = 'args' not in wayback_feed or 'full' in wayback_feed['args']
     item = feedparser.FeedParserDict({'link': 'http://invalid.example.com/'})
     e = plugins.output(feed=wayback_feed, item=item, session=feed_manager.session)
@@ -242,7 +247,7 @@ def test_wayback_invalid_example(feed_manager, logging_handler, wayback_feed):  
     assert 'Cannot resolve host invalid.example.com.' == error
 
 
-def test_wayback_example_invalid(feed_manager, logging_handler, wayback_feed):  # noqa
+def test_wayback_example_invalid(feed_manager, logging_handler, wayback_feed):
     full = 'args' not in wayback_feed or 'full' in wayback_feed['args']
     item = feedparser.FeedParserDict({'link': 'http://example.invalid/'})
     e = plugins.output(feed=wayback_feed, item=item, session=feed_manager.session)
@@ -263,7 +268,7 @@ def test_wayback_example_invalid(feed_manager, logging_handler, wayback_feed):  
     assert 'http://example.invalid/ URL syntax is not valid.' == error
 
 
-def test_wayback_example_working(feed_manager, logging_handler, wayback_feed):  # noqa
+def test_wayback_example_working(feed_manager, logging_handler, wayback_feed):
     full = 'args' not in wayback_feed or 'full' in wayback_feed['args']
     if full:
         link = 'http://example.com/'
@@ -285,8 +290,8 @@ def test_wayback_example_working(feed_manager, logging_handler, wayback_feed):  
         assert record.args[1].startswith('https://web.archive.org/web/')
 
 
-def test_wayback_example_too_fast(feed_manager_recorder, logging_handler, wayback_feed):  # noqa
-    recorder, feed_manager = feed_manager_recorder  # noqa
+def test_wayback_example_too_fast(feed_manager_recorder, logging_handler, wayback_feed):
+    recorder, feed_manager = feed_manager_recorder
     # SPN1 does not error when archiving the same domain too fast
     # so this test is only applicable to the SPN2 API.
     full = 'args' not in wayback_feed or 'full' in wayback_feed['args']
@@ -330,7 +335,7 @@ def test_wayback_example_too_fast(feed_manager_recorder, logging_handler, waybac
     )
 
 
-def test_wayback_example_404(feed_manager, logging_handler, wayback_feed):  # noqa
+def test_wayback_example_404(feed_manager, logging_handler, wayback_feed):
     # SPN2 does not return errors for HTTP error codes
     # even if the error page archiving is turned off.
     full = 'args' not in wayback_feed or 'full' in wayback_feed['args']
@@ -350,7 +355,7 @@ def test_wayback_example_404(feed_manager, logging_handler, wayback_feed):  # no
     assert 'The server cannot find the requested resource http://example.com/404 (HTTP status=404).' == record.args[3]
 
 
-def test_wayback_catchup(feed_manager, logging_handler, wayback_feed):  # noqa
+def test_wayback_catchup(feed_manager, logging_handler, wayback_feed):
     full = 'args' not in wayback_feed or 'full' in wayback_feed['args']
     if full:
         links = [
@@ -412,7 +417,7 @@ def test_transmission(monkeypatch):
     assert [] == capture
 
 
-def test_archive(tmpdir, feed_manager):  # noqa
+def test_archive(tmpdir, feed_manager):
     dest = tmpdir.join('archive')
     feed = Feed('test archive', test_sample)
     item = feedparser.FeedParserDict({'link': 'http://example.com/',

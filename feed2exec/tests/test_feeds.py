@@ -22,7 +22,6 @@ from __future__ import print_function
 from feed2exec.model import (FeedConfStorage, FeedItemCacheStorage, Feed)
 import feed2exec.plugins.echo
 import feed2exec.utils as utils
-from feed2exec.tests.fixtures import feed_manager  # noqa
 import pytest
 
 # XXX: bypass the Feed constructor so we don't create the cache
@@ -66,7 +65,7 @@ test_params = Feed('params',
                     'args': '1 2 3 4'})
 
 
-def test_add(feed_manager):  # noqa
+def test_add(feed_manager):
     assert test_data['name'] not in feed_manager.conf_storage, 'this is supposed to be empty'
     feed_manager.conf_storage.add(**test_data)
     assert test_data['name'] in feed_manager.conf_storage, 'contains works'
@@ -78,7 +77,7 @@ def test_add(feed_manager):  # noqa
     assert test_data['name'] not in feed_manager.conf_storage, 'remove works'
 
 
-def test_settings(feed_manager, capfd):  # noqa
+def test_settings(feed_manager, capfd):
     assert 0 == len(list(feed_manager.conf_storage)), "no params set yet"
     feed_manager.conf_storage.add(**test_params)
     assert 1 == len(list(feed_manager.conf_storage)), "params properly added"
@@ -105,7 +104,7 @@ def test_settings(feed_manager, capfd):  # noqa
     feed_manager.conf_storage.remove(test_params['name'])
 
 
-def test_pattern(feed_manager):  # noqa
+def test_pattern(feed_manager):
     feed_manager.conf_storage.add(**test_data)
     assert test_data['name'] in feed_manager.conf_storage, 'previous test should have ran'
     feed_manager.conf_storage.add(**test_data2)
@@ -118,7 +117,7 @@ def test_pattern(feed_manager):  # noqa
     assert 2 == len(feeds), 'find two items'
 
 
-def test_cache(feed_manager):  # noqa
+def test_cache(feed_manager):
     db_path = feed_manager.db_path
     st = FeedItemCacheStorage(db_path, feed=test_data['name'])
     assert 'guid' not in st
@@ -139,7 +138,7 @@ def test_cache(feed_manager):  # noqa
     assert 'guid' not in st
 
 
-def test_fetch(feed_manager):  # noqa
+def test_fetch(feed_manager):
     feed_manager.conf_storage.add(**test_sample)
 
     feed2exec.plugins.echo.output.called = False
@@ -160,7 +159,7 @@ def test_fetch(feed_manager):  # noqa
     assert ('test_udd', ) == feed2exec.plugins.echo.output.called
 
 
-def test_fetch_parallel(feed_manager, capfd):  # noqa
+def test_fetch_parallel(feed_manager, capfd):
     feed_manager.conf_storage.add(**test_sample)
     feed_manager.fetch(parallel=True, force=True)
     # can't use feed2exec.feeds.plugins.echo.output.called as it is
@@ -172,8 +171,8 @@ def test_fetch_parallel(feed_manager, capfd):  # noqa
     assert '1 2 3 4' in out
 
 
-@pytest.mark.xfail(reason="cachecontrol does not know how to chain adapters")  # noqa
-def test_fetch_cache(feed_manager):  # noqa
+@pytest.mark.xfail(reason="cachecontrol does not know how to chain adapters")
+def test_fetch_cache(feed_manager):
     '''that a second fetch returns no body'''
     feed = Feed('sample',
                 {'url': 'http://planet.debian.org/rss20.xml',
@@ -190,7 +189,7 @@ def test_fetch_cache(feed_manager):  # noqa
     assert content is None
 
 
-def test_normalize(feed_manager):  # noqa
+def test_normalize(feed_manager):
     '''black box testing for :func:feeds.normalize_item()'''
     data = test_udd.parse(feed_manager.session.get(test_udd['url']).content)
     data = feed_manager.dispatch(test_udd, data)
@@ -210,7 +209,7 @@ def test_normalize(feed_manager):  # noqa
         assert item.get('updated_parsed')
 
 
-def test_config(tmpdir):  # noqa
+def test_config(tmpdir):
     conf_path = tmpdir.join('feed2exec.ini')
     conf = FeedConfStorage(str(conf_path))
     conf.add(**test_sample)

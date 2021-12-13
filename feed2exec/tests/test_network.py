@@ -25,7 +25,6 @@ Test failures can be avoided by setting the PYTEST_USENETWORK to
 import os
 
 from feed2exec.model import Feed
-from feed2exec.tests.fixtures import feed_manager_networked  # noqa: F401
 import pytest
 
 
@@ -33,7 +32,7 @@ import pytest
     condition=os.environ.get('PYTEST_USENETWORK') == 'no',
     reason="network may be unavailable",
 )
-def test_cachecontrol(feed_manager_networked):  # noqa: F811
+def test_cachecontrol(feed_manager_networked):
     """test for https://gitlab.com/anarcat/feed2exec/-/issues/22"""
     f = Feed('test', {
         # this URL *MUST* send Expires header to trigger the
