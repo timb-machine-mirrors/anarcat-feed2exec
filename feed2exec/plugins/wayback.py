@@ -127,7 +127,7 @@ def output(*args, feed=None, item=None, session=None, **kwargs):
             'url': url,
             'capture_all': 'on',  # Enables saving HTTP error pages
         }
-        res = session.post(wayback_url, data=form)
+        res = session.post(wayback_url, data=form, headers={"Cache-Control": "no-store"})
         if _check_response(url, res):
             logging.info('URL %s with resources probably saved to wayback machine', url)  # noqa
             return True
@@ -136,7 +136,7 @@ def output(*args, feed=None, item=None, session=None, **kwargs):
     if item and url and not full:
         logging.debug('saving URL %s without resources to wayback machine', url)  # noqa
         wayback_url = '%s/save/%s' % (WAYBACK_URL, url)
-        res = session.get(wayback_url, allow_redirects=True)
+        res = session.get(wayback_url, allow_redirects=True, headers={"Cache-Control": "no-store"})
         if _check_response(url, res):
             logging.info('URL %s saved without resources to wayback machine: %s', url, res.url)  # noqa
             return True

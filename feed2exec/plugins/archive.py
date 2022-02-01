@@ -43,7 +43,7 @@ def output(*args, feed=None, item=None, session=None, **kwargs):
         if feed.get('catchup'):
             return True
         # fetch the URL in memory
-        result = session.get(item.get('link'))
+        result = session.get(item.get('link'), headers={"Cache-Control": "no-store"})
         if result.status_code != requests.codes.ok:
             logging.warning('failed to fetch link %s: %s',
                             item.get('link'), result.status_code)
