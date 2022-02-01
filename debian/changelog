@@ -21,7 +21,7 @@ feed2exec (0.18.0) unstable; urgency=medium
   * fix feedparser dependencies for newer python
   * catchup with html2text again (2020.1.16)
   * add failing test and fix for cachecontrol 0.12.10 new API (Closes: GL#22)
-  * do not cache requests in plugins (Closes: GL#26)
+  * do not cache requests in plugins (Closes: #1001412, GL#26)
   * Require feedparser 5 as minimum version for Python 3, thanks Paul Wise
 
   Documentation:
