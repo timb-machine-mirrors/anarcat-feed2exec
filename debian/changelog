@@ -1,3 +1,53 @@
+feed2exec (0.18.0) unstable; urgency=medium
+
+  ship accumulated bugfixes and catchup with wayback machine changes.
+
+  special thanks to Paul Wise for the immesurable patience on
+  the wayback plugin and test suite, and to Jelmer Vernooĳ for the
+  Debian Janitor.
+
+  New features:
+
+  * Add support for saving page resources to the Wayback Machine too, thanks Paul Wise!
+
+  API changes:
+
+  * we now generate a standard message-id, which has brackets around it
+
+  Bugfixes:
+
+  * fix rare crash in feed2exec parse with an empty `mailbox` setting
+  * fix feedparser dependencies for newer python
+  * catchup with html2text again (2020.1.16)
+  * add failing test and fix for cachecontrol 0.12.10 new API (Closes: GL#22)
+  * do not cache requests in plugins (Closes: GL#26)
+  * Require feedparser 5 as minimum version for Python 3, thanks Paul Wise
+
+  Documentation:
+
+  * mention (lack of) Gemini and other protocol support
+  * leave Freenode for oftc.net
+
+  Cleanup, CI, linting:
+
+  * avoid dateparser bug workaround in newer versions
+  * drop support for python 3.5, add 3.9
+  * enforce black in tox, but not in CI
+  * first pass at type checking with mypy, with failures allowed
+  * switch to setup.cfg as much as possible
+  * fix rst syntax since we are not hacking it anymore
+  * mention build module, which may be necessary for newer setuptools_scm
+  * move fixtures to conftest.py
+  * use pytest.mark.network instead of xfail
+
+  [ Debian Janitor ]
+  * Trim trailing whitespace.
+  * Use secure copyright file specification URI.
+  * Use canonical URL in Vcs-Git.
+  * Update standards version to 4.5.1, no changes needed.
+
+ -- Antoine Beaupré <anarcat@debian.org>  Mon, 31 Jan 2022 20:51:55 -0500
+
 feed2exec (0.17.1) unstable; urgency=medium
 
   * fix unit tests in a clean environment
