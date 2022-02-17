@@ -6,7 +6,7 @@ Build-Depends:
  debhelper-compat (= 12),
  dh-python,
  python3,
- python3-betamax (>= 0.8.0),
+ python3-betamax,
  python3-click,
  python3-dateparser,
  python3-doc,
