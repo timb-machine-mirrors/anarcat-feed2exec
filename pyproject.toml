@@ -5,6 +5,7 @@ module = [
   "cachecontrol",
   "feedparser",
   "html2text",
+  "lxml",
   "pytest",
   "requests_file",
   "setuptools_scm",
