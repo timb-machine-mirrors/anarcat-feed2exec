@@ -289,7 +289,7 @@ class FeedManager(object):
         cache = FeedItemCacheStorage(self.db_path, feed=feed['name'])
         for item in data['entries']:
             feed.normalize(item=item)
-            plugins.filter(feed=feed, item=item, session=self.session, lock=lock)
+            list(plugins.filter(feed=feed, item=item, session=self.session, lock=lock))
             if item.get('skip'):
                 logging.info('item %s of feed %s filtered out',
                              item.get('title'), feed.get('name'))

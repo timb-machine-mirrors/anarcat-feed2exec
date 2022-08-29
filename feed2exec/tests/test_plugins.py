@@ -189,14 +189,12 @@ def test_exec(capfd):
 def test_filter():
     item = {'title': 'test'}
     expected = item.copy()
-    p = plugins.filter(feed={'filter': 'feed2exec.plugins.echo'}, item=item)
+    ret = list(plugins.filter(feed={'filter': 'feed2exec.plugins.echo'}, item=item))
     assert expected == item
-    assert p
-    assert p.called is not None
+    assert [p.called for p in ret if p]
     item = {'title': 'test'}
-    plugins.filter(feed={'filter': 'feed2exec.plugins.null'}, item=item)
+    ret = list(plugins.filter(feed={'filter': 'feed2exec.plugins.null'}, item=item))
     assert expected != item
-    assert p.called is not None
 
 
 @pytest.fixture(params=['page', 'full'])

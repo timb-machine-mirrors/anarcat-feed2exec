@@ -31,6 +31,7 @@ from __future__ import print_function
 import importlib
 import logging
 import shlex
+from typing import Generator
 
 
 def output(feed, item, lock=None, session=None):
@@ -117,7 +118,7 @@ def output(feed, item, lock=None, session=None):
         return False
 
 
-def filter(feed, item, lock=None, session=None):
+def filter(feed, item, lock=None, session=None) -> Generator:
     """call filter plugins.
 
     very similar to the output plugin, but just calls the ``filter``
@@ -126,21 +127,25 @@ def filter(feed, item, lock=None, session=None):
     .. todo:: common code with output() should be factored out, but
               output() takes arguments...
     """
-    plugin = feed.get('filter')
-    if plugin:
-        if feed.get('filter_args'):
-            args = [x.format(feed=feed, item=item)
-                    for x in shlex.split(feed['filter_args'])]
-        else:
-            args = []
+    logging.debug("entering filter plugin dispatcher")
+    plugins_list = feed.get('filter', "").split()
+    if not plugins_list:
+        logging.debug("no filter plugin set")
+        return
+    if feed.get('filter_args'):
+        args = [x.format(feed=feed, item=item)
+                for x in shlex.split(feed['filter_args'])]
+    else:
+        args = []
+    for plugin in plugins_list:
         logging.debug('running filter plugin %s with arguments %s',
                       plugin, args)
         plugin = importlib.import_module(plugin)
         try:
-            return plugin.filter(*args, feed=feed, item=item, lock=lock, session=session)
+            ret = plugin.filter(*args, feed=feed, item=item, lock=lock, session=session)
+            yield ret
         except Exception as e:
             logging.exception("plugin generated exception: %s, ignoring", e)
-            return None
 
 
 def resolve(plugin):
